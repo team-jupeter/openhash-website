@@ -21,164 +21,191 @@
         </div>
     </nav>
 
-    <div class="sim-hero">
-        <div class="container">
-            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
-            <span class="sim-badge">인터랙티브</span>
-            <h1>SSI 인증 시뮬레이션</h1>
-            <p>자기주권 신원 인증의 5요소 검증 과정 체험</p>
+    <div class="node-status-bar">
+        <div class="container status-row">
+            <span class="status-icon" id="statusIcon">●</span>
+            <span id="nodeStatusText">노드 연결 확인 중...</span>
+            <span class="status-divider">|</span>
+            <a href="/simulation/" class="back-link-inline">← 시뮬레이션</a>
+            <span class="sim-badge-sm">인터랙티브</span>
+            <h1 class="page-title-sm">SSI 인증 시뮬레이션 - 자기주권신원 (Self-Sovereign Identity)</h1>
         </div>
     </div>
 
-    <main class="sim-content">
+    <main class="sim-content compact">
         <div class="container">
-            <div class="sim-wrapper">
+            <div class="sim-wrapper two-col">
                 <div class="control-panel">
-                    <h3>🪪 신원 정보</h3>
+                    <h3>🆔 DID 등록</h3>
                     <div class="control-group">
                         <label class="control-label">이름</label>
                         <input type="text" id="userName" class="control-input" value="홍길동">
                     </div>
                     <div class="control-group">
-                        <label class="control-label">주민등록번호</label>
-                        <input type="text" id="userId" class="control-input" value="900101-1234567" placeholder="000000-0000000">
+                        <label class="control-label">생년월일</label>
+                        <input type="date" id="userBirth" class="control-input" value="1990-01-01">
                     </div>
                     <div class="control-group">
-                        <label class="control-label">발행 기관</label>
+                        <label class="control-label">발급 기관</label>
                         <select id="issuer" class="control-select">
-                            <option value="MOIS">행정안전부</option>
-                            <option value="NTS">국세청</option>
-                            <option value="MOFA">외교부</option>
+                            <option value="행정안전부">행정안전부</option>
+                            <option value="금융위원회">금융위원회</option>
+                            <option value="국세청">국세청</option>
+                            <option value="교육부">교육부</option>
                         </select>
                     </div>
-                    <button id="registerBtn" class="run-btn">신원 등록</button>
-                    <button id="verifyBtn" class="run-btn" style="margin-top: var(--space-2); background: var(--gray-600);">신원 검증</button>
+                    <div class="control-group">
+                        <label class="control-label">자격 증명 유형</label>
+                        <select id="credType" class="control-select">
+                            <option value="IdentityCredential">신원 증명</option>
+                            <option value="FinancialCredential">금융 자격</option>
+                            <option value="EducationCredential">학력 증명</option>
+                            <option value="LicenseCredential">자격증</option>
+                        </select>
+                    </div>
+                    <button id="registerBtn" class="run-btn">DID 등록</button>
+
+                    <!-- 자격 증명 정보 -->
+                    <div class="credential-info" id="credentialInfo" style="display: none;"></div>
+
+                    <h3 style="margin-top: 20px;">🔍 검증 옵션</h3>
+                    <div class="verify-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="tamperData"> 데이터 변조 시뮬레이션
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="invalidSig"> 서명 불일치 시뮬레이션
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="expired"> 만료 시뮬레이션
+                        </label>
+                    </div>
+                    <button id="verifyBtn" class="run-btn secondary" disabled>검증 실행</button>
                 </div>
 
                 <div class="viz-area">
-                    <h3>📋 SSI 등록/검증 과정</h3>
-                    <div class="ssi-flow" id="ssiFlow">
-                        <div class="ssi-step" data-step="1">
-                            <div class="ssi-icon">🪪</div>
-                            <div class="ssi-info">
-                                <div class="ssi-name">1. 신분증 해싱</div>
-                                <div class="ssi-detail" id="step1Hash">-</div>
-                            </div>
-                            <div class="ssi-status" id="step1Status">대기</div>
+                    <h3>🔐 5단계 검증 파이프라인</h3>
+                    <div class="pipeline">
+                        <div class="pipeline-step" id="step1">
+                            <div class="step-num">1</div>
+                            <div class="step-name">DID 확인</div>
+                            <div class="step-desc">형식 검증</div>
+                            <div class="step-result">-</div>
                         </div>
-                        <div class="ssi-arrow">↓</div>
-                        <div class="ssi-step" data-step="2">
-                            <div class="ssi-icon">📊</div>
-                            <div class="ssi-info">
-                                <div class="ssi-name">2. 계층 선택</div>
-                                <div class="ssi-detail" id="step2Layer">-</div>
-                            </div>
-                            <div class="ssi-status" id="step2Status">대기</div>
+                        <div class="pipeline-step" id="step2">
+                            <div class="step-num">2</div>
+                            <div class="step-name">해시 무결성</div>
+                            <div class="step-desc">데이터 검증</div>
+                            <div class="step-result">-</div>
                         </div>
-                        <div class="ssi-arrow">↓</div>
-                        <div class="ssi-step" data-step="3">
-                            <div class="ssi-icon">✍️</div>
-                            <div class="ssi-info">
-                                <div class="ssi-name">3. 발행자 서명</div>
-                                <div class="ssi-detail" id="step3Sig">-</div>
-                            </div>
-                            <div class="ssi-status" id="step3Status">대기</div>
+                        <div class="pipeline-step" id="step3">
+                            <div class="step-num">3</div>
+                            <div class="step-name">서명 검증</div>
+                            <div class="step-desc">발급자 확인</div>
+                            <div class="step-result">-</div>
                         </div>
-                        <div class="ssi-arrow">↓</div>
-                        <div class="ssi-step" data-step="4">
-                            <div class="ssi-icon">💾</div>
-                            <div class="ssi-info">
-                                <div class="ssi-name">4. 계층 저장</div>
-                                <div class="ssi-detail" id="step4Store">-</div>
-                            </div>
-                            <div class="ssi-status" id="step4Status">대기</div>
+                        <div class="pipeline-step" id="step4">
+                            <div class="step-num">4</div>
+                            <div class="step-name">유효기간</div>
+                            <div class="step-desc">만료 확인</div>
+                            <div class="step-result">-</div>
                         </div>
-                    </div>
-
-                    <div class="five-elements" id="fiveElements">
-                        <h4>신원 증명 5요소</h4>
-                        <div class="element-grid">
-                            <div class="element-item" data-element="1"><span class="element-num">1</span><span class="element-name">신분증 원본</span><span class="element-status" id="elem1">-</span></div>
-                            <div class="element-item" data-element="2"><span class="element-num">2</span><span class="element-name">발행자 서명</span><span class="element-status" id="elem2">-</span></div>
-                            <div class="element-item" data-element="3"><span class="element-num">3</span><span class="element-name">해시값</span><span class="element-status" id="elem3">-</span></div>
-                            <div class="element-item" data-element="4"><span class="element-num">4</span><span class="element-name">계층/노드</span><span class="element-status" id="elem4">-</span></div>
-                            <div class="element-item" data-element="5"><span class="element-num">5</span><span class="element-name">저장 시각</span><span class="element-status" id="elem5">-</span></div>
+                        <div class="pipeline-step" id="step5">
+                            <div class="step-num">5</div>
+                            <div class="step-name">폐기 확인</div>
+                            <div class="step-desc">상태 조회</div>
+                            <div class="step-result">-</div>
                         </div>
                     </div>
 
                     <div class="log-area" id="logArea">
-                        <div class="log-line info">[시스템] 시뮬레이션 준비 완료</div>
-                    </div>
-                </div>
-
-                <div class="result-panel">
-                    <h3>📊 등록/검증 결과</h3>
-                    <div id="resultSummary">
-                        <div class="result-item"><span class="result-label">이름</span><span class="result-value" id="resultName">-</span></div>
-                        <div class="result-item"><span class="result-label">해시값</span><span class="result-value mono" id="resultHash" style="font-size: 10px;">-</span></div>
-                        <div class="result-item"><span class="result-label">저장 계층</span><span class="result-value" id="resultLayer">-</span></div>
-                        <div class="result-item"><span class="result-label">발행 기관</span><span class="result-value" id="resultIssuer">-</span></div>
-                        <div class="result-item"><span class="result-label">등록 시각</span><span class="result-value" id="resultTime">-</span></div>
-                        <div class="result-item"><span class="result-label">상태</span><span class="result-value" id="resultStatus">-</span></div>
+                        <div class="log-line info">[시스템] SSI 시뮬레이션 준비 완료</div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-                <div class="footer-links">
-                    <a href="/technology/">기술</a>
-                    <a href="/simulation/">시뮬레이션</a>
-                    <a href="/tests/">테스트</a>
-                </div>
-            </div>
-            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
-        </div>
-    </footer>
-
     <style>
-    .ssi-flow { margin-bottom: var(--space-6); }
-    .ssi-step {
-        display: flex;
-        align-items: center;
-        gap: var(--space-4);
-        padding: var(--space-4);
+    .node-status-bar { position: fixed; top: 60px; left: 0; right: 0; z-index: 999; background: linear-gradient(135deg, #1a3a6e 0%, #0d2240 100%); padding: 10px 0; border-bottom: 2px solid #d4a017; }
+    .status-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .status-icon { font-size: 10px; }
+    .status-icon.online { color: #4ade80; }
+    .status-icon.offline { color: #f87171; }
+    #nodeStatusText { color: #fff; font-size: 13px; }
+    .status-divider { color: rgba(255,255,255,0.3); }
+    .back-link-inline { color: #d4a017; font-size: 12px; text-decoration: none; }
+    .sim-badge-sm { background: #d4a017; color: #1a3a6e; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+    .page-title-sm { color: #fff; font-size: 15px; font-weight: 600; margin: 0; flex: 1; }
+    .sim-content.compact { padding: 20px 0; margin-top: 100px; }
+
+    /* 자격 증명 정보 */
+    .credential-info { margin-top: 16px; padding: 12px; background: rgba(74,222,128,0.1); border: 1px solid #4ade80; border-radius: 8px; }
+    .cred-item { display: flex; justify-content: space-between; font-size: 11px; margin: 4px 0; }
+    .cred-item span { color: var(--gray-500); }
+    .cred-item strong { color: var(--gray-900); font-family: var(--font-mono); font-size: 10px; }
+
+    /* 검증 옵션 */
+    .verify-options { margin: 12px 0; }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 6px 0; cursor: pointer; }
+    .checkbox-label input { width: 16px; height: 16px; }
+
+    .run-btn.secondary { background: var(--gray-500); margin-top: 10px; }
+    .run-btn.secondary:hover { background: var(--gray-600); }
+    .run-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+
+    /* 파이프라인 - 수직 리스트 */
+    .pipeline { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .pipeline-step {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 12px;
         background: var(--gray-50);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius);
-        margin-bottom: var(--space-2);
-        transition: all var(--transition);
+        border: 2px solid var(--gray-200);
+        border-radius: 6px;
+        transition: all 0.3s;
     }
-    .ssi-step.active { background: var(--white); border-color: var(--primary); border-left: 3px solid var(--primary); }
-    .ssi-step.done { background: var(--success-light); border-color: var(--success); border-left: 3px solid var(--success); }
-    .ssi-icon { font-size: 24px; }
-    .ssi-info { flex: 1; }
-    .ssi-name { font-size: 14px; font-weight: 600; color: var(--gray-900); }
-    .ssi-detail { font-size: 11px; color: var(--gray-500); font-family: var(--font-mono); margin-top: var(--space-1); word-break: break-all; }
-    .ssi-status { font-size: 12px; font-weight: 600; }
-    .ssi-step.done .ssi-status { color: var(--success); }
-    .ssi-arrow { text-align: center; color: var(--gray-400); font-size: 14px; }
-    .five-elements { margin-top: var(--space-6); padding: var(--space-5); background: var(--gray-50); border-radius: var(--radius); }
-    .five-elements h4 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-4); text-align: center; }
-    .element-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
-    .element-item {
-        padding: var(--space-3);
-        background: var(--white);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius);
-        text-align: center;
+    .pipeline-step.active { border-color: #1a3a6e; background: rgba(26,58,110,0.1); }
+    .pipeline-step.pass { border-color: #4ade80; background: rgba(74,222,128,0.1); }
+    .pipeline-step.fail { border-color: #f87171; background: rgba(248,113,113,0.1); }
+    .pipeline-step .step-num {
+        width: 24px; height: 24px;
+        background: var(--gray-300); color: #fff;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 12px; flex-shrink: 0;
     }
-    .element-item.verified { border-color: var(--success); background: var(--success-light); }
-    .element-num { display: block; font-size: 18px; font-weight: 700; color: var(--primary); }
-    .element-name { display: block; font-size: 11px; color: var(--gray-600); margin: var(--space-1) 0; }
-    .element-status { display: block; font-size: 10px; font-weight: 600; }
-    .element-item.verified .element-status { color: var(--success); }
-    .mono { font-family: var(--font-mono); }
+    .pipeline-step.active .step-num { background: #1a3a6e; }
+    .pipeline-step.pass .step-num { background: #4ade80; }
+    .pipeline-step.fail .step-num { background: #f87171; }
+    .pipeline-step .step-name { font-size: 13px; font-weight: 600; width: 80px; }
+    .pipeline-step .step-desc { font-size: 11px; color: var(--gray-500); flex: 1; }
+    .pipeline-step .step-result { font-size: 12px; font-weight: 600; color: var(--gray-400); width: 50px; text-align: right; }
+    .pipeline-step.pass .step-result { color: #4ade80; }
+    .pipeline-step.fail .step-result { color: #f87171; }
+
+    .log-area { max-height: 250px; }
+    .log-time { color: #888; font-size: 11px; }
+
+    /* 결과 모달 */
+    .result-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+    .result-modal.show { opacity: 1; }
+    .modal-content { background: #fff; border-radius: 12px; padding: 24px; min-width: 280px; text-align: center; transform: scale(0.9); transition: transform 0.3s; }
+    .result-modal.show .modal-content { transform: scale(1); }
+    .modal-content.success { border: 3px solid #4ade80; }
+    .modal-content.fail { border: 3px solid #f87171; }
+    .modal-icon { font-size: 36px; }
+    .modal-header h3 { margin: 8px 0; font-size: 18px; }
+    .modal-content.success h3 { color: #4ade80; }
+    .modal-content.fail h3 { color: #f87171; }
+    .result-text { font-size: 13px; color: var(--gray-600); margin-bottom: 16px; }
+    .modal-close { background: #1a3a6e; color: #fff; border: none; padding: 8px 28px; border-radius: 6px; cursor: pointer; font-weight: 600; }
     </style>
+    <script src="/js/config.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        OpenHashConfig.createModeToggle(document.querySelector(".status-row"));
+    });
+    </script>
     <script src="/js/sim-ssi.js"></script>
 </body>
 </html>

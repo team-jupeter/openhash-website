@@ -1,6 +1,6 @@
 /**
  * OpenHash Transaction Simulator
- * 실제 노드 API 연동 버전
+ * 거래 시뮬레이션 - API 연동 버전
  */
 const TxSimulator = {
     regions: {
@@ -31,32 +31,7 @@ const TxSimulator = {
         }
     },
     layerNames: ['L5 글로벌', 'L4 국가', 'L3 광역시도', 'L2 시군구', 'L1 읍면동'],
-    
-    // API 연결 상태
-    apiConnected: false,
-    nodeStatus: {},
 
-    // 노드 상태 확인
-    async checkNodeStatus() {
-        const results = {};
-        for (let layer = 1; layer <= 4; layer++) {
-            try {
-                const data = await OpenHashConfig.get(layer, '/health');
-                results['L' + layer] = {
-                    status: data.status === 'healthy' ? 'online' : 'offline',
-                    nodeId: data.nodeId,
-                    chainLength: data.chainLength
-                };
-            } catch (e) {
-                results['L' + layer] = { status: 'offline', error: e.message };
-            }
-        }
-        this.nodeStatus = results;
-        this.apiConnected = Object.values(results).some(r => r.status === 'online');
-        return results;
-    },
-
-    // 공통 계층 찾기
     findCommonLayer(sender, receiver) {
         const sH = this.regions[sender].hierarchy;
         const rH = this.regions[receiver].hierarchy;
@@ -68,13 +43,44 @@ const TxSimulator = {
         return { level: 0, name: this.layerNames[0], code: 'GLOBAL', apiLayer: 4 };
     },
 
-    // 실제 API로 거래 생성
-    async createTransaction(sender, receiver, amount) {
+    // Mock 검증
+    runVerification(amount) {
+        const steps = [];
+        const senderBalance = 1000000;
+
+        // Step 1: 잔액 확인
+        if (senderBalance < amount) {
+            steps.push({ name: '잔액 확인', pass: false, msg: '잔액 부족' });
+            return { success: false, steps, failAt: 1 };
+        }
+        steps.push({ name: '잔액 확인', pass: true, msg: '잔액 충분' });
+
+        // Step 2: 신원 확인
+        steps.push({ name: '신원 확인', pass: true, msg: 'DID 인증됨' });
+
+        // Step 3: 한도 확인
+        if (amount > 100000000) {
+            steps.push({ name: '한도 확인', pass: false, msg: '한도 초과' });
+            return { success: false, steps, failAt: 3 };
+        }
+        steps.push({ name: '한도 확인', pass: true, msg: '한도 이내' });
+
+        // Step 4: 이상 탐지
+        const aiScore = (Math.random() * 0.4).toFixed(3);
+        steps.push({ name: 'AI 이상 탐지', pass: true, msg: '점수: ' + aiScore });
+
+        // Step 5: 규정 준수
+        steps.push({ name: '규정 준수', pass: true, msg: 'AML 통과' });
+
+        return { success: true, steps };
+    },
+
+    // 실제 API 거래 생성
+    async createTransactionAPI(sender, receiver, amount) {
         const common = this.findCommonLayer(sender, receiver);
         const targetLayer = Math.min(common.apiLayer, 4);
         
         try {
-            // 실제 노드에 거래 요청
             const result = await OpenHashConfig.post(targetLayer, '/transaction', {
                 sender: sender,
                 receiver: receiver,
@@ -85,103 +91,92 @@ const TxSimulator = {
         } catch (e) {
             return { success: false, error: e.message };
         }
-    },
-
-    // 잔액 조회
-    async getBalance(address) {
-        try {
-            const result = await OpenHashConfig.get(1, '/balance/' + address);
-            return result;
-        } catch (e) {
-            return { balance: 0, error: e.message };
-        }
-    },
-
-    // 체인 정보 조회
-    async getChainInfo(layer) {
-        try {
-            return await OpenHashConfig.get(layer, '/chain');
-        } catch (e) {
-            return { error: e.message };
-        }
     }
 };
 
 document.addEventListener('DOMContentLoaded', async function() {
     const runBtn = document.getElementById('runSimBtn');
     const logArea = document.getElementById('logArea');
-    const resultSummary = document.getElementById('resultSummary');
-    
-    // 노드 상태 표시 영역 추가
-    const statusDiv = document.createElement('div');
-    statusDiv.id = 'nodeStatusPanel';
-    statusDiv.className = 'node-status-panel';
-    statusDiv.innerHTML = '<div class="status-title">🔗 노드 연결 상태</div><div id="nodeStatusList"></div>';
-    const container = document.querySelector('.simulation-container') || document.body;
-    container.insertBefore(statusDiv, container.firstChild);
+    const statusIcon = document.getElementById('statusIcon');
+    const statusText = document.getElementById('nodeStatusText');
 
     function log(msg, type = 'info') {
         const line = document.createElement('div');
         line.className = 'log-line ' + type;
-        const time = new Date().toLocaleTimeString();
-        line.innerHTML = '<span class="log-time">[' + time + ']</span> ' + msg;
+        line.innerHTML = '<span class="log-time">[' + new Date().toLocaleTimeString() + ']</span> ' + msg;
         logArea.appendChild(line);
         logArea.scrollTop = logArea.scrollHeight;
     }
 
-    function updateNodeStatus(status) {
-        const list = document.getElementById('nodeStatusList');
-        list.innerHTML = Object.entries(status).map(([layer, info]) => {
-            const icon = info.status === 'online' ? '🟢' : '🔴';
-            const chain = info.chainLength !== undefined ? ' (블록: ' + info.chainLength + ')' : '';
-            return '<div class="status-item">' + icon + ' ' + layer + ': ' + info.status + chain + '</div>';
-        }).join('');
-    }
-
-    // 초기 노드 상태 확인
+    // 노드 연결 확인
     log('노드 연결 확인 중...', 'info');
-    const nodeStatus = await TxSimulator.checkNodeStatus();
-    updateNodeStatus(nodeStatus);
+    const connected = await OpenHashConfig.checkConnection();
     
-    if (TxSimulator.apiConnected) {
-        log('✅ 노드 연결 성공 - 실제 API 모드', 'success');
-    } else {
-        log('⚠️ 노드 연결 실패 - 시뮬레이션 모드로 전환', 'warning');
-    }
+    if (statusIcon) statusIcon.classList.add(connected ? 'online' : 'offline');
+    if (statusText) statusText.textContent = connected ? 'L1~L4 노드 연결됨' : '시뮬레이션 모드';
+    log(connected ? '✅ 노드 연결 성공' : '⚡ 시뮬레이션 모드', connected ? 'success' : 'warning');
 
     function resetUI() {
-        document.querySelectorAll('.step-item').forEach(item => {
-            item.className = 'step-item';
-            const statusEl = item.querySelector('.step-status');
-            if (statusEl) statusEl.textContent = '-';
-        });
-        const commonIndicator = document.getElementById('commonIndicator');
-        if (commonIndicator) commonIndicator.className = 'common-layer-indicator';
+        for (let i = 1; i <= 5; i++) {
+            const step = document.getElementById('step' + i);
+            if (step) {
+                step.classList.remove('active', 'pass', 'fail');
+                const status = step.querySelector('.step-status');
+                if (status) status.textContent = '-';
+            }
+        }
+        const commonBox = document.getElementById('commonLayerBox');
+        if (commonBox) commonBox.classList.remove('found');
         const commonText = document.getElementById('commonLayerText');
         if (commonText) commonText.textContent = '-';
-        if (resultSummary) resultSummary.style.display = 'none';
     }
 
-    async function animateStep(stepNum, status, msg, delay) {
+    async function animateStep(stepNum, pass, msg, delay = 300) {
         return new Promise(resolve => {
             setTimeout(() => {
-                const item = document.querySelector('.step-item[data-step="' + stepNum + '"]');
-                if (item) {
-                    item.classList.add(status);
-                    const statusEl = item.querySelector('.step-status');
-                    if (statusEl) statusEl.textContent = msg;
+                const step = document.getElementById('step' + stepNum);
+                if (step) {
+                    step.classList.add('active');
+                    setTimeout(() => {
+                        step.classList.remove('active');
+                        step.classList.add(pass ? 'pass' : 'fail');
+                        const status = step.querySelector('.step-status');
+                        if (status) status.textContent = pass ? 'PASS' : 'FAIL';
+                    }, 150);
                 }
-                log('Step ' + stepNum + ': ' + msg, status === 'pass' ? 'success' : 'error');
                 resolve();
             }, delay);
         });
+    }
+
+    function showResultModal(success, common, elapsed) {
+        const existingModal = document.getElementById('resultModal');
+        if (existingModal) existingModal.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'resultModal';
+        modal.className = 'result-modal';
+        modal.innerHTML = `
+            <div class="modal-content ${success ? 'success' : 'fail'}">
+                <div class="modal-header">
+                    <span class="modal-icon">${success ? '✅' : '❌'}</span>
+                    <h3>${success ? '거래 승인' : '거래 거부'}</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="result-text">공통 계층: ${common.name}</div>
+                    <div class="result-text">처리 시간: ${elapsed}ms</div>
+                </div>
+                <button class="modal-close" onclick="this.closest('.result-modal').remove()">확인</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        setTimeout(() => modal.classList.add('show'), 10);
     }
 
     async function runSimulation() {
         resetUI();
         runBtn.disabled = true;
         runBtn.textContent = '실행 중...';
-        runBtn.classList.add('running');
 
         const sender = document.getElementById('senderRegion').value;
         const receiver = document.getElementById('receiverRegion').value;
@@ -198,103 +193,62 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const startTime = performance.now();
 
-        // Step 1: 공통 계층 탐색
-        log('🔍 공통 계층 탐색 중...', 'info');
+        // 공통 계층 탐색
         const common = TxSimulator.findCommonLayer(sender, receiver);
         await new Promise(r => setTimeout(r, 300));
         
         const commonText = document.getElementById('commonLayerText');
+        const commonBox = document.getElementById('commonLayerBox');
         if (commonText) commonText.textContent = common.name + ' (' + common.code + ')';
-        const commonIndicator = document.getElementById('commonIndicator');
-        if (commonIndicator) commonIndicator.classList.add('found');
-        log('✅ 공통 계층: ' + common.name + ' → Layer ' + common.apiLayer + ' 노드 사용', 'success');
+        if (commonBox) commonBox.classList.add('found');
+        log('✅ 공통 계층: ' + common.name, 'success');
 
-        // API 연동 거래 처리
-        if (TxSimulator.apiConnected) {
-            log('📡 실제 노드 API 호출 중...', 'info');
-            
-            // Step 2: 노드 헬스체크
-            await animateStep(1, 'pass', '노드 연결됨', 200);
-            
-            // Step 3: 체인 정보 조회
-            const chainInfo = await TxSimulator.getChainInfo(common.apiLayer);
-            if (!chainInfo.error) {
-                const chainLen = chainInfo.chain?.length || chainInfo.chainLength || 0;
-                await animateStep(2, 'pass', '체인 길이: ' + chainLen, 200);
-                log('📦 현재 체인 블록 수: ' + chainLen, 'success');
-            } else {
-                await animateStep(2, 'pass', '체인 조회됨', 200);
-            }
+        let result;
 
-            // Step 4: 거래 생성
-            log('💳 거래 생성 요청...', 'info');
-            const txResult = await TxSimulator.createTransaction(sender, receiver, amount);
+        // Backend 모드 + 연결됨
+        if (OpenHashConfig.isBackend()) {
+            log('📡 Backend API 호출 중...', 'info');
+            const apiResult = await TxSimulator.createTransactionAPI(sender, receiver, amount);
             
-            if (txResult.success) {
-                await animateStep(3, 'pass', '거래 생성됨', 200);
-                const txId = txResult.data.transactionId || txResult.data.txId || 'TX-' + Date.now();
+            if (apiResult.success) {
+                // API 성공 시 5단계 모두 통과로 표시
+                for (let i = 1; i <= 5; i++) {
+                    await animateStep(i, true, 'PASS', 200);
+                }
+                const txId = apiResult.data.transactionId || apiResult.data.txId || 'TX-' + Date.now();
                 log('✅ 거래 ID: ' + txId, 'success');
-                
-                await animateStep(4, 'pass', '검증 완료', 200);
-                await animateStep(5, 'pass', '블록 추가됨', 200);
-                
-                // 체인 업데이트 확인
-                const newChain = await TxSimulator.getChainInfo(common.apiLayer);
-                const newLen = newChain.chain?.length || newChain.chainLength || 0;
-                log('📦 업데이트된 체인 블록 수: ' + newLen, 'success');
+                result = { success: true, steps: [] };
             } else {
-                await animateStep(3, 'fail', '거래 실패', 200);
-                log('❌ 거래 실패: ' + (txResult.error || txResult.data?.error || '알 수 없는 오류'), 'error');
+                log('❌ API 오류: ' + (apiResult.error || '알 수 없음'), 'error');
+                result = { success: false, steps: [] };
             }
         } else {
-            // 시뮬레이션 모드
-            log('⚡ 시뮬레이션 모드 실행', 'warning');
-            await animateStep(1, 'pass', '잔액 확인', 300);
-            await animateStep(2, 'pass', '신원 확인', 300);
-            await animateStep(3, 'pass', '한도 확인', 300);
-            await animateStep(4, 'pass', 'AI 검증: 0.12', 300);
-            await animateStep(5, 'pass', 'AML 통과', 300);
-        }
+            // Mock-up 모드
+            log('⚡ Mock-up 시뮬레이션 실행', 'info');
+            result = TxSimulator.runVerification(amount);
 
-        const endTime = performance.now();
-        const elapsed = (endTime - startTime).toFixed(2);
-
-        // 결과 표시
-        if (resultSummary) {
-            resultSummary.style.display = 'block';
-            const resultCommon = document.getElementById('resultCommon');
-            if (resultCommon) resultCommon.textContent = common.name;
-            const resultTime = document.getElementById('resultTime');
-            if (resultTime) resultTime.textContent = elapsed + ' ms';
-            const resultFinal = document.getElementById('resultFinal');
-            if (resultFinal) {
-                resultFinal.textContent = '승인';
-                resultFinal.className = 'result-value success';
+            for (let i = 0; i < result.steps.length; i++) {
+                const step = result.steps[i];
+                await animateStep(i + 1, step.pass, step.msg, 350);
+                log((step.pass ? '✅' : '❌') + ' Step ' + (i + 1) + ' ' + step.name + ': ' + step.msg, step.pass ? 'success' : 'error');
+                
+                if (!step.pass) break;
             }
         }
+
+        const elapsed = (performance.now() - startTime).toFixed(2);
 
         log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
         log('⏱️ 처리 시간: ' + elapsed + 'ms', 'success');
-        log('✅ 시뮬레이션 완료', 'success');
+        log(result.success ? '✅ 거래 승인' : '❌ 거래 거부', result.success ? 'success' : 'error');
+
+        showResultModal(result.success, common, elapsed);
 
         runBtn.disabled = false;
         runBtn.textContent = '시뮬레이션 실행';
-        runBtn.classList.remove('running');
     }
 
     if (runBtn) {
         runBtn.addEventListener('click', runSimulation);
     }
-
-    // 노드 상태 새로고침 버튼
-    const refreshBtn = document.createElement('button');
-    refreshBtn.textContent = '🔄 새로고침';
-    refreshBtn.className = 'refresh-btn';
-    refreshBtn.onclick = async () => {
-        log('노드 상태 새로고침...', 'info');
-        const status = await TxSimulator.checkNodeStatus();
-        updateNodeStatus(status);
-        log(TxSimulator.apiConnected ? '✅ 노드 연결됨' : '⚠️ 노드 오프라인', TxSimulator.apiConnected ? 'success' : 'warning');
-    };
-    document.getElementById('nodeStatusPanel')?.appendChild(refreshBtn);
 });

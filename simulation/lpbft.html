@@ -21,154 +21,188 @@
         </div>
     </nav>
 
-    <div class="sim-hero">
-        <div class="container">
-            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
-            <span class="sim-badge">인터랙티브</span>
-            <h1>LPBFT 합의 시뮬레이션</h1>
-            <p>비상 상황에서 발동되는 경량 PBFT 합의 과정 시각화</p>
+    <div class="node-status-bar">
+        <div class="container status-row">
+            <span class="status-icon" id="statusIcon">●</span>
+            <span id="nodeStatusText">노드 연결 확인 중...</span>
+            <span class="status-divider">|</span>
+            <a href="/simulation/" class="back-link-inline">← 시뮬레이션</a>
+            <span class="sim-badge-sm">인터랙티브</span>
+            <h1 class="page-title-sm">LPBFT 합의 시뮬레이션 - Lightweight Practical Byzantine Fault Tolerance</h1>
         </div>
     </div>
 
-    <main class="sim-content">
+    <main class="sim-content compact">
         <div class="container">
-            <div class="sim-wrapper">
+            <div class="sim-wrapper two-col">
                 <div class="control-panel">
-                    <h3>🤝 합의 설정</h3>
+                    <h3>⚙️ 합의 설정</h3>
                     <div class="control-group">
-                        <label class="control-label">총 노드 수 (n)</label>
-                        <select id="totalNodes" class="control-select">
-                            <option value="4">4개 (f=1, quorum=3)</option>
-                            <option value="7">7개 (f=2, quorum=5)</option>
-                            <option value="10">10개 (f=3, quorum=7)</option>
-                        </select>
+                        <label class="control-label">노드 수 (n)</label>
+                        <input type="number" id="nodeCount" class="control-input" value="7" min="4" max="15">
                     </div>
                     <div class="control-group">
-                        <label class="control-label">비잔틴 노드 수</label>
-                        <select id="byzantineNodes" class="control-select">
-                            <option value="0">0개 (정상)</option>
-                            <option value="1">1개 (허용 범위)</option>
-                            <option value="2">2개 (허용 초과)</option>
-                        </select>
-                        <span class="control-hint">f개까지 허용</span>
+                        <label class="control-label">장애 노드 수</label>
+                        <input type="number" id="faultyCount" class="control-input" value="2" min="0" max="5">
                     </div>
-                    <div class="control-group">
-                        <label class="control-label">시뮬레이션 속도</label>
-                        <select id="simSpeed" class="control-select">
-                            <option value="slow">느림 (1초)</option>
-                            <option value="normal" selected>보통 (500ms)</option>
-                            <option value="fast">빠름 (200ms)</option>
-                        </select>
+                    <div class="bft-formula">
+                        <h4>📐 BFT 공식</h4>
+                        <div class="formula">n ≥ 3f + 1</div>
+                        <div class="bft-info" id="bftInfo">n=7, f=2, 필요 합의=5</div>
                     </div>
-                    <button id="runSimBtn" class="run-btn">합의 시작</button>
+                    <button id="runSimBtn" class="run-btn">합의 실행</button>
+
+                    <!-- 투표 현황 -->
+                    <div class="vote-summary">
+                        <h4>🗳️ 투표 현황</h4>
+                        <div class="vote-counts">
+                            <div class="vote-item approve"><span class="vote-label">찬성</span><span class="vote-count" id="approveCount">0</span></div>
+                            <div class="vote-item reject"><span class="vote-label">반대</span><span class="vote-count" id="rejectCount">0</span></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="viz-area">
-                    <h3>📊 합의 진행 시각화</h3>
-                    <div class="phase-indicator" id="phaseIndicator">
-                        <div class="phase-step" data-phase="preprepare">PRE-PREPARE</div>
+                    <h3>🔄 LPBFT 4단계 합의</h3>
+                    
+                    <!-- 4단계 Phase -->
+                    <div class="phases">
+                        <div class="phase" id="phase1">
+                            <div class="phase-num">1</div>
+                            <div class="phase-name">PREPARE</div>
+                        </div>
                         <div class="phase-arrow">→</div>
-                        <div class="phase-step" data-phase="prepare">PREPARE</div>
+                        <div class="phase" id="phase2">
+                            <div class="phase-num">2</div>
+                            <div class="phase-name">PROMISE</div>
+                        </div>
                         <div class="phase-arrow">→</div>
-                        <div class="phase-step" data-phase="commit">COMMIT</div>
+                        <div class="phase" id="phase3">
+                            <div class="phase-num">3</div>
+                            <div class="phase-name">ACCEPT</div>
+                        </div>
                         <div class="phase-arrow">→</div>
-                        <div class="phase-step" data-phase="reply">REPLY</div>
+                        <div class="phase" id="phase4">
+                            <div class="phase-num">4</div>
+                            <div class="phase-name">COMMIT</div>
+                        </div>
                     </div>
 
-                    <div class="nodes-viz" id="nodesViz">
-                        <div class="node-grid" id="nodeGrid"></div>
-                    </div>
-
-                    <div class="vote-progress" id="voteProgress">
-                        <div class="vote-bar">
-                            <div class="vote-label">PREPARE 투표</div>
-                            <div class="vote-track"><div class="vote-fill" id="prepareVotes" style="width: 0%"></div></div>
-                            <div class="vote-count"><span id="prepareCount">0</span>/<span id="prepareTotal">4</span></div>
-                        </div>
-                        <div class="vote-bar">
-                            <div class="vote-label">COMMIT 투표</div>
-                            <div class="vote-track"><div class="vote-fill" id="commitVotes" style="width: 0%"></div></div>
-                            <div class="vote-count"><span id="commitCount">0</span>/<span id="commitTotal">4</span></div>
-                        </div>
-                        <div class="quorum-info">필요 정족수 (2f+1): <strong id="quorumValue">3</strong></div>
+                    <!-- 노드 시각화 -->
+                    <div class="nodes-section">
+                        <h4>📡 노드 상태</h4>
+                        <div class="nodes-viz" id="nodesViz"></div>
                     </div>
 
                     <div class="log-area" id="logArea">
-                        <div class="log-line info">[시스템] 시뮬레이션 준비 완료</div>
-                    </div>
-                </div>
-
-                <div class="result-panel">
-                    <h3>📋 합의 결과</h3>
-                    <div id="resultSummary">
-                        <div class="result-item"><span class="result-label">총 노드</span><span class="result-value" id="resultNodes">-</span></div>
-                        <div class="result-item"><span class="result-label">비잔틴 노드</span><span class="result-value" id="resultByzantine">-</span></div>
-                        <div class="result-item"><span class="result-label">정족수</span><span class="result-value" id="resultQuorum">-</span></div>
-                        <div class="result-item"><span class="result-label">PREPARE 투표</span><span class="result-value" id="resultPrepare">-</span></div>
-                        <div class="result-item"><span class="result-label">COMMIT 투표</span><span class="result-value" id="resultCommit">-</span></div>
-                        <div class="result-item"><span class="result-label">합의 결과</span><span class="result-value" id="resultConsensus">-</span></div>
+                        <div class="log-line info">[시스템] LPBFT 합의 시뮬레이션 준비 완료</div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-                <div class="footer-links">
-                    <a href="/technology/">기술</a>
-                    <a href="/simulation/">시뮬레이션</a>
-                    <a href="/tests/">테스트</a>
-                </div>
-            </div>
-            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
-        </div>
-    </footer>
-
     <style>
-    .phase-indicator { display: flex; align-items: center; justify-content: center; gap: var(--space-2); margin-bottom: var(--space-6); }
-    .phase-step {
-        padding: var(--space-2) var(--space-4);
+    .node-status-bar { position: fixed; top: 60px; left: 0; right: 0; z-index: 999; background: linear-gradient(135deg, #1a3a6e 0%, #0d2240 100%); padding: 10px 0; border-bottom: 2px solid #d4a017; }
+    .status-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .status-icon { font-size: 10px; }
+    .status-icon.online { color: #4ade80; }
+    .status-icon.offline { color: #f87171; }
+    #nodeStatusText { color: #fff; font-size: 13px; }
+    .status-divider { color: rgba(255,255,255,0.3); }
+    .back-link-inline { color: #d4a017; font-size: 12px; text-decoration: none; }
+    .sim-badge-sm { background: #d4a017; color: #1a3a6e; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+    .page-title-sm { color: #fff; font-size: 15px; font-weight: 600; margin: 0; flex: 1; }
+    .sim-content.compact { padding: 20px 0; margin-top: 100px; }
+
+    /* BFT 공식 */
+    .bft-formula { background: var(--gray-50); padding: 12px; border-radius: 8px; margin: 12px 0; text-align: center; }
+    .bft-formula h4 { font-size: 12px; margin-bottom: 8px; }
+    .formula { font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: #1a3a6e; }
+    .bft-info { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
+
+    /* 투표 현황 */
+    .vote-summary { margin-top: 16px; padding: 12px; background: var(--gray-50); border-radius: 8px; }
+    .vote-summary h4 { font-size: 12px; margin-bottom: 10px; }
+    .vote-counts { display: flex; gap: 12px; }
+    .vote-item { flex: 1; text-align: center; padding: 10px; border-radius: 6px; }
+    .vote-item.approve { background: rgba(74,222,128,0.2); }
+    .vote-item.reject { background: rgba(248,113,113,0.2); }
+    .vote-label { font-size: 11px; color: var(--gray-600); display: block; }
+    .vote-count { font-size: 24px; font-weight: 700; }
+    .vote-item.approve .vote-count { color: #4ade80; }
+    .vote-item.reject .vote-count { color: #f87171; }
+
+    /* 4단계 Phase */
+    .phases { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; }
+    .phase {
+        padding: 10px 16px;
         background: var(--gray-100);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius);
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--gray-600);
+        border: 2px solid var(--gray-200);
+        border-radius: 8px;
+        text-align: center;
+        transition: all 0.3s;
     }
-    .phase-step.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
-    .phase-step.done { background: var(--success-light); color: var(--success); border-color: var(--success); }
-    .phase-arrow { color: var(--gray-400); }
-    .nodes-viz { margin: var(--space-6) 0; }
-    .node-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }
+    .phase.active { border-color: #1a3a6e; background: rgba(26,58,110,0.1); }
+    .phase.done { border-color: #4ade80; background: rgba(74,222,128,0.1); }
+    .phase-num { font-size: 18px; font-weight: 700; color: var(--gray-400); }
+    .phase.active .phase-num { color: #1a3a6e; }
+    .phase.done .phase-num { color: #4ade80; }
+    .phase-name { font-size: 10px; font-weight: 600; color: var(--gray-500); margin-top: 2px; }
+    .phase-arrow { color: var(--gray-300); font-size: 16px; }
+
+    /* 노드 시각화 */
+    .nodes-section { margin-bottom: 12px; }
+    .nodes-section h4 { font-size: 12px; margin-bottom: 8px; }
+    .nodes-viz { display: flex; flex-wrap: wrap; gap: 8px; }
     .node-item {
-        width: 60px;
-        height: 60px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: var(--gray-100);
-        border: 2px solid var(--gray-300);
-        border-radius: var(--radius);
-        font-size: 11px;
-        transition: all var(--transition);
+        display: flex; align-items: center; gap: 6px;
+        padding: 6px 10px;
+        background: var(--gray-50);
+        border: 2px solid var(--gray-200);
+        border-radius: 6px;
+        font-size: 12px;
+        transition: all 0.3s;
     }
-    .node-item.leader { border-color: var(--accent); background: rgba(212,160,23,0.1); }
-    .node-item.byzantine { border-color: var(--error); background: rgba(201,42,42,0.1); }
-    .node-item.voted { border-color: var(--success); background: var(--success-light); }
-    .node-icon { font-size: 20px; }
-    .node-label { font-weight: 600; }
-    .vote-progress { margin: var(--space-6) 0; }
-    .vote-bar { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
-    .vote-label { width: 100px; font-size: 12px; color: var(--gray-600); }
-    .vote-track { flex: 1; height: 12px; background: var(--gray-200); border-radius: 6px; overflow: hidden; }
-    .vote-fill { height: 100%; background: var(--primary); border-radius: 6px; transition: width 0.3s; }
-    .vote-count { width: 50px; font-size: 12px; font-weight: 600; text-align: right; }
-    .quorum-info { text-align: center; font-size: 13px; color: var(--gray-600); margin-top: var(--space-4); }
+    .node-item.leader { border-color: #d4a017; background: rgba(212,160,23,0.1); }
+    .node-item.faulty { border-color: #f87171; background: rgba(248,113,113,0.1); }
+    .node-item.approve { border-color: #4ade80; background: rgba(74,222,128,0.2); }
+    .node-item.reject { border-color: #f87171; background: rgba(248,113,113,0.2); }
+    .node-item.no-response { border-color: #888; background: rgba(136,136,136,0.1); }
+    .node-icon { font-size: 14px; }
+    .node-name { font-weight: 500; }
+    .node-vote { font-weight: 700; min-width: 16px; text-align: center; }
+    .node-item.approve .node-vote { color: #4ade80; }
+    .node-item.reject .node-vote { color: #f87171; }
+
+    .log-area { max-height: 200px; }
+    .log-time { color: #888; font-size: 11px; }
+
+    /* 결과 모달 */
+    .result-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+    .result-modal.show { opacity: 1; }
+    .modal-content { background: #fff; border-radius: 12px; padding: 24px; min-width: 280px; text-align: center; transform: scale(0.9); transition: transform 0.3s; }
+    .result-modal.show .modal-content { transform: scale(1); }
+    .modal-content.success { border: 3px solid #4ade80; }
+    .modal-content.fail { border: 3px solid #f87171; }
+    .modal-icon { font-size: 36px; }
+    .modal-header h3 { margin: 8px 0; font-size: 18px; }
+    .modal-content.success h3 { color: #4ade80; }
+    .modal-content.fail h3 { color: #f87171; }
+    .result-stats { display: flex; gap: 12px; margin: 16px 0; }
+    .stat { flex: 1; padding: 8px; background: var(--gray-50); border-radius: 6px; }
+    .stat-label { font-size: 10px; color: var(--gray-500); display: block; }
+    .stat-value { font-size: 18px; font-weight: 700; }
+    .stat-value.approve { color: #4ade80; }
+    .stat-value.reject { color: #f87171; }
+    .modal-close { background: #1a3a6e; color: #fff; border: none; padding: 8px 28px; border-radius: 6px; cursor: pointer; font-weight: 600; }
     </style>
+    <script src="/js/config.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        OpenHashConfig.createModeToggle(document.querySelector(".status-row"));
+    });
+    </script>
     <script src="/js/sim-lpbft.js"></script>
 </body>
 </html>

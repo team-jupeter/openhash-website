@@ -235,6 +235,11 @@
     .modal-close:hover { background: #0d2240; }
     </style>
     <script src="/js/config.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        OpenHashConfig.createModeToggle(document.querySelector(".status-row"));
+    });
+    </script>
     <script src="/js/sim-layer-select.js"></script>
 </body>
 </html>

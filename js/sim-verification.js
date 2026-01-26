@@ -12,30 +12,10 @@ const VerificationSimulator = {
         blacklist: { balance: 1000000, amount: 50000, auth: 'verified', pattern: 'blacklist', label: '🚨 제재 대상' }
     },
 
-    apiConnected: false,
-    
-    // 노드 상태 확인
-    async checkNodeStatus() {
-        try {
-            const data = await OpenHashConfig.get(1, '/health');
-            this.apiConnected = data.status === 'healthy';
-            return this.apiConnected;
-        } catch (e) {
-            this.apiConnected = false;
-            return false;
-        }
-    },
-
-    // API로 검증 요청
+    // Backend API 검증 호출
     async verifyAPI(sender, receiver, amount) {
         try {
-            const result = await OpenHashConfig.post(1, '/verify', {
-                sender: sender,
-                receiver: receiver,
-                amount: amount,
-                timestamp: new Date().toISOString()
-            });
-            return result;
+            return await OpenHashConfig.post(1, '/verify', { sender, receiver, amount });
         } catch (e) {
             return { error: e.message };
         }
@@ -49,66 +29,35 @@ const VerificationSimulator = {
         }
     },
 
-    // 로컬 검증 (5단계)
+    // 로컬 Mock 검증
     verify(params) {
         const results = [];
         const { balance, amount, auth, pattern } = params;
 
-        // Step 1: 잔액 확인
+        // Step 1
         const step1Pass = balance >= amount;
-        results.push({
-            step: 1,
-            name: '잔액 확인',
-            pass: step1Pass,
-            msg: step1Pass ? '잔액 충분 (' + balance.toLocaleString() + ' ≥ ' + amount.toLocaleString() + ')' : '잔액 부족',
-            data: { balance, amount }
-        });
+        results.push({ step: 1, name: '잔액 확인', pass: step1Pass, msg: step1Pass ? '잔액 충분' : '잔액 부족' });
         if (!step1Pass) return { success: false, results, failAt: 1 };
 
-        // Step 2: 신원 확인
+        // Step 2
         const step2Pass = auth === 'verified';
-        results.push({
-            step: 2,
-            name: '신원 확인',
-            pass: step2Pass,
-            msg: step2Pass ? 'DID 인증 완료' : '미인증 사용자',
-            data: { auth }
-        });
+        results.push({ step: 2, name: '신원 확인', pass: step2Pass, msg: step2Pass ? 'DID 인증 완료' : '미인증 사용자' });
         if (!step2Pass) return { success: false, results, failAt: 2 };
 
-        // Step 3: 한도 확인
-        const limit = 100000000;
-        const step3Pass = amount <= limit;
-        results.push({
-            step: 3,
-            name: '한도 확인',
-            pass: step3Pass,
-            msg: step3Pass ? '1회 한도 이내' : '한도 초과 (최대 1억)',
-            data: { amount, limit }
-        });
+        // Step 3
+        const step3Pass = amount <= 100000000;
+        results.push({ step: 3, name: '한도 확인', pass: step3Pass, msg: step3Pass ? '한도 이내' : '한도 초과' });
         if (!step3Pass) return { success: false, results, failAt: 3 };
 
-        // Step 4: 이상 탐지 (AI)
+        // Step 4
         const aiScore = this.getAiScore(pattern);
         const step4Pass = aiScore < 0.7;
-        results.push({
-            step: 4,
-            name: 'AI 이상 탐지',
-            pass: step4Pass,
-            msg: step4Pass ? '정상 패턴 (점수: ' + aiScore.toFixed(3) + ')' : '의심 거래 탐지 (점수: ' + aiScore.toFixed(3) + ')',
-            data: { aiScore }
-        });
+        results.push({ step: 4, name: 'AI 이상 탐지', pass: step4Pass, msg: (step4Pass ? '정상' : '의심') + ' (점수: ' + aiScore.toFixed(3) + ')', data: { aiScore } });
         if (!step4Pass) return { success: false, results, failAt: 4 };
 
-        // Step 5: 규정 준수 (AML)
+        // Step 5
         const step5Pass = pattern !== 'blacklist';
-        results.push({
-            step: 5,
-            name: '규정 준수',
-            pass: step5Pass,
-            msg: step5Pass ? 'AML/제재 심사 통과' : '제재 대상 거래',
-            data: { aml: true, sanction: pattern === 'blacklist' }
-        });
+        results.push({ step: 5, name: '규정 준수', pass: step5Pass, msg: step5Pass ? 'AML 통과' : '제재 대상' });
         if (!step5Pass) return { success: false, results, failAt: 5 };
 
         return { success: true, results };
@@ -130,13 +79,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         logArea.scrollTop = logArea.scrollHeight;
     }
 
-    // 초기 노드 상태 확인
-    const connected = await VerificationSimulator.checkNodeStatus();
+    // 노드 연결 확인
+    const connected = await OpenHashConfig.checkConnection();
     if (statusIcon) statusIcon.classList.add(connected ? 'online' : 'offline');
     if (statusText) statusText.textContent = connected ? 'L1 노드 연결됨' : '시뮬레이션 모드';
     log(connected ? '✅ 노드 연결 성공' : '⚡ 시뮬레이션 모드', connected ? 'success' : 'warning');
 
-    // 단계 UI 초기화
     function resetSteps() {
         for (let i = 1; i <= 5; i++) {
             const step = document.getElementById('step' + i);
@@ -150,25 +98,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (aiBar) aiBar.style.width = '0%';
     }
 
-    // 단계별 애니메이션
     async function animateStep(stepNum, pass, msg, delay = 300) {
         return new Promise(resolve => {
             setTimeout(() => {
                 const step = document.getElementById('step' + stepNum);
                 if (step) {
-                    // 이전 단계 완료 처리
-                    for (let i = 1; i < stepNum; i++) {
-                        const prevStep = document.getElementById('step' + i);
-                        if (prevStep) prevStep.classList.remove('active');
-                    }
-                    
                     step.classList.add('active');
-                    
                     setTimeout(() => {
                         step.classList.remove('active');
                         step.classList.add(pass ? 'pass' : 'fail');
                         const result = step.querySelector('.step-result');
-                        if (result) result.textContent = msg;
+                        if (result) result.textContent = pass ? 'PASS' : 'FAIL';
                     }, 200);
                 }
                 resolve();
@@ -176,7 +116,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-    // 결과 모달
     function showResultModal(success, failAt) {
         const existingModal = document.getElementById('resultModal');
         if (existingModal) existingModal.remove();
@@ -200,7 +139,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         setTimeout(() => modal.classList.add('show'), 10);
     }
 
-    // 시뮬레이션 실행
     async function runSimulation() {
         runBtn.disabled = true;
         runBtn.textContent = '검증 중...';
@@ -213,16 +151,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         log('🔍 5단계 검증 시작: ' + params.label, 'info');
         log('금액: ' + params.amount.toLocaleString() + ' T', 'info');
 
-        const result = VerificationSimulator.verify(params);
+        let result;
 
-        // 각 단계별 애니메이션
+        // Backend 모드
+        if (OpenHashConfig.isBackend()) {
+            log('📡 Backend API 호출 중...', 'info');
+            const apiResult = await VerificationSimulator.verifyAPI('sender', 'receiver', params.amount);
+            
+            if (apiResult.error) {
+                log('❌ API 오류: ' + apiResult.error, 'error');
+                result = VerificationSimulator.verify(params);
+            } else {
+                result = apiResult;
+                log('✅ Backend 응답 수신', 'success');
+            }
+        } else {
+            // Mock-up 모드
+            log('⚡ Mock-up 시뮬레이션', 'info');
+            result = VerificationSimulator.verify(params);
+        }
+
+        // 애니메이션 표시
         for (let i = 0; i < result.results.length; i++) {
             const r = result.results[i];
             await animateStep(r.step, r.pass, r.pass ? 'PASS' : 'FAIL', 400);
             log((r.pass ? '✅' : '❌') + ' Step ' + r.step + ' ' + r.name + ': ' + r.msg, r.pass ? 'success' : 'error');
             
-            // AI 점수 바 업데이트
-            if (r.step === 4 && r.data.aiScore !== undefined) {
+            if (r.step === 4 && r.data?.aiScore !== undefined) {
                 const aiBar = document.getElementById('aiBar');
                 if (aiBar) {
                     aiBar.style.width = (r.data.aiScore * 100) + '%';
@@ -231,24 +186,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
 
-        // 결과 표시
+        log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        log(result.success ? '✅ 검증 완료: 승인' : '❌ 검증 실패: Step ' + result.failAt, result.success ? 'success' : 'error');
+
         await new Promise(r => setTimeout(r, 300));
         showResultModal(result.success, result.failAt);
-
-        log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
-        log(result.success ? '✅ 검증 완료: 승인' : '❌ 검증 실패: Step ' + result.failAt + '에서 중단', result.success ? 'success' : 'error');
 
         runBtn.disabled = false;
         runBtn.textContent = '검증 실행';
     }
 
     if (runBtn) runBtn.addEventListener('click', runSimulation);
-
-    // 프리셋 변경 시 정보 표시
-    if (presetSelect) {
-        presetSelect.addEventListener('change', function() {
-            const preset = VerificationSimulator.presets[this.value];
-            log('프리셋 변경: ' + preset.label, 'info');
-        });
-    }
 });

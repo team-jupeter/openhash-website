@@ -28,6 +28,7 @@
             <span class="status-divider">|</span>
             <a href="/simulation/" class="back-link-inline">← 시뮬레이션</a>
             <span class="sim-badge-sm">인터랙티브</span>
+            <div id="modeContainer"></div>
             <h1 class="page-title-sm">5단계 검증 시뮬레이션 - 거래 검증 파이프라인 체험</h1>
         </div>
     </div>
@@ -174,6 +175,11 @@
     .modal-close { background: #1a3a6e; color: #fff; border: none; padding: 8px 28px; border-radius: 6px; cursor: pointer; font-weight: 600; }
     </style>
     <script src="/js/config.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        OpenHashConfig.createModeToggle(document.querySelector(".status-row"));
+    });
+    </script>
     <script src="/js/sim-verification.js"></script>
 </body>
 </html>
