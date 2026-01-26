@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계층 선택 시뮬레이션 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/simulation/sim-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/" class="active">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="sim-hero">
+        <div class="container">
+            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
+            <span class="sim-badge">인터랙티브</span>
+            <h1>계층 선택 시뮬레이션</h1>
+            <p>SHA-256 이중 해싱 기반 확률적 계층 선택 과정 체험</p>
+        </div>
+    </div>
+
+    <main class="sim-content">
+        <div class="container">
+            <div class="sim-wrapper two-col">
+                <div class="control-panel">
+                    <h3>🎯 데이터 설정</h3>
+                    <div class="control-group">
+                        <label class="control-label">데이터 내용</label>
+                        <textarea id="dataContent" class="control-input" rows="3" placeholder="저장할 데이터 입력...">샘플 거래 데이터</textarea>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">중요도</label>
+                        <select id="importance" class="control-select">
+                            <option value="normal">일반 (Normal)</option>
+                            <option value="high">고중요도 (High)</option>
+                        </select>
+                        <span class="control-hint">고중요도는 상위 계층 확률 증가</span>
+                    </div>
+                    <button id="runSimBtn" class="run-btn">계층 선택 실행</button>
+                    <button id="runBatchBtn" class="run-btn" style="margin-top: var(--space-2); background: var(--gray-600);">100회 배치 실행</button>
+                </div>
+
+                <div class="viz-area">
+                    <h3>📊 계층 선택 과정</h3>
+                    <div class="hash-process" id="hashProcess">
+                        <div class="hash-step">
+                            <div class="hash-label">1. 원본 데이터</div>
+                            <div class="hash-value" id="originalData">-</div>
+                        </div>
+                        <div class="hash-arrow">↓</div>
+                        <div class="hash-step">
+                            <div class="hash-label">2. SHA-256 해시</div>
+                            <div class="hash-value mono" id="firstHash">-</div>
+                        </div>
+                        <div class="hash-arrow">↓</div>
+                        <div class="hash-step">
+                            <div class="hash-label">3. 이중 해시 (+ timestamp + nonce)</div>
+                            <div class="hash-value mono" id="doubleHash">-</div>
+                        </div>
+                        <div class="hash-arrow">↓</div>
+                        <div class="hash-step">
+                            <div class="hash-label">4. 선택자 값 (0-99)</div>
+                            <div class="hash-value highlight" id="selectorValue">-</div>
+                        </div>
+                    </div>
+
+                    <div class="prob-distribution" id="probDist">
+                        <h4>확률 분포</h4>
+                        <div class="prob-bar-container">
+                            <div class="prob-row"><span class="prob-label">L1 읍면동</span><div class="prob-bar"><div class="prob-fill" id="probL1" style="width: 50%"></div></div><span class="prob-percent" id="pctL1">50%</span></div>
+                            <div class="prob-row"><span class="prob-label">L2 시군구</span><div class="prob-bar"><div class="prob-fill" id="probL2" style="width: 30%"></div></div><span class="prob-percent" id="pctL2">30%</span></div>
+                            <div class="prob-row"><span class="prob-label">L3 광역시도</span><div class="prob-bar"><div class="prob-fill" id="probL3" style="width: 12%"></div></div><span class="prob-percent" id="pctL3">12%</span></div>
+                            <div class="prob-row"><span class="prob-label">L4 국가</span><div class="prob-bar"><div class="prob-fill" id="probL4" style="width: 6%"></div></div><span class="prob-percent" id="pctL4">6%</span></div>
+                            <div class="prob-row"><span class="prob-label">L5 글로벌</span><div class="prob-bar"><div class="prob-fill" id="probL5" style="width: 2%"></div></div><span class="prob-percent" id="pctL5">2%</span></div>
+                        </div>
+                    </div>
+
+                    <div class="selected-layer" id="selectedLayer">
+                        <div class="layer-result">
+                            <span class="layer-result-label">선택된 계층:</span>
+                            <span class="layer-result-value" id="resultLayer">-</span>
+                        </div>
+                    </div>
+
+                    <div class="batch-result" id="batchResult" style="display: none;">
+                        <h4>배치 실행 결과 (100회)</h4>
+                        <div class="batch-stats" id="batchStats"></div>
+                    </div>
+
+                    <div class="log-area" id="logArea">
+                        <div class="log-line info">[시스템] 시뮬레이션 준비 완료</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+
+    <style>
+    .hash-process { margin-bottom: var(--space-6); }
+    .hash-step {
+        padding: var(--space-4);
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius);
+        margin-bottom: var(--space-2);
+    }
+    .hash-label { font-size: 12px; color: var(--gray-500); margin-bottom: var(--space-2); }
+    .hash-value { font-size: 14px; color: var(--gray-900); word-break: break-all; }
+    .hash-value.mono { font-family: var(--font-mono); font-size: 12px; }
+    .hash-value.highlight { font-size: 24px; font-weight: 700; color: var(--primary); text-align: center; }
+    .hash-arrow { text-align: center; color: var(--gray-400); font-size: 16px; margin: var(--space-1) 0; }
+    .prob-distribution { margin: var(--space-6) 0; }
+    .prob-distribution h4 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-4); }
+    .prob-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); }
+    .prob-label { width: 80px; font-size: 12px; color: var(--gray-600); }
+    .prob-bar { flex: 1; height: 20px; background: var(--gray-200); border-radius: var(--radius); overflow: hidden; }
+    .prob-fill { height: 100%; background: var(--primary); border-radius: var(--radius); transition: width 0.3s; }
+    .prob-fill.selected { background: var(--accent); }
+    .prob-percent { width: 40px; font-size: 12px; font-weight: 600; text-align: right; }
+    .selected-layer {
+        padding: var(--space-5);
+        background: var(--gray-100);
+        border-radius: var(--radius);
+        text-align: center;
+        margin: var(--space-6) 0;
+    }
+    .layer-result-label { font-size: 14px; color: var(--gray-600); }
+    .layer-result-value { font-size: 28px; font-weight: 700; color: var(--primary); display: block; margin-top: var(--space-2); }
+    .batch-result { margin-top: var(--space-6); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius); }
+    .batch-result h4 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-3); }
+    .batch-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
+    .batch-stat { text-align: center; padding: var(--space-3); background: var(--white); border-radius: var(--radius); }
+    .batch-stat-label { font-size: 11px; color: var(--gray-500); }
+    .batch-stat-value { font-size: 18px; font-weight: 700; color: var(--primary); }
+    </style>
+    <script src="/js/sim-layer-select.js"></script>
+</body>
+</html>

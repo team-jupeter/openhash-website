@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPBFT 합의 시뮬레이션 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/simulation/sim-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/" class="active">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="sim-hero">
+        <div class="container">
+            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
+            <span class="sim-badge">인터랙티브</span>
+            <h1>LPBFT 합의 시뮬레이션</h1>
+            <p>비상 상황에서 발동되는 경량 PBFT 합의 과정 시각화</p>
+        </div>
+    </div>
+
+    <main class="sim-content">
+        <div class="container">
+            <div class="sim-wrapper">
+                <div class="control-panel">
+                    <h3>🤝 합의 설정</h3>
+                    <div class="control-group">
+                        <label class="control-label">총 노드 수 (n)</label>
+                        <select id="totalNodes" class="control-select">
+                            <option value="4">4개 (f=1, quorum=3)</option>
+                            <option value="7">7개 (f=2, quorum=5)</option>
+                            <option value="10">10개 (f=3, quorum=7)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">비잔틴 노드 수</label>
+                        <select id="byzantineNodes" class="control-select">
+                            <option value="0">0개 (정상)</option>
+                            <option value="1">1개 (허용 범위)</option>
+                            <option value="2">2개 (허용 초과)</option>
+                        </select>
+                        <span class="control-hint">f개까지 허용</span>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">시뮬레이션 속도</label>
+                        <select id="simSpeed" class="control-select">
+                            <option value="slow">느림 (1초)</option>
+                            <option value="normal" selected>보통 (500ms)</option>
+                            <option value="fast">빠름 (200ms)</option>
+                        </select>
+                    </div>
+                    <button id="runSimBtn" class="run-btn">합의 시작</button>
+                </div>
+
+                <div class="viz-area">
+                    <h3>📊 합의 진행 시각화</h3>
+                    <div class="phase-indicator" id="phaseIndicator">
+                        <div class="phase-step" data-phase="preprepare">PRE-PREPARE</div>
+                        <div class="phase-arrow">→</div>
+                        <div class="phase-step" data-phase="prepare">PREPARE</div>
+                        <div class="phase-arrow">→</div>
+                        <div class="phase-step" data-phase="commit">COMMIT</div>
+                        <div class="phase-arrow">→</div>
+                        <div class="phase-step" data-phase="reply">REPLY</div>
+                    </div>
+
+                    <div class="nodes-viz" id="nodesViz">
+                        <div class="node-grid" id="nodeGrid"></div>
+                    </div>
+
+                    <div class="vote-progress" id="voteProgress">
+                        <div class="vote-bar">
+                            <div class="vote-label">PREPARE 투표</div>
+                            <div class="vote-track"><div class="vote-fill" id="prepareVotes" style="width: 0%"></div></div>
+                            <div class="vote-count"><span id="prepareCount">0</span>/<span id="prepareTotal">4</span></div>
+                        </div>
+                        <div class="vote-bar">
+                            <div class="vote-label">COMMIT 투표</div>
+                            <div class="vote-track"><div class="vote-fill" id="commitVotes" style="width: 0%"></div></div>
+                            <div class="vote-count"><span id="commitCount">0</span>/<span id="commitTotal">4</span></div>
+                        </div>
+                        <div class="quorum-info">필요 정족수 (2f+1): <strong id="quorumValue">3</strong></div>
+                    </div>
+
+                    <div class="log-area" id="logArea">
+                        <div class="log-line info">[시스템] 시뮬레이션 준비 완료</div>
+                    </div>
+                </div>
+
+                <div class="result-panel">
+                    <h3>📋 합의 결과</h3>
+                    <div id="resultSummary">
+                        <div class="result-item"><span class="result-label">총 노드</span><span class="result-value" id="resultNodes">-</span></div>
+                        <div class="result-item"><span class="result-label">비잔틴 노드</span><span class="result-value" id="resultByzantine">-</span></div>
+                        <div class="result-item"><span class="result-label">정족수</span><span class="result-value" id="resultQuorum">-</span></div>
+                        <div class="result-item"><span class="result-label">PREPARE 투표</span><span class="result-value" id="resultPrepare">-</span></div>
+                        <div class="result-item"><span class="result-label">COMMIT 투표</span><span class="result-value" id="resultCommit">-</span></div>
+                        <div class="result-item"><span class="result-label">합의 결과</span><span class="result-value" id="resultConsensus">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+
+    <style>
+    .phase-indicator { display: flex; align-items: center; justify-content: center; gap: var(--space-2); margin-bottom: var(--space-6); }
+    .phase-step {
+        padding: var(--space-2) var(--space-4);
+        background: var(--gray-100);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--gray-600);
+    }
+    .phase-step.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+    .phase-step.done { background: var(--success-light); color: var(--success); border-color: var(--success); }
+    .phase-arrow { color: var(--gray-400); }
+    .nodes-viz { margin: var(--space-6) 0; }
+    .node-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }
+    .node-item {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--gray-100);
+        border: 2px solid var(--gray-300);
+        border-radius: var(--radius);
+        font-size: 11px;
+        transition: all var(--transition);
+    }
+    .node-item.leader { border-color: var(--accent); background: rgba(212,160,23,0.1); }
+    .node-item.byzantine { border-color: var(--error); background: rgba(201,42,42,0.1); }
+    .node-item.voted { border-color: var(--success); background: var(--success-light); }
+    .node-icon { font-size: 20px; }
+    .node-label { font-weight: 600; }
+    .vote-progress { margin: var(--space-6) 0; }
+    .vote-bar { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+    .vote-label { width: 100px; font-size: 12px; color: var(--gray-600); }
+    .vote-track { flex: 1; height: 12px; background: var(--gray-200); border-radius: 6px; overflow: hidden; }
+    .vote-fill { height: 100%; background: var(--primary); border-radius: 6px; transition: width 0.3s; }
+    .vote-count { width: 50px; font-size: 12px; font-weight: 600; text-align: right; }
+    .quorum-info { text-align: center; font-size: 13px; color: var(--gray-600); margin-top: var(--space-4); }
+    </style>
+    <script src="/js/sim-lpbft.js"></script>
+</body>
+</html>

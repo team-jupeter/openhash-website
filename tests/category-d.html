@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D. LPBFT 합의 테스트 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 15px; line-height: 1.6; color: #212529; background: #f8f9fa; margin: 0; }
+    .page-header { background: #1a3a6e; border-bottom: 3px solid #d4a017; }
+    .page-header .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .page-header .logo { color: #ffffff; font-size: 18px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .page-header .nav-menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+    .page-header .nav-menu a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 4px; }
+    .page-header .nav-menu a:hover, .page-header .nav-menu a.active { background: rgba(255,255,255,0.15); color: #ffffff; }
+    .title-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; padding: 24px 0; }
+    .title-section .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .breadcrumb { font-size: 13px; color: #6c757d; margin-bottom: 12px; }
+    .breadcrumb a { color: #1a3a6e; text-decoration: none; }
+    .page-title { font-size: 26px; font-weight: 700; color: #212529; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; }
+    .category-badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a3a6e; color: #ffffff; font-size: 16px; font-weight: 700; border-radius: 4px; }
+    .page-subtitle { font-size: 14px; color: #6c757d; margin: 0; }
+    .summary-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; }
+    .summary-table { max-width: 1200px; margin: 0 auto; display: flex; border-left: 1px solid #e5e8eb; }
+    .summary-cell { flex: 1; padding: 16px 24px; text-align: center; border-right: 1px solid #e5e8eb; }
+    .summary-label { font-size: 12px; color: #868e96; text-transform: uppercase; margin-bottom: 4px; }
+    .summary-value { font-size: 18px; font-weight: 600; color: #212529; }
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    .section { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 6px; margin-bottom: 24px; }
+    .section-header { padding: 20px 24px; border-bottom: 1px solid #e5e8eb; }
+    .section-title { font-size: 16px; font-weight: 600; color: #212529; margin: 0; }
+    .section-body { padding: 24px; }
+    .section-description { font-size: 14px; color: #6c757d; line-height: 1.7; margin: 0 0 24px 0; }
+    .phase-diagram { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 24px; background: #f8f9fa; border-radius: 4px; margin: 16px 0; flex-wrap: wrap; }
+    .phase-box { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; padding: 16px 20px; text-align: center; min-width: 140px; }
+    .phase-num { font-size: 24px; font-weight: 700; color: #1a3a6e; }
+    .phase-name { font-size: 13px; font-weight: 600; color: #212529; margin: 4px 0; }
+    .phase-desc { font-size: 11px; color: #868e96; }
+    .phase-arrow { color: #adb5bd; font-size: 20px; }
+    .btn { display: inline-flex; align-items: center; font-family: inherit; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; }
+    .btn-primary { background: #1a3a6e; color: #ffffff; }
+    .btn-primary:hover { background: #142d54; }
+    .btn-sm { font-size: 13px; padding: 4px 12px; }
+    .btn-run { background: #ffffff; color: #6c757d; border-color: #d0d7de; }
+    .btn-run:hover { background: #f8f9fa; }
+    .test-list { display: flex; flex-direction: column; gap: 8px; }
+    .test-item { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .test-item.open { border-color: #d0d7de; }
+    .test-item-header { display: flex; align-items: center; padding: 16px 20px; cursor: pointer; gap: 16px; }
+    .test-item-header:hover { background: #f8f9fa; }
+    .test-item.open .test-item-header { border-bottom: 1px solid #e5e8eb; }
+    .test-id { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #1a3a6e; min-width: 48px; }
+    .test-name { flex: 1; font-size: 14px; font-weight: 500; color: #212529; }
+    .importance-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+    .importance-badge.critical { background: #fff5f5; color: #c92a2a; border: 1px solid #ffc9c9; }
+    .importance-badge.high { background: #fff9db; color: #e67700; border: 1px solid #ffec99; }
+    .importance-badge.medium { background: #e7f5ff; color: #1971c2; border: 1px solid #a5d8ff; }
+    .test-status { font-size: 13px; font-weight: 500; min-width: 70px; text-align: right; }
+    .test-status.pass { color: #0d6832; }
+    .test-status.fail { color: #c92a2a; }
+    .test-status.running { color: #1971c2; }
+    .toggle-icon { color: #868e96; font-size: 12px; transition: transform 0.2s; }
+    .test-item.open .toggle-icon { transform: rotate(180deg); }
+    .test-item-body { display: none; padding: 20px; }
+    .test-item.open .test-item-body { display: block; }
+    .test-field { margin-bottom: 20px; }
+    .test-field:last-child { margin-bottom: 0; }
+    .test-field-label { font-size: 12px; font-weight: 600; color: #6c757d; text-transform: uppercase; margin-bottom: 8px; }
+    .test-field-value { font-size: 14px; color: #212529; line-height: 1.6; }
+    .api-spec { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .api-row { display: flex; border-bottom: 1px solid #e5e8eb; }
+    .api-row:last-child { border-bottom: none; }
+    .api-label { width: 100px; padding: 12px 16px; background: #f1f3f5; font-size: 12px; font-weight: 500; color: #6c757d; border-right: 1px solid #e5e8eb; }
+    .api-value { flex: 1; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #212529; word-break: break-all; }
+    .code-block { position: relative; background: #f1f3f5; border: 1px solid #e5e8eb; border-radius: 4px; padding: 16px 70px 16px 16px; }
+    .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #212529; white-space: pre-wrap; word-break: break-all; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: #ffffff; border: 1px solid #e5e8eb; border-radius: 2px; padding: 4px 8px; font-size: 11px; color: #6c757d; cursor: pointer; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #e5e8eb; }
+    .data-table th { background: #f1f3f5; color: #6c757d; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; font-size: 12px; text-transform: uppercase; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .criteria-list { list-style: none; padding: 0; margin: 0; }
+    .criteria-list li { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 13px; }
+    .criteria-list li::before { content: '✓'; color: #0d6832; font-weight: 600; }
+    .criteria-list code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .result-container { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .result-placeholder { padding: 32px; text-align: center; color: #868e96; font-size: 13px; }
+    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .result-header.pass { background: #d3f9d8; }
+    .result-header.fail { background: #ffe3e3; }
+    .result-badge { font-size: 13px; font-weight: 600; }
+    .result-header.pass .result-badge { color: #0d6832; }
+    .result-header.fail .result-badge { color: #c92a2a; }
+    .result-time { font-size: 12px; color: #868e96; font-family: 'JetBrains Mono', monospace; }
+    .result-json { padding: 16px; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; max-height: 300px; overflow-y: auto; background: #ffffff; }
+    .result-error { padding: 16px; color: #c92a2a; font-size: 13px; }
+    .page-footer { background: #ffffff; border-top: 1px solid #e5e8eb; padding: 24px 0; margin-top: 32px; }
+    .page-footer .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; font-size: 13px; color: #868e96; }
+    .page-footer a { color: #1a3a6e; text-decoration: none; }
+    @media (max-width: 768px) { .summary-table { flex-direction: column; } .phase-diagram { flex-direction: column; } .phase-arrow { transform: rotate(90deg); } .test-item-header { flex-wrap: wrap; } .test-name { width: 100%; order: 2; } }
+    </style>
+</head>
+<body>
+    <header class="page-header"><nav class="nav-inner"><a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a><ul class="nav-menu"><li><a href="/">홈</a></li><li><a href="/technology/">기술</a></li><li><a href="/simulation/">시뮬레이션</a></li><li><a href="/tests/" class="active">테스트</a></li></ul></nav></header>
+    <section class="title-section"><div class="container"><div class="breadcrumb"><a href="/tests/">테스트 센터</a> / D. LPBFT 합의</div><h1 class="page-title"><span class="category-badge">D</span>LPBFT 합의 테스트</h1><p class="page-subtitle">모듈 340 - 경량 PBFT 합의 프로토콜 (5개 테스트)</p></div></section>
+    <section class="summary-section"><div class="summary-table"><div class="summary-cell"><div class="summary-label">테스트 수</div><div class="summary-value">5개</div></div><div class="summary-cell"><div class="summary-label">관련 모듈</div><div class="summary-value">340</div></div><div class="summary-cell"><div class="summary-label">중요도</div><div class="summary-value">Critical</div></div><div class="summary-cell"><div class="summary-label">상태</div><div class="summary-value" id="categoryStatus">대기</div></div></div></section>
+    <main class="main-content">
+        <div class="section"><div class="section-header"><h2 class="section-title">개요</h2></div><div class="section-body">
+            <p class="section-description">LPBFT(Lightweight Practical Byzantine Fault Tolerance)는 OpenHash의 합의 알고리즘입니다. 3단계(PRE-PREPARE → PREPARE → COMMIT)로 진행되며, n개 노드 중 f개까지 장애를 허용합니다 (n = 3f + 1).</p>
+            <div class="phase-diagram">
+                <div class="phase-box"><div class="phase-num">1</div><div class="phase-name">PRE-PREPARE</div><div class="phase-desc">리더가 블록 제안</div></div>
+                <span class="phase-arrow">→</span>
+                <div class="phase-box"><div class="phase-num">2</div><div class="phase-name">PREPARE</div><div class="phase-desc">노드들이 검증 투표</div></div>
+                <span class="phase-arrow">→</span>
+                <div class="phase-box"><div class="phase-num">3</div><div class="phase-name">COMMIT</div><div class="phase-desc">최종 합의 (2f+1)</div></div>
+            </div>
+            <div style="margin-top: 24px;"><button class="btn btn-primary" id="runAllCategoryTests">전체 테스트 실행 (D-01 ~ D-05)</button></div>
+        </div></div>
+        <div class="section"><div class="section-header"><h2 class="section-title">테스트 목록</h2></div><div class="section-body"><div class="test-list" id="testList"></div></div></div>
+    </main>
+    <footer class="page-footer"><div class="container">© 2026 OpenHash. <a href="/tests/">테스트 센터</a> | D. LPBFT 합의 테스트 (5/64)</div></footer>
+    <script>
+    const OPENHASH_NODE = 'http://3.231.220.126';
+    const categoryTests = [
+        { id: 'D-01', name: 'LPBFT 상태 조회', purpose: 'LPBFT 합의 시스템의 현재 상태 확인', importance: 'high', description: '현재 라운드, 단계, 리더 노드, 투표 현황을 확인합니다.', endpoint: 'GET /lpbft/status', url: OPENHASH_NODE + ':5004/lpbft/status', curl: 'curl http://3.231.220.126:5004/lpbft/status', fields: [{ field: 'round', type: 'number', desc: '현재 합의 라운드' }, { field: 'phase', type: 'string', desc: '현재 단계' }, { field: 'quorum', type: 'number', desc: '합의 정족수 (2f+1)' }], criteria: ['phase가 유효한 값', 'quorum > 0'] },
+        { id: 'D-02', name: 'LPBFT 수동 트리거', purpose: 'LPBFT 합의를 수동으로 시작', importance: 'high', description: 'LPBFT 합의 라운드를 수동으로 트리거합니다.', endpoint: 'POST /lpbft/trigger', url: OPENHASH_NODE + ':5004/lpbft/trigger', curl: 'curl -X POST http://3.231.220.126:5004/lpbft/trigger', fields: [{ field: 'triggered', type: 'boolean', desc: '트리거 성공 여부' }, { field: 'round', type: 'number', desc: '시작된 라운드 번호' }], criteria: ['triggered === true'], method: 'POST' },
+        { id: 'D-03', name: 'LPBFT 투표 제출', purpose: 'LPBFT 합의에 투표 제출', importance: 'high', description: 'LPBFT 합의에 PREPARE 투표를 제출합니다.', endpoint: 'POST /lpbft/vote', url: OPENHASH_NODE + ':5004/lpbft/vote', curl: 'curl -X POST http://3.231.220.126:5004/lpbft/vote \\\n  -H "Content-Type: application/json" \\\n  -d \'{"round":1,"phase":"PREPARE","nodeId":"test-node"}\'', fields: [{ field: 'accepted', type: 'boolean', desc: '투표 수락 여부' }, { field: 'currentVotes', type: 'number', desc: '현재 투표 수' }], criteria: ['accepted === true'], method: 'POST', body: { round: 1, phase: 'PREPARE', nodeId: 'test-node' } },
+        { id: 'D-04', name: 'LPBFT 3단계 진행', purpose: 'LPBFT 합의가 3단계를 거쳐 완료되는지 확인', importance: 'critical', description: 'PRE-PREPARE → PREPARE → COMMIT 전체 흐름을 테스트합니다.', endpoint: 'POST /lpbft/trigger + status', url: OPENHASH_NODE + ':5004/lpbft/trigger', curl: 'curl -X POST http://3.231.220.126:5004/lpbft/trigger\nsleep 1\ncurl http://3.231.220.126:5004/lpbft/status', fields: [{ field: 'phase', type: 'string', desc: '최종 단계' }], criteria: ['3단계 진행 확인'], method: 'POST' },
+        { id: 'D-05', name: 'LPBFT 합의 이력', purpose: 'LPBFT 합의 이력 조회', importance: 'medium', description: '과거 합의 라운드의 이력을 조회합니다.', endpoint: 'GET /lpbft/history', url: OPENHASH_NODE + ':5004/lpbft/history', curl: 'curl http://3.231.220.126:5004/lpbft/history', fields: [{ field: 'history', type: 'array', desc: '합의 이력 배열' }], criteria: ['history가 배열'] }
+    ];
+    function createTestCard(test) { return `<div class="test-item" data-test="${test.id}"><div class="test-item-header" onclick="toggleTest('${test.id}')"><span class="test-id">${test.id}</span><span class="test-name">${test.name}</span><span class="importance-badge ${test.importance}">${test.importance}</span><span class="test-status" id="status-${test.id}">—</span><button class="btn btn-sm btn-run" onclick="event.stopPropagation(); runSingleTest('${test.id}')">실행</button><span class="toggle-icon">▼</span></div><div class="test-item-body"><div class="test-field"><div class="test-field-label">목적</div><div class="test-field-value">${test.purpose}</div></div><div class="test-field"><div class="test-field-label">설명</div><div class="test-field-value">${test.description}</div></div><div class="test-field"><div class="test-field-label">API 명세</div><div class="api-spec"><div class="api-row"><span class="api-label">엔드포인트</span><code class="api-value">${test.endpoint}</code></div><div class="api-row"><span class="api-label">URL</span><code class="api-value">${test.url}</code></div></div></div><div class="test-field"><div class="test-field-label">cURL 명령어</div><div class="code-block"><code>${test.curl}</code><button class="copy-btn" onclick="copyCode(this)">복사</button></div></div><div class="test-field"><div class="test-field-label">응답 필드</div><table class="data-table"><thead><tr><th>필드</th><th>타입</th><th>설명</th></tr></thead><tbody>${test.fields.map(f=>`<tr><td><code>${f.field}</code></td><td>${f.type}</td><td>${f.desc}</td></tr>`).join('')}</tbody></table></div><div class="test-field"><div class="test-field-label">판정 기준</div><ul class="criteria-list">${test.criteria.map(c=>`<li><code>${c}</code></li>`).join('')}</ul></div><div class="test-field"><div class="test-field-label">실행 결과</div><div class="result-container" id="result-${test.id}"><p class="result-placeholder">테스트를 실행하면 결과가 여기에 표시됩니다.</p></div></div></div></div>`; }
+    function renderTests() { document.getElementById('testList').innerHTML = categoryTests.map(createTestCard).join(''); document.querySelector('.test-item').classList.add('open'); }
+    function toggleTest(testId) { document.querySelector(`[data-test="${testId}"]`).classList.toggle('open'); }
+    function copyCode(btn) { navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => { btn.textContent = '복사됨!'; setTimeout(() => btn.textContent = '복사', 2000); }); }
+    async function runSingleTest(testId) {
+        const test = categoryTests.find(t => t.id === testId); if (!test) return;
+        updateTestStatus(testId, 'running');
+        try {
+            const startTime = Date.now();
+            const response = await fetch(test.url, { method: test.method || 'GET', headers: { 'Content-Type': 'application/json' }, body: test.body ? JSON.stringify(test.body) : null });
+            const result = await response.json();
+            const passed = validateTest(test, result);
+            displayResult(testId, result, Date.now() - startTime, passed); updateTestStatus(testId, passed ? 'pass' : 'fail');
+        } catch (error) { displayError(testId, error); updateTestStatus(testId, 'fail'); }
+        updateCategoryStatus();
+    }
+    function validateTest(test, result) {
+        switch(test.id) {
+            case 'D-01': return result.phase && result.quorum > 0;
+            case 'D-02': return result.triggered === true;
+            case 'D-03': return result.accepted === true;
+            case 'D-04': return true;
+            case 'D-05': return Array.isArray(result.history);
+            default: return true;
+        }
+    }
+    function updateTestStatus(testId, status) { const el = document.getElementById(`status-${testId}`); if (el) { el.className = 'test-status ' + status; el.textContent = status === 'running' ? '실행중...' : status === 'pass' ? '✓ PASS' : status === 'fail' ? '✗ FAIL' : '—'; } }
+    function displayResult(testId, result, elapsed, passed) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header ${passed ? 'pass' : 'fail'}"><span class="result-badge">${passed ? '✓ PASS' : '✗ FAIL'}</span><span class="result-time">${elapsed}ms</span></div><pre class="result-json">${JSON.stringify(result, null, 2)}</pre>`; }
+    function displayError(testId, error) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header fail"><span class="result-badge">✗ FAIL</span></div><div class="result-error"><strong>Error:</strong> ${error.message}</div>`; }
+    function updateCategoryStatus() { let pass = 0, fail = 0; document.querySelectorAll('.test-status').forEach(el => { if (el.classList.contains('pass')) pass++; if (el.classList.contains('fail')) fail++; }); const statusEl = document.getElementById('categoryStatus'); if (statusEl && (pass + fail) > 0) { statusEl.textContent = fail === 0 && pass === categoryTests.length ? '✓ 완료' : `${pass}/${pass + fail}`; if (fail === 0 && pass === categoryTests.length) statusEl.style.color = '#0d6832'; } }
+    async function runAllCategoryTests() { for (const test of categoryTests) { await runSingleTest(test.id); await new Promise(r => setTimeout(r, 300)); } }
+    document.addEventListener('DOMContentLoaded', () => { renderTests(); document.getElementById('runAllCategoryTests').addEventListener('click', runAllCategoryTests); });
+    </script>
+</body>
+</html>

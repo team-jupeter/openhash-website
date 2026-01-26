@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5단계 계층 구조 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/technology/tech-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/" class="active">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="tech-hero">
+        <div class="container">
+            <a href="/technology/" class="back-link">← 기술 문서</a>
+            <span class="tech-badge">모듈 100-130</span>
+            <h1>5단계 계층 구조</h1>
+            <p>글로벌-국가-광역시도-시군구-읍면동 기반 데이터 무결성 검증</p>
+        </div>
+    </div>
+
+    <main class="tech-content">
+        <div class="container">
+            <article class="tech-article">
+                <section class="tech-section" id="overview">
+                    <h2>개요</h2>
+                    <p>OpenHash는 기존 통신 인프라의 물리적 계층 구조를 활용하여 데이터 무결성을 검증합니다. 5단계 행정 계층 구조(글로벌-국가-광역시도-시군구-읍면동)를 기반으로 모든 사용자와 거래가 관리됩니다.</p>
+                    <div class="info-box">
+                        <strong>핵심 원리:</strong> 네트워크를 단순한 데이터 전송 수단이 아닌 <em>신뢰 인프라</em>로 재해석합니다.
+                    </div>
+                </section>
+
+                <section class="tech-section" id="structure">
+                    <h2>계층 구조</h2>
+                    <div class="layer-diagram">
+                        <div class="layer-row">
+                            <div class="layer-badge">L5</div>
+                            <div class="layer-detail">
+                                <h4>글로벌 계층 (GLOBAL)</h4>
+                                <p>전 세계 최상위 검증 노드. 국가 간 거래의 최종 검증을 담당합니다.</p>
+                                <ul>
+                                    <li>기록 확률: 일반 2% / 고중요도 10%</li>
+                                    <li>Representative 노드 1개</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="layer-row">
+                            <div class="layer-badge">L4</div>
+                            <div class="layer-detail">
+                                <h4>국가 계층 (KR, US, JP...)</h4>
+                                <p>국가 단위 검증 및 규제 준수. AML/CFT 규정을 적용합니다.</p>
+                                <ul>
+                                    <li>기록 확률: 일반 6% / 고중요도 25%</li>
+                                    <li>Representative 노드 1개 + 일반 노드 2~5개</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="layer-row">
+                            <div class="layer-badge">L3</div>
+                            <div class="layer-detail">
+                                <h4>광역시도 계층 (KR-SEOUL, KR-JEJU...)</h4>
+                                <p>광역 단위 데이터 집계 및 이상 패턴 모니터링.</p>
+                                <ul>
+                                    <li>기록 확률: 일반 12% / 고중요도 30%</li>
+                                    <li>Representative 노드 1개 + 일반 노드 3~7개</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="layer-row">
+                            <div class="layer-badge">L2</div>
+                            <div class="layer-detail">
+                                <h4>시군구 계층 (KR-JEJU-SEOGWIPO...)</h4>
+                                <p>기초자치단체 단위 거래 처리 및 1차 검증.</p>
+                                <ul>
+                                    <li>기록 확률: 일반 30% / 고중요도 20%</li>
+                                    <li>Representative 노드 1개 + 일반 노드 5~10개</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="layer-row">
+                            <div class="layer-badge">L1</div>
+                            <div class="layer-detail">
+                                <h4>읍면동 계층 (KR-JEJU-SEOGWIPO-JUNGMUN...)</h4>
+                                <p>최하위 계층. 실시간 거래 처리의 최전선을 담당합니다.</p>
+                                <ul>
+                                    <li>기록 확률: 일반 50% / 고중요도 15%</li>
+                                    <li>Representative 노드 1개 + 일반 노드 7~15개</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="tech-section" id="naming">
+                    <h2>계층 식별자 명명 규칙</h2>
+                    <table class="tech-table">
+                        <thead>
+                            <tr><th>계층</th><th>식별자 형식</th><th>예시</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>L5 글로벌</td><td><code>GLOBAL</code></td><td>GLOBAL</td></tr>
+                            <tr><td>L4 국가</td><td><code>{국가코드}</code></td><td>KR, US, JP</td></tr>
+                            <tr><td>L3 광역시도</td><td><code>{국가}-{광역}</code></td><td>KR-SEOUL, KR-JEJU</td></tr>
+                            <tr><td>L2 시군구</td><td><code>{국가}-{광역}-{시군구}</code></td><td>KR-JEJU-SEOGWIPO</td></tr>
+                            <tr><td>L1 읍면동</td><td><code>{국가}-{광역}-{시군구}-{읍면동}</code></td><td>KR-JEJU-SEOGWIPO-JUNGMUN</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="tech-section" id="representative">
+                    <h2>Representative 노드</h2>
+                    <p>각 계층에는 대표 검증 노드(Representative Node)가 존재합니다.</p>
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <h5>선정 기준</h5>
+                            <p>상위 10% 처리량 + 지리적 분산 고려</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>임기</h5>
+                            <p>1주일 단위로 재선정</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>역할</h5>
+                            <p>BLS 서명 집계, 머클 루트 생성, 상위 계층 보고</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="tech-section">
+                    <h2>관련 시뮬레이션</h2>
+                    <a href="/simulation/transaction.html" class="related-link">→ 거래 시뮬레이션에서 계층 간 거래 체험하기</a>
+                </section>
+            </article>
+
+            <aside class="tech-sidebar">
+                <div class="sidebar-card">
+                    <h4>목차</h4>
+                    <ul class="toc">
+                        <li><a href="#overview">개요</a></li>
+                        <li><a href="#structure">계층 구조</a></li>
+                        <li><a href="#naming">명명 규칙</a></li>
+                        <li><a href="#representative">Representative 노드</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-card">
+                    <h4>관련 모듈</h4>
+                    <ul class="module-list">
+                        <li>100 - 읍면동 계층</li>
+                        <li>110 - 시군구 계층</li>
+                        <li>120 - 광역시도 계층</li>
+                        <li>125 - 국가 계층</li>
+                        <li>130 - 글로벌 계층</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+</body>
+</html>

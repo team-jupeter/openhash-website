@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검증 시스템 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/technology/tech-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/" class="active">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="tech-hero">
+        <div class="container">
+            <a href="/technology/" class="back-link">← 기술 문서</a>
+            <span class="tech-badge">모듈 310, 320, 350, 360</span>
+            <h1>검증 시스템</h1>
+            <p>하향식 검증, 상향식 감시, 잔액 불변성, 5단계 거래 검증</p>
+        </div>
+    </div>
+
+    <main class="tech-content">
+        <div class="container">
+            <article class="tech-article">
+                <section class="tech-section" id="overview">
+                    <h2>개요</h2>
+                    <p>OpenHash의 검증 시스템은 다층적 접근 방식을 통해 데이터 무결성을 보장합니다. 하향식 검증(Top-Down)과 상향식 감시(Bottom-Up)를 결합하여 이중 안전망을 구축합니다.</p>
+                </section>
+
+                <section class="tech-section" id="topdown">
+                    <h2>하향식 검증 (Top-Down)</h2>
+                    <p>상위 계층이 하위 계층의 데이터를 검증하는 방식입니다.</p>
+                    <div class="flow-diagram">
+                        <div class="flow-step">L5 글로벌</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">L4 국가</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">L3 광역시도</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">L2 시군구</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">L1 읍면동</div>
+                    </div>
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <h5>BLS 서명 검증</h5>
+                            <p>집계 서명으로 다수 노드의 동의 확인</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>머클 증명</h5>
+                            <p>데이터 포함 여부를 O(log n)으로 검증</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="tech-section" id="bottomup">
+                    <h2>상향식 감시 (Bottom-Up)</h2>
+                    <p>하위 계층이 상위 계층의 행위를 감시하여 권력 남용을 방지합니다.</p>
+                    <ul>
+                        <li>상위 노드의 서명 누락 또는 변조 탐지</li>
+                        <li>이상 행위 발견 시 인접 노드에 알림 전파</li>
+                        <li>자동 LPBFT 합의 트리거</li>
+                    </ul>
+                </section>
+
+                <section class="tech-section" id="invariance">
+                    <h2>잔액 불변성 (Balance Invariance)</h2>
+                    <p>거래 전후 총 잔액의 합이 변하지 않음을 보장합니다.</p>
+                    <div class="code-block">
+<code>// 잔액 불변성 검증
+total_before = sender.balance + receiver.balance
+total_after = (sender.balance - amount) + (receiver.balance + amount)
+assert(total_before === total_after)  // Δ = 0</code>
+                    </div>
+                    <div class="info-box success">
+                        <strong>수학적 보장:</strong> 발신자 감소분 = 수신자 증가분, 따라서 시스템 총액은 불변
+                    </div>
+                </section>
+
+                <section class="tech-section" id="pipeline">
+                    <h2>5단계 거래 검증 파이프라인</h2>
+                    <p>모든 거래는 순차적으로 5단계 검증을 통과해야 합니다.</p>
+                    <table class="tech-table">
+                        <thead>
+                            <tr><th>단계</th><th>검증 항목</th><th>설명</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>잔액 확인</td><td><code>sender.balance ≥ amount</code></td></tr>
+                            <tr><td>2</td><td>신원 확인</td><td>발신자/수신자 본인 인증 및 계층 등록</td></tr>
+                            <tr><td>3</td><td>한도 확인</td><td>단일 거래 한도(100T) 및 일일 한도</td></tr>
+                            <tr><td>4</td><td>이상 탐지</td><td>BERT-CNN-LSTM AI 앙상블 (99.4% 정확도)</td></tr>
+                            <tr><td>5</td><td>규정 준수</td><td>AML/CFT 규정, 국가별 규제, 제재 목록</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: var(--space-4);">평균 처리 시간: <strong>100ms</strong></p>
+                </section>
+
+                <section class="tech-section">
+                    <h2>관련 시뮬레이션</h2>
+                    <a href="/simulation/verification.html" class="related-link">→ 5단계 검증 시뮬레이션 체험하기</a>
+                </section>
+            </article>
+
+            <aside class="tech-sidebar">
+                <div class="sidebar-card">
+                    <h4>목차</h4>
+                    <ul class="toc">
+                        <li><a href="#overview">개요</a></li>
+                        <li><a href="#topdown">하향식 검증</a></li>
+                        <li><a href="#bottomup">상향식 감시</a></li>
+                        <li><a href="#invariance">잔액 불변성</a></li>
+                        <li><a href="#pipeline">5단계 파이프라인</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-card">
+                    <h4>관련 모듈</h4>
+                    <ul class="module-list">
+                        <li>310 - 하향식 검증</li>
+                        <li>320 - 상향식 감시</li>
+                        <li>350 - 잔액 불변성</li>
+                        <li>360 - 5단계 검증</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시뮬레이션 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+    .sim-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--space-5);
+    }
+    .sim-card {
+        display: block;
+        padding: var(--space-6);
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        color: inherit;
+        transition: border-color var(--transition);
+    }
+    .sim-card:hover {
+        border-color: var(--primary);
+    }
+    .sim-icon {
+        font-size: 32px;
+        margin-bottom: var(--space-4);
+    }
+    .sim-card h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: var(--space-2);
+        color: var(--gray-900);
+    }
+    .sim-card > p {
+        font-size: 13px;
+        color: var(--gray-600);
+        margin-bottom: var(--space-4);
+        line-height: 1.6;
+    }
+    .sim-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: var(--space-4);
+    }
+    .sim-features li {
+        font-size: 12px;
+        color: var(--gray-500);
+        padding: var(--space-1) 0;
+        padding-left: var(--space-4);
+        position: relative;
+    }
+    .sim-features li::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: var(--primary);
+    }
+    .sim-btn {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--primary);
+    }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/" class="active">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: calc(var(--nav-height) + var(--space-10)) 0 var(--space-10);">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 28px;">인터랙티브 시뮬레이션</h1>
+            <p class="hero-desc" style="font-size: 15px; margin-bottom: 0;">OpenHash 핵심 기능을 직접 체험해보세요</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="sim-grid">
+                <a href="/simulation/transaction.html" class="sim-card">
+                    <div class="sim-icon">💸</div>
+                    <h3>거래 시뮬레이션</h3>
+                    <p>두 사용자 간 거래 과정을 시각화합니다. 공통 계층 탐색, 잔액 불변성 검증을 실시간으로 확인하세요.</p>
+                    <ul class="sim-features">
+                        <li>발신자/수신자 지역 선택</li>
+                        <li>공통 계층 자동 탐색</li>
+                        <li>잔액 변동 시각화</li>
+                    </ul>
+                    <span class="sim-btn">시뮬레이션 시작 →</span>
+                </a>
+
+                <a href="/simulation/layer-select.html" class="sim-card">
+                    <div class="sim-icon">🎯</div>
+                    <h3>계층 선택 시뮬레이션</h3>
+                    <p>SHA-256 이중 해싱 기반 확률적 계층 선택 과정을 체험합니다.</p>
+                    <ul class="sim-features">
+                        <li>해시값 생성 과정</li>
+                        <li>확률 분포 시각화</li>
+                        <li>중요도별 계층 선택</li>
+                    </ul>
+                    <span class="sim-btn">시뮬레이션 시작 →</span>
+                </a>
+
+                <a href="/simulation/verification.html" class="sim-card">
+                    <div class="sim-icon">🔍</div>
+                    <h3>5단계 검증 시뮬레이션</h3>
+                    <p>거래가 5단계 검증 파이프라인을 통과하는 과정을 단계별로 확인합니다.</p>
+                    <ul class="sim-features">
+                        <li>잔액/신원/한도 확인</li>
+                        <li>AI 이상 탐지</li>
+                        <li>규정 준수 검증</li>
+                    </ul>
+                    <span class="sim-btn">시뮬레이션 시작 →</span>
+                </a>
+
+                <a href="/simulation/lpbft.html" class="sim-card">
+                    <div class="sim-icon">🤝</div>
+                    <h3>LPBFT 합의 시뮬레이션</h3>
+                    <p>비상 상황에서 발동되는 경량 PBFT 합의 과정을 시각화합니다.</p>
+                    <ul class="sim-features">
+                        <li>PREPARE → COMMIT → REPLY</li>
+                        <li>노드 투표 과정</li>
+                        <li>합의 도달 시각화</li>
+                    </ul>
+                    <span class="sim-btn">시뮬레이션 시작 →</span>
+                </a>
+
+                <a href="/simulation/ssi.html" class="sim-card">
+                    <div class="sim-icon">🪪</div>
+                    <h3>SSI 인증 시뮬레이션</h3>
+                    <p>자기주권 신원 인증의 5요소 검증 과정을 체험합니다.</p>
+                    <ul class="sim-features">
+                        <li>신분증 해싱</li>
+                        <li>계층 저장 시뮬레이션</li>
+                        <li>5요소 검증</li>
+                    </ul>
+                    <span class="sim-btn">시뮬레이션 시작 →</span>
+                </a>
+
+                <a href="/simulation/hashchain.html" class="sim-card">
+                    <div class="sim-icon">🔗</div>
+                    <h3>해시 체인 시뮬레이션</h3>
+                    <p>블록 생성과 해시 체인 연결 과정을 시각적으로 확인합니다.</p>
+                    <ul class="sim-features">
+                        <li>블록 생성 과정</li>
+                        <li>해시 연결 시각화</li>
+                        <li>무결성 검증</li>
+                    </ul>
+                    <span class="sim-btn">시뮬레이션 시작 →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/">홈</a>
+                    <a href="/technology/">기술</a>
+                    <a href="/tests/">테스트 센터</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+</body>
+</html>

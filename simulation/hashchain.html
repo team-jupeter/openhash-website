@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>해시 체인 시뮬레이션 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/simulation/sim-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/" class="active">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="sim-hero">
+        <div class="container">
+            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
+            <span class="sim-badge">인터랙티브</span>
+            <h1>해시 체인 시뮬레이션</h1>
+            <p>블록 생성과 해시 체인 연결 과정 시각화</p>
+        </div>
+    </div>
+
+    <main class="sim-content">
+        <div class="container">
+            <div class="sim-wrapper two-col">
+                <div class="control-panel">
+                    <h3>🔗 블록 생성</h3>
+                    <div class="control-group">
+                        <label class="control-label">거래 데이터</label>
+                        <textarea id="txData" class="control-input" rows="2" placeholder="거래 데이터...">Alice → Bob: 100T</textarea>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">계층</label>
+                        <select id="blockLayer" class="control-select">
+                            <option value="L1">L1 읍면동</option>
+                            <option value="L2">L2 시군구</option>
+                            <option value="L3">L3 광역시도</option>
+                        </select>
+                    </div>
+                    <button id="addBlockBtn" class="run-btn">블록 추가</button>
+                    <button id="verifyChainBtn" class="run-btn" style="margin-top: var(--space-2); background: var(--gray-600);">체인 무결성 검증</button>
+                    <button id="resetChainBtn" class="run-btn" style="margin-top: var(--space-2); background: var(--error);">체인 초기화</button>
+                </div>
+
+                <div class="viz-area">
+                    <h3>📊 해시 체인 시각화</h3>
+                    <div class="chain-viz" id="chainViz">
+                        <div class="genesis-block">
+                            <div class="block-header">Genesis Block</div>
+                            <div class="block-hash">0000000000000000</div>
+                        </div>
+                    </div>
+
+                    <div class="block-detail" id="blockDetail" style="display: none;">
+                        <h4>블록 상세 정보</h4>
+                        <div class="detail-grid">
+                            <div class="detail-row"><span class="detail-label">높이</span><span class="detail-value" id="detailHeight">-</span></div>
+                            <div class="detail-row"><span class="detail-label">이전 해시</span><span class="detail-value mono" id="detailPrev">-</span></div>
+                            <div class="detail-row"><span class="detail-label">머클 루트</span><span class="detail-value mono" id="detailMerkle">-</span></div>
+                            <div class="detail-row"><span class="detail-label">블록 해시</span><span class="detail-value mono" id="detailHash">-</span></div>
+                            <div class="detail-row"><span class="detail-label">타임스탬프</span><span class="detail-value" id="detailTime">-</span></div>
+                            <div class="detail-row"><span class="detail-label">거래 수</span><span class="detail-value" id="detailTxCount">-</span></div>
+                        </div>
+                    </div>
+
+                    <div class="verification-result" id="verificationResult" style="display: none;">
+                        <div class="verify-icon" id="verifyIcon">✓</div>
+                        <div class="verify-message" id="verifyMessage">체인 무결성 확인됨</div>
+                    </div>
+
+                    <div class="log-area" id="logArea">
+                        <div class="log-line info">[시스템] Genesis 블록 생성 완료</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+
+    <style>
+    .chain-viz {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        align-items: flex-start;
+        margin-bottom: var(--space-6);
+        padding: var(--space-4);
+        background: var(--gray-50);
+        border-radius: var(--radius);
+        min-height: 150px;
+    }
+    .genesis-block, .chain-block {
+        width: 140px;
+        padding: var(--space-3);
+        background: var(--white);
+        border: 2px solid var(--gray-300);
+        border-radius: var(--radius);
+        text-align: center;
+        cursor: pointer;
+        transition: all var(--transition);
+    }
+    .genesis-block { border-color: var(--accent); }
+    .chain-block:hover { border-color: var(--primary); }
+    .chain-block.selected { border-color: var(--primary); background: rgba(26,58,110,0.05); }
+    .block-header { font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: var(--space-2); }
+    .block-hash { font-size: 10px; font-family: var(--font-mono); color: var(--gray-500); word-break: break-all; }
+    .block-layer { font-size: 11px; color: var(--primary); margin-top: var(--space-1); }
+    .chain-arrow { color: var(--gray-400); font-size: 20px; display: flex; align-items: center; }
+    .block-detail {
+        padding: var(--space-5);
+        background: var(--gray-50);
+        border-radius: var(--radius);
+        margin-bottom: var(--space-4);
+    }
+    .block-detail h4 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-4); }
+    .detail-grid { display: flex; flex-direction: column; gap: var(--space-2); }
+    .detail-row { display: flex; justify-content: space-between; font-size: 13px; }
+    .detail-label { color: var(--gray-500); }
+    .detail-value { color: var(--gray-900); font-weight: 500; }
+    .detail-value.mono { font-family: var(--font-mono); font-size: 11px; }
+    .verification-result {
+        padding: var(--space-6);
+        text-align: center;
+        border-radius: var(--radius);
+        margin-bottom: var(--space-4);
+    }
+    .verification-result.success { background: var(--success-light); }
+    .verification-result.fail { background: var(--error-light); }
+    .verify-icon { font-size: 32px; margin-bottom: var(--space-2); }
+    .verification-result.success .verify-icon { color: var(--success); }
+    .verification-result.fail .verify-icon { color: var(--error); }
+    .verify-message { font-size: 14px; font-weight: 600; }
+    .verification-result.success .verify-message { color: var(--success); }
+    .verification-result.fail .verify-message { color: var(--error); }
+    .mono { font-family: var(--font-mono); }
+    </style>
+    <script src="/js/sim-hashchain.js"></script>
+</body>
+</html>

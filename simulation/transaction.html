@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>거래 시뮬레이션 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/simulation/sim-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/" class="active">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="sim-hero">
+        <div class="container">
+            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
+            <span class="sim-badge">인터랙티브</span>
+            <h1>거래 시뮬레이션</h1>
+            <p>두 사용자 간 거래의 공통 계층 탐색과 잔액 불변성 검증</p>
+        </div>
+    </div>
+
+    <main class="sim-content">
+        <div class="container">
+            <div class="sim-wrapper">
+                <div class="control-panel">
+                    <h3>💳 거래 설정</h3>
+                    <div class="control-group">
+                        <label class="control-label">발신자 지역</label>
+                        <select id="senderRegion" class="control-select">
+                            <option value="KR-JEJU-SEOGWIPO-JUNGMUN">제주 서귀포시 중문동</option>
+                            <option value="KR-JEJU-SEOGWIPO-DAEJEONG">제주 서귀포시 대정읍</option>
+                            <option value="KR-JEJU-JEJU-NOHYEONG">제주 제주시 노형동</option>
+                            <option value="KR-SEOUL-GANGNAM-YEOKSAM">서울 강남구 역삼동</option>
+                            <option value="KR-BUSAN-HAEUNDAE-U">부산 해운대구 우동</option>
+                            <option value="US-CA-LA-DOWNTOWN">미국 LA 다운타운</option>
+                            <option value="JP-TOKYO-SHIBUYA-HARAJUKU">일본 도쿄 시부야</option>
+                        </select>
+                        <span class="control-hint">잔액: 1,000,000 T</span>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">수신자 지역</label>
+                        <select id="receiverRegion" class="control-select">
+                            <option value="KR-JEJU-SEOGWIPO-DAEJEONG">제주 서귀포시 대정읍</option>
+                            <option value="KR-JEJU-SEOGWIPO-JUNGMUN">제주 서귀포시 중문동</option>
+                            <option value="KR-JEJU-JEJU-NOHYEONG">제주 제주시 노형동</option>
+                            <option value="KR-SEOUL-GANGNAM-YEOKSAM">서울 강남구 역삼동</option>
+                            <option value="KR-BUSAN-HAEUNDAE-U">부산 해운대구 우동</option>
+                            <option value="US-CA-LA-DOWNTOWN">미국 LA 다운타운</option>
+                            <option value="JP-TOKYO-SHIBUYA-HARAJUKU">일본 도쿄 시부야</option>
+                        </select>
+                        <span class="control-hint">잔액: 500,000 T</span>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">송금액 (T)</label>
+                        <input type="number" id="txAmount" class="control-input" value="50000" min="1" max="100000000">
+                    </div>
+                    <button id="runSimBtn" class="run-btn">시뮬레이션 실행</button>
+                </div>
+
+                <div class="viz-area">
+                    <h3>📊 계층 탐색 시각화</h3>
+                    <div class="layer-viz" id="layerViz">
+                        <div class="layer-tree">
+                            <div class="tree-node" data-layer="L5"><span class="node-label">GLOBAL</span></div>
+                            <div class="tree-level">
+                                <div class="tree-node" data-layer="L4-KR"><span class="node-label">KR</span></div>
+                                <div class="tree-node" data-layer="L4-US"><span class="node-label">US</span></div>
+                                <div class="tree-node" data-layer="L4-JP"><span class="node-label">JP</span></div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node" data-layer="L3-JEJU"><span class="node-label">JEJU</span></div>
+                                <div class="tree-node" data-layer="L3-SEOUL"><span class="node-label">SEOUL</span></div>
+                                <div class="tree-node" data-layer="L3-BUSAN"><span class="node-label">BUSAN</span></div>
+                            </div>
+                            <div class="tree-level">
+                                <div class="tree-node" data-layer="L2-SEOGWIPO"><span class="node-label">서귀포</span></div>
+                                <div class="tree-node" data-layer="L2-JEJU"><span class="node-label">제주시</span></div>
+                            </div>
+                            <div class="tree-level last">
+                                <div class="tree-node sender" data-layer="L1-JUNGMUN" id="senderNode">
+                                    <span class="node-label">중문동</span>
+                                    <span class="node-tag">발신</span>
+                                </div>
+                                <div class="tree-node receiver" data-layer="L1-DAEJEONG" id="receiverNode">
+                                    <span class="node-label">대정읍</span>
+                                    <span class="node-tag">수신</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="common-layer-indicator" id="commonIndicator">
+                            <span>공통 계층: <strong id="commonLayerText">-</strong></span>
+                        </div>
+                    </div>
+                    <div class="balance-viz" id="balanceViz">
+                        <h4>💰 잔액 변동</h4>
+                        <div class="balance-flow">
+                            <div class="balance-box sender">
+                                <span class="balance-label">발신자</span>
+                                <span class="balance-before" id="senderBefore">1,000,000 T</span>
+                                <span class="balance-delta" id="senderDelta"></span>
+                                <span class="balance-after" id="senderAfter">-</span>
+                            </div>
+                            <div class="balance-arrow" id="balanceArrow">→</div>
+                            <div class="balance-box receiver">
+                                <span class="balance-label">수신자</span>
+                                <span class="balance-before" id="receiverBefore">500,000 T</span>
+                                <span class="balance-delta" id="receiverDelta"></span>
+                                <span class="balance-after" id="receiverAfter">-</span>
+                            </div>
+                        </div>
+                        <div class="invariant-check" id="invariantCheck">
+                            <span class="invariant-label">잔액 불변성:</span>
+                            <span class="invariant-value" id="invariantValue">Δ합계 = 0 ✓</span>
+                        </div>
+                    </div>
+                    <div class="log-area" id="logArea">
+                        <div class="log-line info">[시스템] 시뮬레이션 준비 완료</div>
+                    </div>
+                </div>
+
+                <div class="result-panel">
+                    <h3>📋 검증 결과</h3>
+                    <div class="step-list" id="stepList">
+                        <div class="step-item" data-step="1">
+                            <span class="step-num">1</span>
+                            <div class="step-info"><div class="step-name">잔액 확인</div><div class="step-desc">sender.balance ≥ amount</div></div>
+                            <span class="step-status">-</span>
+                        </div>
+                        <div class="step-item" data-step="2">
+                            <span class="step-num">2</span>
+                            <div class="step-info"><div class="step-name">신원 확인</div><div class="step-desc">본인 인증 상태</div></div>
+                            <span class="step-status">-</span>
+                        </div>
+                        <div class="step-item" data-step="3">
+                            <span class="step-num">3</span>
+                            <div class="step-info"><div class="step-name">한도 확인</div><div class="step-desc">단일 거래 ≤ 100T</div></div>
+                            <span class="step-status">-</span>
+                        </div>
+                        <div class="step-item" data-step="4">
+                            <span class="step-num">4</span>
+                            <div class="step-info"><div class="step-name">이상 탐지</div><div class="step-desc">AI 의심도 점수</div></div>
+                            <span class="step-status">-</span>
+                        </div>
+                        <div class="step-item" data-step="5">
+                            <span class="step-num">5</span>
+                            <div class="step-info"><div class="step-name">규정 준수</div><div class="step-desc">AML/CFT 검증</div></div>
+                            <span class="step-status">-</span>
+                        </div>
+                    </div>
+                    <div class="result-summary" id="resultSummary" style="margin-top: var(--space-4); display: none;">
+                        <div class="result-item"><span class="result-label">공통 계층</span><span class="result-value" id="resultCommon">-</span></div>
+                        <div class="result-item"><span class="result-label">처리 시간</span><span class="result-value" id="resultTime">-</span></div>
+                        <div class="result-item"><span class="result-label">최종 결과</span><span class="result-value" id="resultFinal">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+
+    <style>
+    .layer-viz { margin-bottom: var(--space-6); }
+    .layer-tree { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+    .tree-level { display: flex; gap: var(--space-3); justify-content: center; }
+    .tree-node {
+        padding: var(--space-2) var(--space-4);
+        background: var(--gray-100);
+        border: 2px solid var(--gray-300);
+        border-radius: var(--radius);
+        text-align: center;
+        transition: all var(--transition);
+        position: relative;
+    }
+    .tree-node.sender { border-color: var(--primary); background: rgba(26,58,110,0.1); }
+    .tree-node.receiver { border-color: var(--success); background: rgba(13,104,50,0.1); }
+    .tree-node.common { border-color: var(--accent); background: rgba(212,160,23,0.2); }
+    .node-label { font-size: 13px; font-weight: 500; }
+    .node-tag { display: block; font-size: 11px; color: var(--gray-500); }
+    .common-layer-indicator {
+        margin-top: var(--space-4);
+        padding: var(--space-3);
+        background: var(--gray-100);
+        border-radius: var(--radius);
+        text-align: center;
+        font-size: 13px;
+    }
+    .common-layer-indicator.found { background: rgba(212,160,23,0.2); }
+    .balance-viz { margin-top: var(--space-6); }
+    .balance-viz h4 { font-size: 13px; font-weight: 600; margin-bottom: var(--space-3); }
+    .balance-flow { display: flex; align-items: center; justify-content: center; gap: var(--space-4); }
+    .balance-box {
+        padding: var(--space-4);
+        background: var(--gray-50);
+        border-radius: var(--radius);
+        text-align: center;
+        min-width: 140px;
+        border-left: 3px solid var(--gray-300);
+    }
+    .balance-box.sender { border-left-color: var(--primary); }
+    .balance-box.receiver { border-left-color: var(--success); }
+    .balance-label { display: block; font-size: 11px; color: var(--gray-500); margin-bottom: var(--space-2); }
+    .balance-before { display: block; font-size: 12px; color: var(--gray-500); text-decoration: line-through; }
+    .balance-delta { display: block; font-size: 13px; font-weight: 600; margin: var(--space-1) 0; }
+    .balance-delta.minus { color: var(--error); }
+    .balance-delta.plus { color: var(--success); }
+    .balance-after { display: block; font-size: 16px; font-weight: 700; color: var(--gray-900); }
+    .balance-arrow { font-size: 20px; color: var(--gray-400); }
+    .invariant-check {
+        margin-top: var(--space-4);
+        padding: var(--space-3);
+        background: var(--success-light);
+        border-radius: var(--radius);
+        text-align: center;
+    }
+    .invariant-label { font-size: 13px; color: var(--gray-600); }
+    .invariant-value { font-size: 13px; font-weight: 600; color: var(--success); margin-left: var(--space-2); }
+    .result-summary { padding-top: var(--space-4); border-top: 1px solid var(--gray-200); }
+    </style>
+    <script src="/js/sim-transaction.js"></script>
+</body>
+</html>

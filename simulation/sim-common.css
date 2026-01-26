@@ -1,0 +1,276 @@
+/* ============================================
+   Simulation Pages - 정부 표준 디자인
+   ============================================ */
+
+/* Sim Hero - 네이비 단색 (그라데이션 제거) */
+.sim-hero {
+    padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-8);
+    background: var(--primary);
+    color: var(--white);
+}
+.sim-hero h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+}
+.sim-hero p {
+    font-size: 15px;
+    opacity: 0.9;
+}
+.sim-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: var(--space-4);
+}
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    margin-bottom: var(--space-4);
+    text-decoration: none;
+}
+.back-link:hover { color: var(--white); }
+
+/* Simulation Container */
+.sim-content {
+    padding: var(--space-10) 0;
+    background: var(--gray-50);
+}
+.sim-wrapper {
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    gap: var(--space-5);
+    align-items: start;
+}
+.sim-wrapper.two-col {
+    grid-template-columns: 300px 1fr;
+}
+
+/* Control Panel */
+.control-panel {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-4));
+}
+.control-panel h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-900);
+}
+.control-group { margin-bottom: var(--space-4); }
+.control-group:last-child { margin-bottom: 0; }
+.control-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: var(--space-2);
+}
+.control-select, .control-input {
+    width: 100%;
+    padding: var(--space-3);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: var(--white);
+}
+.control-select:focus, .control-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+.control-hint {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: var(--space-1);
+}
+
+/* Run Button - 네이비 */
+.run-btn {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition);
+    margin-top: var(--space-4);
+}
+.run-btn:hover { background: var(--primary-dark); }
+.run-btn:disabled {
+    background: var(--gray-300);
+    cursor: not-allowed;
+}
+.run-btn.running {
+    background: var(--accent);
+    color: var(--gray-900);
+}
+
+/* Visualization Area */
+.viz-area {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    min-height: 400px;
+}
+.viz-area h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-900);
+}
+
+/* Result Panel */
+.result-panel {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-4));
+}
+.result-panel h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-900);
+}
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 13px;
+}
+.result-item:last-child { border-bottom: none; }
+.result-label { color: var(--gray-600); }
+.result-value { font-weight: 600; color: var(--gray-900); }
+.result-value.success { color: var(--success); }
+.result-value.error { color: var(--error); }
+
+/* Step Indicator */
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    transition: all var(--transition);
+}
+.step-item.active {
+    background: var(--white);
+    border-color: var(--primary);
+    border-left: 3px solid var(--primary);
+}
+.step-item.pass {
+    background: var(--success-light);
+    border-color: var(--success);
+    border-left: 3px solid var(--success);
+}
+.step-item.fail {
+    background: var(--error-light);
+    border-color: var(--error);
+    border-left: 3px solid var(--error);
+}
+.step-num {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-200);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-600);
+    flex-shrink: 0;
+}
+.step-item.active .step-num {
+    background: var(--primary);
+    color: var(--white);
+}
+.step-item.pass .step-num {
+    background: var(--success);
+    color: var(--white);
+}
+.step-item.fail .step-num {
+    background: var(--error);
+    color: var(--white);
+}
+.step-info { flex: 1; }
+.step-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-900);
+}
+.step-desc {
+    font-size: 11px;
+    color: var(--gray-500);
+}
+.step-status {
+    font-size: 11px;
+    font-weight: 600;
+}
+.step-item.pass .step-status { color: var(--success); }
+.step-item.fail .step-status { color: var(--error); }
+
+/* Animation - 최소화 */
+.fade-in {
+    animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Log Area */
+.log-area {
+    background: var(--gray-100);
+    color: var(--gray-900);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: var(--space-4);
+}
+.log-line { padding: 2px 0; }
+.log-line.info { color: var(--primary); }
+.log-line.success { color: var(--success); }
+.log-line.error { color: var(--error); }
+.log-line.warn { color: var(--warning); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .sim-wrapper { grid-template-columns: 1fr; }
+    .sim-wrapper.two-col { grid-template-columns: 1fr; }
+    .control-panel, .result-panel { position: static; }
+}

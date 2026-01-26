@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSI 인증 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/technology/tech-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/" class="active">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="tech-hero">
+        <div class="container">
+            <a href="/technology/" class="back-link">← 기술 문서</a>
+            <span class="tech-badge">모듈 850</span>
+            <h1>SSI 인증</h1>
+            <p>자기주권 신원 - 중앙 기관 없이 5요소 기반 탈중앙화 신원 증명</p>
+        </div>
+    </div>
+
+    <main class="tech-content">
+        <div class="container">
+            <article class="tech-article">
+                <section class="tech-section" id="overview">
+                    <h2>개요</h2>
+                    <p>SSI(Self-Sovereign Identity)는 사용자가 자신의 신원 정보를 직접 관리하고 증명하는 탈중앙화 신원 인증 시스템입니다. 중앙 기관에 의존하지 않고 5요소를 제시하여 신원을 증명합니다.</p>
+                    <div class="info-box">
+                        <strong>핵심 원리:</strong> "내 신원은 내가 증명한다" - 데이터 주권을 사용자에게 반환
+                    </div>
+                </section>
+
+                <section class="tech-section" id="process">
+                    <h2>등록 프로세스</h2>
+                    <div class="flow-diagram">
+                        <div class="flow-step">신분증 해싱</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">계층 저장</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">발행자 서명</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">완료</div>
+                    </div>
+                    <ol>
+                        <li><strong>신분증 해싱:</strong> 신분증 원본을 SHA-256으로 해시 처리</li>
+                        <li><strong>계층 저장:</strong> 확률적 계층 선택에 따라 해시값 저장</li>
+                        <li><strong>발행자 서명:</strong> 정부 기관이 디지털 서명 첨부</li>
+                    </ol>
+                </section>
+
+                <section class="tech-section" id="five-elements">
+                    <h2>신원 증명 5요소</h2>
+                    <p>신원 확인 시 다음 5가지 요소를 모두 제시해야 합니다.</p>
+                    <table class="tech-table">
+                        <thead>
+                            <tr><th>#</th><th>요소</th><th>설명</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>신분증 원본</td><td>검증자에게 직접 제시</td></tr>
+                            <tr><td>2</td><td>발행자 서명</td><td>정부 기관의 디지털 서명</td></tr>
+                            <tr><td>3</td><td>해시값</td><td>신분증의 SHA-256 해시</td></tr>
+                            <tr><td>4</td><td>계층/노드 정보</td><td>저장된 계층 및 노드 ID</td></tr>
+                            <tr><td>5</td><td>저장 시각</td><td>등록 타임스탬프</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="tech-section" id="verification">
+                    <h2>검증 과정</h2>
+                    <div class="code-block">
+<code>// 검증 알고리즘
+function verifyIdentity(document, signature, hash, layer, timestamp) {
+    // 1. 해시 일치 확인
+    if (SHA256(document) !== hash) return false;
+    
+    // 2. 서명 유효성 확인
+    if (!verifySignature(hash, signature, issuerPublicKey)) return false;
+    
+    // 3. 계층 저장 확인
+    if (!checkLayerStorage(hash, layer, timestamp)) return false;
+    
+    return true;  // 신원 확인 완료
+}</code>
+                    </div>
+                </section>
+
+                <section class="tech-section" id="privacy">
+                    <h2>프라이버시 보호</h2>
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <h5>선택적 공개</h5>
+                            <p>필요한 정보만 선택적으로 공개 가능</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>영지식 증명</h5>
+                            <p>정보 노출 없이 조건 충족 증명</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>해시 저장</h5>
+                            <p>원본이 아닌 해시만 체인에 저장</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="tech-section">
+                    <h2>관련 시뮬레이션</h2>
+                    <a href="/simulation/ssi.html" class="related-link">→ SSI 인증 시뮬레이션 체험하기</a>
+                </section>
+            </article>
+
+            <aside class="tech-sidebar">
+                <div class="sidebar-card">
+                    <h4>목차</h4>
+                    <ul class="toc">
+                        <li><a href="#overview">개요</a></li>
+                        <li><a href="#process">등록 프로세스</a></li>
+                        <li><a href="#five-elements">5요소</a></li>
+                        <li><a href="#verification">검증 과정</a></li>
+                        <li><a href="#privacy">프라이버시</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-card">
+                    <h4>관련 모듈</h4>
+                    <ul class="module-list">
+                        <li>850 - SSI 인증</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+</body>
+</html>

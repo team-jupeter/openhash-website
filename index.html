@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenHash - 차세대 분산 데이터 무결성 검증 시스템</title>
+    <meta name="description" content="블록체인 대비 98.5% 에너지 절감, 4ms 검증 속도의 계층 분산 기반 무결성 검증 시스템">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/" class="active">홈</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">블록체인의 한계를<br>근본적으로 해결합니다</h1>
+                <p class="hero-desc">OpenHash는 기존 통신 인프라의 물리적 계층 구조를 활용하여 작업증명(PoW) 없이 데이터 무결성을 보장하는 차세대 분산원장 기술입니다.</p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" data-target="98.5">0</div>
+                        <div class="stat-unit">%</div>
+                        <div class="stat-label">에너지 절감</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" data-target="4">0</div>
+                        <div class="stat-unit">ms</div>
+                        <div class="stat-label">검증 속도</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" data-target="99.4">0</div>
+                        <div class="stat-unit">%</div>
+                        <div class="stat-label">부정거래 탐지</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" data-target="128">0</div>
+                        <div class="stat-unit">bytes</div>
+                        <div class="stat-label">거래당 데이터</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="section" id="problem">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Problem</span>
+                <h2 class="section-title">기존 블록체인의 <span class="highlight">한계</span></h2>
+                <p class="section-desc">비트코인과 이더리움은 혁신적이었지만, 근본적인 문제들을 안고 있습니다.</p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h4>⚡ 막대한 에너지 소비</h4>
+                    <p class="value">121 TWh/년</p>
+                    <p>비트코인의 연간 전력 소비량은 일부 국가 전체 소비량에 필적합니다.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>🕐 느린 처리 속도</h4>
+                    <p class="value">10분 ~ 12초</p>
+                    <p>블록 생성에 비트코인 10분, 이더리움 12초가 필요합니다.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>👥 권력 집중</h4>
+                    <p class="value">부익부 빈익빈</p>
+                    <p>지분증명(PoS)은 대형 지분 보유자에게 권력이 집중됩니다.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>🔄 동기화 부담</h4>
+                    <p class="value">전역 일관성 필요</p>
+                    <p>모든 노드가 동일한 데이터를 유지해야 하여 확장성이 저하됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hierarchy -->
+    <section class="section alt" id="hierarchy">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Solution</span>
+                <h2 class="section-title">5단계 <span class="highlight">행정 계층 구조</span></h2>
+                <p class="section-desc">기존 통신 인프라의 물리적 계층을 신뢰 인프라로 재해석합니다.</p>
+            </div>
+            <div class="hierarchy-container">
+                <div class="hierarchy-tower">
+                    <div class="layer-card" data-layer="L5"><div class="layer-num">L5</div><div class="layer-info"><div class="layer-name">글로벌 계층</div><div class="layer-code">GLOBAL</div></div><div class="layer-arrow">→</div></div>
+                    <div class="layer-card" data-layer="L4"><div class="layer-num">L4</div><div class="layer-info"><div class="layer-name">국가 계층</div><div class="layer-code">KR, US, JP...</div></div><div class="layer-arrow">→</div></div>
+                    <div class="layer-card" data-layer="L3"><div class="layer-num">L3</div><div class="layer-info"><div class="layer-name">광역시도 계층</div><div class="layer-code">KR-SEOUL, KR-JEJU...</div></div><div class="layer-arrow">→</div></div>
+                    <div class="layer-card" data-layer="L2"><div class="layer-num">L2</div><div class="layer-info"><div class="layer-name">시군구 계층</div><div class="layer-code">KR-JEJU-SEOGWIPO...</div></div><div class="layer-arrow">→</div></div>
+                    <div class="layer-card active" data-layer="L1"><div class="layer-num">L1</div><div class="layer-info"><div class="layer-name">읍면동 계층</div><div class="layer-code">KR-JEJU-SEOGWIPO-JUNGMUN...</div></div><div class="layer-arrow">→</div></div>
+                </div>
+                <div class="hierarchy-detail" id="hierarchyDetail">
+                    <div class="detail-header">
+                        <span class="detail-badge" id="detailBadge">L1</span>
+                        <h4 id="detailTitle">읍면동 계층</h4>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-section">
+                            <h5>📍 역할</h5>
+                            <p id="detailRole">최하위 계층으로서 실제 거래가 발생하는 지점입니다. 개인 간 소액 거래의 대부분이 이 계층에서 처리됩니다.</p>
+                        </div>
+                        <div class="detail-section">
+                            <h5>📊 기록 확률</h5>
+                            <div class="prob-bars">
+                                <div class="prob-item"><span class="prob-label">일반 데이터</span><div class="prob-bar"><div class="prob-fill" id="probNormal" style="width: 70%"></div></div><span class="prob-value" id="probNormalVal">70%</span></div>
+                                <div class="prob-item"><span class="prob-label">고중요도</span><div class="prob-bar"><div class="prob-fill high" id="probHigh" style="width: 90%"></div></div><span class="prob-value" id="probHighVal">90%</span></div>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>🔗 노드 구성</h5>
+                            <p id="detailNodes">n=4 노드, f=1 장애 허용, quorum=3 (2f+1)</p>
+                        </div>
+                        <div class="detail-section">
+                            <h5>✅ 검증 방식</h5>
+                            <ul id="detailVerify"><li>LPBFT 합의를 통한 즉시 검증</li><li>상위 계층으로 머클 루트 전파</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulation -->
+    <section class="section" id="simulation">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Interactive</span>
+                <h2 class="section-title">거래 <span class="highlight">시뮬레이션</span></h2>
+                <p class="section-desc">두 사용자 간의 거래가 어떻게 검증되는지 직접 체험해보세요.</p>
+            </div>
+            <div class="sim-container">
+                <div class="sim-panel">
+                    <h4>💳 발신자</h4>
+                    <div class="form-group">
+                        <label class="form-label">지역 선택</label>
+                        <select id="senderRegion" class="form-select">
+                            <option value="KR-JEJU-SEOGWIPO-JUNGMUN">제주 서귀포시 중문동</option>
+                            <option value="KR-JEJU-SEOGWIPO-DAEJEONG">제주 서귀포시 대정읍</option>
+                            <option value="KR-JEJU-JEJU-NOHYEONG">제주 제주시 노형동</option>
+                            <option value="KR-SEOUL-GANGNAM-YEOKSAM">서울 강남구 역삼동</option>
+                            <option value="KR-BUSAN-HAEUNDAE-U">부산 해운대구 우동</option>
+                            <option value="US-CA-LA-DOWNTOWN">미국 LA</option>
+                            <option value="JP-TOKYO-SHIBUYA-HARAJUKU">일본 도쿄</option>
+                        </select>
+                    </div>
+                    <p style="font-size: 13px; color: var(--gray-500);">잔액: 1,000,000 T</p>
+                </div>
+                <div class="sim-center">
+                    <div class="form-group">
+                        <label class="form-label">송금액 (T)</label>
+                        <input type="number" id="txAmount" class="form-input" value="50000" min="1" style="width: 120px; text-align: center;">
+                    </div>
+                    <div class="sim-arrow">→</div>
+                    <button id="simBtn" class="btn btn-primary">시뮬레이션 시작</button>
+                </div>
+                <div class="sim-panel">
+                    <h4>📥 수신자</h4>
+                    <div class="form-group">
+                        <label class="form-label">지역 선택</label>
+                        <select id="receiverRegion" class="form-select">
+                            <option value="KR-JEJU-SEOGWIPO-DAEJEONG">제주 서귀포시 대정읍</option>
+                            <option value="KR-JEJU-SEOGWIPO-JUNGMUN">제주 서귀포시 중문동</option>
+                            <option value="KR-JEJU-JEJU-NOHYEONG">제주 제주시 노형동</option>
+                            <option value="KR-SEOUL-GANGNAM-YEOKSAM">서울 강남구 역삼동</option>
+                            <option value="KR-BUSAN-HAEUNDAE-U">부산 해운대구 우동</option>
+                            <option value="US-CA-LA-DOWNTOWN">미국 LA</option>
+                            <option value="JP-TOKYO-SHIBUYA-HARAJUKU">일본 도쿄</option>
+                        </select>
+                    </div>
+                    <p style="font-size: 13px; color: var(--gray-500);">잔액: 500,000 T</p>
+                </div>
+            </div>
+            <div id="simSteps" style="max-width: 500px; margin: 0 auto var(--space-6);"></div>
+            <div id="simResult" class="sim-result">지역을 선택하고 시뮬레이션을 시작하세요.</div>
+        </div>
+    </section>
+
+    <!-- Verification -->
+    <section class="section alt" id="verification">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Verification</span>
+                <h2 class="section-title">5단계 <span class="highlight">거래 검증</span></h2>
+                <p class="section-desc">모든 거래는 5단계 파이프라인을 순차적으로 통과해야 합니다.</p>
+            </div>
+            <div class="pipeline">
+                <div class="step"><div class="step-num">1</div><div class="step-content"><h4>잔액 확인</h4><p>발신자 잔액 ≥ 거래 금액 검증</p></div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-content"><h4>신원 확인</h4><p>발신자/수신자 본인 인증 및 계층 등록 검증</p></div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-content"><h4>한도 확인</h4><p>단일 거래 한도(100T) 및 일일 한도 검증</p></div></div>
+                <div class="step"><div class="step-num">4</div><div class="step-content"><h4>이상 탐지</h4><p>BERT-CNN-LSTM 앙상블 AI로 의심도 점수 산출 (99.4% 정확도)</p></div></div>
+                <div class="step"><div class="step-num">5</div><div class="step-content"><h4>규정 준수</h4><p>AML/CFT 규정, 국가별 규제, 제재 목록 검증</p></div></div>
+            </div>
+            <p style="text-align: center; margin-top: var(--space-8); color: var(--gray-600); font-size: 14px;">평균 처리 시간: <strong>100ms</strong></p>
+        </div>
+    </section>
+
+    <!-- Performance -->
+    <section class="section" id="performance">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Performance</span>
+                <h2 class="section-title">압도적인 <span class="highlight">성능</span></h2>
+            </div>
+            <div class="perf-grid">
+                <div class="perf-card">
+                    <h4>에너지 효율</h4>
+                    <p>Bitcoin 대비 <strong style="color: var(--success);">98.5% 절감</strong></p>
+                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width: 100%;"></div></div>
+                    <p style="font-size: 12px; color: var(--gray-500);">Bitcoin: 121 TWh/년</p>
+                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width: 1.5%;"></div></div>
+                    <p style="font-size: 12px; color: var(--gray-500);">OpenHash: ~1.8 TWh/년</p>
+                </div>
+                <div class="perf-card">
+                    <h4>검증 속도</h4>
+                    <p>Bitcoin 대비 <strong style="color: var(--success);">150,000배 빠름</strong></p>
+                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width: 100%;"></div></div>
+                    <p style="font-size: 12px; color: var(--gray-500);">Bitcoin: 600,000ms (10분)</p>
+                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width: 0.1%;"></div></div>
+                    <p style="font-size: 12px; color: var(--gray-500);">OpenHash: 4ms</p>
+                </div>
+                <div class="perf-card">
+                    <h4>대역폭 효율</h4>
+                    <p>머클 루트만 전송하여 <strong style="color: var(--success);">90% 절감</strong></p>
+                    <p style="font-size: 12px; color: var(--gray-600); margin-top: var(--space-4);">거래당 전송량: ~128 bytes</p>
+                    <p style="font-size: 12px; color: var(--gray-600);">기존 트래픽에 실질적 부하 없음</p>
+                </div>
+                <div class="perf-card">
+                    <h4>인프라 비용</h4>
+                    <p>기존 이동통신 네트워크 활용</p>
+                    <p style="font-size: 12px; color: var(--gray-600); margin-top: var(--space-4);">인프라 투자: <strong style="color: var(--success);">100% 절감</strong></p>
+                    <p style="font-size: 12px; color: var(--gray-600);">유지보수: <strong style="color: var(--success);">80-90% 절감</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SSI -->
+    <section class="section alt" id="ssi">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">SSI</span>
+                <h2 class="section-title">자기주권 <span class="highlight">신원 인증</span></h2>
+                <p class="section-desc">중앙 기관 없이 사용자가 직접 신원을 증명합니다.</p>
+            </div>
+            <div class="ssi-flow">
+                <div class="ssi-step"><div class="ssi-icon">🪪</div><h4>신분증 해싱</h4><p>SHA-256으로 해시값 생성</p></div>
+                <div class="ssi-step"><div class="ssi-icon">📊</div><h4>계층 저장</h4><p>확률적 계층 선택 후 저장</p></div>
+                <div class="ssi-step"><div class="ssi-icon">✍️</div><h4>발행자 서명</h4><p>정부 기관 디지털 서명</p></div>
+                <div class="ssi-step"><div class="ssi-icon">✅</div><h4>신원 증명</h4><p>5요소 제시로 인증</p></div>
+            </div>
+            <h4 style="text-align: center; margin-bottom: var(--space-6); font-size: 15px; font-weight: 600;">신원 증명 5요소</h4>
+            <div class="ssi-elements">
+                <div class="ssi-element"><span>1</span>신분증 원본</div>
+                <div class="ssi-element"><span>2</span>발행자 서명</div>
+                <div class="ssi-element"><span>3</span>해시값</div>
+                <div class="ssi-element"><span>4</span>계층/노드 정보</div>
+                <div class="ssi-element"><span>5</span>저장 시각</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="#" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="#problem">문제점</a>
+                    <a href="#hierarchy">계층구조</a>
+                    <a href="#simulation">시뮬레이션</a>
+                    <a href="#verification">검증</a>
+                    <a href="/tests/">테스트 센터</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/simulation.js"></script>
+    <script src="js/hierarchy.js"></script>
+</body>
+</html>

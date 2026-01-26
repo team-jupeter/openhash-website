@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault 서비스 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/technology/tech-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/" class="active">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="tech-hero">
+        <div class="container">
+            <a href="/technology/" class="back-link">← 기술 문서</a>
+            <span class="tech-badge">모듈 800-810</span>
+            <h1>Vault 서비스</h1>
+            <p>금융/의료/교육/행정/교통/일반 6서랍 자동 분류 데이터 관리</p>
+        </div>
+    </div>
+
+    <main class="tech-content">
+        <div class="container">
+            <article class="tech-article">
+                <section class="tech-section" id="overview">
+                    <h2>개요</h2>
+                    <p>Vault는 사용자의 개인 데이터를 6개의 카테고리(서랍)로 자동 분류하여 안전하게 저장하는 개인 데이터 금고 서비스입니다. AI 기반 분류 시스템이 데이터 유형을 자동으로 판별합니다.</p>
+                </section>
+
+                <section class="tech-section" id="drawers">
+                    <h2>6개 서랍 구조</h2>
+                    <table class="tech-table">
+                        <thead>
+                            <tr><th>서랍</th><th>아이콘</th><th>저장 데이터</th><th>예시</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>FINANCE</td><td>💰</td><td>금융 정보</td><td>거래 내역, 계좌, 세금</td></tr>
+                            <tr><td>MEDICAL</td><td>🏥</td><td>의료 정보</td><td>진료 기록, 처방전, 건강검진</td></tr>
+                            <tr><td>EDUCATION</td><td>🎓</td><td>교육 정보</td><td>학력, 자격증, 수료증</td></tr>
+                            <tr><td>ADMIN</td><td>📋</td><td>행정 정보</td><td>주민등록, 운전면허, 여권</td></tr>
+                            <tr><td>TRANSPORT</td><td>🚗</td><td>교통 정보</td><td>차량등록, 교통카드, 주차</td></tr>
+                            <tr><td>GENERAL</td><td>📁</td><td>일반 정보</td><td>기타 분류되지 않은 데이터</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="tech-section" id="classification">
+                    <h2>AI 자동 분류</h2>
+                    <p>데이터 저장 시 AI가 내용을 분석하여 적절한 서랍을 추천합니다.</p>
+                    <div class="code-block">
+<code>// 분류 알고리즘
+function classifyData(content) {
+    // 1. 텍스트 특징 추출
+    features = extractFeatures(content);
+    
+    // 2. 분류 모델 추론
+    predictions = classificationModel.predict(features);
+    
+    // 3. 가장 높은 확률의 서랍 반환
+    return {
+        drawer: argmax(predictions),
+        confidence: max(predictions)
+    };
+}</code>
+                    </div>
+                </section>
+
+                <section class="tech-section" id="security">
+                    <h2>보안 체계</h2>
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <h5>E2E 암호화</h5>
+                            <p>사용자 키로만 복호화 가능</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>접근 제어</h5>
+                            <p>서랍별 권한 설정</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>감사 로그</h5>
+                            <p>모든 접근 기록 저장</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>백업/복구</h5>
+                            <p>분산 백업 및 복구</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="tech-section" id="sharing">
+                    <h2>선택적 공유</h2>
+                    <p>사용자는 필요한 데이터만 선택하여 제3자에게 공유할 수 있습니다.</p>
+                    <ul>
+                        <li>시간 제한 공유 (1회성, 기간 한정)</li>
+                        <li>부분 공개 (마스킹 처리)</li>
+                        <li>검증만 허용 (원본 미제공)</li>
+                    </ul>
+                </section>
+            </article>
+
+            <aside class="tech-sidebar">
+                <div class="sidebar-card">
+                    <h4>목차</h4>
+                    <ul class="toc">
+                        <li><a href="#overview">개요</a></li>
+                        <li><a href="#drawers">6개 서랍</a></li>
+                        <li><a href="#classification">AI 분류</a></li>
+                        <li><a href="#security">보안</a></li>
+                        <li><a href="#sharing">선택적 공유</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-card">
+                    <h4>관련 모듈</h4>
+                    <ul class="module-list">
+                        <li>800 - Vault 기본</li>
+                        <li>810 - 6서랍 분류</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+</body>
+</html>

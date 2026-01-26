@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기술 문서 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-5);
+    }
+    .tech-card {
+        display: block;
+        padding: var(--space-6);
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        color: inherit;
+        transition: border-color var(--transition);
+    }
+    .tech-card:hover {
+        border-color: var(--gray-300);
+    }
+    .tech-icon {
+        font-size: 28px;
+        margin-bottom: var(--space-4);
+    }
+    .tech-card h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: var(--space-2);
+        color: var(--gray-900);
+    }
+    .tech-card p {
+        font-size: 13px;
+        color: var(--gray-600);
+        margin-bottom: var(--space-4);
+        line-height: 1.6;
+    }
+    .tech-modules {
+        display: inline-block;
+        font-size: 11px;
+        color: var(--primary);
+        background: var(--gray-100);
+        padding: var(--space-1) var(--space-2);
+        border-radius: 2px;
+        font-family: var(--font-mono);
+    }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/" class="active">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: calc(var(--nav-height) + var(--space-10)) 0 var(--space-10);">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 28px;">기술 문서</h1>
+            <p class="hero-desc" style="font-size: 15px; margin-bottom: 0;">OpenHash 특허 기반 핵심 기술 상세 문서</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="tech-grid">
+                <a href="/technology/hierarchy.html" class="tech-card">
+                    <div class="tech-icon">🏛️</div>
+                    <h3>5단계 계층 구조</h3>
+                    <p>글로벌-국가-광역시도-시군구-읍면동 계층 기반 데이터 무결성 검증</p>
+                    <span class="tech-modules">모듈 100-130</span>
+                </a>
+
+                <a href="/technology/verification.html" class="tech-card">
+                    <div class="tech-icon">✅</div>
+                    <h3>검증 시스템</h3>
+                    <p>하향식 검증, 상향식 감시, 잔액 불변성, 5단계 거래 검증 파이프라인</p>
+                    <span class="tech-modules">모듈 310, 320, 350, 360</span>
+                </a>
+
+                <a href="/technology/consensus.html" class="tech-card">
+                    <div class="tech-icon">🤝</div>
+                    <h3>LPBFT 합의</h3>
+                    <p>경량 PBFT - 평상시 경량 검증, 비상시에만 합의 프로토콜 발동</p>
+                    <span class="tech-modules">모듈 340</span>
+                </a>
+
+                <a href="/technology/layer-select.html" class="tech-card">
+                    <div class="tech-icon">🎲</div>
+                    <h3>확률적 계층 선택</h3>
+                    <p>SHA-256 이중 해싱 기반 확률 분포에 따른 기록 계층 자동 선택</p>
+                    <span class="tech-modules">모듈 300</span>
+                </a>
+
+                <a href="/technology/ssi.html" class="tech-card">
+                    <div class="tech-icon">🪪</div>
+                    <h3>SSI 인증</h3>
+                    <p>자기주권 신원 - 중앙 기관 없이 5요소 기반 탈중앙화 신원 증명</p>
+                    <span class="tech-modules">모듈 850</span>
+                </a>
+
+                <a href="/technology/currency.html" class="tech-card">
+                    <div class="tech-icon">💰</div>
+                    <h3>디지털 화폐</h3>
+                    <p>민간 경쟁형 디지털 화폐 발행, AI 검증, FPGA 가속, 자율 금융</p>
+                    <span class="tech-modules">모듈 1000-1940</span>
+                </a>
+
+                <a href="/technology/vault.html" class="tech-card">
+                    <div class="tech-icon">🗄️</div>
+                    <h3>Vault 서비스</h3>
+                    <p>금융/의료/교육/행정/교통/일반 6서랍 자동 분류 데이터 관리</p>
+                    <span class="tech-modules">모듈 800-810</span>
+                </a>
+
+                <a href="/technology/hashchain.html" class="tech-card">
+                    <div class="tech-icon">🔗</div>
+                    <h3>해시 체인</h3>
+                    <p>Git 병합 방식의 분산 해시 체인, 머클 트리 동기화</p>
+                    <span class="tech-modules">모듈 330</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/">홈</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트 센터</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+</body>
+</html>

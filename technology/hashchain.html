@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>해시 체인 - OpenHash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/technology/tech-common.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/technology/" class="active">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="tech-hero">
+        <div class="container">
+            <a href="/technology/" class="back-link">← 기술 문서</a>
+            <span class="tech-badge">모듈 330</span>
+            <h1>해시 체인</h1>
+            <p>Git 병합 방식의 분산 해시 체인, 머클 트리 동기화</p>
+        </div>
+    </div>
+
+    <main class="tech-content">
+        <div class="container">
+            <article class="tech-article">
+                <section class="tech-section" id="overview">
+                    <h2>개요</h2>
+                    <p>OpenHash의 해시 체인은 기존 블록체인의 단일 체인 구조 대신 Git과 유사한 분산 병합 구조를 채택합니다. 각 계층이 독립적인 체인을 유지하면서 주기적으로 병합됩니다.</p>
+                </section>
+
+                <section class="tech-section" id="structure">
+                    <h2>블록 구조</h2>
+                    <div class="code-block">
+<code>Block {
+    header: {
+        version: uint32,
+        prevHash: bytes32,
+        merkleRoot: bytes32,
+        timestamp: uint64,
+        layerId: string,
+        height: uint64
+    },
+    transactions: Transaction[],
+    signatures: BLSSignature[]
+}</code>
+                    </div>
+                </section>
+
+                <section class="tech-section" id="merkle">
+                    <h2>머클 트리</h2>
+                    <p>거래들은 머클 트리로 구성되어 효율적인 검증이 가능합니다.</p>
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <h5>루트 해시</h5>
+                            <p>모든 거래의 집약적 표현</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>포함 증명</h5>
+                            <p>O(log n) 복잡도</p>
+                        </div>
+                        <div class="spec-item">
+                            <h5>비포함 증명</h5>
+                            <p>Sparse Merkle Tree 활용</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="tech-section" id="sync">
+                    <h2>계층 간 동기화</h2>
+                    <p>상위 계층은 하위 계층의 머클 루트만 수집하여 저장합니다.</p>
+                    <div class="flow-diagram">
+                        <div class="flow-step">L1 머클 루트</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">L2 블록에 포함</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">L3 집계</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">...</div>
+                    </div>
+                    <div class="info-box">
+                        <strong>대역폭 절약:</strong> 전체 거래가 아닌 32바이트 머클 루트만 전파
+                    </div>
+                </section>
+
+                <section class="tech-section" id="conflict">
+                    <h2>충돌 해결</h2>
+                    <p>동시 블록 생성 시 Git의 병합 전략과 유사하게 처리합니다.</p>
+                    <ul>
+                        <li><strong>Fast-forward:</strong> 단순 추가 시</li>
+                        <li><strong>3-way merge:</strong> 분기 발생 시</li>
+                        <li><strong>LPBFT 합의:</strong> 충돌 해결 불가 시</li>
+                    </ul>
+                </section>
+
+                <section class="tech-section">
+                    <h2>관련 시뮬레이션</h2>
+                    <a href="/simulation/hashchain.html" class="related-link">→ 해시 체인 시뮬레이션 체험하기</a>
+                </section>
+            </article>
+
+            <aside class="tech-sidebar">
+                <div class="sidebar-card">
+                    <h4>목차</h4>
+                    <ul class="toc">
+                        <li><a href="#overview">개요</a></li>
+                        <li><a href="#structure">블록 구조</a></li>
+                        <li><a href="#merkle">머클 트리</a></li>
+                        <li><a href="#sync">동기화</a></li>
+                        <li><a href="#conflict">충돌 해결</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-card">
+                    <h4>관련 모듈</h4>
+                    <ul class="module-list">
+                        <li>330 - 해시 체인</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+                <div class="footer-links">
+                    <a href="/technology/">기술</a>
+                    <a href="/simulation/">시뮬레이션</a>
+                    <a href="/tests/">테스트</a>
+                </div>
+            </div>
+            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+        </div>
+    </footer>
+</body>
+</html>
