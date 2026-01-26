@@ -1,164 +1,294 @@
+/**
+ * OpenHash Layer Select Simulator
+ * 확률적 계층 선택 - API 연동 + 단계별 애니메이션
+ */
 const LayerSelectSimulator = {
-    probNormal: [50, 80, 92, 98, 100],  // L1, L2, L3, L4, L5 누적
-    probHigh: [15, 35, 65, 90, 100],
+    // 5단계 중요도별 확률 분포 [L1, L2, L3, L4, L5]
+    probabilities: {
+        trivial:   [70, 20, 7, 2, 1],    // 일상
+        normal:    [50, 30, 12, 6, 2],   // 일반
+        important: [30, 35, 20, 10, 5],  // 중요
+        high:      [15, 25, 30, 20, 10], // 고중요
+        critical:  [5, 15, 30, 30, 20]   // 최고중요
+    },
     layerNames: ['L1 읍면동', 'L2 시군구', 'L3 광역시도', 'L4 국가', 'L5 글로벌'],
+    apiConnected: false,
 
-    // 간단한 SHA-256 시뮬레이션 (실제 구현은 crypto API 사용)
-    simpleHash: function(str) {
+    // 노드 상태 확인
+    async checkNodeStatus() {
+        try {
+            const data = await OpenHashConfig.get(1, '/health');
+            this.apiConnected = data.status === 'healthy';
+            return this.apiConnected;
+        } catch (e) {
+            this.apiConnected = false;
+            return false;
+        }
+    },
+
+    // SHA-256 시뮬레이션
+    simpleHash(str) {
         let hash = 0;
         for (let i = 0; i < str.length; i++) {
             const char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
             hash = hash & hash;
         }
-        // 64자 hex-like 문자열 생성
         const hex = Math.abs(hash).toString(16).padStart(8, '0');
         return (hex + hex + hex + hex + hex + hex + hex + hex).substring(0, 64);
     },
 
-    selectLayer: function(document, importance, timestamp) {
-        const ts = timestamp || Date.now().toString();
+    // 계층 선택 로직
+    selectLayer(data, importance) {
+        const timestamp = Date.now().toString();
+        const nonce = Math.random().toString(36).substring(2, 10);
         
-        // Step 1: 문서 해싱
-        const docHash = this.simpleHash(document);
+        // Step 1: 원본 데이터
+        const original = data;
         
-        // Step 2: 타임스탬프 연결
-        const combined = docHash + ts;
+        // Step 2: SHA-256 해시
+        const hash1 = this.simpleHash(original);
         
-        // Step 3: 1차 재해싱
-        const hash1 = this.simpleHash(combined);
+        // Step 3: 이중 해시 (+ timestamp + nonce)
+        const combined = hash1 + timestamp + nonce;
+        const hash2 = this.simpleHash(combined);
         
-        // Step 4: 2차 재해싱
-        const hash2 = this.simpleHash(hash1);
+        // Step 4: 선택자 값 (0-99)
+        const selectorValue = parseInt(hash2.slice(-4), 16) % 100;
         
-        // Step 5: 0-99 범위 변환
-        const value = parseInt(hash2.slice(-4), 16) % 100;
+        // 확률 분포에 따른 계층 선택
+        const probs = this.probabilities[importance] || this.probabilities.normal;
+        let cumulative = 0;
+        let selectedLayer = 1;
         
-        // Step 6: 확률 분포에 따른 계층 선택
-        const prob = importance === 'high' ? this.probHigh : this.probNormal;
-        let layer = 0;
-        for (let i = 0; i < prob.length; i++) {
-            if (value < prob[i]) {
-                layer = i;
+        for (let i = 0; i < probs.length; i++) {
+            cumulative += probs[i];
+            if (selectorValue < cumulative) {
+                selectedLayer = i + 1;
                 break;
             }
         }
 
         return {
-            docHash,
-            timestamp: ts,
+            original,
+            timestamp,
+            nonce,
             hash1,
             hash2,
-            value,
-            layer,
-            layerName: this.layerNames[layer]
+            selectorValue,
+            selectedLayer,
+            layerName: this.layerNames[selectedLayer - 1],
+            probability: probs[selectedLayer - 1]
         };
     },
 
-    updateProbDisplay: function(importance) {
-        const probs = importance === 'high' 
-            ? [15, 20, 30, 25, 10] 
-            : [50, 30, 12, 6, 2];
-        
-        document.getElementById('probL1').textContent = probs[0] + '%';
-        document.getElementById('probL2').textContent = probs[1] + '%';
-        document.getElementById('probL3').textContent = probs[2] + '%';
-        document.getElementById('probL4').textContent = probs[3] + '%';
-        document.getElementById('probL5').textContent = probs[4] + '%';
+    // 확률 분포 그래프 업데이트
+    updateProbDisplay(importance) {
+        const probs = this.probabilities[importance] || this.probabilities.normal;
+        for (let i = 1; i <= 5; i++) {
+            const bar = document.getElementById('barL' + i);
+            const pct = document.getElementById('pctL' + i);
+            if (bar) bar.style.width = probs[i-1] + '%';
+            if (pct) pct.textContent = probs[i-1] + '%';
+        }
+    },
+
+    // 선택된 계층 하이라이트
+    highlightSelectedLayer(layer) {
+        for (let i = 1; i <= 5; i++) {
+            const bar = document.getElementById('barL' + i);
+            if (bar) {
+                bar.classList.toggle('selected', i === layer);
+            }
+        }
     }
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const runBtn = document.getElementById('runSimBtn');
+    const runBatchBtn = document.getElementById('runBatchBtn');
     const logArea = document.getElementById('logArea');
     const importanceSelect = document.getElementById('importance');
+    const statusIcon = document.getElementById('statusIcon');
+    const statusText = document.getElementById('nodeStatusText');
 
     function log(msg, type = 'info') {
         const line = document.createElement('div');
         line.className = 'log-line ' + type;
-        line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+        line.innerHTML = '<span class="log-time">[' + new Date().toLocaleTimeString() + ']</span> ' + msg;
         logArea.appendChild(line);
         logArea.scrollTop = logArea.scrollHeight;
     }
 
-    function resetChart() {
-        for (let i = 1; i <= 5; i++) {
-            document.getElementById('barL' + i).style.width = '0%';
-            document.getElementById('countL' + i).textContent = '0';
+    // 초기 노드 상태 확인
+    const connected = await LayerSelectSimulator.checkNodeStatus();
+    statusIcon.classList.add(connected ? 'online' : 'offline');
+    statusText.textContent = connected ? 'L1 노드 연결됨' : '시뮬레이션 모드';
+    log(connected ? '✅ 노드 연결 성공' : '⚡ 시뮬레이션 모드', connected ? 'success' : 'warning');
+
+    // 중요도 변경 시 확률 분포 업데이트
+    if (importanceSelect) {
+        importanceSelect.addEventListener('change', function() {
+            LayerSelectSimulator.updateProbDisplay(this.value);
+            LayerSelectSimulator.highlightSelectedLayer(0); // 하이라이트 초기화
+            log('중요도 변경: ' + this.options[this.selectedIndex].text, 'info');
+        });
+        // 초기 확률 분포 설정
+        LayerSelectSimulator.updateProbDisplay(importanceSelect.value);
+    }
+
+    // 단계별 애니메이션
+    async function animateStep(stepNum, value, delay = 200) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                const step = document.getElementById('step' + stepNum);
+                if (step) {
+                    // 이전 단계들 done 처리
+                    for (let i = 1; i < stepNum; i++) {
+                        const prevStep = document.getElementById('step' + i);
+                        if (prevStep) {
+                            prevStep.classList.remove('active');
+                            prevStep.classList.add('done');
+                        }
+                    }
+                    // 현재 단계 active
+                    step.classList.add('active');
+                    
+                    // 값 업데이트
+                    const valueIds = ['originalData', 'firstHash', 'doubleHash', 'selectorValue'];
+                    const valueEl = document.getElementById(valueIds[stepNum - 1]);
+                    if (valueEl) {
+                        valueEl.textContent = value;
+                    }
+                }
+                resolve();
+            }, delay);
+        });
+    }
+
+    // 모든 단계 초기화
+    function resetSteps() {
+        for (let i = 1; i <= 4; i++) {
+            const step = document.getElementById('step' + i);
+            if (step) {
+                step.classList.remove('active', 'done');
+            }
         }
+        document.getElementById('originalData').textContent = '-';
+        document.getElementById('firstHash').textContent = '-';
+        document.getElementById('doubleHash').textContent = '-';
+        document.getElementById('selectorValue').textContent = '-';
     }
 
-    function updateChart(counts, total) {
-        for (let i = 1; i <= 5; i++) {
-            const pct = total > 0 ? (counts[i-1] / total * 100) : 0;
-            document.getElementById('barL' + i).style.width = pct + '%';
-            document.getElementById('countL' + i).textContent = counts[i-1] + ' (' + pct.toFixed(1) + '%)';
-        }
+    // 결과 모달 표시
+    function showResultModal(result) {
+        // 기존 모달 제거
+        const existingModal = document.getElementById('resultModal');
+        if (existingModal) existingModal.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'resultModal';
+        modal.className = 'result-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="modal-icon">🎯</span>
+                    <h3>계층 선택 완료</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="result-layer">${result.layerName}</div>
+                    <div class="result-details">
+                        <div class="detail-row"><span>선택자 값:</span><strong>${result.selectorValue}</strong></div>
+                        <div class="detail-row"><span>선택 확률:</span><strong>${result.probability}%</strong></div>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="this.closest('.result-modal').remove()">확인</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // 애니메이션
+        setTimeout(() => modal.classList.add('show'), 10);
     }
 
-    function displayHashProcess(result) {
-        document.getElementById('step1Hash').textContent = result.docHash;
-        document.getElementById('step2Timestamp').textContent = result.timestamp;
-        document.getElementById('step3Hash').textContent = result.hash1;
-        document.getElementById('step4Hash').textContent = result.hash2;
-        document.getElementById('step5Value').textContent = result.value + ' (0-99 범위)';
-        
-        const layerEl = document.getElementById('selectedLayer');
-        layerEl.textContent = result.layerName;
-        layerEl.className = 'selected-layer';
-    }
-
+    // 시뮬레이션 실행
     async function runSimulation() {
         runBtn.disabled = true;
         runBtn.textContent = '실행 중...';
-        runBtn.classList.add('running');
+        resetSteps();
 
-        const docContent = document.getElementById('docContent').value || 'test';
-        const importance = document.getElementById('importance').value;
-        const iterations = parseInt(document.getElementById('iterations').value);
+        const dataContent = document.getElementById('dataContent')?.value || 'test-data';
+        const importance = importanceSelect?.value || 'normal';
 
-        log('시뮬레이션 시작: ' + iterations + '회 반복, 중요도=' + importance);
-        resetChart();
+        log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        log('🎲 계층 선택 시작 (중요도: ' + importance + ')', 'info');
 
-        const counts = [0, 0, 0, 0, 0]; // L1~L5
-        let lastResult = null;
+        const result = LayerSelectSimulator.selectLayer(dataContent, importance);
 
-        for (let i = 0; i < iterations; i++) {
-            // 각 반복마다 다른 타임스탬프 사용
-            const ts = (Date.now() + i).toString() + Math.random().toString(36);
-            const result = LayerSelectSimulator.selectLayer(docContent, importance, ts);
-            counts[result.layer]++;
-            lastResult = result;
+        // Step 1: 원본 데이터 (0.2초)
+        await animateStep(1, result.original.substring(0, 30) + (result.original.length > 30 ? '...' : ''), 200);
+        log('📄 원본 데이터 로드', 'info');
 
-            // 진행률 업데이트 (10% 단위)
-            if (iterations > 1 && (i + 1) % Math.ceil(iterations / 10) === 0) {
-                updateChart(counts, i + 1);
-                await new Promise(r => setTimeout(r, 50));
-            }
-        }
+        // Step 2: SHA-256 해시 (0.3초)
+        await animateStep(2, result.hash1.substring(0, 32) + '...', 300);
+        log('🔐 SHA-256 해시: ' + result.hash1.substring(0, 16) + '...', 'info');
 
-        // 마지막 결과 표시
-        displayHashProcess(lastResult);
-        updateChart(counts, iterations);
+        // Step 3: 이중 해시 (0.3초)
+        await animateStep(3, result.hash2.substring(0, 32) + '...', 300);
+        log('🔐 이중 해시 적용 (+ timestamp + nonce)', 'info');
 
-        // 통계 로그
-        log('=== 결과 통계 ===', 'success');
-        for (let i = 0; i < 5; i++) {
-            const pct = (counts[i] / iterations * 100).toFixed(1);
-            log('L' + (i+1) + ': ' + counts[i] + '회 (' + pct + '%)', 
-                counts[i] > 0 ? 'success' : 'info');
-        }
-        log('시뮬레이션 완료', 'success');
+        // Step 4: 선택자 값 (0.2초)
+        await animateStep(4, result.selectorValue, 200);
+        document.getElementById('step4').classList.remove('active');
+        document.getElementById('step4').classList.add('done');
+        log('🎯 선택자 값: ' + result.selectorValue + ' → ' + result.layerName, 'success');
+
+        // 확률 분포에서 선택된 계층 하이라이트
+        LayerSelectSimulator.highlightSelectedLayer(result.selectedLayer);
+
+        // 결과 모달 표시
+        setTimeout(() => showResultModal(result), 300);
+
+        log('✅ 계층 선택 완료: ' + result.layerName + ' (확률 ' + result.probability + '%)', 'success');
+        log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
 
         runBtn.disabled = false;
-        runBtn.textContent = '시뮬레이션 실행';
-        runBtn.classList.remove('running');
+        runBtn.textContent = '계층 선택 실행';
     }
 
-    // 중요도 변경 시 확률 표시 업데이트
-    importanceSelect.addEventListener('change', function() {
-        LayerSelectSimulator.updateProbDisplay(this.value);
-    });
+    // 배치 실행
+    async function runBatch() {
+        runBatchBtn.disabled = true;
+        runBatchBtn.textContent = '실행 중...';
 
-    runBtn.addEventListener('click', runSimulation);
+        const importance = importanceSelect?.value || 'normal';
+        const counts = [0, 0, 0, 0, 0];
+
+        log('📊 100회 배치 실행 시작...', 'info');
+
+        for (let i = 0; i < 100; i++) {
+            const result = LayerSelectSimulator.selectLayer('batch-test-' + i + '-' + Date.now(), importance);
+            counts[result.selectedLayer - 1]++;
+        }
+
+        // 결과 표시
+        const batchResult = document.getElementById('batchResult');
+        const batchStats = document.getElementById('batchStats');
+        
+        batchStats.innerHTML = counts.map((count, i) => `
+            <div class="batch-stat">
+                <div class="batch-stat-label">L${i+1}</div>
+                <div class="batch-stat-value">${count}회</div>
+            </div>
+        `).join('');
+        
+        batchResult.style.display = 'block';
+        log('✅ 배치 완료: L1=' + counts[0] + ', L2=' + counts[1] + ', L3=' + counts[2] + ', L4=' + counts[3] + ', L5=' + counts[4], 'success');
+
+        runBatchBtn.disabled = false;
+        runBatchBtn.textContent = '100회 배치 실행';
+    }
+
+    if (runBtn) runBtn.addEventListener('click', runSimulation);
+    if (runBatchBtn) runBatchBtn.addEventListener('click', runBatch);
 });

@@ -239,7 +239,17 @@
     .invariant-label { font-size: 13px; color: var(--gray-600); }
     .invariant-value { font-size: 13px; font-weight: 600; color: var(--success); margin-left: var(--space-2); }
     .result-summary { padding-top: var(--space-4); border-top: 1px solid var(--gray-200); }
+    /* Node Status Panel */
+    .node-status-panel { background: linear-gradient(135deg, #1a3a6e 0%, #0d2240 100%); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #d4a017; }
+    .status-title { color: #d4a017; font-weight: 600; margin-bottom: 12px; font-size: 14px; }
+    #nodeStatusList { display: flex; gap: 16px; flex-wrap: wrap; }
+    .status-item { background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 8px; color: #fff; font-size: 13px; }
+    .refresh-btn { margin-top: 12px; background: #d4a017; color: #1a3a6e; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .refresh-btn:hover { background: #e8b82a; }
+    .log-line.warning { color: #f0ad4e; }
+    .log-time { color: #888; }
     </style>
+    <script src="/js/config.js"></script>
     <script src="/js/sim-transaction.js"></script>
 </body>
 </html>
