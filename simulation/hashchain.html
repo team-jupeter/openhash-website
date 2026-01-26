@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>해시 체인 시뮬레이션 - OpenHash</title>
+    <title>해시 체인 & 머클 트리 시뮬레이션 - OpenHash</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/simulation/sim-common.css">
@@ -21,142 +21,162 @@
         </div>
     </nav>
 
-    <div class="sim-hero">
-        <div class="container">
-            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
-            <span class="sim-badge">인터랙티브</span>
-            <h1>해시 체인 시뮬레이션</h1>
-            <p>블록 생성과 해시 체인 연결 과정 시각화</p>
+    <div class="node-status-bar">
+        <div class="container status-row">
+            <span class="status-icon" id="statusIcon">●</span>
+            <span id="nodeStatusText">노드 연결 확인 중...</span>
+            <span class="status-divider">|</span>
+            <a href="/simulation/" class="back-link-inline">← 시뮬레이션</a>
+            <span class="sim-badge-sm">인터랙티브</span>
+            <h1 class="page-title-sm">해시 체인 & 머클 트리 시뮬레이션</h1>
         </div>
     </div>
 
-    <main class="sim-content">
+    <main class="sim-content compact">
         <div class="container">
             <div class="sim-wrapper two-col">
+                <!-- 좌측: 컨트롤 패널 -->
                 <div class="control-panel">
-                    <h3>🔗 블록 생성</h3>
-                    <div class="control-group">
-                        <label class="control-label">거래 데이터</label>
-                        <textarea id="txData" class="control-input" rows="2" placeholder="거래 데이터...">Alice → Bob: 100T</textarea>
-                    </div>
+                    <h3>⛓️ 해시 체인</h3>
                     <div class="control-group">
                         <label class="control-label">계층</label>
-                        <select id="blockLayer" class="control-select">
-                            <option value="L1">L1 읍면동</option>
-                            <option value="L2">L2 시군구</option>
-                            <option value="L3">L3 광역시도</option>
+                        <select id="layerSelect" class="control-select">
+                            <option value="KR-JEJU-SEOGWIPO-JUNGMUN">L1 중문동</option>
+                            <option value="KR-JEJU-SEOGWIPO">L2 서귀포시</option>
+                            <option value="KR-JEJU">L3 제주도</option>
+                            <option value="KR">L4 대한민국</option>
                         </select>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label">거래 데이터</label>
+                        <input type="text" id="txData" class="control-input" placeholder="거래 내용...">
+                    </div>
                     <button id="addBlockBtn" class="run-btn">블록 추가</button>
-                    <button id="verifyChainBtn" class="run-btn" style="margin-top: var(--space-2); background: var(--gray-600);">체인 무결성 검증</button>
-                    <button id="resetChainBtn" class="run-btn" style="margin-top: var(--space-2); background: var(--error);">체인 초기화</button>
+
+                    <div class="inline-controls">
+                        <select id="tamperTarget" class="control-select small">
+                            <option value="">변조 대상</option>
+                        </select>
+                        <button id="tamperBtn" class="run-btn small danger">변조</button>
+                        <button id="verifyChainBtn" class="run-btn small secondary">검증</button>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3>🌳 머클 트리</h3>
+                    <div class="control-group">
+                        <label class="control-label">거래 추가</label>
+                        <input type="text" id="merkleTxInput" class="control-input" placeholder="TX 데이터...">
+                    </div>
+                    <div class="inline-controls">
+                        <button id="addMerkleTxBtn" class="run-btn small">TX 추가</button>
+                        <button id="clearMerkleBtn" class="run-btn small secondary">초기화</button>
+                    </div>
+                    <div class="merkle-root-box">
+                        <span>Merkle Root:</span>
+                        <strong id="merkleRoot">-</strong>
+                    </div>
                 </div>
 
+                <!-- 우측: 시각화 영역 -->
                 <div class="viz-area">
-                    <h3>📊 해시 체인 시각화</h3>
-                    <div class="chain-viz" id="chainViz">
-                        <div class="genesis-block">
-                            <div class="block-header">Genesis Block</div>
-                            <div class="block-hash">0000000000000000</div>
-                        </div>
-                    </div>
+                    <h3>🔗 해시 체인</h3>
+                    <div class="chain-viz" id="chainViz"></div>
 
-                    <div class="block-detail" id="blockDetail" style="display: none;">
-                        <h4>블록 상세 정보</h4>
-                        <div class="detail-grid">
-                            <div class="detail-row"><span class="detail-label">높이</span><span class="detail-value" id="detailHeight">-</span></div>
-                            <div class="detail-row"><span class="detail-label">이전 해시</span><span class="detail-value mono" id="detailPrev">-</span></div>
-                            <div class="detail-row"><span class="detail-label">머클 루트</span><span class="detail-value mono" id="detailMerkle">-</span></div>
-                            <div class="detail-row"><span class="detail-label">블록 해시</span><span class="detail-value mono" id="detailHash">-</span></div>
-                            <div class="detail-row"><span class="detail-label">타임스탬프</span><span class="detail-value" id="detailTime">-</span></div>
-                            <div class="detail-row"><span class="detail-label">거래 수</span><span class="detail-value" id="detailTxCount">-</span></div>
-                        </div>
-                    </div>
-
-                    <div class="verification-result" id="verificationResult" style="display: none;">
-                        <div class="verify-icon" id="verifyIcon">✓</div>
-                        <div class="verify-message" id="verifyMessage">체인 무결성 확인됨</div>
+                    <h3>🌳 머클 트리 구조</h3>
+                    <div class="merkle-tree-viz" id="merkleTreeViz">
+                        <div class="merkle-empty">거래를 추가하세요</div>
                     </div>
 
                     <div class="log-area" id="logArea">
-                        <div class="log-line info">[시스템] Genesis 블록 생성 완료</div>
+                        <div class="log-line info">[시스템] 해시 체인 & 머클 트리 시뮬레이션 준비 완료</div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-                <div class="footer-links">
-                    <a href="/technology/">기술</a>
-                    <a href="/simulation/">시뮬레이션</a>
-                    <a href="/tests/">테스트</a>
-                </div>
-            </div>
-            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
-        </div>
-    </footer>
-
     <style>
-    .chain-viz {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-3);
-        align-items: flex-start;
-        margin-bottom: var(--space-6);
-        padding: var(--space-4);
-        background: var(--gray-50);
-        border-radius: var(--radius);
-        min-height: 150px;
-    }
-    .genesis-block, .chain-block {
-        width: 140px;
-        padding: var(--space-3);
-        background: var(--white);
-        border: 2px solid var(--gray-300);
-        border-radius: var(--radius);
-        text-align: center;
-        cursor: pointer;
-        transition: all var(--transition);
-    }
-    .genesis-block { border-color: var(--accent); }
-    .chain-block:hover { border-color: var(--primary); }
-    .chain-block.selected { border-color: var(--primary); background: rgba(26,58,110,0.05); }
-    .block-header { font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: var(--space-2); }
-    .block-hash { font-size: 10px; font-family: var(--font-mono); color: var(--gray-500); word-break: break-all; }
-    .block-layer { font-size: 11px; color: var(--primary); margin-top: var(--space-1); }
-    .chain-arrow { color: var(--gray-400); font-size: 20px; display: flex; align-items: center; }
-    .block-detail {
-        padding: var(--space-5);
-        background: var(--gray-50);
-        border-radius: var(--radius);
-        margin-bottom: var(--space-4);
-    }
-    .block-detail h4 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-4); }
-    .detail-grid { display: flex; flex-direction: column; gap: var(--space-2); }
-    .detail-row { display: flex; justify-content: space-between; font-size: 13px; }
-    .detail-label { color: var(--gray-500); }
-    .detail-value { color: var(--gray-900); font-weight: 500; }
-    .detail-value.mono { font-family: var(--font-mono); font-size: 11px; }
-    .verification-result {
-        padding: var(--space-6);
-        text-align: center;
-        border-radius: var(--radius);
-        margin-bottom: var(--space-4);
-    }
-    .verification-result.success { background: var(--success-light); }
-    .verification-result.fail { background: var(--error-light); }
-    .verify-icon { font-size: 32px; margin-bottom: var(--space-2); }
-    .verification-result.success .verify-icon { color: var(--success); }
-    .verification-result.fail .verify-icon { color: var(--error); }
-    .verify-message { font-size: 14px; font-weight: 600; }
-    .verification-result.success .verify-message { color: var(--success); }
-    .verification-result.fail .verify-message { color: var(--error); }
-    .mono { font-family: var(--font-mono); }
+    .node-status-bar { position: fixed; top: 60px; left: 0; right: 0; z-index: 999; background: linear-gradient(135deg, #1a3a6e 0%, #0d2240 100%); padding: 10px 0; border-bottom: 2px solid #d4a017; }
+    .status-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .status-icon { font-size: 10px; }
+    .status-icon.online { color: #4ade80; }
+    .status-icon.offline { color: #f87171; }
+    #nodeStatusText { color: #fff; font-size: 13px; }
+    .status-divider { color: rgba(255,255,255,0.3); }
+    .back-link-inline { color: #d4a017; font-size: 12px; text-decoration: none; }
+    .sim-badge-sm { background: #d4a017; color: #1a3a6e; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+    .page-title-sm { color: #fff; font-size: 15px; font-weight: 600; margin: 0; flex: 1; }
+    .sim-content.compact { padding: 20px 0; margin-top: 100px; }
+
+    .divider { height: 1px; background: var(--gray-200); margin: 16px 0; }
+    
+    .inline-controls { display: flex; gap: 8px; margin-top: 10px; }
+    .run-btn.small { padding: 6px 12px; font-size: 12px; flex: 1; }
+    .control-select.small { padding: 6px; font-size: 12px; flex: 1; }
+    .run-btn.danger { background: #f87171; }
+    .run-btn.danger:hover { background: #ef4444; }
+    .run-btn.secondary { background: var(--gray-500); }
+    .run-btn.secondary:hover { background: var(--gray-600); }
+
+    .merkle-root-box { margin-top: 12px; padding: 10px; background: rgba(74,222,128,0.1); border: 1px solid #4ade80; border-radius: 6px; font-size: 11px; display: flex; justify-content: space-between; }
+    .merkle-root-box strong { font-family: var(--font-mono); color: #4ade80; }
+
+    /* 해시 체인 */
+    .chain-viz { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 12px; background: var(--gray-50); border-radius: 8px; min-height: 80px; margin-bottom: 12px; overflow-x: auto; }
+    .block-item { min-width: 110px; padding: 8px; background: #fff; border: 2px solid var(--gray-300); border-radius: 6px; font-size: 10px; transition: all 0.3s; }
+    .block-item.valid { border-color: #4ade80; background: rgba(74,222,128,0.1); }
+    .block-item.invalid { border-color: #f87171; background: rgba(248,113,113,0.1); }
+    .block-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .block-index { font-weight: 700; color: #1a3a6e; }
+    .block-layer { font-size: 8px; color: var(--gray-500); }
+    .block-hash { font-family: var(--font-mono); font-size: 8px; color: #4ade80; margin-bottom: 2px; }
+    .block-item.invalid .block-hash { color: #f87171; }
+    .block-data { font-size: 9px; color: var(--gray-700); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .block-prev { font-size: 7px; color: var(--gray-400); font-family: var(--font-mono); }
+    .chain-arrow { font-size: 16px; color: var(--gray-400); }
+
+    /* 머클 트리 */
+    .merkle-tree-viz { padding: 16px; background: var(--gray-50); border-radius: 8px; min-height: 150px; margin-bottom: 12px; }
+    .merkle-empty { text-align: center; color: var(--gray-400); font-size: 13px; padding: 40px 0; }
+    .merkle-level { margin-bottom: 8px; }
+    .level-label { font-size: 10px; color: var(--gray-500); margin-bottom: 4px; text-align: center; }
+    .merkle-nodes { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .merkle-node { padding: 8px 12px; background: #fff; border: 2px solid #1a3a6e; border-radius: 6px; text-align: center; transition: all 0.3s; opacity: 1; }
+    .merkle-node.root { border-color: #d4a017; background: rgba(212,160,23,0.1); }
+    .merkle-node.leaf { border-color: #4ade80; background: rgba(74,222,128,0.1); }
+    .merkle-node.building { opacity: 0.3; transform: scale(0.9); }
+    .merkle-node.built { opacity: 1; transform: scale(1); }
+    .node-hash { font-family: var(--font-mono); font-size: 9px; color: #1a3a6e; }
+    .merkle-node.root .node-hash { color: #d4a017; font-weight: 700; }
+    .merkle-node.leaf .node-hash { color: #4ade80; }
+    .merkle-node.duplicate { opacity: 0.4; border-style: dashed; }
+    .node-data { font-size: 8px; color: var(--gray-500); margin-top: 2px; }
+    .merkle-connectors { text-align: center; color: var(--gray-300); font-size: 12px; letter-spacing: 20px; margin: 4px 0; }
+
+    .log-area { max-height: 120px; }
+    .log-time { color: #888; font-size: 11px; }
+
+    /* 결과 모달 */
+    .result-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+    .result-modal.show { opacity: 1; }
+    .modal-content { background: #fff; border-radius: 12px; padding: 24px; min-width: 280px; text-align: center; transform: scale(0.9); transition: transform 0.3s; }
+    .result-modal.show .modal-content { transform: scale(1); }
+    .modal-content.success { border: 3px solid #4ade80; }
+    .modal-content.fail { border: 3px solid #f87171; }
+    .modal-icon { font-size: 36px; }
+    .modal-header h3 { margin: 8px 0; font-size: 18px; }
+    .modal-content.success h3 { color: #4ade80; }
+    .modal-content.fail h3 { color: #f87171; }
+    .result-text { font-size: 13px; color: var(--gray-600); margin-bottom: 16px; }
+    .modal-close { background: #1a3a6e; color: #fff; border: none; padding: 8px 28px; border-radius: 6px; cursor: pointer; font-weight: 600; }
     </style>
+    <script src="/js/config.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        OpenHashConfig.createModeToggle(document.querySelector(".status-row"));
+    });
+    </script>
     <script src="/js/sim-hashchain.js"></script>
 </body>
 </html>
