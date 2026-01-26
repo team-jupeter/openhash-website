@@ -21,157 +21,159 @@
         </div>
     </nav>
 
-    <div class="sim-hero">
-        <div class="container">
-            <a href="/simulation/" class="back-link">← 시뮬레이션</a>
-            <span class="sim-badge">인터랙티브</span>
-            <h1>5단계 검증 시뮬레이션</h1>
-            <p>거래가 5단계 검증 파이프라인을 통과하는 과정 체험</p>
+    <div class="node-status-bar">
+        <div class="container status-row">
+            <span class="status-icon" id="statusIcon">●</span>
+            <span id="nodeStatusText">노드 연결 확인 중...</span>
+            <span class="status-divider">|</span>
+            <a href="/simulation/" class="back-link-inline">← 시뮬레이션</a>
+            <span class="sim-badge-sm">인터랙티브</span>
+            <h1 class="page-title-sm">5단계 검증 시뮬레이션 - 거래 검증 파이프라인 체험</h1>
         </div>
     </div>
 
-    <main class="sim-content">
+    <main class="sim-content compact">
         <div class="container">
-            <div class="sim-wrapper">
+            <div class="sim-wrapper two-col">
                 <div class="control-panel">
                     <h3>🔍 거래 설정</h3>
                     <div class="control-group">
-                        <label class="control-label">발신자 잔액 (T)</label>
-                        <input type="number" id="senderBalance" class="control-input" value="1000000">
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">송금액 (T)</label>
-                        <input type="number" id="txAmount" class="control-input" value="50000">
-                        <span class="control-hint">한도: 100T 이하</span>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">발신자 인증 상태</label>
-                        <select id="senderAuth" class="control-select">
-                            <option value="verified">인증됨 (Verified)</option>
-                            <option value="pending">대기중 (Pending)</option>
-                            <option value="rejected">거부됨 (Rejected)</option>
+                        <label class="control-label">테스트 시나리오</label>
+                        <select id="presetSelect" class="control-select">
+                            <option value="success">✅ 정상 거래</option>
+                            <option value="balance">💰 잔액 부족</option>
+                            <option value="auth">🔒 미인증</option>
+                            <option value="limit">🚫 한도 초과</option>
+                            <option value="suspicious">⚠️ 의심 거래</option>
+                            <option value="blacklist">🚨 제재 대상</option>
                         </select>
                     </div>
-                    <div class="control-group">
-                        <label class="control-label">수신자 상태</label>
-                        <select id="receiverStatus" class="control-select">
-                            <option value="normal">정상</option>
-                            <option value="sanctioned">제재 대상</option>
-                        </select>
+                    <div class="scenario-info">
+                        <div class="info-row"><span>잔액:</span><strong id="infoBalance">1,000,000 T</strong></div>
+                        <div class="info-row"><span>송금액:</span><strong id="infoAmount">50,000 T</strong></div>
+                        <div class="info-row"><span>인증:</span><strong id="infoAuth">인증됨</strong></div>
                     </div>
-                    <button id="runSimBtn" class="run-btn">검증 시작</button>
+                    <button id="runSimBtn" class="run-btn">검증 실행</button>
+                    <div class="ai-score-panel">
+                        <h4>🤖 AI 이상 탐지</h4>
+                        <div class="ai-bar"><div class="ai-bar-fill" id="aiBar"></div></div>
+                        <div class="ai-labels"><span>0</span><span class="threshold">0.7</span><span>1</span></div>
+                    </div>
                 </div>
 
                 <div class="viz-area">
-                    <h3>📋 5단계 검증 파이프라인</h3>
-                    <div class="pipeline-viz" id="pipelineViz">
-                        <div class="pipeline-step" data-step="1">
-                            <div class="pipeline-icon">💰</div>
-                            <div class="pipeline-info">
-                                <div class="pipeline-name">1. 잔액 확인</div>
-                                <div class="pipeline-desc">sender.balance ≥ amount</div>
-                                <div class="pipeline-detail" id="step1Detail">-</div>
-                            </div>
-                            <div class="pipeline-status" id="step1Status">대기</div>
+                    <h3>🔄 5단계 검증 파이프라인</h3>
+                    <div class="pipeline">
+                        <div class="pipeline-step" id="step1">
+                            <div class="step-num">1</div>
+                            <div class="step-name">잔액 확인</div>
+                            <div class="step-desc">잔액 ≥ 송금액</div>
+                            <div class="step-result">-</div>
                         </div>
-                        <div class="pipeline-arrow">↓</div>
-                        <div class="pipeline-step" data-step="2">
-                            <div class="pipeline-icon">🪪</div>
-                            <div class="pipeline-info">
-                                <div class="pipeline-name">2. 신원 확인</div>
-                                <div class="pipeline-desc">본인 인증 및 계층 등록</div>
-                                <div class="pipeline-detail" id="step2Detail">-</div>
-                            </div>
-                            <div class="pipeline-status" id="step2Status">대기</div>
+                        <div class="pipeline-step" id="step2">
+                            <div class="step-num">2</div>
+                            <div class="step-name">신원 확인</div>
+                            <div class="step-desc">DID 인증</div>
+                            <div class="step-result">-</div>
                         </div>
-                        <div class="pipeline-arrow">↓</div>
-                        <div class="pipeline-step" data-step="3">
-                            <div class="pipeline-icon">📊</div>
-                            <div class="pipeline-info">
-                                <div class="pipeline-name">3. 한도 확인</div>
-                                <div class="pipeline-desc">단일 거래 ≤ 100T, 일일 한도</div>
-                                <div class="pipeline-detail" id="step3Detail">-</div>
-                            </div>
-                            <div class="pipeline-status" id="step3Status">대기</div>
+                        <div class="pipeline-step" id="step3">
+                            <div class="step-num">3</div>
+                            <div class="step-name">한도 확인</div>
+                            <div class="step-desc">1회 1억 T</div>
+                            <div class="step-result">-</div>
                         </div>
-                        <div class="pipeline-arrow">↓</div>
-                        <div class="pipeline-step" data-step="4">
-                            <div class="pipeline-icon">🤖</div>
-                            <div class="pipeline-info">
-                                <div class="pipeline-name">4. 이상 탐지</div>
-                                <div class="pipeline-desc">AI 앙상블 (99.4% 정확도)</div>
-                                <div class="pipeline-detail" id="step4Detail">-</div>
-                            </div>
-                            <div class="pipeline-status" id="step4Status">대기</div>
+                        <div class="pipeline-step" id="step4">
+                            <div class="step-num">4</div>
+                            <div class="step-name">AI 이상 탐지</div>
+                            <div class="step-desc">패턴 분석</div>
+                            <div class="step-result">-</div>
                         </div>
-                        <div class="pipeline-arrow">↓</div>
-                        <div class="pipeline-step" data-step="5">
-                            <div class="pipeline-icon">⚖️</div>
-                            <div class="pipeline-info">
-                                <div class="pipeline-name">5. 규정 준수</div>
-                                <div class="pipeline-desc">AML/CFT, 제재 목록</div>
-                                <div class="pipeline-detail" id="step5Detail">-</div>
-                            </div>
-                            <div class="pipeline-status" id="step5Status">대기</div>
+                        <div class="pipeline-step" id="step5">
+                            <div class="step-num">5</div>
+                            <div class="step-name">규정 준수</div>
+                            <div class="step-desc">AML 심사</div>
+                            <div class="step-result">-</div>
                         </div>
                     </div>
                     <div class="log-area" id="logArea">
-                        <div class="log-line info">[시스템] 시뮬레이션 준비 완료</div>
-                    </div>
-                </div>
-
-                <div class="result-panel">
-                    <h3>📊 검증 결과</h3>
-                    <div id="resultSummary">
-                        <div class="result-item"><span class="result-label">총 소요 시간</span><span class="result-value" id="totalTime">-</span></div>
-                        <div class="result-item"><span class="result-label">통과 단계</span><span class="result-value" id="passedSteps">-</span></div>
-                        <div class="result-item"><span class="result-label">실패 단계</span><span class="result-value" id="failedStep">-</span></div>
-                        <div class="result-item"><span class="result-label">최종 결과</span><span class="result-value" id="finalResult">-</span></div>
+                        <div class="log-line info">[시스템] 준비 완료</div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-                <div class="footer-links">
-                    <a href="/technology/">기술</a>
-                    <a href="/simulation/">시뮬레이션</a>
-                    <a href="/tests/">테스트</a>
-                </div>
-            </div>
-            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
-        </div>
-    </footer>
-
     <style>
-    .pipeline-viz { display: flex; flex-direction: column; gap: var(--space-2); }
+    .node-status-bar { position: fixed; top: 60px; left: 0; right: 0; z-index: 999; background: linear-gradient(135deg, #1a3a6e 0%, #0d2240 100%); padding: 10px 0; border-bottom: 2px solid #d4a017; }
+    .status-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .status-icon { font-size: 10px; }
+    .status-icon.online { color: #4ade80; }
+    .status-icon.offline { color: #f87171; }
+    #nodeStatusText { color: #fff; font-size: 13px; }
+    .status-divider { color: rgba(255,255,255,0.3); }
+    .back-link-inline { color: #d4a017; font-size: 12px; text-decoration: none; }
+    .sim-badge-sm { background: #d4a017; color: #1a3a6e; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+    .page-title-sm { color: #fff; font-size: 15px; font-weight: 600; margin: 0; flex: 1; }
+    .sim-content.compact { padding: 20px 0; margin-top: 100px; }
+
+    .scenario-info { background: var(--gray-50); padding: 10px; border-radius: 8px; margin: 12px 0; }
+    .info-row { display: flex; justify-content: space-between; font-size: 12px; margin: 2px 0; }
+
+    .ai-score-panel { margin-top: 16px; padding: 10px; background: var(--gray-50); border-radius: 8px; }
+    .ai-score-panel h4 { font-size: 12px; margin-bottom: 8px; }
+    .ai-bar { height: 16px; background: linear-gradient(to right, #4ade80 0%, #4ade80 70%, #f87171 70%, #f87171 100%); border-radius: 4px; overflow: hidden; }
+    .ai-bar-fill { height: 100%; width: 0; background: #1a3a6e; transition: width 0.5s; }
+    .ai-bar-fill.normal { background: #4ade80; }
+    .ai-bar-fill.danger { background: #f87171; }
+    .ai-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--gray-500); margin-top: 2px; }
+    .ai-labels .threshold { color: #f87171; }
+
+    /* 파이프라인 - 수직 리스트, 각 행 한 줄 */
+    .pipeline { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
     .pipeline-step {
-        display: flex;
-        align-items: center;
-        gap: var(--space-4);
-        padding: var(--space-4);
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 12px;
         background: var(--gray-50);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius);
-        transition: all var(--transition);
+        border: 2px solid var(--gray-200);
+        border-radius: 6px;
+        transition: all 0.3s;
     }
-    .pipeline-step.active { background: var(--white); border-color: var(--primary); border-left: 3px solid var(--primary); }
-    .pipeline-step.pass { background: var(--success-light); border-color: var(--success); border-left: 3px solid var(--success); }
-    .pipeline-step.fail { background: var(--error-light); border-color: var(--error); border-left: 3px solid var(--error); }
-    .pipeline-icon { font-size: 24px; }
-    .pipeline-info { flex: 1; }
-    .pipeline-name { font-size: 14px; font-weight: 600; color: var(--gray-900); }
-    .pipeline-desc { font-size: 12px; color: var(--gray-500); }
-    .pipeline-detail { font-size: 12px; color: var(--gray-600); margin-top: var(--space-1); font-family: var(--font-mono); }
-    .pipeline-status { font-size: 12px; font-weight: 600; min-width: 60px; text-align: right; }
-    .pipeline-step.pass .pipeline-status { color: var(--success); }
-    .pipeline-step.fail .pipeline-status { color: var(--error); }
-    .pipeline-arrow { text-align: center; color: var(--gray-400); font-size: 14px; }
+    .pipeline-step.active { border-color: #1a3a6e; background: rgba(26,58,110,0.1); }
+    .pipeline-step.pass { border-color: #4ade80; background: rgba(74,222,128,0.1); }
+    .pipeline-step.fail { border-color: #f87171; background: rgba(248,113,113,0.1); }
+    .pipeline-step .step-num {
+        width: 24px; height: 24px;
+        background: var(--gray-300); color: #fff;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 12px; flex-shrink: 0;
+    }
+    .pipeline-step.active .step-num { background: #1a3a6e; }
+    .pipeline-step.pass .step-num { background: #4ade80; }
+    .pipeline-step.fail .step-num { background: #f87171; }
+    .pipeline-step .step-name { font-size: 13px; font-weight: 600; width: 90px; }
+    .pipeline-step .step-desc { font-size: 11px; color: var(--gray-500); flex: 1; }
+    .pipeline-step .step-result { font-size: 12px; font-weight: 600; color: var(--gray-400); width: 50px; text-align: right; }
+    .pipeline-step.pass .step-result { color: #4ade80; }
+    .pipeline-step.fail .step-result { color: #f87171; }
+
+    .log-area { max-height: 480px; font-size: 11px; }
+    .log-time { color: #888; }
+
+    .result-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+    .result-modal.show { opacity: 1; }
+    .modal-content { background: #fff; border-radius: 12px; padding: 24px; min-width: 260px; text-align: center; transform: scale(0.9); transition: transform 0.3s; }
+    .result-modal.show .modal-content { transform: scale(1); }
+    .modal-content.success { border: 3px solid #4ade80; }
+    .modal-content.fail { border: 3px solid #f87171; }
+    .modal-icon { font-size: 36px; }
+    .modal-header h3 { margin: 8px 0; font-size: 16px; }
+    .modal-content.success h3 { color: #4ade80; }
+    .modal-content.fail h3 { color: #f87171; }
+    .result-text { font-size: 13px; color: var(--gray-600); margin-bottom: 16px; }
+    .modal-close { background: #1a3a6e; color: #fff; border: none; padding: 8px 28px; border-radius: 6px; cursor: pointer; font-weight: 600; }
     </style>
+    <script src="/js/config.js"></script>
     <script src="/js/sim-verification.js"></script>
 </body>
 </html>

@@ -1,14 +1,47 @@
+/**
+ * OpenHash 5-Step Verification Simulator
+ * 하향식 검증 - API 연동 버전
+ */
 const VerificationSimulator = {
     presets: {
-        success: { balance: 1000000, amount: 50000, auth: 'verified', pattern: 'normal' },
-        balance: { balance: 10000, amount: 50000, auth: 'verified', pattern: 'normal' },
-        limit: { balance: 1000000000, amount: 500000000, auth: 'verified', pattern: 'normal' },
-        auth: { balance: 1000000, amount: 50000, auth: 'unverified', pattern: 'normal' },
-        suspicious: { balance: 1000000, amount: 50000, auth: 'verified', pattern: 'suspicious' },
-        blacklist: { balance: 1000000, amount: 50000, auth: 'verified', pattern: 'blacklist' }
+        success: { balance: 1000000, amount: 50000, auth: 'verified', pattern: 'normal', label: '✅ 정상 거래' },
+        balance: { balance: 10000, amount: 50000, auth: 'verified', pattern: 'normal', label: '💰 잔액 부족' },
+        limit: { balance: 1000000000, amount: 500000000, auth: 'verified', pattern: 'normal', label: '🚫 한도 초과' },
+        auth: { balance: 1000000, amount: 50000, auth: 'unverified', pattern: 'normal', label: '🔒 미인증' },
+        suspicious: { balance: 1000000, amount: 50000, auth: 'verified', pattern: 'suspicious', label: '⚠️ 의심 거래' },
+        blacklist: { balance: 1000000, amount: 50000, auth: 'verified', pattern: 'blacklist', label: '🚨 제재 대상' }
     },
 
-    getAiScore: function(pattern) {
+    apiConnected: false,
+    
+    // 노드 상태 확인
+    async checkNodeStatus() {
+        try {
+            const data = await OpenHashConfig.get(1, '/health');
+            this.apiConnected = data.status === 'healthy';
+            return this.apiConnected;
+        } catch (e) {
+            this.apiConnected = false;
+            return false;
+        }
+    },
+
+    // API로 검증 요청
+    async verifyAPI(sender, receiver, amount) {
+        try {
+            const result = await OpenHashConfig.post(1, '/verify', {
+                sender: sender,
+                receiver: receiver,
+                amount: amount,
+                timestamp: new Date().toISOString()
+            });
+            return result;
+        } catch (e) {
+            return { error: e.message };
+        }
+    },
+
+    getAiScore(pattern) {
         switch(pattern) {
             case 'suspicious': return 0.75 + Math.random() * 0.2;
             case 'blacklist': return 0.3 + Math.random() * 0.2;
@@ -16,7 +49,8 @@ const VerificationSimulator = {
         }
     },
 
-    verify: function(params) {
+    // 로컬 검증 (5단계)
+    verify(params) {
         const results = [];
         const { balance, amount, auth, pattern } = params;
 
@@ -24,8 +58,9 @@ const VerificationSimulator = {
         const step1Pass = balance >= amount;
         results.push({
             step: 1,
+            name: '잔액 확인',
             pass: step1Pass,
-            msg: step1Pass ? 'PASS: 잔액 충분' : 'FAIL: 잔액 부족',
+            msg: step1Pass ? '잔액 충분 (' + balance.toLocaleString() + ' ≥ ' + amount.toLocaleString() + ')' : '잔액 부족',
             data: { balance, amount }
         });
         if (!step1Pass) return { success: false, results, failAt: 1 };
@@ -34,8 +69,9 @@ const VerificationSimulator = {
         const step2Pass = auth === 'verified';
         results.push({
             step: 2,
+            name: '신원 확인',
             pass: step2Pass,
-            msg: step2Pass ? 'PASS: 신원 확인됨' : 'FAIL: 미인증 사용자',
+            msg: step2Pass ? 'DID 인증 완료' : '미인증 사용자',
             data: { auth }
         });
         if (!step2Pass) return { success: false, results, failAt: 2 };
@@ -45,29 +81,32 @@ const VerificationSimulator = {
         const step3Pass = amount <= limit;
         results.push({
             step: 3,
+            name: '한도 확인',
             pass: step3Pass,
-            msg: step3Pass ? 'PASS: 한도 이내' : 'FAIL: 한도 초과',
+            msg: step3Pass ? '1회 한도 이내' : '한도 초과 (최대 1억)',
             data: { amount, limit }
         });
         if (!step3Pass) return { success: false, results, failAt: 3 };
 
-        // Step 4: 이상 탐지
+        // Step 4: 이상 탐지 (AI)
         const aiScore = this.getAiScore(pattern);
         const step4Pass = aiScore < 0.7;
         results.push({
             step: 4,
+            name: 'AI 이상 탐지',
             pass: step4Pass,
-            msg: step4Pass ? 'PASS: 정상 패턴' : 'FAIL: 의심 거래 탐지',
+            msg: step4Pass ? '정상 패턴 (점수: ' + aiScore.toFixed(3) + ')' : '의심 거래 탐지 (점수: ' + aiScore.toFixed(3) + ')',
             data: { aiScore }
         });
         if (!step4Pass) return { success: false, results, failAt: 4 };
 
-        // Step 5: 규정 준수
+        // Step 5: 규정 준수 (AML)
         const step5Pass = pattern !== 'blacklist';
         results.push({
             step: 5,
+            name: '규정 준수',
             pass: step5Pass,
-            msg: step5Pass ? 'PASS: 규정 준수' : 'FAIL: 제재 대상 거래',
+            msg: step5Pass ? 'AML/제재 심사 통과' : '제재 대상 거래',
             data: { aml: true, sanction: pattern === 'blacklist' }
         });
         if (!step5Pass) return { success: false, results, failAt: 5 };
@@ -76,154 +115,140 @@ const VerificationSimulator = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const runBtn = document.getElementById('runSimBtn');
     const logArea = document.getElementById('logArea');
-    const presetBtns = document.querySelectorAll('.preset-btn');
+    const presetSelect = document.getElementById('presetSelect');
+    const statusIcon = document.getElementById('statusIcon');
+    const statusText = document.getElementById('nodeStatusText');
 
     function log(msg, type = 'info') {
         const line = document.createElement('div');
         line.className = 'log-line ' + type;
-        line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+        line.innerHTML = '<span class="log-time">[' + new Date().toLocaleTimeString() + ']</span> ' + msg;
         logArea.appendChild(line);
         logArea.scrollTop = logArea.scrollHeight;
     }
 
-    function resetUI() {
-        document.querySelectorAll('.pipeline-step').forEach(step => {
-            step.className = 'pipeline-step';
-            step.querySelector('.step-result').textContent = '-';
-        });
-        document.querySelectorAll('.pipeline-connector').forEach(c => {
-            c.className = 'pipeline-connector';
-        });
-        document.getElementById('aiBar').style.width = '0';
-        document.getElementById('aiBar').className = 'ai-bar';
-        document.getElementById('finalResult').className = 'final-result';
-        document.getElementById('finalIcon').textContent = '⏳';
-        document.getElementById('finalText').textContent = '검증 대기 중';
-        document.getElementById('finalTime').textContent = '-';
-    }
+    // 초기 노드 상태 확인
+    const connected = await VerificationSimulator.checkNodeStatus();
+    if (statusIcon) statusIcon.classList.add(connected ? 'online' : 'offline');
+    if (statusText) statusText.textContent = connected ? 'L1 노드 연결됨' : '시뮬레이션 모드';
+    log(connected ? '✅ 노드 연결 성공' : '⚡ 시뮬레이션 모드', connected ? 'success' : 'warning');
 
-    function applyPreset(preset) {
-        const p = VerificationSimulator.presets[preset];
-        document.getElementById('senderBalance').value = p.balance;
-        document.getElementById('txAmount').value = p.amount;
-        document.getElementById('senderAuth').value = p.auth;
-        document.getElementById('txPattern').value = p.pattern;
-    }
-
-    function updateStepUI(stepNum, data) {
-        if (stepNum === 1) {
-            document.getElementById('v1Balance').textContent = data.balance.toLocaleString() + ' T';
-            document.getElementById('v1Amount').textContent = data.amount.toLocaleString() + ' T';
-        } else if (stepNum === 2) {
-            document.getElementById('v2Auth').textContent = data.auth === 'verified' ? '인증됨 ✓' : '미인증 ✗';
-        } else if (stepNum === 3) {
-            document.getElementById('v3Amount').textContent = data.amount.toLocaleString() + ' T';
-        } else if (stepNum === 4) {
-            const score = data.aiScore;
-            document.getElementById('v4Score').textContent = score.toFixed(3);
-            const bar = document.getElementById('aiBar');
-            bar.style.width = (score * 100) + '%';
-            bar.className = 'ai-bar' + (score >= 0.7 ? ' danger' : score >= 0.5 ? ' warning' : '');
-        } else if (stepNum === 5) {
-            document.getElementById('v5Aml').textContent = 'AML: 통과';
-            document.getElementById('v5Sanction').textContent = data.sanction ? '제재: 해당 ✗' : '제재: 해당없음 ✓';
+    // 단계 UI 초기화
+    function resetSteps() {
+        for (let i = 1; i <= 5; i++) {
+            const step = document.getElementById('step' + i);
+            if (step) {
+                step.classList.remove('active', 'pass', 'fail');
+                const result = step.querySelector('.step-result');
+                if (result) result.textContent = '-';
+            }
         }
+        const aiBar = document.getElementById('aiBar');
+        if (aiBar) aiBar.style.width = '0%';
     }
 
-    async function animateStep(stepNum, pass, msg, data, delay) {
+    // 단계별 애니메이션
+    async function animateStep(stepNum, pass, msg, delay = 300) {
         return new Promise(resolve => {
             setTimeout(() => {
-                const step = document.querySelector('.pipeline-step[data-step="' + stepNum + '"]');
-                const connector = document.getElementById('c' + (stepNum - 1));
-                
-                step.classList.remove('active');
-                step.classList.add(pass ? 'pass' : 'fail');
-                step.querySelector('.step-result').textContent = msg;
-                
-                if (connector) {
-                    connector.classList.remove('active');
-                    connector.classList.add('done');
+                const step = document.getElementById('step' + stepNum);
+                if (step) {
+                    // 이전 단계 완료 처리
+                    for (let i = 1; i < stepNum; i++) {
+                        const prevStep = document.getElementById('step' + i);
+                        if (prevStep) prevStep.classList.remove('active');
+                    }
+                    
+                    step.classList.add('active');
+                    
+                    setTimeout(() => {
+                        step.classList.remove('active');
+                        step.classList.add(pass ? 'pass' : 'fail');
+                        const result = step.querySelector('.step-result');
+                        if (result) result.textContent = msg;
+                    }, 200);
                 }
-                
-                updateStepUI(stepNum, data);
-                log('Step ' + stepNum + ': ' + msg, pass ? 'success' : 'error');
-                
                 resolve();
             }, delay);
         });
     }
 
-    async function activateStep(stepNum) {
-        const step = document.querySelector('.pipeline-step[data-step="' + stepNum + '"]');
-        const connector = document.getElementById('c' + (stepNum - 1));
-        
-        step.classList.add('active');
-        if (connector) connector.classList.add('active');
-        
-        await new Promise(r => setTimeout(r, 300));
+    // 결과 모달
+    function showResultModal(success, failAt) {
+        const existingModal = document.getElementById('resultModal');
+        if (existingModal) existingModal.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'resultModal';
+        modal.className = 'result-modal';
+        modal.innerHTML = `
+            <div class="modal-content ${success ? 'success' : 'fail'}">
+                <div class="modal-header">
+                    <span class="modal-icon">${success ? '✅' : '❌'}</span>
+                    <h3>${success ? '검증 통과' : '검증 실패'}</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="result-text">${success ? '5단계 검증을 모두 통과했습니다.' : 'Step ' + failAt + '에서 검증 실패'}</div>
+                </div>
+                <button class="modal-close" onclick="this.closest('.result-modal').remove()">확인</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        setTimeout(() => modal.classList.add('show'), 10);
     }
 
+    // 시뮬레이션 실행
     async function runSimulation() {
-        resetUI();
         runBtn.disabled = true;
         runBtn.textContent = '검증 중...';
-        runBtn.classList.add('running');
+        resetSteps();
 
-        const params = {
-            balance: parseInt(document.getElementById('senderBalance').value) || 0,
-            amount: parseInt(document.getElementById('txAmount').value) || 0,
-            auth: document.getElementById('senderAuth').value,
-            pattern: document.getElementById('txPattern').value
-        };
+        const preset = presetSelect?.value || 'success';
+        const params = VerificationSimulator.presets[preset];
 
-        log('=== 5단계 검증 시작 ===');
-        log('잔액: ' + params.balance.toLocaleString() + ' T, 송금액: ' + params.amount.toLocaleString() + ' T');
+        log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        log('🔍 5단계 검증 시작: ' + params.label, 'info');
+        log('금액: ' + params.amount.toLocaleString() + ' T', 'info');
 
-        const startTime = performance.now();
         const result = VerificationSimulator.verify(params);
 
+        // 각 단계별 애니메이션
         for (let i = 0; i < result.results.length; i++) {
             const r = result.results[i];
-            await activateStep(r.step);
-            await animateStep(r.step, r.pass, r.msg, r.data, 500);
+            await animateStep(r.step, r.pass, r.pass ? 'PASS' : 'FAIL', 400);
+            log((r.pass ? '✅' : '❌') + ' Step ' + r.step + ' ' + r.name + ': ' + r.msg, r.pass ? 'success' : 'error');
+            
+            // AI 점수 바 업데이트
+            if (r.step === 4 && r.data.aiScore !== undefined) {
+                const aiBar = document.getElementById('aiBar');
+                if (aiBar) {
+                    aiBar.style.width = (r.data.aiScore * 100) + '%';
+                    aiBar.className = 'ai-bar-fill ' + (r.data.aiScore < 0.7 ? 'normal' : 'danger');
+                }
+            }
         }
 
-        const endTime = performance.now();
-        const elapsed = (endTime - startTime).toFixed(2);
+        // 결과 표시
+        await new Promise(r => setTimeout(r, 300));
+        showResultModal(result.success, result.failAt);
 
-        // 최종 결과
-        const finalResult = document.getElementById('finalResult');
-        const finalIcon = document.getElementById('finalIcon');
-        const finalText = document.getElementById('finalText');
-        const finalTime = document.getElementById('finalTime');
-
-        if (result.success) {
-            finalResult.classList.add('success');
-            finalIcon.textContent = '✅';
-            finalText.textContent = '거래 승인';
-            log('=== 모든 검증 통과: 거래 승인 ===', 'success');
-        } else {
-            finalResult.classList.add('fail');
-            finalIcon.textContent = '❌';
-            finalText.textContent = '거래 거부 (Step ' + result.failAt + ')';
-            log('=== 검증 실패: 거래 거부 ===', 'error');
-        }
-        finalTime.textContent = '처리 시간: ' + elapsed + ' ms';
+        log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        log(result.success ? '✅ 검증 완료: 승인' : '❌ 검증 실패: Step ' + result.failAt + '에서 중단', result.success ? 'success' : 'error');
 
         runBtn.disabled = false;
-        runBtn.textContent = '검증 시작';
-        runBtn.classList.remove('running');
+        runBtn.textContent = '검증 실행';
     }
 
-    // 프리셋 버튼 이벤트
-    presetBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            applyPreset(this.dataset.preset);
-        });
-    });
+    if (runBtn) runBtn.addEventListener('click', runSimulation);
 
-    runBtn.addEventListener('click', runSimulation);
+    // 프리셋 변경 시 정보 표시
+    if (presetSelect) {
+        presetSelect.addEventListener('change', function() {
+            const preset = VerificationSimulator.presets[this.value];
+            log('프리셋 변경: ' + preset.label, 'info');
+        });
+    }
 });
