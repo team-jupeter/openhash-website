@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도청 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+    <style>
+        .sub-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .sub-nav-link { padding: 0.5rem 0.75rem; background: #f1f5f9; color: #64748b; border-radius: 6px; text-decoration: none; font-size: 0.85rem; transition: all 0.2s; border: 1px solid #e2e8f0; }
+        .sub-nav-link:hover { background: #e2e8f0; color: #1e293b; }
+        .sub-nav-link.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/" class="back-link-sm">← 실용</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">지방자치</span>
+            <h1 class="header-title">도청 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 도청_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 광역자치단체 행정 업무 수행
+예시: 제주특별자치도청
+
+[핵심 원칙]
+- 업무 수행 중심
+- 광역 단위 행정 서비스
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 광역 인허가 (대규모 개발, 환경영향평가)
+- 도 단위 보조금/지원금 신청
+- 광역 교통 정책 안내
+- 관광/문화 행사 정보
+- 도세 납부 및 조회
+
+[연동] 시청_AI, 읍면동_AI, 중앙부처_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>귀농귀촌 지원금 신청</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 제주도 귀농 지원금 신청하고 싶어.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 주민등록/영농계획서 인출) 도청_AI에 귀농지원금 신청 요청.</p>
+                                <p><span class="agent">도청_AI:</span> 귀농인 정착지원금 신청 접수. 전입일 2025.08.15, 영농경력 6개월. 지원금 3,000만원 대상. 현장실사 일정 2/25 예정.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '지원금-귀농'에 기록. Hash → OpenHash L3 제주도 노드 저장(확률적 선택).</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>환경영향평가 신청</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 태양광 발전소 환경영향평가 신청해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 사업계획서/부지정보 인출) 도청_AI에 환경영향평가 신청 요청.</p>
+                                <p><span class="agent">도청_AI:</span> 소규모 환경영향평가 접수 완료. 부지면적 9,500㎡, 서귀포시 표선면. 심사수수료 150,000원. 납부하시겠습니까?</p>
+                                <p><span class="approve">(사용자 승인)</span></p>
+                                <p><span class="agent">도청_AI:</span> 납부 완료. 접수번호 ENV-2026-0234. 심사기간 약 30일.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '인허가-환경평가'에 기록. Hash → OpenHash L3 제주도 노드 저장(확률적 선택).</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>도세 납부</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 자동차세 납부해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 차량등록정보/결제정보 인출) 도청_AI에 자동차세 조회 및 납부 요청.</p>
+                                <p><span class="agent">도청_AI:</span> 2026년 1기분 자동차세 284,000원 (12가3456, 소나타). 납부하시겠습니까?</p>
+                                <p><span class="approve">(사용자 승인)</span></p>
+                                <p><span class="agent">도청_AI:</span> 납부 완료. 영수증번호 TAX-2026-JJ-018234.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '세금-자동차세'에 기록. Hash → OpenHash L3 제주도 노드 저장(확률적 선택).</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>관광개발 인허가 조회</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 관광펜션 사업 인허가 진행상황 알려줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 사업자정보 확인) 도청_AI에 인허가 진행상황 조회 요청.</p>
+                                <p><span class="agent">도청_AI:</span> 관광펜션업 등록신청 TOR-2026-0089. 현재 건축과 협의 중. 예상 완료일 3/15. 보완요청 없음.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '인허가-관광업'에 기록. Hash → OpenHash L2 서귀포시 노드 저장(확률적 선택).</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>도정 행사 정보 조회</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 이번 달 제주도 문화행사 알려줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 위치정보 확인) 도청_AI에 문화행사 조회 요청.</p>
+                                <p><span class="agent">도청_AI:</span> 2월 주요 행사: 탐라문화제(2/8-10, 탐라문화광장), 제주들불축제(2/15-17, 새별오름), 서귀포겨울바다펭귄수영대회(2/22, 중문해수욕장). 상세 일정 첨부.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '생활-행사정보'에 기록. Hash → OpenHash L1 중문동 노드 저장(확률적 선택).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="sub-nav">
+                        <a href="province.html" class="sub-nav-link active">도청</a>
+                        <a href="city.html" class="sub-nav-link">시청</a>
+                        <a href="district.html" class="sub-nav-link">읍면동사무소</a>
+                    </div>
+                    <div class="app-header">
+                        <h3>Gopang - 도청 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>© 2026 OpenHash</p></div></footer>
+</body>
+</html>
