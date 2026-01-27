@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쇼핑 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/market/" class="back-link-sm">← 시장</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">쇼핑</span>
+            <h1 class="header-title">쇼핑 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 쇼핑_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 온라인 쇼핑 주문/관리 업무 수행 대행
+
+[핵심 원칙]
+- 업무 수행 중심 (정보 제공 아님)
+- 상품검색/주문/배송 대행
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 상품 검색/비교
+- 주문/결제 대행
+- 배송 조회
+- 반품/교환 접수
+- 쿠폰/적립금 관리
+
+[연동] 쇼핑보조_AI, 마트_AI, 택배_AI, 결제_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>상품 검색</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 무선 이어폰 찾아줘. 10만원 이하로.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 구매이력/선호도 인출) 쇼핑_AI에 상품 검색.</p>
+                                <p><span class="agent">쇼핑_AI:</span> 무선 이어폰 검색 완료. (10만원 이하)
+                                    <br><br>🎧 <b>인기 상품 Top 3</b>
+                                    <br><br>1️⃣ <b>삼성 갤럭시버즈 FE</b>
+                                    <br>• 가격: 89,000원
+                                    <br>• 리뷰: ⭐4.6 (5,234개)
+                                    <br>• 특징: ANC, 삼성 연동 최적화
+                                    <br><br>2️⃣ <b>애플 에어팟 3</b>
+                                    <br>• 가격: 99,000원 (할인가)
+                                    <br>• 리뷰: ⭐4.7 (8,912개)
+                                    <br>• 특징: 애플 생태계 최적화
+                                    <br><br>3️⃣ <b>소니 WF-C500</b>
+                                    <br>• 가격: 79,000원
+                                    <br>• 리뷰: ⭐4.5 (2,341개)
+                                    <br>• 특징: 음질 우수, 경량
+                                    <br><br>어떤 상품 상세히 볼까요?</p>
+                                <p><span class="ai">사용자_AI:</span> 검색 결과 Vault '쇼핑-검색'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>주문 대행</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 갤럭시버즈 FE 주문해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 배송지/결제수단 인출) 쇼핑_AI에 주문 요청.</p>
+                                <p><span class="agent">쇼핑_AI:</span> 주문 진행합니다.
+                                    <br><br>📦 <b>주문 정보</b>
+                                    <br>• 상품: 삼성 갤럭시버즈 FE (화이트)
+                                    <br>• 가격: 89,000원
+                                    <br>• 판매처: 쿠팡 (로켓배송)
+                                    <br><br>💰 <b>결제 금액</b>
+                                    <br>• 상품가: 89,000원
+                                    <br>• 배송비: 무료
+                                    <br>• 적립금 사용: -3,000원
+                                    <br>• <b>최종: 86,000원</b>
+                                    <br><br>📍 <b>배송지</b>
+                                    <br>• 김○○ / 서귀포시
+                                    <br>• 배송: 내일 도착 예정</p>
+                                <p><span class="approve">(사용자 결제 승인)</span></p>
+                                <p><span class="agent">쇼핑_AI:</span> 주문 완료.
+                                    <br>• 주문번호: CP-2026012456
+                                    <br>• 배송예정: 내일 오전</p>
+                                <p><span class="ai">사용자_AI:</span> 주문 Vault '쇼핑-주문'에 저장. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>배송 조회</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 주문한 이어폰 어디야?</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 주문정보 인출) 쇼핑_AI에 배송 조회.</p>
+                                <p><span class="agent">쇼핑_AI:</span> 배송 현황 조회 완료.
+                                    <br><br>📦 <b>주문번호: CP-2026012456</b>
+                                    <br>• 상품: 갤럭시버즈 FE
+                                    <br><br>🚚 <b>배송 상태: 배송중</b>
+                                    <br>┌─ 1/27 14:00 출고완료
+                                    <br>├─ 1/27 18:00 제주허브 도착
+                                    <br>└─ <b>1/28 07:00 배송출발</b> ← 현재
+                                    <br><br>⏰ 예상도착: 오늘 오전 11시
+                                    <br>📞 배송기사: 010-XXXX-XXXX</p>
+                                <p><span class="ai">사용자_AI:</span> 배송 현황 Vault '쇼핑-배송'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>쿠폰/적립금 관리</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 지금 쓸 수 있는 쿠폰 있어?</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 쿠폰정보 인출) 쇼핑_AI에 쿠폰 조회.</p>
+                                <p><span class="agent">쇼핑_AI:</span> 사용 가능 쿠폰/적립금 조회 완료.
+                                    <br><br>🎫 <b>보유 쿠폰 (4장)</b>
+                                    <br><br>1. 신규가입 10% (최대 5만원)
+                                    <br>   • 만료: 2026.2.28
+                                    <br><br>2. 가전 5,000원 할인
+                                    <br>   • 조건: 10만원 이상
+                                    <br>   • 만료: 2026.1.31 ⚠️ 곧 만료
+                                    <br><br>3. 무료배송 쿠폰
+                                    <br>   • 만료: 2026.3.31
+                                    <br><br>4. 생일 20% (최대 3만원)
+                                    <br>   • 만료: 2026.2.15
+                                    <br><br>💰 <b>적립금: 12,500원</b>
+                                    <br><br>⚠️ 가전 쿠폰이 4일 후 만료됩니다!</p>
+                                <p><span class="ai">사용자_AI:</span> 쿠폰 현황 Vault '쇼핑-쿠폰'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>반품 접수</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 이어폰 반품하고 싶어. 생각보다 음질이 별로야.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 주문정보 인출) 쇼핑_AI에 반품 접수.</p>
+                                <p><span class="agent">쇼핑_AI:</span> 반품 접수 진행합니다.
+                                    <br><br>📦 <b>반품 정보</b>
+                                    <br>• 상품: 갤럭시버즈 FE
+                                    <br>• 구매일: 3일 전
+                                    <br>• 사유: 단순변심
+                                    <br><br>💰 <b>환불 안내</b>
+                                    <br>• 환불금액: 86,000원
+                                    <br>• 반품비: 5,000원 (단순변심)
+                                    <br>• 실환불액: 81,000원
+                                    <br><br>📦 <b>수거 방법</b>
+                                    <br>1. 택배기사 방문수거 (내일)
+                                    <br>2. 편의점 반품 (오늘 가능)
+                                    <br><br>어떻게 하시겠어요?</p>
+                                <p><span class="user">사용자:</span> 방문수거로 해줘.</p>
+                                <p><span class="agent">쇼핑_AI:</span> 반품 접수 완료.
+                                    <br>• 수거일: 내일 오전
+                                    <br>• 환불예정: 수거 후 3일 내</p>
+                                <p><span class="ai">사용자_AI:</span> 반품 Vault '쇼핑-반품'에 저장. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 쇼핑 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>© 2026 OpenHash</p></div></footer>
+</body>
+</html>

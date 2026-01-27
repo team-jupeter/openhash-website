@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>해양경찰청 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/government/" class="back-link-sm">← 정부</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">해양수산부 소속</span>
+            <h1 class="header-title">해양경찰청 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 해양경찰청_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 해양 안전/구조 업무 수행
+
+[핵심 원칙]
+- 업무 수행 중심
+- 해양 안전 최우선
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 122 해양사고 신고
+- 선박 출입항 신고
+- 해양오염 신고
+- 어업지도 민원
+- 해양레저 안전 신고
+
+[연동] 소방청_AI, 기상청_AI, 해양수산부_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>해양 조난 신고</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 배가 고장났어! 표류 중이야! 구조 요청해줘!</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault GPS 위치 즉시 인출) 해양경찰청_AI 긴급 호출.</p>
+                                <p><span class="agent">해양경찰청_AI:</span> 122 구조 출동. 현위치 북위 33.2도, 동경 126.5도. 해경 경비함 15분 내 도착. 구명조끼 착용 유지.</p>
+                                <p><span class="ai">사용자_AI:</span> Hash → OpenHash L4 대한민국 노드 저장(긴급).</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>선박 출항 신고</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 내일 아침 낚시배 출항 신고해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 선박정보/승선자명단 인출) 해양경찰청_AI에 출항신고.</p>
+                                <p><span class="agent">해양경찰청_AI:</span> 출항신고 완료. 출항: 2/1 05:00 서귀포항, 귀항 예정: 18:00, 승선 4인. 기상 이상 시 자동 알림.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '해양-출항'에 기록. Hash → OpenHash L1 서귀포항 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>해양오염 신고</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 바다에 기름 띠가 보여. 신고해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 위치/사진 인출) 해양경찰청_AI에 오염신고.</p>
+                                <p><span class="agent">해양경찰청_AI:</span> 해양오염 신고 접수. 방제팀 출동 중. 도착 예정 25분. 추가 확산 시 재신고 요망.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '신고-해양오염'에 기록. Hash → OpenHash L2 제주도 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>수상레저 안전교육</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 수상레저 조종면허 따려고 하는데 교육 신청해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 개인정보 인출) 해양경찰청_AI에 교육 신청.</p>
+                                <p><span class="agent">해양경찰청_AI:</span> 수상레저 안전교육 신청 완료. 2/15-16(2일), 제주해양경찰서. 비용 50,000원 결제됨.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '교육-수상레저'에 기록. Hash → OpenHash L1 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>표류물 신고</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 해변에 이상한 물체가 떠밀려왔어. 신고해야 할 것 같아.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 위치/사진 인출) 해양경찰청_AI에 표류물 신고.</p>
+                                <p><span class="agent">해양경찰청_AI:</span> 표류물 신고 접수. 담당자 현장 확인 예정(30분 내). 접근 금지 유지 요망.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '신고-표류물'에 기록. Hash → OpenHash L1 중문해변 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 해양경찰청 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container"><p>© 2026 OpenHash</p></div>
+    </footer>
+</body>
+</html>

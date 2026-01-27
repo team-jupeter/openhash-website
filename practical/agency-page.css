@@ -1,0 +1,290 @@
+.nav-spacer { height: 56px; }
+/* Agency Page - 공용 스타일 */
+
+/* Compact Header Bar */
+.page-header-bar {
+    
+    background: #1a3a6e;
+    border-bottom: 2px solid #d4a017;
+    padding: 12px 0;
+}
+
+.header-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.back-link-sm {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.back-link-sm:hover {
+    color: #fff;
+}
+
+.header-divider {
+    color: rgba(255,255,255,0.3);
+}
+
+.header-badge {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.header-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+}
+
+.model-tag {
+    background: #d4a017;
+    color: #212529;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Main Content */
+.agency-content {
+    padding: 32px 0;
+    background: #f8f9fa;
+    min-height: calc(100vh - 200px);
+}
+
+/* Two Column Layout */
+.agency-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .agency-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Left Panel */
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* System Prompt Card */
+.system-prompt {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.system-prompt-header {
+    background: #343a40;
+    color: #f1f3f5;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.system-prompt-body {
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #495057;
+    background: #f8f9fa;
+    white-space: pre-wrap;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+/* Examples Section */
+.examples-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 12px;
+}
+
+.example-card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.example-card:hover {
+    border-color: #1a3a6e;
+}
+
+.example-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.example-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a3a6e;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.example-dialog {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.example-dialog p {
+    margin: 0 0 4px 0;
+}
+
+.example-dialog .user {
+    color: #1a3a6e;
+    font-weight: 500;
+}
+
+.example-dialog .ai {
+    color: #0d6832;
+    font-weight: 500;
+}
+
+/* Right Panel - Gopang App */
+.app-panel {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    position: sticky;
+    top: 70px;
+}
+
+.app-header {
+    background: #343a40;
+    color: #fff;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.app-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.app-header .model-badge {
+    background: #0d6832;
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.app-iframe {
+    width: 100%;
+    height: 640px;
+    border: none;
+    display: block;
+}
+
+/* Dialog roles */
+.example-dialog .agent {
+    color: #7c3aed;
+    font-weight: 500;
+}
+
+.example-dialog .approve {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 12px;
+}
+
+/* 하위 법원 링크 섹션 */
+.sub-courts {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.sub-courts h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 1rem;
+}
+
+.court-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.court-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.court-link:hover {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+}
+
+.court-link:hover .court-badge {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+.court-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    background: #e0e7ff;
+    color: #4338ca;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .court-links {
+        grid-template-columns: 1fr;
+    }
+}

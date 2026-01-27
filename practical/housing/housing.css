@@ -1,0 +1,17 @@
+/* Housing Category Styles */
+.housing-main { padding: 3rem 0; min-height: 60vh; }
+.housing-section { margin-bottom: 3rem; }
+.housing-section h2 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+.section-desc { color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem; }
+.housing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.housing-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; text-decoration: none; color: inherit; transition: all 0.2s; }
+.housing-card:hover { border-color: #0ea5e9; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15); transform: translateY(-2px); }
+.housing-card h3 { font-size: 1.25rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; }
+.housing-card p { color: #64748b; font-size: 0.9rem; line-height: 1.5; }
+.housing-badge { display: inline-block; padding: 0.25rem 0.75rem; background: #e0f2fe; color: #0369a1; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem; }
+.housing-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.housing-card.featured { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0ea5e9; grid-column: 1 / -1; max-width: 600px; }
+.housing-card.featured:hover { border-color: #0284c7; box-shadow: 0 8px 24px rgba(14, 165, 233, 0.25); }
+.housing-card.featured .housing-badge { background: #0ea5e9; color: #fff; }
+.housing-card.featured h3 { font-size: 1.5rem; }
+.housing-card.featured p { font-size: 1rem; line-height: 1.6; }

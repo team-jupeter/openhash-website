@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중고거래 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/market/" class="back-link-sm">← 시장</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">중고거래</span>
+            <h1 class="header-title">중고거래 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 중고거래_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 중고 물품 매매 업무 수행 대행
+
+[핵심 원칙]
+- 업무 수행 중심 (정보 제공 아님)
+- 상품등록/협상/거래 대행
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 상품 등록/관리
+- 시세 분석/가격 책정
+- 가격 협상 대행
+- 안전거래 처리
+- 직거래 예약
+
+[연동] 쇼핑보조_AI, 택배_AI, 결제_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>상품 등록</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 안 쓰는 아이패드 팔려고. 등록해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 보유기기정보 인출) 중고거래_AI에 상품 등록.</p>
+                                <p><span class="agent">중고거래_AI:</span> 아이패드 등록을 도와드릴게요.
+                                    <br><br>• 모델명과 용량은?
+                                    <br>• 구매 시기와 상태는?
+                                    <br>• 구성품은 어떻게 되나요?</p>
+                                <p><span class="user">사용자:</span> 아이패드 프로 11인치 256GB. 작년에 샀고 상태 좋아. 박스랑 충전기 다 있어.</p>
+                                <p><span class="agent">중고거래_AI:</span> 시세 분석 완료.
+                                    <br><br>📱 <b>아이패드 프로 11 (4세대) 256GB</b>
+                                    <br><br>💰 <b>시세 분석</b>
+                                    <br>• 새제품 가격: 1,249,000원
+                                    <br>• 중고 평균: 850,000~950,000원
+                                    <br>• 풀박스 프리미엄: +30,000원
+                                    <br><br>💡 <b>권장 판매가: 900,000원</b>
+                                    <br>• 빠른 판매: 850,000원
+                                    <br>• 여유있게: 950,000원
+                                    <br><br>어떤 가격으로 등록할까요?</p>
+                                <p><span class="user">사용자:</span> 90만원으로 올려줘.</p>
+                                <p><span class="agent">중고거래_AI:</span> 상품 등록 완료.
+                                    <br><br>📝 <b>등록 정보</b>
+                                    <br>• 제목: 아이패드 프로 11인치 4세대 256GB 풀박스
+                                    <br>• 가격: 900,000원
+                                    <br>• 플랫폼: 당근마켓, 번개장터
+                                    <br>• 상태: 판매중
+                                    <br><br>문의가 오면 알려드리겠습니다.</p>
+                                <p><span class="ai">사용자_AI:</span> 상품 등록 Vault '거래-판매'에 저장. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>가격 협상 대행</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 아이패드 문의 왔어?</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 판매정보/문의내역 인출) 중고거래_AI에 문의 확인.</p>
+                                <p><span class="agent">중고거래_AI:</span> 문의 3건이 있습니다.
+                                    <br><br>💬 <b>문의 내역</b>
+                                    <br><br>1️⃣ <b>구매자A</b> (매너온도 38.5°C)
+                                    <br>• "85만원에 가능할까요?"
+                                    <br>• 시간: 2시간 전
+                                    <br><br>2️⃣ <b>구매자B</b> (매너온도 42.1°C)
+                                    <br>• "직거래 가능한가요? 87만원 제시"
+                                    <br>• 시간: 1시간 전
+                                    <br><br>3️⃣ <b>구매자C</b> (매너온도 36.5°C) ⚠️
+                                    <br>• "80만원 네고요"
+                                    <br>• 시간: 30분 전
+                                    <br><br>💡 <b>AI 분석</b>
+                                    <br>• 구매자B가 매너온도 높고 합리적 제안
+                                    <br>• 구매자C는 매너온도 낮음 (주의)
+                                    <br><br>어떻게 답변할까요?</p>
+                                <p><span class="user">사용자:</span> B한테 88만원에 역제안해봐.</p>
+                                <p><span class="agent">중고거래_AI:</span> 구매자B에게 메시지 발송.
+                                    <br><br>💬 "안녕하세요! 관심 감사합니다. 풀박스 상품이라 88만원에 직거래 가능합니다. 시간 맞추시면 제주시에서 만날 수 있어요!"
+                                    <br><br>답변 오면 알려드리겠습니다.</p>
+                                <p><span class="ai">사용자_AI:</span> 협상 내역 Vault '거래-협상'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>직거래 예약</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> B가 88만원에 하겠대. 직거래 잡아줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 일정/위치 인출) 중고거래_AI에 직거래 예약.</p>
+                                <p><span class="agent">중고거래_AI:</span> 직거래 예약 진행합니다.
+                                    <br><br>• 선호하는 장소가 있나요?
+                                    <br>• 가능한 시간대는?</p>
+                                <p><span class="user">사용자:</span> 제주시청 근처. 내일 오후면 좋겠어.</p>
+                                <p><span class="agent">중고거래_AI:</span> 직거래 예약 완료.
+                                    <br><br>🤝 <b>직거래 정보</b>
+                                    <br>• 구매자: 구매자B
+                                    <br>• 일시: 내일 오후 3시
+                                    <br>• 장소: 제주시청 1층 로비
+                                    <br>• 금액: 880,000원 (현금/계좌이체)
+                                    <br><br>⚠️ <b>거래 팁</b>
+                                    <br>• 공공장소에서 만나세요
+                                    <br>• 현장에서 작동 확인 후 결제
+                                    <br>• 이체 확인 후 물건 전달
+                                    <br><br>구매자에게 일정 전달했습니다.</p>
+                                <p><span class="ai">사용자_AI:</span> 직거래 예약 Vault '거래-직거래'에 저장. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>안전거래</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 택배로 보내야 하는데 안전거래 할 수 있어?</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 판매정보 인출) 중고거래_AI에 안전거래 안내.</p>
+                                <p><span class="agent">중고거래_AI:</span> 안전거래 안내드립니다.
+                                    <br><br>🛡️ <b>안전거래 방법</b>
+                                    <br><br>1️⃣ <b>번개페이</b>
+                                    <br>• 수수료: 3.5%
+                                    <br>• 실수령: 849,200원
+                                    <br>• 보호: 구매자 수령확인 후 정산
+                                    <br><br>2️⃣ <b>당근페이</b>
+                                    <br>• 수수료: 무료
+                                    <br>• 실수령: 880,000원
+                                    <br>• 보호: 에스크로 방식
+                                    <br><br>3️⃣ <b>네이버페이 안전결제</b>
+                                    <br>• 수수료: 3.3%
+                                    <br>• 실수령: 850,960원
+                                    <br><br>💡 당근페이가 수수료 무료로 추천드립니다.</p>
+                                <p><span class="user">사용자:</span> 당근페이로 진행해줘.</p>
+                                <p><span class="agent">중고거래_AI:</span> 안전거래 설정 완료.
+                                    <br>• 방식: 당근페이
+                                    <br>• 금액: 880,000원
+                                    <br>• 구매자에게 결제 요청 발송됨
+                                    <br><br>결제 완료되면 배송 안내드리겠습니다.</p>
+                                <p><span class="ai">사용자_AI:</span> 안전거래 Vault '거래-안전결제'에 저장. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>중고 상품 검색</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 자전거 중고로 사고 싶어. 30만원 정도.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 위치정보 인출) 중고거래_AI에 상품 검색.</p>
+                                <p><span class="agent">중고거래_AI:</span> 제주 지역 자전거 검색 완료.
+                                    <br><br>🚴 <b>중고 자전거 (30만원 이하)</b>
+                                    <br><br>1️⃣ <b>삼천리 시티바이크</b>
+                                    <br>• 가격: 150,000원
+                                    <br>• 위치: 서귀포시 (3km)
+                                    <br>• 상태: 양호, 6개월 사용
+                                    <br>• 판매자 매너온도: 41.2°C
+                                    <br><br>2️⃣ <b>트렉 FX2 하이브리드</b>
+                                    <br>• 가격: 280,000원
+                                    <br>• 위치: 제주시 (35km)
+                                    <br>• 상태: 최상, 정비완료
+                                    <br>• 판매자 매너온도: 45.8°C ⭐
+                                    <br><br>3️⃣ <b>알톤 MTB</b>
+                                    <br>• 가격: 200,000원
+                                    <br>• 위치: 서귀포시 (5km)
+                                    <br>• 상태: 양호
+                                    <br><br>어떤 상품 자세히 볼까요?</p>
+                                <p><span class="ai">사용자_AI:</span> 검색 결과 Vault '거래-검색'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 중고거래 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>© 2026 OpenHash</p></div></footer>
+</body>
+</html>

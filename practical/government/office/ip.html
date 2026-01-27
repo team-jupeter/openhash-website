@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지식재산처 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/government/" class="back-link-sm">← 정부</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">국무총리 소속</span>
+            <h1 class="header-title">지식재산처 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 지재처_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 지식재산권 출원/관리 업무 수행
+
+[핵심 원칙]
+- 업무 수행 중심 (정보 제공 아님)
+- IP 출원서류 작성/제출 대행
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 특허/상표/디자인 출원 대행
+- 지재권 분쟁조정 신청
+- 직무발명 보상금 조회
+- IP 담보대출 연계
+- 해외 IP 출원 지원 (PCT/마드리드)
+
+[연동] 특허법원_AI, 중기부_AI, 금융_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>특허 출원 대행</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 내가 개발한 AI 알고리즘 특허 출원해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 발명설명서/도면/발명자정보 인출) 지재처_AI에 특허 출원 요청.</p>
+                                <p><span class="agent">지재처_AI:</span> 특허출원서 작성/제출 완료. 발명명칭: 'AI 기반 자연어 처리 시스템'. 출원번호 10-2026-0012345. 출원료 46,000원 납부됨. 심사청구 별도 필요.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '지재권-특허출원'에 기록. Hash → OpenHash L3 대한민국 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>상표 출원 대행</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 우리 브랜드 'GOPANG' 상표 등록해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 로고파일/사업자정보/지정상품류 인출) 지재처_AI에 상표 출원.</p>
+                                <p><span class="agent">지재처_AI:</span> 상표출원서 작성/제출 완료. 상표명: GOPANG, 지정상품: 제9류(소프트웨어), 제42류(IT서비스). 출원번호 40-2026-0056789. 출원료 62,000원 납부됨.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '지재권-상표출원'에 기록. Hash → OpenHash L2 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>지재권 분쟁조정 신청</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 내 디자인을 베낀 업체가 있어. 분쟁조정 신청해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 디자인등록증/침해증거 인출) 지재처_AI에 분쟁조정 신청.</p>
+                                <p><span class="agent">지재처_AI:</span> 산업재산권 분쟁조정 신청서 작성/제출 완료. 피신청인: ○○기업. 조정위원회 심리 예정. 조정비용 무료. 조정기간 약 60일.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '지재권-분쟁조정'에 기록. Hash → OpenHash L2 대전시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>IP 담보대출 연계</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 보유 특허로 담보대출 받을 수 있어?</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 특허등록증/재무제표 인출) 지재처_AI에 IP 담보대출 연계 요청.</p>
+                                <p><span class="agent">지재처_AI:</span> IP 가치평가 신청 완료. 보유특허 3건 평가 진행. 예상 담보가치 2.5억원. 기술보증기금_AI 연계하여 대출 심사 진행할까요?</p>
+                                <p><span class="approve">(사용자 승인)</span></p>
+                                <p><span class="ai">사용자_AI:</span> 기보_AI 연계. Vault '금융-IP담보'에 기록. Hash → OpenHash L2 서울시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>해외 PCT 출원</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 미국이랑 유럽에도 특허 출원하고 싶어.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 국내특허출원서/영문명세서 인출) 지재처_AI에 PCT 국제출원 요청.</p>
+                                <p><span class="agent">지재처_AI:</span> PCT 국제출원서 작성/제출 완료. 지정국: 미국(US), 유럽(EP), 일본(JP). 국제출원번호 PCT/KR2026/001234. 출원료 정부지원 70% 적용.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '지재권-해외출원'에 기록. Hash → OpenHash L3 대한민국 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 지재처 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container"><p>© 2026 OpenHash</p></div>
+    </footer>
+</body>
+</html>

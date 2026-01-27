@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부동산 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/housing/" class="back-link-sm">← 주거</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">부동산</span>
+            <h1 class="header-title">부동산 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 부동산_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 부동산 거래 업무 수행 대행
+
+[핵심 원칙]
+- 업무 수행 중심 (정보 제공 아님)
+- 매물검색/계약/중개사연결 대행
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 매물 검색/비교
+- 시세 분석
+- 매매/전월세 계약
+- 중개사 연결
+- 등기/권리 확인
+
+[연동] 주거보조_AI, 임대_AI, 경매_AI, 법원_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>매물 검색</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 제주시 아파트 매물 검색해줘. 30평대, 4억 이하.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 위치선호 인출) 부동산_AI에 매물 검색.</p>
+                                <p><span class="agent">부동산_AI:</span> 제주시 아파트 검색 완료.
+                                    <br><br>🏠 <b>검색 조건</b>
+                                    <br>• 지역: 제주시
+                                    <br>• 평형: 30평대
+                                    <br>• 예산: 4억 이하
+                                    <br><br>📋 <b>매물 12건 (상위 3건)</b>
+                                    <br><br>1️⃣ <b>노형동 ○○아파트 32평</b>
+                                    <br>• 매매가: 3억 8,000만원
+                                    <br>• 층수: 8/15층 (남향)
+                                    <br>• 준공: 2019년
+                                    <br><br>2️⃣ <b>연동 △△아파트 34평</b>
+                                    <br>• 매매가: 3억 9,500만원
+                                    <br>• 층수: 12/20층 (남동향)
+                                    <br>• 준공: 2017년
+                                    <br><br>3️⃣ <b>아라동 □□아파트 33평</b>
+                                    <br>• 매매가: 3억 5,000만원
+                                    <br>• 층수: 5/12층 (동향)
+                                    <br>• 준공: 2015년
+                                    <br><br>상세 분석이나 방문예약 원하시면 말씀해주세요.</p>
+                                <p><span class="ai">사용자_AI:</span> 매물 검색 Vault '부동산-검색'에 저장. Hash → OpenHash L1 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>시세 분석</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 노형동 ○○아파트 시세 분석해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 관심매물 인출) 부동산_AI에 시세 분석.</p>
+                                <p><span class="agent">부동산_AI:</span> ○○아파트 시세 분석 완료.
+                                    <br><br>📊 <b>실거래가 추이</b>
+                                    <br>• 2025.12: 3.9억 (32평)
+                                    <br>• 2025.09: 3.7억
+                                    <br>• 2025.06: 3.5억
+                                    <br>• 1년 상승률: +11%
+                                    <br><br>💰 <b>현재 시세</b>
+                                    <br>• 매매: 3.7~4.0억
+                                    <br>• 전세: 2.0~2.3억
+                                    <br>• 월세: 1억/60만원
+                                    <br><br>📈 <b>투자 분석</b>
+                                    <br>• 전세가율: 55%
+                                    <br>• 갭투자 필요금액: 약 1.5억
+                                    <br>• 월세 수익률: 연 3.2%
+                                    <br><br>🏘️ <b>개발호재</b>
+                                    <br>• 제2공항 추진 (장기)
+                                    <br>• GTX 검토 중
+                                    <br><br>💡 현재 매물 3.8억은 시세 적정가입니다.</p>
+                                <p><span class="ai">사용자_AI:</span> 시세 분석 Vault '부동산-시세'에 저장. Hash → OpenHash L1 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>방문 예약</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 1번 매물 직접 보고 싶어.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 일정 인출) 부동산_AI에 방문 예약.</p>
+                                <p><span class="agent">부동산_AI:</span> 방문 예약을 도와드립니다.
+                                    <br><br>🏢 <b>담당 중개사</b>
+                                    <br>• ○○공인중개사 (노형점)
+                                    <br>• 대표: 김○○
+                                    <br>• 연락처: 064-XXX-XXXX
+                                    <br><br>📅 <b>가능 일정</b>
+                                    <br>• 내일 (토) 10:00, 14:00, 16:00
+                                    <br>• 모레 (일) 11:00, 15:00
+                                    <br><br>언제가 좋으세요?</p>
+                                <p><span class="user">사용자:</span> 내일 오후 2시로 해줘.</p>
+                                <p><span class="agent">부동산_AI:</span> 방문 예약 완료.
+                                    <br>• 일시: 내일 14:00
+                                    <br>• 장소: 노형동 ○○아파트 앞
+                                    <br>• 중개사: 김○○ 대표
+                                    <br><br>내일 오전에 리마인드 알림 드리겠습니다.</p>
+                                <p><span class="ai">사용자_AI:</span> 방문 예약 Vault '부동산-방문'에 저장. Hash → OpenHash L1 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>등기부등본 확인</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 이 집 등기부등본 확인해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 매물정보 인출) 부동산_AI에 등기 확인.</p>
+                                <p><span class="agent">부동산_AI:</span> 등기부등본 열람 완료.
+                                    <br><br>📋 <b>표제부</b>
+                                    <br>• 소재지: 제주시 노형동 123-45
+                                    <br>• 건물명: ○○아파트 제1동 제801호
+                                    <br>• 면적: 84.95㎡
+                                    <br><br>👤 <b>갑구 (소유권)</b>
+                                    <br>• 소유자: 박○○ (단독소유)
+                                    <br>• 취득일: 2020.03.15
+                                    <br>• 압류/가압류: 없음 ✅
+                                    <br><br>💳 <b>을구 (권리관계)</b>
+                                    <br>• 근저당: ○○은행 2.4억
+                                    <br>  - 설정일: 2020.03.15
+                                    <br>  - 채권최고액 기준
+                                    <br>• 전세권: 없음
+                                    <br><br>⚖️ <b>권리분석 결과</b>
+                                    <br>• 상태: <b>양호</b>
+                                    <br>• 근저당 2.4억 있으나 매매 시 말소
+                                    <br>• 전세 시 전세보증보험 가입 권장</p>
+                                <p><span class="ai">사용자_AI:</span> 등기 확인 Vault '부동산-등기'에 저장. Hash → OpenHash L1 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>매매 계약</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 3억 7천에 협상하고 계약하고 싶어.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 재정정보 인출) 부동산_AI에 계약 협상.</p>
+                                <p><span class="agent">부동산_AI:</span> 가격 협상 및 계약 진행합니다.
+                                    <br><br>💬 <b>협상 결과</b>
+                                    <br>• 매도 희망가: 3억 8,000만원
+                                    <br>• 제시가: 3억 7,000만원
+                                    <br>• 협상 결과: <b>3억 7,500만원 합의</b>
+                                    <br><br>📋 <b>계약 조건</b>
+                                    <br>• 매매가: 3억 7,500만원
+                                    <br>• 계약금: 3,750만원 (10%)
+                                    <br>• 중도금: 1억 5,000만원
+                                    <br>• 잔금: 1억 8,750만원
+                                    <br>• 잔금일: 2026.3.15
+                                    <br><br>💰 <b>부대비용</b>
+                                    <br>• 취득세: 약 1,125만원 (3%)
+                                    <br>• 중개수수료: 약 150만원
+                                    <br>• 법무사비용: 약 50만원
+                                    <br><br>이 조건으로 계약 진행할까요?</p>
+                                <p><span class="ai">사용자_AI:</span> 계약 협상 Vault '부동산-계약'에 저장. Hash → OpenHash L2 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 부동산 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>© 2026 OpenHash</p></div></footer>
+</body>
+</html>

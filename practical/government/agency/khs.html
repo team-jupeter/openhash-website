@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국가유산청 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/government/" class="back-link-sm">← 정부</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">문화체육관광부 소속</span>
+            <h1 class="header-title">국가유산청 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 국가유산청_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 문화재/유산 관리 업무 수행
+
+[핵심 원칙]
+- 업무 수행 중심
+- 문화재 보호 최우선
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 문화재 관람 예약
+- 발굴조사 허가 신청
+- 문화재 수리 지원
+- 매장문화재 신고
+- 국외반출 허가
+
+[연동] 박물관_AI, 지자체_AI, 관세청_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>궁궐 특별관람 예약</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 경복궁 야간 특별관람 예약해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 개인정보 인출) 국가유산청_AI에 예약 요청.</p>
+                                <p><span class="agent">국가유산청_AI:</span> 경복궁 야간관람 예약 완료. 2/14 19:00, 2인. 입장료 6,000원 결제됨.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '여가-관람'에 기록. Hash → OpenHash L1 종로구 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>매장문화재 신고</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 공사 중 유물 발견했어. 신고해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 위치/공사정보 인출) 국가유산청_AI에 신고.</p>
+                                <p><span class="agent">국가유산청_AI:</span> 매장문화재 신고 접수 완료. 현장 보존 조치 필요. 조사관 금일 16시 도착 예정.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '신고-문화재'에 기록. Hash → OpenHash L2 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>문화재 수리 지원</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 우리 마을 정자가 등록문화재인데 수리 지원 신청해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 문화재등록정보/사진 인출) 국가유산청_AI에 지원 신청.</p>
+                                <p><span class="agent">국가유산청_AI:</span> 수리지원 심사 접수 완료. 예상 지원금 70%(최대 5천만원). 현장조사 2/25 예정.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '문화재-수리'에 기록. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>발굴조사 허가</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 학술 발굴조사 허가 신청해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 연구계획/기관정보 인출) 국가유산청_AI에 허가 신청.</p>
+                                <p><span class="agent">국가유산청_AI:</span> 발굴조사 허가 심사 접수. 문화재위원회 심의(3/10) 후 결정 통보 예정.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '문화재-발굴'에 기록. Hash → OpenHash L3 대한민국 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>문화재 국외반출 허가</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 해외 전시용 문화재 반출 허가 신청해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 전시계획/보험증서 인출) 국가유산청_AI에 반출허가 신청.</p>
+                                <p><span class="agent">국가유산청_AI:</span> 국외반출 허가 심사 접수. 보존상태 점검 후 결정(약 30일). 관세청_AI 연동 예정.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '문화재-반출'에 기록. Hash → OpenHash L4 대한민국 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 국가유산청 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container"><p>© 2026 OpenHash</p></div>
+    </footer>
+</body>
+</html>

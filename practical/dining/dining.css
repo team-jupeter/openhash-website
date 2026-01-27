@@ -1,0 +1,17 @@
+/* Dining Category Styles */
+.dining-main { padding: 3rem 0; min-height: 60vh; }
+.dining-section { margin-bottom: 3rem; }
+.dining-section h2 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+.section-desc { color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem; }
+.dining-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.dining-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; text-decoration: none; color: inherit; transition: all 0.2s; }
+.dining-card:hover { border-color: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); transform: translateY(-2px); }
+.dining-card h3 { font-size: 1.25rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; }
+.dining-card p { color: #64748b; font-size: 0.9rem; line-height: 1.5; }
+.dining-badge { display: inline-block; padding: 0.25rem 0.75rem; background: #fee2e2; color: #b91c1c; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem; }
+.dining-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.dining-card.featured { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; grid-column: 1 / -1; max-width: 600px; }
+.dining-card.featured:hover { border-color: #dc2626; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25); }
+.dining-card.featured .dining-badge { background: #ef4444; color: #fff; }
+.dining-card.featured h3 { font-size: 1.5rem; }
+.dining-card.featured p { font-size: 1rem; line-height: 1.6; }

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>건강보험심사평가원 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/healthcare/" class="back-link-sm">← 의료</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">심평원</span>
+            <h1 class="header-title">건강보험심사평가원 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 심평원_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 건강보험심사평가원 업무 수행 대행
+
+[핵심 원칙]
+- 업무 수행 중심 (정보 제공 아님)
+- 진료비/의료기관 평가 조회 대행
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 내가 낸 진료비 확인
+- 의료기관 평가등급 조회
+- 급여/비급여 기준 조회
+- 진료비 이의신청
+- 적정성 평가 결과 조회
+
+[연동] 건보공단_AI, 병원_AI, 복지부_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>내가 낸 진료비 확인</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 최근 병원 진료비 내역 확인해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 건강보험정보 인출) 심평원_AI에 진료비 조회.</p>
+                                <p><span class="agent">심평원_AI:</span> 최근 3개월 진료비 조회 완료. 총 5건: 1/15 ○○내과 15,200원, 1/10 ○○정형외과 45,000원, 12/28 ○○약국 8,500원 외 2건. 총 본인부담금 128,700원.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '의료-진료비내역'에 기록. Hash → OpenHash L1 제주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>의료기관 평가등급 조회</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 이 병원 평가등급 어때? 믿을 만해?</p>
+                                <p><span class="ai">사용자_AI:</span> (조회 요청) 심평원_AI에 의료기관 평가 조회.</p>
+                                <p><span class="agent">심평원_AI:</span> ○○병원 평가등급 조회 완료. 종합평가: 1등급(상위 20%), 환자안전: 1등급, 의료의 질: 2등급, 환자경험: 1등급. 최근 평가일: 2025.9월.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '의료-병원평가'에 기록. Hash → OpenHash L1 서울시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>급여/비급여 기준 조회</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> MRI 찍으면 보험 적용돼?</p>
+                                <p><span class="ai">사용자_AI:</span> (조회 요청) 심평원_AI에 급여기준 조회.</p>
+                                <p><span class="agent">심평원_AI:</span> MRI 급여기준 조회 완료. 뇌/척추 MRI: 급여(본인부담 30~60%), 조건: 의사 소견 필요. 무릎 MRI: 급여, 조건: 임상증상 6주 이상. 단순 건강검진 목적: 비급여.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '의료-급여기준'에 기록. Hash → OpenHash L1 원주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>진료비 이의신청</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 진료비가 너무 많이 나온 것 같아. 이의신청해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 진료비영수증/진료내역 인출) 심평원_AI에 이의신청.</p>
+                                <p><span class="agent">심평원_AI:</span> 진료비 이의신청서 작성/제출 완료. 대상: ○○병원 2026.1.10 진료, 이의내용: 비급여 항목 과다청구 의심. 심사기간 약 30일. 결과 문자 통보 예정.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '의료-이의신청'에 기록. Hash → OpenHash L2 원주시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>약제비 적정성 평가</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 내가 먹는 약이 적정하게 처방된 건지 확인해줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 처방내역/복용약 인출) 심평원_AI에 적정성 평가 요청.</p>
+                                <p><span class="agent">심평원_AI:</span> 처방 적정성 분석 완료. 현재 복용약 5종: 중복성분 없음, 병용금기 없음. 다만, 고혈압약+진통제 장기복용 시 신장기능 모니터링 권고. DUR 점검 결과 이상 없음.</p>
+                                <p><span class="ai">사용자_AI:</span> Vault '의료-약제평가'에 기록. Hash → OpenHash L1 원주시 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 심평원 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container"><p>© 2026 OpenHash</p></div>
+    </footer>
+</body>
+</html>

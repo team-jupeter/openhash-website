@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식당 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/dining/" class="back-link-sm">← 식사</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">식당</span>
+            <h1 class="header-title">식당 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 식당_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 맛집 검색/예약 업무 수행 대행
+
+[핵심 원칙]
+- 업무 수행 중심 (정보 제공 아님)
+- 맛집검색/예약/웨이팅 대행
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 맛집 검색/추천
+- 예약 대행
+- 원격 웨이팅
+- 리뷰 작성
+- 할인/쿠폰 적용
+
+[연동] 식사보조_AI, 배달_AI, 결제_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>맛집 검색</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 근처 맛집 찾아줘. 한식으로.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 위치정보 인출) 식당_AI에 맛집 검색.</p>
+                                <p><span class="agent">식당_AI:</span> 서귀포 한식 맛집 검색 완료.
+                                    <br><br>🍚 <b>한식 맛집 (거리순)</b>
+                                    <br><br>1️⃣ <b>○○식당</b> (500m)
+                                    <br>• 대표메뉴: 갈치조림, 고등어조림
+                                    <br>• 가격대: 1만~2만원
+                                    <br>• 평점: ⭐4.6 (리뷰 1,234개)
+                                    <br>• 웨이팅: 10분
+                                    <br><br>2️⃣ <b>△△국밥</b> (800m)
+                                    <br>• 대표메뉴: 돼지국밥, 순대국밥
+                                    <br>• 가격대: 8천~1만원
+                                    <br>• 평점: ⭐4.4 (리뷰 567개)
+                                    <br>• 웨이팅: 없음
+                                    <br><br>3️⃣ <b>□□정식</b> (1.2km)
+                                    <br>• 대표메뉴: 한정식, 불고기정식
+                                    <br>• 가격대: 1.5만~2.5만원
+                                    <br>• 평점: ⭐4.8 (리뷰 892개)
+                                    <br>• 예약 필수</p>
+                                <p><span class="ai">사용자_AI:</span> 맛집 검색 Vault '식사-맛집검색'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>예약</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> □□정식 예약해줘. 내일 점심 4명.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 연락처 인출) 식당_AI에 예약 요청.</p>
+                                <p><span class="agent">식당_AI:</span> □□정식 예약 진행합니다.
+                                    <br><br>📅 <b>예약 가능 시간</b>
+                                    <br>• 11:30 - 가능
+                                    <br>• 12:00 - 가능
+                                    <br>• 12:30 - 마감
+                                    <br>• 13:00 - 가능
+                                    <br><br>어느 시간으로 예약할까요?</p>
+                                <p><span class="user">사용자:</span> 12시로 해줘.</p>
+                                <p><span class="agent">식당_AI:</span> 예약 완료.
+                                    <br>• 식당: □□정식
+                                    <br>• 일시: 내일 12:00
+                                    <br>• 인원: 4명
+                                    <br>• 예약자: 김○○
+                                    <br>• 예약번호: RSV-789456</p>
+                                <p><span class="ai">사용자_AI:</span> 예약 Vault '식사-예약'에 저장. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>원격 웨이팅</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> ○○식당 웨이팅 걸어줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 연락처 인출) 식당_AI에 웨이팅 등록.</p>
+                                <p><span class="agent">식당_AI:</span> ○○식당 원격 웨이팅 등록 완료.
+                                    <br><br>🎫 <b>웨이팅 정보</b>
+                                    <br>• 대기번호: 15번
+                                    <br>• 앞 대기팀: 3팀
+                                    <br>• 예상 대기시간: 약 20분
+                                    <br><br>⏰ <b>알림 설정</b>
+                                    <br>• 내 차례 2팀 전 알림
+                                    <br>• 입장 시간 5분 내 미도착 시 자동취소
+                                    <br><br>대기 중 위치를 벗어나셔도 됩니다.</p>
+                                <p><span class="ai">사용자_AI:</span> 웨이팅 Vault '식사-웨이팅'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>리뷰 작성</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 오늘 갔던 식당 리뷰 써줘. 맛있었어.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 방문기록/사진 인출) 식당_AI에 리뷰 작성.</p>
+                                <p><span class="agent">식당_AI:</span> ○○식당 리뷰 초안입니다.
+                                    <br><br>📝 <b>리뷰 초안</b>
+                                    <br>⭐⭐⭐⭐⭐ (5점)
+                                    <br><br>"갈치조림이 정말 맛있었어요! 양도 푸짐하고 반찬도 깔끔합니다. 직원분들도 친절하시고 분위기도 좋아요. 서귀포 오시면 꼭 들러보세요!"
+                                    <br><br>📸 첨부 사진: 3장
+                                    <br><br>이대로 등록할까요? 수정할 부분이 있으면 말씀해주세요.</p>
+                                <p><span class="user">사용자:</span> 좋아, 등록해줘.</p>
+                                <p><span class="agent">식당_AI:</span> 리뷰 등록 완료.
+                                    <br>• 적립 포인트: 100P
+                                    <br>• 사진 보너스: 50P</p>
+                                <p><span class="ai">사용자_AI:</span> 리뷰 Vault '식사-리뷰'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>할인 혜택 적용</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 지금 쓸 수 있는 식당 쿠폰 있어?</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 쿠폰정보 인출) 식당_AI에 쿠폰 조회.</p>
+                                <p><span class="agent">식당_AI:</span> 사용 가능 쿠폰 조회 완료.
+                                    <br><br>🎫 <b>보유 쿠폰 (3장)</b>
+                                    <br><br>1. <b>○○식당 10% 할인</b>
+                                    <br>   • 조건: 2만원 이상
+                                    <br>   • 만료: 2026.2.28
+                                    <br><br>2. <b>네이버페이 3,000원</b>
+                                    <br>   • 조건: 1.5만원 이상
+                                    <br>   • 만료: 2026.1.31 ⚠️
+                                    <br><br>3. <b>신한카드 5,000원</b>
+                                    <br>   • 조건: 3만원 이상, 점심시간
+                                    <br>   • 만료: 2026.3.31
+                                    <br><br>💡 내일 □□정식 예약에 신한카드 5천원 쿠폰 적용 가능합니다!</p>
+                                <p><span class="ai">사용자_AI:</span> 쿠폰 현황 Vault '식사-쿠폰'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 식당 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>© 2026 OpenHash</p></div></footer>
+</body>
+</html>

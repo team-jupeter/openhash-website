@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공증 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/practical/" class="active">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar">
+        <div class="container header-row">
+            <a href="/practical/legal/" class="back-link-sm">← 법률</a>
+            <span class="header-divider">|</span>
+            <span class="header-badge">공증</span>
+            <h1 class="header-title">공증 AI Agent</h1>
+            <span class="model-tag">exaone 7.8B</span>
+        </div>
+    </div>
+    <main class="agency-content">
+        <div class="container">
+            <div class="agency-layout">
+                <div class="info-panel">
+                    <div class="system-prompt">
+                        <div class="system-prompt-header">System Prompt</div>
+                        <div class="system-prompt-body">당신은 공증_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 공증사무소 업무 수행 대행
+
+[핵심 원칙]
+- 업무 수행 중심 (정보 제공 아님)
+- 공증/인증/확정일자 업무 대행
+- 사용자_AI를 통해서만 호출됨
+
+[수행 업무]
+- 사서증서 인증 (계약서, 각서)
+- 공정증서 작성 (금전소비대차, 이혼합의)
+- 확정일자 부여
+- 외국문서 인증 (아포스티유)
+- 유언공증
+
+[연동] 법률보조_AI, 법무사_AI, 외교부_AI</div>
+                    </div>
+                    <div class="examples-section">
+                        <h3>대화 예시</h3>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">1</span>금전소비대차 공정증서</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 돈 빌려주는데 공정증서로 만들어줘. 나중에 못 받을까봐.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 차용정보/당사자정보 인출) 공증_AI에 공정증서 작성 요청.</p>
+                                <p><span class="agent">공증_AI:</span> 금전소비대차 공정증서 작성 준비 완료.
+                                    <br><br>📋 <b>공정증서 내용</b>
+                                    <br>• 채권자: 김○○
+                                    <br>• 채무자: 박○○
+                                    <br>• 대여금: 3,000만원
+                                    <br>• 이자: 연 5%
+                                    <br>• 변제기: 2027.1.27
+                                    <br>• <b>강제집행인낙 조항 포함</b>
+                                    <br><br>⚡ <b>공정증서의 효력</b>
+                                    <br>• 채무불이행 시 재판 없이 즉시 강제집행 가능
+                                    <br>• 급여, 부동산, 예금 압류 가능
+                                    <br>• 확정판결과 동일한 효력
+                                    <br><br>💰 <b>공증 비용</b>
+                                    <br>• 공증수수료: 150,000원 (금액 기준)
+                                    <br>• 증서 작성료: 50,000원
+                                    <br>• <b>총계: 200,000원</b>
+                                    <br><br>⚠️ 채무자(박○○) 본인이 직접 공증사무소 방문해야 합니다.
+                                    <br>방문 일정을 잡아드릴까요?</p>
+                                <p><span class="user">사용자:</span> 내일 오후 2시로 예약해줘.</p>
+                                <p><span class="agent">공증_AI:</span> 공증 예약 완료.
+                                    <br>• 일시: 내일(1/28) 14:00
+                                    <br>• 장소: 서귀포공증사무소
+                                    <br>• 준비물: 신분증, 인감도장 (채권자/채무자 모두)</p>
+                                <p><span class="ai">사용자_AI:</span> 공정증서 예약 Vault '법률-공정증서'에 저장. Hash → OpenHash L2 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">2</span>계약서 사서증서 인증</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 이 계약서 공증받고 싶어.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 계약서파일 인출) 공증_AI에 사서증서 인증 요청.</p>
+                                <p><span class="agent">공증_AI:</span> 사서증서 인증 검토 완료.
+                                    <br><br>📋 <b>문서 정보</b>
+                                    <br>• 문서종류: 용역계약서
+                                    <br>• 당사자: 김○○ ↔ (주)○○테크
+                                    <br>• 계약금액: 5,000만원
+                                    <br>• 페이지: 8페이지
+                                    <br><br>📝 <b>사서증서 인증이란?</b>
+                                    <br>• 당사자가 작성한 문서에 공증인이 인증
+                                    <br>• 문서의 진정성 증명 (위조/변조 방지)
+                                    <br>• 법적 분쟁 시 증거력 강화
+                                    <br><br>💰 <b>공증 비용</b>
+                                    <br>• 인증수수료: 11,000원
+                                    <br>• 계약금액 기준 추가: 25,000원
+                                    <br>• <b>총계: 36,000원</b>
+                                    <br><br>⏰ <b>절차</b>
+                                    <br>• 계약 당사자 쌍방 또는 대리인 출석
+                                    <br>• 신분증 지참
+                                    <br>• 소요시간: 약 30분</p>
+                                <p><span class="approve">(사용자 승인)</span></p>
+                                <p><span class="agent">공증_AI:</span> 공증 예약 완료. 내일 오전 10시 서귀포공증사무소.</p>
+                                <p><span class="ai">사용자_AI:</span> 사서증서 인증 Vault '법률-계약공증'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">3</span>임대차계약 확정일자</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 전세계약 했는데 확정일자 받아줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 임대차계약서/전입신고 인출) 공증_AI에 확정일자 요청.</p>
+                                <p><span class="agent">공증_AI:</span> 확정일자 부여 신청 완료.
+                                    <br><br>📋 <b>계약 정보</b>
+                                    <br>• 임차물건: 서귀포시 ○○동 ○○아파트 201호
+                                    <br>• 임대인: 이○○
+                                    <br>• 임차인: 김○○
+                                    <br>• 보증금: 2억원
+                                    <br>• 계약기간: 2026.2.1 ~ 2028.1.31
+                                    <br><br>⚡ <b>확정일자 효력</b>
+                                    <br>• 전입신고 + 확정일자 = 대항력 + 우선변제권
+                                    <br>• 경매 시 선순위 채권자로 배당 순위 확보
+                                    <br>• 보증금 보호의 핵심
+                                    <br><br>💰 <b>비용</b>
+                                    <br>• 확정일자 수수료: 600원
+                                    <br><br>📍 <b>신청처 선택</b>
+                                    <br>1. 주민센터 (즉시 가능)
+                                    <br>2. 등기소 (온라인 가능)
+                                    <br>3. 공증사무소
+                                    <br><br>온라인 등기소 신청으로 진행할까요?</p>
+                                <p><span class="user">사용자:</span> 온라인으로 해줘.</p>
+                                <p><span class="agent">공증_AI:</span> 인터넷등기소 확정일자 신청 완료.
+                                    <br>• 접수번호: 2026-XXXXX
+                                    <br>• 처리시간: 즉시
+                                    <br>• 확정일자: 2026.1.27</p>
+                                <p><span class="ai">사용자_AI:</span> 확정일자 Vault '부동산-임대차'에 저장. Hash → OpenHash L1 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">4</span>아포스티유 인증 (외국문서)</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 졸업증명서 미국에 제출해야 해. 아포스티유 받아줘.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 졸업증명서/여권정보 인출) 공증_AI에 아포스티유 요청.</p>
+                                <p><span class="agent">공증_AI:</span> 아포스티유 인증 신청 준비 완료.
+                                    <br><br>📋 <b>문서 정보</b>
+                                    <br>• 문서: 졸업증명서 (○○대학교)
+                                    <br>• 제출국: 미국 (아포스티유 협약국 ✓)
+                                    <br>• 용도: 대학원 입학
+                                    <br><br>📝 <b>아포스티유란?</b>
+                                    <br>• 협약국 간 공문서 간소화 인증
+                                    <br>• 외교부 발급 시 해외에서 공문서로 인정
+                                    <br>• 영사확인 불필요
+                                    <br><br>⏱️ <b>절차</b>
+                                    <br>1. 공증사무소 인증 (사문서인 경우)
+                                    <br>2. 외교부 아포스티유 발급
+                                    <br><br>💰 <b>비용</b>
+                                    <br>• 공증인 인증: 11,000원
+                                    <br>• 외교부 아포스티유: 1,000원
+                                    <br>• 대행 수수료: 30,000원
+                                    <br>• <b>총계: 42,000원</b>
+                                    <br><br>📅 소요시간: 3-5일</p>
+                                <p><span class="approve">(사용자 승인)</span></p>
+                                <p><span class="agent">공증_AI:</span> 아포스티유 신청 접수 완료. 완료 시 국제우편 또는 직접 수령 선택 가능.</p>
+                                <p><span class="ai">사용자_AI:</span> 아포스티유 Vault '법률-외국문서'에 저장. 외교부_AI 연계. Hash → OpenHash L2 서울시 노드 저장.</p>
+                            </div>
+                        </div>
+                        <div class="example-card">
+                            <div class="example-title"><span class="example-num">5</span>유언공증</div>
+                            <div class="example-dialog">
+                                <p><span class="user">사용자:</span> 유언장 공증받고 싶어. 법적으로 확실하게.</p>
+                                <p><span class="ai">사용자_AI:</span> (Vault 가족관계/재산정보 인출) 공증_AI에 유언공증 요청.</p>
+                                <p><span class="agent">공증_AI:</span> 유언공증 상담 시작합니다.
+                                    <br><br>📋 <b>공증유언의 효력</b>
+                                    <br>• 법적으로 가장 확실한 유언 방식
+                                    <br>• 위조/변조 불가능
+                                    <br>• 상속 분쟁 예방
+                                    <br>• 검인 절차 불필요
+                                    <br><br>⚠️ <b>유언공증 요건</b>
+                                    <br>• 유언자 본인 출석 필수
+                                    <br>• 증인 2인 필요 (상속인 제외)
+                                    <br>• 유언 능력 확인 (만 17세 이상, 의사능력)
+                                    <br><br>📝 <b>유언 내용 확인</b>
+                                    <br>어떤 재산을 누구에게 상속하실 계획인가요?</p>
+                                <p><span class="user">사용자:</span> 아파트는 배우자에게, 예금은 자녀 둘에게 균등 분배.</p>
+                                <p><span class="agent">공증_AI:</span> 유언공증 초안 작성 완료.
+                                    <br><br>📋 <b>유언 내용 요약</b>
+                                    <br>• 부동산(아파트): 배우자 김○○에게 유증
+                                    <br>• 금융자산(예금): 자녀 2인 균등 분배
+                                    <br>• 유언집행자: 배우자 김○○ 지정
+                                    <br><br>💰 <b>비용</b>
+                                    <br>• 공증수수료: 300,000원~
+                                    <br>• 증인 수당: 100,000원 (2인)
+                                    <br><br>증인은 공증사무소에서 준비 가능합니다. 예약 진행할까요?</p>
+                                <p><span class="ai">사용자_AI:</span> 유언공증 상담 Vault '법률-유언'에 저장 (보안강화). Hash → OpenHash L3 서귀포시 노드 저장.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-panel">
+                    <div class="app-header">
+                        <h3>Gopang - 공증 AI</h3>
+                        <span class="model-badge">Live</span>
+                    </div>
+                    <iframe src="https://gopang.net" class="app-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container"><p>© 2026 OpenHash</p></div>
+    </footer>
+</body>
+</html>

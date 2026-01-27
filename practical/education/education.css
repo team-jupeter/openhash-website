@@ -1,0 +1,100 @@
+/* Education Category Styles */
+.education-main {
+    padding: 3rem 0;
+    min-height: 60vh;
+}
+
+.education-section {
+    margin-bottom: 3rem;
+}
+
+.education-section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.section-desc {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.education-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.education-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+}
+
+.education-card:hover {
+    border-color: #8b5cf6;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.education-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.education-card p {
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.education-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #ede9fe;
+    color: #7c3aed;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.education-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Featured Card Style */
+.education-card.featured {
+    background: linear-gradient(135deg, #faf5ff 0%, #ede9fe 100%);
+    border: 2px solid #8b5cf6;
+    grid-column: 1 / -1;
+    max-width: 600px;
+}
+
+.education-card.featured:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+}
+
+.education-card.featured .education-badge {
+    background: #8b5cf6;
+    color: #fff;
+}
+
+.education-card.featured h3 {
+    font-size: 1.5rem;
+}
+
+.education-card.featured p {
+    font-size: 1rem;
+    line-height: 1.6;
+}

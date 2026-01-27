@@ -1,0 +1,100 @@
+/* Legal Category Styles */
+.legal-main {
+    padding: 3rem 0;
+    min-height: 60vh;
+}
+
+.legal-section {
+    margin-bottom: 3rem;
+}
+
+.legal-section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.section-desc {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.legal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.legal-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+}
+
+.legal-card:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+    transform: translateY(-2px);
+}
+
+.legal-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.legal-card p {
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.legal-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #fef3c7;
+    color: #b45309;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.legal-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Featured Card Style */
+.legal-card.featured {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 2px solid #f59e0b;
+    grid-column: 1 / -1;
+    max-width: 600px;
+}
+
+.legal-card.featured:hover {
+    border-color: #d97706;
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
+}
+
+.legal-card.featured .legal-badge {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.legal-card.featured h3 {
+    font-size: 1.5rem;
+}
+
+.legal-card.featured p {
+    font-size: 1rem;
+    line-height: 1.6;
+}

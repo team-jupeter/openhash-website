@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행정법원 AI Agent - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/practical/agency-page.css">
+    <style>
+        .sub-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .sub-nav-link { padding: 0.5rem 0.75rem; background: #f1f5f9; color: #64748b; border-radius: 6px; text-decoration: none; font-size: 0.85rem; transition: all 0.2s; border: 1px solid #e2e8f0; }
+        .sub-nav-link:hover { background: #e2e8f0; color: #1e293b; }
+        .sub-nav-link.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+    </style>
+</head>
+<body>
+    <nav class="nav"><div class="nav-inner"><a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a><ul class="nav-menu"><li><a href="/">홈</a></li><li><a href="/practical/" class="active">실용</a></li><li><a href="/technology/">기술</a></li><li><a href="/simulation/">시뮬레이션</a></li><li><a href="/tests/">테스트</a></li></ul></div></nav>
+    <div class="nav-spacer"></div>
+    <div class="page-header-bar"><div class="container header-row"><a href="/practical/government/" class="back-link-sm">← 정부</a><span class="header-divider">|</span><span class="header-badge">행정</span><h1 class="header-title">행정법원 AI Agent</h1><span class="model-tag">exaone 7.8B</span></div></div>
+    <main class="agency-content"><div class="container"><div class="agency-layout"><div class="info-panel">
+        <div class="system-prompt"><div class="system-prompt-header">System Prompt</div><div class="system-prompt-body">당신은 행정법원_AI입니다.
+모델: exaone 7.8B (fine-tuned)
+역할: 행정소송/행정심판 업무 수행
+
+[수행 업무]
+- 행정처분 취소소송
+- 과세처분 불복
+- 영업정지 취소
+- 행정심판 진행
+- 집행정지 신청
+
+[연동] 법원_AI, 국세청_AI, 각 행정청_AI</div></div>
+        <div class="examples-section"><h3>대화 예시</h3>
+            <div class="example-card"><div class="example-title"><span class="example-num">1</span>과세처분 취소소송</div><div class="example-dialog">
+                <p><span class="user">사용자:</span> 국세청 세금 부과가 부당해서 취소소송 하려고.</p>
+                <p><span class="ai">사용자_AI:</span> (Vault 과세처분 통지서/이의신청 결과 인출) 행정법원_AI에 취소소송 접수 요청.</p>
+                <p><span class="agent">행정법원_AI:</span> 행정소송 접수 가능. 소가 3,500만원 기준 인지대 285,000원. 제소기한 처분 안 날로부터 90일 이내. 접수하시겠습니까?</p>
+                <p><span class="approve">(사용자 승인)</span></p>
+                <p><span class="agent">행정법원_AI:</span> 접수 완료(2026구합12345). 집행정지 신청도 함께 접수됨.</p>
+                <p><span class="ai">사용자_AI:</span> Vault '법률-행정소송'에 기록. Hash → OpenHash L3 서울시 노드 저장.</p>
+            </div></div>
+        </div>
+    </div><div class="app-panel">
+        <div class="sub-nav">
+            <a href="../court.html" class="sub-nav-link">대법원·헌재</a>
+            <a href="district.html" class="sub-nav-link">지방법원</a>
+            <a href="high.html" class="sub-nav-link">고등법원</a>
+            <a href="family.html" class="sub-nav-link">가정법원</a>
+            <a href="admin.html" class="sub-nav-link active">행정법원</a>
+            <a href="patent.html" class="sub-nav-link">특허법원</a>
+            <a href="bankruptcy.html" class="sub-nav-link">회생법원</a>
+        </div>
+        <div class="app-header"><h3>Gopang - 행정법원 AI</h3><span class="model-badge">Live</span></div>
+        <iframe src="https://gopang.net" class="app-iframe"></iframe>
+    </div></div></div></main>
+    <footer class="footer"><div class="container"><p>© 2026 OpenHash</p></div></footer>
+</body>
+</html>
