@@ -57,37 +57,48 @@
     </section>
 
     <!-- Problem -->
+    <!-- Problem -->
     <section class="section" id="problem">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Problem</span>
                 <h2 class="section-title">기존 블록체인의 <span class="highlight">한계</span></h2>
-                <p class="section-desc">비트코인과 이더리움은 혁신적이었지만, 근본적인 문제들을 안고 있습니다.</p>
+                <p class="section-desc">비트코인과 이더리움은 혁신적이었지만, 근본적인 문제들을 안고 있습니다. <strong>카드를 클릭</strong>하여 자세히 알아보세요.</p>
             </div>
             <div class="problem-grid">
-                <div class="problem-card">
+                <div class="problem-card" data-type="energy">
                     <h4>⚡ 막대한 에너지 소비</h4>
                     <p class="value">121 TWh/년</p>
                     <p>비트코인의 연간 전력 소비량은 일부 국가 전체 소비량에 필적합니다.</p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card" data-type="speed">
                     <h4>🕐 느린 처리 속도</h4>
                     <p class="value">10분 ~ 12초</p>
                     <p>블록 생성에 비트코인 10분, 이더리움 12초가 필요합니다.</p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card" data-type="centralization">
                     <h4>👥 권력 집중</h4>
                     <p class="value">부익부 빈익빈</p>
                     <p>지분증명(PoS)은 대형 지분 보유자에게 권력이 집중됩니다.</p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card" data-type="sync">
                     <h4>🔄 동기화 부담</h4>
                     <p class="value">전역 일관성 필요</p>
                     <p>모든 노드가 동일한 데이터를 유지해야 하여 확장성이 저하됩니다.</p>
                 </div>
             </div>
+            <!-- Slide Out Detail Panel -->
+            <div class="problem-detail-panel" id="problem-detail-panel">
+                <div class="problem-detail-content" id="problem-detail-content">
+                    <button class="problem-detail-close" id="problem-detail-close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                    <!-- Content injected by JS -->
+                </div>
+            </div>
         </div>
     </section>
+
 
     <!-- Hierarchy -->
     <section class="section alt" id="hierarchy">
@@ -293,6 +304,7 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/problem-cards.js"></script>
     <script src="js/simulation.js"></script>
     <script src="js/hierarchy.js"></script>
 </body>
