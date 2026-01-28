@@ -8,457 +8,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="/js/header.js"></script>
     <link rel="stylesheet" href="/css/hero.css">
-    <style>
-        :root {
-            --primary: #1a5c9e;
-            --primary-dark: #134a7e;
-            --primary-light: #e8f4fc;
-            --accent: #0d7a3e;
-            --accent-light: #e6f5ec;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --red: #dc2626;
-            --orange: #ea580c;
-            --green: #16a34a;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-800);
-            line-height: 1.6;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
-
-        /* 페이지 헤더 - 정부 스타일 */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 2rem 0;
-            margin-bottom: 1.5rem;
-        }
-        .page-header .container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .page-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        .breadcrumb {
-            margin-left: auto;
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-        .breadcrumb a { color: white; text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-
-        /* 4개 카드 그리드 */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        @media (max-width: 1024px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } }
-
-        .card {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            padding: 1.25rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(26, 92, 158, 0.15);
-        }
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 0.75rem;
-        }
-        .card-icon svg { width: 20px; height: 20px; color: var(--primary); }
-        .card-title { font-size: 0.95rem; font-weight: 600; color: var(--gray-800); margin-bottom: 0.3rem; }
-        .card-desc { font-size: 0.8rem; color: var(--gray-500); }
-
-        /* Slide-down 패널 (bank.html 방식) */
-        .detail-panel {
-            max-height: 0;
-            overflow: hidden;
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-        }
-        .detail-panel.open {
-            max-height: 500px;
-            padding: 1.5rem;
-        }
-        .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-        .panel-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        .panel-close {
-            background: var(--gray-100);
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            color: var(--gray-500);
-            transition: all 0.2s;
-        }
-        .panel-close:hover { background: var(--gray-200); color: var(--gray-700); }
-        .panel-content p {
-            color: var(--gray-600);
-            font-size: 0.9rem;
-            line-height: 1.8;
-            margin-bottom: 0.75rem;
-        }
-        .panel-content a { color: var(--primary); }
-
-        /* 시뮬레이션 섹션 */
-        .sim-section {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .sim-header {
-            background: var(--gray-800);
-            color: white;
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .sim-title { font-size: 1rem; font-weight: 600; }
-        .sim-badge {
-            background: var(--accent);
-            padding: 0.25rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        /* 컨트롤 바 */
-        .control-bar {
-            background: var(--gray-50);
-            border-bottom: 1px solid var(--gray-200);
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .control-label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--gray-600);
-        }
-        .control-select {
-            padding: 0.4rem 0.75rem;
-            border: 1px solid var(--gray-300);
-            border-radius: 4px;
-            font-size: 0.85rem;
-            background: white;
-            min-width: 120px;
-        }
-        .btn-evaluate {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-left: auto;
-            transition: background 0.2s;
-        }
-        .btn-evaluate:hover { background: var(--primary-dark); }
-
-        /* 본문 */
-        .sim-body { padding: 1.25rem; }
-
-        /* 2단 그리드 */
-        .sim-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-        }
-        @media (max-width: 900px) { .sim-grid { grid-template-columns: 1fr; } }
-
-        /* 재무제표 패널 */
-        .fs-panel {
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .fs-header {
-            background: var(--gray-700);
-            color: white;
-            padding: 0.6rem 1rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .fs-body { padding: 0.75rem; }
-        .fs-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-        }
-        .fs-table th, .fs-table td {
-            padding: 0.4rem 0.6rem;
-            text-align: left;
-            border-bottom: 1px solid var(--gray-200);
-        }
-        .fs-table th { background: var(--gray-100); font-weight: 600; color: var(--gray-600); }
-        .fs-table td:last-child { text-align: right; font-family: 'Consolas', monospace; }
-        .fs-table tr:last-child td { border-bottom: none; }
-        .fs-total { font-weight: 700; background: var(--gray-100); }
-
-        /* 재무지표 */
-        .ratio-section {
-            margin-top: 1.25rem;
-            background: var(--primary-light);
-            border: 1px solid var(--primary);
-            border-radius: 6px;
-            padding: 1rem;
-        }
-        .ratio-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.75rem;
-        }
-        .ratio-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
-        }
-        @media (max-width: 768px) { .ratio-grid { grid-template-columns: repeat(2, 1fr); } }
-        .ratio-item {
-            background: white;
-            border-radius: 4px;
-            padding: 0.6rem;
-            text-align: center;
-        }
-        .ratio-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            font-family: 'Consolas', monospace;
-        }
-        .ratio-label { font-size: 0.7rem; color: var(--gray-500); margin-top: 0.2rem; }
-
-        /* 위험도 조정 */
-        .risk-section {
-            margin-top: 1.25rem;
-            background: #fffbeb;
-            border: 1px solid var(--orange);
-            border-radius: 6px;
-            padding: 1rem;
-        }
-        .risk-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--orange);
-            margin-bottom: 0.75rem;
-        }
-        .risk-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-        }
-        @media (max-width: 640px) { .risk-grid { grid-template-columns: 1fr; } }
-        .risk-item {
-            background: white;
-            border-radius: 4px;
-            padding: 0.75rem;
-            text-align: center;
-        }
-        .risk-category { font-size: 0.75rem; color: var(--gray-500); margin-bottom: 0.3rem; }
-        .risk-level { font-size: 1.2rem; font-weight: 700; }
-        .risk-level.low { color: var(--green); }
-        .risk-level.medium { color: var(--orange); }
-        .risk-level.high { color: var(--red); }
-        .risk-discount { font-size: 0.75rem; color: var(--gray-600); margin-top: 0.2rem; }
-
-        /* 최종 결과 */
-        .result-section {
-            margin-top: 1.25rem;
-            background: var(--gray-800);
-            border-radius: 6px;
-            padding: 1rem;
-            color: white;
-        }
-        .result-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.75rem; }
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
-        }
-        @media (max-width: 768px) { .result-grid { grid-template-columns: repeat(2, 1fr); } }
-        .result-item { text-align: center; }
-        .result-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #6ee7b7;
-            font-family: 'Consolas', monospace;
-        }
-        .result-label { font-size: 0.7rem; color: rgba(255,255,255,0.7); margin-top: 0.2rem; }
-
-        /* 프로세스 */
-        .process-section {
-            margin-top: 1.25rem;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: 6px;
-            padding: 1rem;
-        }
-        .process-title { font-size: 0.85rem; font-weight: 600; color: var(--gray-700); margin-bottom: 0.75rem; }
-        .process-steps { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .process-step {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: white;
-            padding: 0.4rem 0.75rem;
-            border-radius: 4px;
-            border: 1px solid var(--gray-200);
-            font-size: 0.8rem;
-            color: var(--gray-500);
-            transition: all 0.2s;
-        }
-        .process-step.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .process-step.completed { background: var(--gray-100); color: var(--accent); border-color: var(--accent); }
-        .step-num {
-            width: 18px;
-            height: 18px;
-            background: var(--gray-200);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        .process-step.active .step-num,
-        .process-step.completed .step-num { background: rgba(255,255,255,0.3); }
-
-        /* Hash */
-        .hash-display {
-            margin-top: 0.75rem;
-            background: var(--gray-800);
-            border-radius: 4px;
-            padding: 0.75rem;
-            font-family: 'Consolas', monospace;
-            font-size: 0.75rem;
-            color: #6ee7b7;
-            word-break: break-all;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .hash-display.visible { opacity: 1; }
-        .hash-label { color: var(--gray-400); font-size: 0.7rem; margin-bottom: 0.25rem; }
-    </style>
+    <link rel="stylesheet" href="/currency/securities.css">
 </head>
 <body>
-    <!-- 페이지 헤더 -->
     <div class="page-header">
         <div class="container">
             <span class="page-badge">EGCT</span>
             <h1 class="page-title">자율 증권</h1>
-            <div class="breadcrumb">
-                <a href="/currency/">EGCT</a> › 자율 증권
-            </div>
+            <div class="breadcrumb"><a href="/currency/">EGCT</a> › 자율 증권</div>
         </div>
     </div>
-
     <div class="container">
-        <!-- 4개 카드 -->
         <div class="card-grid" id="sec-cards">
             <div class="card" data-card="valuation">
-                <div class="card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 7h6m-6 4h6m-6 4h4m5-12H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2z"/>
-                    </svg>
-                </div>
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 7h6m-6 4h6m-6 4h4m5-12H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg></div>
                 <h3 class="card-title">재무제표 기반의 가치 평가</h3>
                 <p class="card-desc">AI 자동 생성 재무제표로 최상의 기업 평가</p>
             </div>
             <div class="card" data-card="transparency">
-                <div class="card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-                    </svg>
-                </div>
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg></div>
                 <h3 class="card-title">글로벌 규모의 투명성 확보</h3>
                 <p class="card-desc">5천만 인구, 1천만 기업 상호 연동</p>
             </div>
             <div class="card" data-card="realtime">
-                <div class="card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
                 <h3 class="card-title">실시간 가치 조정</h3>
                 <p class="card-desc">매 거래마다 기업 가치 자동 조정</p>
             </div>
             <div class="card" data-card="fee">
-                <div class="card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
                 <h3 class="card-title">거래 수수료 1/10~1/100</h3>
                 <p class="card-desc">순수 AI 모델, 고정 비용 없음</p>
             </div>
         </div>
-
-        <!-- Slide-down 패널 -->
         <div class="detail-panel" id="sec-panel">
             <div class="panel-header">
                 <span class="panel-title" id="panel-title">제목</span>
@@ -466,8 +48,6 @@
             </div>
             <div class="panel-content" id="panel-content"></div>
         </div>
-
-        <!-- 시뮬레이션 -->
         <div class="sim-section">
             <div class="sim-header">
                 <span class="sim-title">기업 가치 평가 시뮬레이션</span>
@@ -476,7 +56,7 @@
             <div class="control-bar">
                 <div class="control-group">
                     <span class="control-label">국가</span>
-                    <select class="control-select" id="select-country">
+                    <select class="control-select" id="sel-country">
                         <option value="KR">대한민국</option>
                         <option value="US">미국</option>
                         <option value="JP">일본</option>
@@ -486,7 +66,7 @@
                 </div>
                 <div class="control-group">
                     <span class="control-label">산업</span>
-                    <select class="control-select" id="select-industry">
+                    <select class="control-select" id="sel-industry">
                         <option value="tech">IT/기술</option>
                         <option value="manufacturing">제조업</option>
                         <option value="retail">유통/소매</option>
@@ -496,314 +76,126 @@
                 </div>
                 <div class="control-group">
                     <span class="control-label">기업</span>
-                    <select class="control-select" id="select-company">
+                    <select class="control-select" id="sel-company">
                         <option value="alphaTech">알파테크</option>
                         <option value="betaSoft">베타소프트</option>
                         <option value="gammaAI">감마AI</option>
                     </select>
                 </div>
-                <button class="btn-evaluate" id="btn-evaluate">가치 평가 실행</button>
+                <button class="btn-evaluate" id="btn-run">가치 평가 실행</button>
             </div>
-
             <div class="sim-body">
                 <div class="sim-grid">
-                    <!-- 대차대조표 -->
                     <div class="fs-panel">
-                        <div class="fs-header">대차대조표 (Balance Sheet)</div>
+                        <div class="fs-header">대차대조표</div>
                         <div class="fs-body">
                             <table class="fs-table">
-                                <thead><tr><th>항목</th><th>금액 (억 T)</th></tr></thead>
-                                <tbody>
-                                    <tr><td>유동자산</td><td id="bs-current-assets">-</td></tr>
-                                    <tr><td>비유동자산</td><td id="bs-fixed-assets">-</td></tr>
-                                    <tr class="fs-total"><td>총자산</td><td id="bs-total-assets">-</td></tr>
-                                    <tr><td>유동부채</td><td id="bs-current-liab">-</td></tr>
-                                    <tr><td>비유동부채</td><td id="bs-fixed-liab">-</td></tr>
-                                    <tr class="fs-total"><td>총부채</td><td id="bs-total-liab">-</td></tr>
-                                    <tr><td>자본금</td><td id="bs-capital">-</td></tr>
-                                    <tr><td>이익잉여금</td><td id="bs-retained">-</td></tr>
-                                    <tr class="fs-total"><td>총자본</td><td id="bs-total-equity">-</td></tr>
-                                </tbody>
+                                <tr><th>항목</th><th>금액(억T)</th></tr>
+                                <tr><td>유동자산</td><td id="bs-ca">-</td></tr>
+                                <tr><td>비유동자산</td><td id="bs-fa">-</td></tr>
+                                <tr class="fs-total"><td>총자산</td><td id="bs-ta">-</td></tr>
+                                <tr><td>유동부채</td><td id="bs-cl">-</td></tr>
+                                <tr><td>비유동부채</td><td id="bs-fl">-</td></tr>
+                                <tr class="fs-total"><td>총부채</td><td id="bs-tl">-</td></tr>
+                                <tr><td>자본금</td><td id="bs-cap">-</td></tr>
+                                <tr><td>이익잉여금</td><td id="bs-ret">-</td></tr>
+                                <tr class="fs-total"><td>총자본</td><td id="bs-te">-</td></tr>
                             </table>
                         </div>
                     </div>
-
-                    <!-- 손익계산서 -->
                     <div class="fs-panel">
-                        <div class="fs-header">손익계산서 (Income Statement)</div>
+                        <div class="fs-header">손익계산서</div>
                         <div class="fs-body">
                             <table class="fs-table">
-                                <thead><tr><th>항목</th><th>금액 (억 T)</th></tr></thead>
-                                <tbody>
-                                    <tr><td>매출액</td><td id="is-revenue">-</td></tr>
-                                    <tr><td>매출원가</td><td id="is-cogs">-</td></tr>
-                                    <tr class="fs-total"><td>매출총이익</td><td id="is-gross">-</td></tr>
-                                    <tr><td>판관비</td><td id="is-opex">-</td></tr>
-                                    <tr class="fs-total"><td>영업이익</td><td id="is-operating">-</td></tr>
-                                    <tr><td>이자비용</td><td id="is-interest">-</td></tr>
-                                    <tr><td>법인세</td><td id="is-tax">-</td></tr>
-                                    <tr class="fs-total"><td>당기순이익</td><td id="is-net">-</td></tr>
-                                </tbody>
+                                <tr><th>항목</th><th>금액(억T)</th></tr>
+                                <tr><td>매출액</td><td id="is-rev">-</td></tr>
+                                <tr><td>매출원가</td><td id="is-cogs">-</td></tr>
+                                <tr class="fs-total"><td>매출총이익</td><td id="is-gp">-</td></tr>
+                                <tr><td>판관비</td><td id="is-opex">-</td></tr>
+                                <tr class="fs-total"><td>영업이익</td><td id="is-op">-</td></tr>
+                                <tr><td>이자비용</td><td id="is-int">-</td></tr>
+                                <tr><td>법인세</td><td id="is-tax">-</td></tr>
+                                <tr class="fs-total"><td>당기순이익</td><td id="is-ni">-</td></tr>
                             </table>
                         </div>
                     </div>
                 </div>
-
-                <!-- 재무지표 -->
                 <div class="ratio-section">
-                    <div class="ratio-title">핵심 재무지표 (Financial Ratios)</div>
+                    <div class="section-title">핵심 재무지표</div>
                     <div class="ratio-grid">
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-pbr">-</div><div class="ratio-label">PBR</div></div>
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-per">-</div><div class="ratio-label">PER</div></div>
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-roe">-</div><div class="ratio-label">ROE</div></div>
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-roa">-</div><div class="ratio-label">ROA</div></div>
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-debt">-</div><div class="ratio-label">부채비율</div></div>
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-current">-</div><div class="ratio-label">유동비율</div></div>
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-inventory">-</div><div class="ratio-label">재고회전율</div></div>
-                        <div class="ratio-item"><div class="ratio-value" id="ratio-margin">-</div><div class="ratio-label">영업이익률</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-pbr">-</div><div class="ratio-label">PBR</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-per">-</div><div class="ratio-label">PER</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-roe">-</div><div class="ratio-label">ROE</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-roa">-</div><div class="ratio-label">ROA</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-debt">-</div><div class="ratio-label">부채비율</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-cur">-</div><div class="ratio-label">유동비율</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-inv">-</div><div class="ratio-label">재고회전</div></div>
+                        <div class="ratio-item"><div class="ratio-value" id="r-opm">-</div><div class="ratio-label">영업이익률</div></div>
                     </div>
                 </div>
-
-                <!-- 위험도 -->
-                <div class="risk-section">
-                    <div class="risk-title">위험 프리미엄 조정</div>
-                    <div class="risk-grid">
-                        <div class="risk-item">
-                            <div class="risk-category">국가 위험</div>
-                            <div class="risk-level" id="risk-country">-</div>
-                            <div class="risk-discount" id="discount-country">할인율: -</div>
-                        </div>
-                        <div class="risk-item">
-                            <div class="risk-category">산업 위험</div>
-                            <div class="risk-level" id="risk-industry">-</div>
-                            <div class="risk-discount" id="discount-industry">할인율: -</div>
-                        </div>
-                        <div class="risk-item">
-                            <div class="risk-category">기업 위험</div>
-                            <div class="risk-level" id="risk-company">-</div>
-                            <div class="risk-discount" id="discount-company">할인율: -</div>
+                <div class="bottom-grid">
+                    <div class="risk-section">
+                        <div class="section-title">위험 프리미엄</div>
+                        <div class="risk-grid">
+                            <div class="risk-item">
+                                <div class="risk-category">국가</div>
+                                <div class="risk-level" id="rk-c">-</div>
+                                <div class="risk-discount" id="rd-c">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">산업</div>
+                                <div class="risk-level" id="rk-i">-</div>
+                                <div class="risk-discount" id="rd-i">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">기업</div>
+                                <div class="risk-level" id="rk-e">-</div>
+                                <div class="risk-discount" id="rd-e">-</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- 결과 -->
-                <div class="result-section">
-                    <div class="result-title">기업 가치 평가 결과</div>
-                    <div class="result-grid">
-                        <div class="result-item"><div class="result-value" id="result-enterprise">-</div><div class="result-label">기업가치 (억 T)</div></div>
-                        <div class="result-item"><div class="result-value" id="result-equity">-</div><div class="result-label">주주가치 (억 T)</div></div>
-                        <div class="result-item"><div class="result-value" id="result-shares">-</div><div class="result-label">총발행주식 (만주)</div></div>
-                        <div class="result-item"><div class="result-value" id="result-price">-</div><div class="result-label">적정주가 (T)</div></div>
-                    </div>
-                </div>
-
-                <!-- 프로세스 -->
-                <div class="process-section">
-                    <div class="process-title">평가 프로세스</div>
-                    <div class="process-steps">
-                        <div class="process-step" data-step="1"><span class="step-num">1</span>재무제표 로드</div>
-                        <div class="process-step" data-step="2"><span class="step-num">2</span>재무지표 계산</div>
-                        <div class="process-step" data-step="3"><span class="step-num">3</span>국가위험 반영</div>
-                        <div class="process-step" data-step="4"><span class="step-num">4</span>산업위험 반영</div>
-                        <div class="process-step" data-step="5"><span class="step-num">5</span>기업위험 반영</div>
-                        <div class="process-step" data-step="6"><span class="step-num">6</span>적정가치 산출</div>
-                        <div class="process-step" data-step="7"><span class="step-num">7</span>Hash 기록</div>
-                    </div>
-                    <div class="hash-display" id="hash-display">
-                        <div class="hash-label">평가 결과 Hash (SHA-256)</div>
-                        <div id="hash-value">-</div>
+                    <div class="result-section">
+                        <div class="section-title" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.2);">평가 결과</div>
+                        <div class="result-grid">
+                            <div class="result-item"><div class="result-value" id="res-ev">-</div><div class="result-label">기업가치(억T)</div></div>
+                            <div class="result-item"><div class="result-value" id="res-eq">-</div><div class="result-label">주주가치(억T)</div></div>
+                            <div class="result-item"><div class="result-value" id="res-sh">-</div><div class="result-label">발행주식(만)</div></div>
+                            <div class="result-item"><div class="result-value" id="res-pr">-</div><div class="result-label">적정주가(T)</div></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // 패널 데이터
-        const panelData = {
-            valuation: {
-                title: '재무제표 기반의 가치 평가',
-                content: '<p>테슬라 자율주행이 라이다(LiDar) 등 복잡한 기계 장치를 제거하고, 오직 카메라만으로 최고의 자율주행 기술을 완성하였듯이, AI 모델이 자동으로 생성하고 갱신하는 오픈해시 기반의 재무제표만으로 최상의 기업 평가를 도출합니다.</p><p>만약, 모든 개인과 기업이 동일한 회계 원칙과 기준에 따라, 상호 연동된 재무제표를 생성 및 실시간 갱신한다면, 이보다 정확한 기업 가치 평가 수단은 없습니다.</p><p>재무제표 생성 및 갱신 메커니즘은 <a href="https://openhash.kr/currency/bank.html" target="_blank">무인 은행 페이지</a>를 참고하십시오.</p>'
-            },
-            transparency: {
-                title: '글로벌 규모의 투명성 확보',
-                content: '<p>한국 5천만 인구와 1천만 기업 및 기관의 재무제표가 상호 연동되어 하나의 거대한 결합 재무제표를 구성하므로, 분식 회계나 허위 데이터가 원천 차단됩니다.</p><p>개별 사업체의 재무제표를 기반으로, 국가 위험, 산업 위험, 기업 위험을 반영한 기업 평가는 사람의 개입없이 오직 AI 모델에 의하므로, 객관적이고 공정합니다.</p>'
-            },
-            realtime: {
-                title: '실시간 가치 조정',
-                content: '<p>통상 기업 가치 평가는 1년에 한 차례 정도, 사람에 의해 수작업으로 진행됩니다. 이 시스템은 매 거래마다 실시간으로 기업 가치를 조정합니다.</p><p>하루 1,000명의 손님 주문을 처리하는 식당을 예로써, 매 식사 대금 결제 혹은 식사에 대한 소비자 평가가 제출될 때마다 해당 식당의 기업 가치가 실시간으로 조정됩니다. 사람이 아니라, AI 모델만 가능한 속도입니다.</p><p>특히, 어떤 소비자가 어떤 상품을 얼마의 가격으로, 얼마나 자주 소비하는 지, 해당 상품에 대한 대중의 평가는 어떠한 지 등 수많은 변수들을 실시간으로 반영하는 것은 사람의 두뇌로 불가능합니다.</p>'
-            },
-            fee: {
-                title: '거래 수수료 1/10~1/100',
-                content: '<p>종래의 증권사와 달리 이 시스템은 직원이나 경영진, 혹은 점포가 없는 순수한 AI 모델이며, 고팡 웹앱(<a href="https://gopang.kr" target="_blank">gopang.kr</a>)에 탑재됩니다.</p><p>고정 비용이 없으므로, 사실상 서버 비용이 수수료의 전부입니다.</p>'
-            }
-        };
+    <!-- 모달 -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title">기업 가치 평가 진행</span>
+                <button class="modal-close" id="modal-x">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-steps">
+                    <div class="m-step" data-s="1"><span class="m-num">1</span><span class="m-text">재무제표 로드</span></div>
+                    <div class="m-step" data-s="2"><span class="m-num">2</span><span class="m-text">재무지표 계산</span></div>
+                    <div class="m-step" data-s="3"><span class="m-num">3</span><span class="m-text">국가위험 반영</span></div>
+                    <div class="m-step" data-s="4"><span class="m-num">4</span><span class="m-text">산업위험 반영</span></div>
+                    <div class="m-step" data-s="5"><span class="m-num">5</span><span class="m-text">기업위험 반영</span></div>
+                    <div class="m-step" data-s="6"><span class="m-num">6</span><span class="m-text">적정가치 산출</span></div>
+                    <div class="m-step" data-s="7"><span class="m-num">7</span><span class="m-text">Hash 기록</span></div>
+                </div>
+                <div class="modal-hash" id="m-hash">
+                    <div class="hash-lbl">평가 결과 Hash (SHA-256)</div>
+                    <div class="hash-val" id="m-hash-val">-</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="modal-status" id="m-status">준비 중...</span>
+            </div>
+        </div>
+    </div>
 
-        // 기업 데이터
-        const companyData = {
-            alphaTech: { name: '알파테크', bs: { currentAssets: 850, fixedAssets: 1200, currentLiab: 320, fixedLiab: 480, capital: 500, retained: 750 }, is: { revenue: 2400, cogs: 1440, opex: 480, interest: 48, tax: 86.4 }, shares: 1000, inventory: 200 },
-            betaSoft: { name: '베타소프트', bs: { currentAssets: 620, fixedAssets: 380, currentLiab: 180, fixedLiab: 120, capital: 300, retained: 400 }, is: { revenue: 1200, cogs: 480, opex: 360, interest: 12, tax: 69.6 }, shares: 500, inventory: 80 },
-            gammaAI: { name: '감마AI', bs: { currentAssets: 1500, fixedAssets: 2500, currentLiab: 600, fixedLiab: 900, capital: 1000, retained: 1500 }, is: { revenue: 5000, cogs: 2500, opex: 1000, interest: 90, tax: 282 }, shares: 2000, inventory: 400 }
-        };
-
-        const riskData = {
-            country: { KR: { level: 'low', rate: 2 }, US: { level: 'low', rate: 1 }, JP: { level: 'low', rate: 1.5 }, CN: { level: 'medium', rate: 4 }, DE: { level: 'low', rate: 1 } },
-            industry: { tech: { level: 'medium', rate: 5 }, manufacturing: { level: 'low', rate: 3 }, retail: { level: 'medium', rate: 4 }, food: { level: 'low', rate: 2 }, finance: { level: 'high', rate: 7 } }
-        };
-
-        // 패널 동작
-        const panel = document.getElementById('sec-panel');
-        const panelTitle = document.getElementById('panel-title');
-        const panelContent = document.getElementById('panel-content');
-        let currentCard = null;
-
-        document.querySelectorAll('#sec-cards .card').forEach(card => {
-            card.addEventListener('click', () => {
-                const key = card.dataset.card;
-                if (currentCard === key && panel.classList.contains('open')) {
-                    panel.classList.remove('open');
-                    currentCard = null;
-                } else {
-                    panelTitle.textContent = panelData[key].title;
-                    panelContent.innerHTML = panelData[key].content;
-                    panel.classList.add('open');
-                    currentCard = key;
-                }
-            });
-        });
-        document.getElementById('panel-close').addEventListener('click', () => {
-            panel.classList.remove('open');
-            currentCard = null;
-        });
-
-        // 유틸 함수
-        const formatNum = (n, d = 0) => n.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
-        const generateHash = () => Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
-        const activateStep = n => document.querySelector(`.process-step[data-step="${n}"]`).classList.add('active');
-        const completeStep = n => { const s = document.querySelector(`.process-step[data-step="${n}"]`); s.classList.remove('active'); s.classList.add('completed'); };
-
-        // 평가 실행
-        document.getElementById('btn-evaluate').addEventListener('click', async () => {
-            const country = document.getElementById('select-country').value;
-            const industry = document.getElementById('select-industry').value;
-            const company = document.getElementById('select-company').value;
-            const data = companyData[company];
-
-            // 초기화
-            document.querySelectorAll('.process-step').forEach(s => s.classList.remove('active', 'completed'));
-            document.getElementById('hash-display').classList.remove('visible');
-
-            // 시뮬레이션 영역으로 스크롤
-            document.querySelector('.sim-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            const delay = ms => new Promise(r => setTimeout(r, ms));
-
-            // Step 1: 재무제표 로드
-            await delay(300);
-            activateStep(1);
-            await delay(250);
-            document.getElementById('bs-current-assets').textContent = formatNum(data.bs.currentAssets);
-            document.getElementById('bs-fixed-assets').textContent = formatNum(data.bs.fixedAssets);
-            const totalAssets = data.bs.currentAssets + data.bs.fixedAssets;
-            document.getElementById('bs-total-assets').textContent = formatNum(totalAssets);
-            document.getElementById('bs-current-liab').textContent = formatNum(data.bs.currentLiab);
-            document.getElementById('bs-fixed-liab').textContent = formatNum(data.bs.fixedLiab);
-            const totalLiab = data.bs.currentLiab + data.bs.fixedLiab;
-            document.getElementById('bs-total-liab').textContent = formatNum(totalLiab);
-            document.getElementById('bs-capital').textContent = formatNum(data.bs.capital);
-            document.getElementById('bs-retained').textContent = formatNum(data.bs.retained);
-            const totalEquity = data.bs.capital + data.bs.retained;
-            document.getElementById('bs-total-equity').textContent = formatNum(totalEquity);
-            document.getElementById('is-revenue').textContent = formatNum(data.is.revenue);
-            document.getElementById('is-cogs').textContent = formatNum(data.is.cogs);
-            const gross = data.is.revenue - data.is.cogs;
-            document.getElementById('is-gross').textContent = formatNum(gross);
-            document.getElementById('is-opex').textContent = formatNum(data.is.opex);
-            const operating = gross - data.is.opex;
-            document.getElementById('is-operating').textContent = formatNum(operating);
-            document.getElementById('is-interest').textContent = formatNum(data.is.interest);
-            document.getElementById('is-tax').textContent = formatNum(data.is.tax, 1);
-            const netIncome = operating - data.is.interest - data.is.tax;
-            document.getElementById('is-net').textContent = formatNum(netIncome, 1);
-            completeStep(1);
-
-            // Step 2: 재무지표 계산
-            activateStep(2);
-            await delay(250);
-            const pbr = 1.8;
-            document.getElementById('ratio-pbr').textContent = pbr.toFixed(2) + 'x';
-            const marketCap = totalEquity * pbr;
-            const per = marketCap / netIncome;
-            document.getElementById('ratio-per').textContent = per.toFixed(1) + 'x';
-            const roe = (netIncome / totalEquity * 100);
-            document.getElementById('ratio-roe').textContent = roe.toFixed(1) + '%';
-            const roa = (netIncome / totalAssets * 100);
-            document.getElementById('ratio-roa').textContent = roa.toFixed(1) + '%';
-            const debtRatio = (totalLiab / totalEquity * 100);
-            document.getElementById('ratio-debt').textContent = debtRatio.toFixed(0) + '%';
-            const currentRatio = (data.bs.currentAssets / data.bs.currentLiab * 100);
-            document.getElementById('ratio-current').textContent = currentRatio.toFixed(0) + '%';
-            const inventoryTurnover = data.is.cogs / data.inventory;
-            document.getElementById('ratio-inventory').textContent = inventoryTurnover.toFixed(1) + '회';
-            const opMargin = (operating / data.is.revenue * 100);
-            document.getElementById('ratio-margin').textContent = opMargin.toFixed(1) + '%';
-            completeStep(2);
-
-            // Step 3: 국가위험 반영
-            activateStep(3);
-            await delay(250);
-            const countryRisk = riskData.country[country];
-            document.getElementById('risk-country').textContent = countryRisk.level === 'low' ? '낮음' : countryRisk.level === 'medium' ? '보통' : '높음';
-            document.getElementById('risk-country').className = 'risk-level ' + countryRisk.level;
-            document.getElementById('discount-country').textContent = '할인율: ' + countryRisk.rate + '%';
-            completeStep(3);
-
-            // Step 4: 산업위험 반영
-            activateStep(4);
-            await delay(250);
-            const industryRisk = riskData.industry[industry];
-            document.getElementById('risk-industry').textContent = industryRisk.level === 'low' ? '낮음' : industryRisk.level === 'medium' ? '보통' : '높음';
-            document.getElementById('risk-industry').className = 'risk-level ' + industryRisk.level;
-            document.getElementById('discount-industry').textContent = '할인율: ' + industryRisk.rate + '%';
-            completeStep(4);
-
-            // Step 5: 기업위험 반영
-            activateStep(5);
-            await delay(250);
-            let companyRiskLevel, companyRiskRate;
-            if (debtRatio < 50) { companyRiskLevel = 'low'; companyRiskRate = 2; }
-            else if (debtRatio < 100) { companyRiskLevel = 'medium'; companyRiskRate = 4; }
-            else { companyRiskLevel = 'high'; companyRiskRate = 6; }
-            document.getElementById('risk-company').textContent = companyRiskLevel === 'low' ? '낮음' : companyRiskLevel === 'medium' ? '보통' : '높음';
-            document.getElementById('risk-company').className = 'risk-level ' + companyRiskLevel;
-            document.getElementById('discount-company').textContent = '할인율: ' + companyRiskRate + '%';
-            completeStep(5);
-
-            // Step 6: 적정가치 산출
-            activateStep(6);
-            await delay(250);
-            const totalDiscount = countryRisk.rate + industryRisk.rate + companyRiskRate;
-            const baseValue = operating / 0.1;
-            const discountedValue = baseValue * (1 - totalDiscount / 100);
-            const equityValue = discountedValue - totalLiab;
-            const pricePerShare = equityValue / data.shares * 10000;
-            document.getElementById('result-enterprise').textContent = formatNum(discountedValue, 0);
-            document.getElementById('result-equity').textContent = formatNum(equityValue, 0);
-            document.getElementById('result-shares').textContent = formatNum(data.shares);
-            document.getElementById('result-price').textContent = formatNum(pricePerShare, 0);
-            completeStep(6);
-
-            // 최하단으로 스크롤 후 Step 7 시작
-            document.querySelector('.process-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            await delay(500);
-
-            // Step 7: Hash 기록
-            activateStep(7);
-            await delay(400);
-            document.getElementById('hash-value').textContent = generateHash();
-            document.getElementById('hash-display').classList.add('visible');
-            completeStep(7);
-        });
-    </script>
+    <script src="/currency/securities.js"></script>
 </body>
 </html>

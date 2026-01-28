@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자율 보험 - EGCT - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
+    <link rel="stylesheet" href="/currency/insurance.css">
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <span class="page-badge">EGCT</span>
+            <h1 class="page-title">자율 보험</h1>
+            <div class="breadcrumb"><a href="/currency/">EGCT</a> › 자율 보험</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card-grid" id="ins-cards">
+            <div class="card" data-card="vault">
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
+                <h3 class="card-title">정보금고 기반 위험 평가</h3>
+                <p class="card-desc">Data Vault 익명 데이터로 위험도 산정</p>
+            </div>
+            <div class="card" data-card="unified">
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+                <h3 class="card-title">통합 보험 시스템</h3>
+                <p class="card-desc">생명/질병/상해/자동차/화재 통합 관리</p>
+            </div>
+            <div class="card" data-card="realtime">
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                <h3 class="card-title">실시간 보험료 조정</h3>
+                <p class="card-desc">행동 변화에 따른 즉시 요율 반영</p>
+            </div>
+            <div class="card" data-card="fee">
+                <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                <h3 class="card-title">수수료 1/10~1/100</h3>
+                <p class="card-desc">순수 AI 모델, 고정 비용 없음</p>
+            </div>
+        </div>
+        <div class="detail-panel" id="ins-panel">
+            <div class="panel-header">
+                <span class="panel-title" id="panel-title">제목</span>
+                <button class="panel-close" id="panel-close">&times;</button>
+            </div>
+            <div class="panel-content" id="panel-content"></div>
+        </div>
+        <div class="sim-section">
+            <div class="sim-header">
+                <span class="sim-title">통합 보험료 산정 시뮬레이션</span>
+                <span class="sim-badge">Demo</span>
+            </div>
+            <div class="control-bar">
+                <div class="control-group">
+                    <span class="control-label">가입자</span>
+                    <select class="control-select" id="sel-type">
+                        <option value="person">개인</option>
+                        <option value="biz">사업자</option>
+                    </select>
+                </div>
+                <div class="control-group" id="person-controls">
+                    <span class="control-label">연령</span>
+                    <select class="control-select" id="sel-age">
+                        <option value="30">30대</option>
+                        <option value="40">40대</option>
+                        <option value="50">50대</option>
+                        <option value="60">60대+</option>
+                    </select>
+                    <span class="control-label">성별</span>
+                    <select class="control-select" id="sel-gender">
+                        <option value="m">남성</option>
+                        <option value="f">여성</option>
+                    </select>
+                </div>
+                <div class="control-group hidden" id="biz-controls">
+                    <span class="control-label">업종</span>
+                    <select class="control-select" id="sel-biz">
+                        <option value="service">서비스업</option>
+                        <option value="manu">제조업</option>
+                        <option value="construct">건설업</option>
+                        <option value="transport">운수업</option>
+                    </select>
+                    <span class="control-label">규모</span>
+                    <select class="control-select" id="sel-size">
+                        <option value="small">소형</option>
+                        <option value="mid">중형</option>
+                        <option value="large">대형</option>
+                    </select>
+                </div>
+                <button class="btn-evaluate" id="btn-run">보험료 산정</button>
+            </div>
+            <div class="sim-body">
+                <div class="sim-grid">
+                    <!-- 개인용 Vault -->
+                    <div class="vault-panel" id="vault-person">
+                        <div class="vault-header">📁 개인 정보금고 (Data Vault)</div>
+                        <div class="vault-body">
+                            <table class="vault-table">
+                                <tr><th>항목</th><th>상태</th></tr>
+                                <tr><td>건강검진 기록</td><td id="v-health">-</td></tr>
+                                <tr><td>운동 활동량</td><td id="v-exercise">-</td></tr>
+                                <tr><td>흡연 여부</td><td id="v-smoking">-</td></tr>
+                                <tr><td>운전 기록</td><td id="v-driving">-</td></tr>
+                                <tr><td>주거 형태</td><td id="v-housing">-</td></tr>
+                                <tr><td>직업 위험도</td><td id="v-job">-</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 사업자용 Vault -->
+                    <div class="vault-panel hidden" id="vault-biz">
+                        <div class="vault-header">📁 사업자 정보금고 (Data Vault)</div>
+                        <div class="vault-body">
+                            <table class="vault-table">
+                                <tr><th>항목</th><th>상태</th></tr>
+                                <tr><td>사업장 안전등급</td><td id="v-safety">-</td></tr>
+                                <tr><td>과거 사고 이력</td><td id="v-accidents">-</td></tr>
+                                <tr><td>종업원 수</td><td id="v-employees">-</td></tr>
+                                <tr><td>차량 보유</td><td id="v-vehicles">-</td></tr>
+                                <tr><td>시설물 가액</td><td id="v-facility">-</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 개인용 위험 평가 -->
+                    <div class="risk-section" id="premium-person">
+                        <div class="section-title">위험 항목별 평가</div>
+                        <div class="risk-grid" style="flex-wrap:wrap;">
+                            <div class="risk-item">
+                                <div class="risk-category">생명</div>
+                                <div class="risk-level" id="rk-life">-</div>
+                                <div class="risk-score" id="rs-life">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">질병</div>
+                                <div class="risk-level" id="rk-disease">-</div>
+                                <div class="risk-score" id="rs-disease">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">상해</div>
+                                <div class="risk-level" id="rk-injury">-</div>
+                                <div class="risk-score" id="rs-injury">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">자동차</div>
+                                <div class="risk-level" id="rk-auto">-</div>
+                                <div class="risk-score" id="rs-auto">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">화재</div>
+                                <div class="risk-level" id="rk-fire">-</div>
+                                <div class="risk-score" id="rs-fire">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 사업자용 위험 평가 -->
+                    <div class="risk-section hidden" id="premium-biz">
+                        <div class="section-title">위험 항목별 평가</div>
+                        <div class="risk-grid" style="flex-wrap:wrap;">
+                            <div class="risk-item">
+                                <div class="risk-category">종업원상해</div>
+                                <div class="risk-level" id="rk-emp">-</div>
+                                <div class="risk-score" id="rs-emp">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">배상책임</div>
+                                <div class="risk-level" id="rk-liab">-</div>
+                                <div class="risk-score" id="rs-liab">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">차량</div>
+                                <div class="risk-level" id="rk-veh">-</div>
+                                <div class="risk-score" id="rs-veh">-</div>
+                            </div>
+                            <div class="risk-item">
+                                <div class="risk-category">시설화재</div>
+                                <div class="risk-level" id="rk-fac">-</div>
+                                <div class="risk-score" id="rs-fac">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 개인 보험료 내역 -->
+                <div class="premium-section" id="prem-person">
+                    <div class="section-title">월 보험료 내역 (T)</div>
+                    <div class="premium-grid">
+                        <div class="premium-item"><div class="premium-value" id="p-life">-</div><div class="premium-label">생명</div></div>
+                        <div class="premium-item"><div class="premium-value" id="p-disease">-</div><div class="premium-label">질병</div></div>
+                        <div class="premium-item"><div class="premium-value" id="p-injury">-</div><div class="premium-label">상해</div></div>
+                        <div class="premium-item"><div class="premium-value" id="p-auto">-</div><div class="premium-label">자동차</div></div>
+                        <div class="premium-item"><div class="premium-value" id="p-fire">-</div><div class="premium-label">화재</div></div>
+                    </div>
+                </div>
+                <!-- 사업자 보험료 내역 -->
+                <div class="premium-section hidden" id="prem-biz">
+                    <div class="section-title">월 보험료 내역 (T)</div>
+                    <div class="premium-grid">
+                        <div class="premium-item"><div class="premium-value" id="pb-emp">-</div><div class="premium-label">종업원상해</div></div>
+                        <div class="premium-item"><div class="premium-value" id="pb-liab">-</div><div class="premium-label">배상책임</div></div>
+                        <div class="premium-item"><div class="premium-value" id="pb-veh">-</div><div class="premium-label">차량</div></div>
+                        <div class="premium-item"><div class="premium-value" id="pb-fac">-</div><div class="premium-label">시설화재</div></div>
+                    </div>
+                </div>
+                <!-- 최종 결과 -->
+                <div class="result-section" style="margin-top:1rem;">
+                    <div class="section-title" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.2);">통합 보험료 결과</div>
+                    <div class="result-grid">
+                        <div class="result-item result-highlight"><div class="result-value" id="res-total">-</div><div class="result-label">월 보험료 (T)</div></div>
+                        <div class="result-item"><div class="result-value" id="res-grade">-</div><div class="result-label">위험등급</div></div>
+                        <div class="result-item"><div class="result-value" id="res-discount">-</div><div class="result-label">할인/할증</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달 -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title">보험료 산정 진행</span>
+                <button class="modal-close" id="modal-x">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-steps">
+                    <div class="m-step" data-s="1"><span class="m-num">1</span><span class="m-text">Vault 접근 요청</span></div>
+                    <div class="m-step" data-s="2"><span class="m-num">2</span><span class="m-text">데이터 익명화 인출</span></div>
+                    <div class="m-step" data-s="3"><span class="m-num">3</span><span class="m-text">생명/질병 위험 산정</span></div>
+                    <div class="m-step" data-s="4"><span class="m-num">4</span><span class="m-text">상해 위험 산정</span></div>
+                    <div class="m-step" data-s="5"><span class="m-num">5</span><span class="m-text">자동차/화재 위험 산정</span></div>
+                    <div class="m-step" data-s="6"><span class="m-num">6</span><span class="m-text">통합 보험요율 결정</span></div>
+                    <div class="m-step" data-s="7"><span class="m-num">7</span><span class="m-text">Hash 기록</span></div>
+                </div>
+                <div class="modal-hash" id="m-hash">
+                    <div class="hash-lbl">보험료 산정 Hash (SHA-256)</div>
+                    <div class="hash-val" id="m-hash-val">-</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="modal-status" id="m-status">준비 중...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/currency/insurance.js"></script>
+</body>
+</html>
