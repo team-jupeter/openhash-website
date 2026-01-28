@@ -249,7 +249,7 @@ button { font-family: inherit; cursor: pointer; }
    ============================================ */
 .problem-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    
     gap: var(--space-5);
 }
 .problem-card {
@@ -1368,7 +1368,9 @@ button { font-family: inherit; cursor: pointer; }
    ============================================ */
 .value-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
+    display: grid;
+    
     gap: var(--space-5);
 }
 .value-card {

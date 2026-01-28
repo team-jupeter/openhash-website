@@ -3,64 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenHash - 차세대 분산 데이터 무결성 검증 시스템</title>
-    <meta name="description" content="블록체인 대비 98.5% 에너지 절감, 4ms 검증 속도의 계층 분산 기반 무결성 검증 시스템">
+    <title>OpenHash - 블록체인을 넘어서는 신뢰 인프라</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="/js/header.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <script src="js/header.js"></script>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-inner">
-            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-            <ul class="nav-menu">
-                <li><a href="/" class="active">홈</a></li>
-                <li><a href="/test/layer-selection.html">원리</a></li>
-                <li><a href="/test/currency.html">화폐</a></li>
-                <li><a href="/practical/">실용</a></li>
-                <li><a href="/technology/">기술</a></li>
-                <li><a href="/simulation/">시뮬레이션</a></li>
-                <li><a href="/tests/">테스트</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <!-- Hero -->
-    <section class="hero" id="hero">
+    <section class="hero">
         <div class="container">
-            <div class="hero-content">
-                <p class="hero-tagline">세계 최초, 세계 유일의 상용(Commercial) 분산 원장 기술</p>
-                <h1 class="hero-title">블록체인의 한계를 근본적으로 해결합니다</h1>
-                <p class="hero-desc">OpenHash는 기존 통신 인프라의 물리적 계층 구조를 활용하여 작업증명(PoW) 없이 데이터 무결성을 보장하는 차세대 분산원장 기술입니다.</p>
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <div class="stat-value" data-target="98.5">0</div>
-                        <div class="stat-unit">%</div>
-                        <div class="stat-label">에너지 절감</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" data-target="4">0</div>
-                        <div class="stat-unit">ms</div>
-                        <div class="stat-label">검증 속도</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" data-target="99.4">0</div>
-                        <div class="stat-unit">%</div>
-                        <div class="stat-label">부정거래 탐지</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" data-target="128">0</div>
-                        <div class="stat-unit">bytes</div>
-                        <div class="stat-label">거래당 데이터</div>
-                    </div>
-                </div>
+            <h1 class="hero-title">블록체인을 넘어서는 <span class="highlight">신뢰 인프라</span></h1>
+            <p class="hero-desc">작업증명 없이, 지분증명 없이. 기존 통신 인프라의 물리적 계층을 활용하여 에너지 효율적이고 실용적인 데이터 무결성을 실현합니다.</p>
+            <div class="hero-buttons">
+                <a href="/principle/" class="btn btn-primary">기술 원리 보기</a>
+                <a href="/simulation/" class="btn btn-outline">시뮬레이션 체험</a>
             </div>
         </div>
     </section>
 
-    <!-- Problem -->
     <!-- Problem -->
     <section class="section" id="problem">
         <div class="container">
@@ -69,256 +30,151 @@
                 <h2 class="section-title">기존 블록체인의 <span class="highlight">한계</span></h2>
                 <p class="section-desc">비트코인과 이더리움은 혁신적이었지만, 근본적인 문제들을 안고 있습니다. <strong>카드를 클릭</strong>하여 자세히 알아보세요.</p>
             </div>
-            <div class="problem-grid">
-                <div class="problem-card" data-type="energy">
-                    <h4>⚡ 막대한 에너지 소비</h4>
-                    <p class="value">121 TWh/년</p>
-                    <p>비트코인의 연간 전력 소비량은 일부 국가 전체 소비량에 필적합니다.</p>
+            <div class="card-grid" id="problem-cards">
+                <div class="card" data-type="energy">
+                    <div class="card-icon">⚡</div>
+                    <h4>막대한 에너지 소비</h4>
+                    <p>121 TWh/년, 일부 국가 전체 소비량</p>
                 </div>
-                <div class="problem-card" data-type="speed">
-                    <h4>🕐 느린 처리 속도</h4>
-                    <p class="value">10분 ~ 12초</p>
-                    <p>블록 생성에 비트코인 10분, 이더리움 12초가 필요합니다.</p>
+                <div class="card" data-type="speed">
+                    <div class="card-icon">⏱️</div>
+                    <h4>느린 처리 속도</h4>
+                    <p>10분 ~ 12초, 실시간 처리 불가</p>
                 </div>
-                <div class="problem-card" data-type="centralization">
-                    <h4>👥 권력 집중</h4>
-                    <p class="value">부익부 빈익빈</p>
-                    <p>지분증명(PoS)은 대형 지분 보유자에게 권력이 집중됩니다.</p>
+                <div class="card" data-type="centralization">
+                    <div class="card-icon">👥</div>
+                    <h4>권력 집중</h4>
+                    <p>채굴풀/대형 지분자에게 집중</p>
                 </div>
-                <div class="problem-card" data-type="sync">
-                    <h4>🔄 동기화 부담</h4>
-                    <p class="value">전역 일관성 필요</p>
-                    <p>모든 노드가 동일한 데이터를 유지해야 하여 확장성이 저하됩니다.</p>
+                <div class="card" data-type="incentive">
+                    <div class="card-icon">🔄</div>
+                    <h4>동기화 부담</h4>
+                    <p>500GB+ 전체 이력 복제 필요</p>
                 </div>
             </div>
-            <!-- Slide Out Detail Panel -->
-            <div class="problem-detail-panel" id="problem-detail-panel">
-                <div class="problem-detail-content" id="problem-detail-content">
-                    <button class="problem-detail-close" id="problem-detail-close">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                    </button>
-                    <!-- Content injected by JS -->
-                </div>
+            <div class="detail-panel" id="problem-panel">
+                <div class="detail-content" id="problem-content"></div>
             </div>
         </div>
     </section>
 
-
-        <!-- Value -->
+    <!-- Value -->
     <section class="section alt" id="value">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Value</span>
                 <h2 class="section-title">OpenHash의 <span class="highlight">미래 가치</span></h2>
-                <p class="section-desc">AI 시대, 데이터 진실성을 보장하는 유일한 기술의 경제적·사회적 효용. <strong>카드를 클릭</strong>하여 자세히 알아보세요.</p>
+                <p class="section-desc">AI 시대, 데이터 진실성을 보장하는 유일한 기술. <strong>카드를 클릭</strong>하여 자세히 알아보세요.</p>
             </div>
-            <div class="value-grid">
-                <div class="value-card" data-type="economic">
-                    <div class="value-card-icon">💰</div>
+            <div class="card-grid" id="value-cards">
+                <div class="card" data-type="economic">
+                    <div class="card-icon">💰</div>
                     <h4>경제적 효용</h4>
-                    <p>AI가 데이터의 진위를 판단할 유일한 해법</p>
+                    <p>AI가 데이터 진위를 판단할 유일한 해법</p>
                 </div>
-                <div class="value-card" data-type="worth">
-                    <div class="value-card-icon">🏆</div>
+                <div class="card" data-type="worth">
+                    <div class="card-icon">🏆</div>
                     <h4>기술의 가치</h4>
-                    <p>주요 AI 모델이 추정한 수백~수천 조원의 가치</p>
+                    <p>AI 모델 추정 수백~수천 조원</p>
                 </div>
-                <div class="value-card" data-type="rebirth">
-                    <div class="value-card-icon">🇰🇷</div>
-                    <h4>재조산하(再造山河)</h4>
+                <div class="card" data-type="rebirth">
+                    <div class="card-icon">🇰🇷</div>
+                    <h4>재조산하</h4>
                     <p>한국이 유일하게 보유한 원천 기술</p>
                 </div>
-                <div class="value-card" data-type="fairness">
-                    <div class="value-card-icon">⚖️</div>
-                    <h4>기본 소득과 공정한 사회</h4>
-                    <p>모두가 정당한 대가를 누리는 사회의 기술적 토대</p>
+                <div class="card" data-type="fairness">
+                    <div class="card-icon">⚖️</div>
+                    <h4>공정한 사회</h4>
+                    <p>기본 소득 사회의 기술적 토대</p>
                 </div>
             </div>
-            <div class="value-detail-panel" id="value-detail-panel">
-                <div class="value-detail-content" id="value-detail-content">
-                </div>
+            <div class="detail-panel" id="value-panel">
+                <div class="detail-content" id="value-content"></div>
             </div>
-        </div>
-    </section>
-
-    <!-- Simulation -->
-    <section class="section" id="simulation">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Interactive</span>
-                <h2 class="section-title">거래 <span class="highlight">시뮬레이션</span></h2>
-                <p class="section-desc">두 사용자 간의 거래가 어떻게 검증되는지 직접 체험해보세요.</p>
-            </div>
-            <div class="sim-container">
-                <div class="sim-panel">
-                    <h4>💳 발신자</h4>
-                    <div class="form-group">
-                        <label class="form-label">지역 선택</label>
-                        <select id="senderRegion" class="form-select">
-                            <option value="KR-JEJU-SEOGWIPO-JUNGMUN">제주 서귀포시 중문동</option>
-                            <option value="KR-JEJU-SEOGWIPO-DAEJEONG">제주 서귀포시 대정읍</option>
-                            <option value="KR-JEJU-JEJU-NOHYEONG">제주 제주시 노형동</option>
-                            <option value="KR-SEOUL-GANGNAM-YEOKSAM">서울 강남구 역삼동</option>
-                            <option value="KR-BUSAN-HAEUNDAE-U">부산 해운대구 우동</option>
-                            <option value="US-CA-LA-DOWNTOWN">미국 LA</option>
-                            <option value="JP-TOKYO-SHIBUYA-HARAJUKU">일본 도쿄</option>
-                        </select>
-                    </div>
-                    <p style="font-size: 13px; color: var(--gray-500);">잔액: 1,000,000 T</p>
-                </div>
-                <div class="sim-center">
-                    <div class="form-group">
-                        <label class="form-label">송금액 (T)</label>
-                        <input type="number" id="txAmount" class="form-input" value="50000" min="1" style="width: 120px; text-align: center;">
-                    </div>
-                    <div class="sim-arrow">→</div>
-                    <button id="simBtn" class="btn btn-primary">시뮬레이션 시작</button>
-                </div>
-                <div class="sim-panel">
-                    <h4>📥 수신자</h4>
-                    <div class="form-group">
-                        <label class="form-label">지역 선택</label>
-                        <select id="receiverRegion" class="form-select">
-                            <option value="KR-JEJU-SEOGWIPO-DAEJEONG">제주 서귀포시 대정읍</option>
-                            <option value="KR-JEJU-SEOGWIPO-JUNGMUN">제주 서귀포시 중문동</option>
-                            <option value="KR-JEJU-JEJU-NOHYEONG">제주 제주시 노형동</option>
-                            <option value="KR-SEOUL-GANGNAM-YEOKSAM">서울 강남구 역삼동</option>
-                            <option value="KR-BUSAN-HAEUNDAE-U">부산 해운대구 우동</option>
-                            <option value="US-CA-LA-DOWNTOWN">미국 LA</option>
-                            <option value="JP-TOKYO-SHIBUYA-HARAJUKU">일본 도쿄</option>
-                        </select>
-                    </div>
-                    <p style="font-size: 13px; color: var(--gray-500);">잔액: 500,000 T</p>
-                </div>
-            </div>
-            <div id="simSteps" style="max-width: 500px; margin: 0 auto var(--space-6);"></div>
-            <div id="simResult" class="sim-result">지역을 선택하고 시뮬레이션을 시작하세요.</div>
         </div>
     </section>
 
     <!-- Verification -->
-    <section class="section alt" id="verification">
+    <section class="section" id="verification">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Verification</span>
                 <h2 class="section-title">5단계 <span class="highlight">거래 검증</span></h2>
-                <p class="section-desc">모든 거래는 5단계 파이프라인을 순차적으로 통과해야 합니다. <strong>단계를 클릭</strong>하여 상세 내용을 확인하세요.</p>
+                <p class="section-desc">모든 거래는 5단계 파이프라인을 통과합니다. <strong>단계를 클릭</strong>하여 자세히 알아보세요.</p>
             </div>
-            <div class="verify-pipeline">
+            <div class="verify-pipeline" id="verify-cards">
                 <div class="verify-step" data-type="balance">
                     <div class="verify-num">1</div>
-                    <div class="verify-content">
-                        <h4>잔액 확인</h4>
-                        <p>발신자 잔액 ≥ 거래 금액</p>
-                    </div>
+                    <div class="verify-content"><h4>잔액 확인</h4><p>발신자 잔액 ≥ 거래 금액</p></div>
                 </div>
                 <div class="verify-arrow">→</div>
                 <div class="verify-step" data-type="identity">
                     <div class="verify-num">2</div>
-                    <div class="verify-content">
-                        <h4>신원 확인</h4>
-                        <p>본인 인증 및 계층 등록</p>
-                    </div>
+                    <div class="verify-content"><h4>신원 확인</h4><p>본인 인증 및 계층 등록</p></div>
                 </div>
                 <div class="verify-arrow">→</div>
                 <div class="verify-step" data-type="limit">
                     <div class="verify-num">3</div>
-                    <div class="verify-content">
-                        <h4>한도 확인</h4>
-                        <p>단일/일일 거래 한도</p>
-                    </div>
+                    <div class="verify-content"><h4>한도 확인</h4><p>단일/일일 거래 한도</p></div>
                 </div>
                 <div class="verify-arrow">→</div>
                 <div class="verify-step" data-type="anomaly">
                     <div class="verify-num">4</div>
-                    <div class="verify-content">
-                        <h4>이상 탐지</h4>
-                        <p>AI 앙상블 (99.4%)</p>
-                    </div>
+                    <div class="verify-content"><h4>이상 탐지</h4><p>AI 앙상블 (99.4%)</p></div>
                 </div>
                 <div class="verify-arrow">→</div>
                 <div class="verify-step" data-type="compliance">
                     <div class="verify-num">5</div>
-                    <div class="verify-content">
-                        <h4>규정 준수</h4>
-                        <p>AML/CFT 검증</p>
-                    </div>
+                    <div class="verify-content"><h4>규정 준수</h4><p>AML/CFT 검증</p></div>
                 </div>
             </div>
-            <div class="verify-detail-panel" id="verify-detail-panel">
-                <div class="verify-detail-content" id="verify-detail-content">
-                </div>
+            <div class="detail-panel" id="verify-panel">
+                <div class="detail-content" id="verify-content"></div>
             </div>
             <p class="verify-footer">평균 처리 시간: <strong>100ms</strong> | 부정거래 탐지율: <strong>99.4%</strong></p>
         </div>
     </section>
 
     <!-- Performance -->
-    <section class="section" id="performance">
+    <section class="section alt" id="performance">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Performance</span>
                 <h2 class="section-title">압도적인 <span class="highlight">성능</span></h2>
-                <p class="section-desc">블록체인의 근본적 한계를 해결한 혁신적 성능. <strong>카드를 클릭</strong>하여 기술 원리를 확인하세요.</p>
+                <p class="section-desc">블록체인의 근본적 한계를 해결한 혁신. <strong>카드를 클릭</strong>하여 기술 원리를 확인하세요.</p>
             </div>
-            <div class="perf-grid">
+            <div class="perf-grid" id="perf-cards">
                 <div class="perf-card" data-type="energy">
                     <h4>⚡ 에너지 효율</h4>
-                    <p>Bitcoin 대비 <strong style="color: var(--success);">98.5% 절감</strong></p>
-                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width: 100%;"></div></div>
-                    <p style="font-size: 12px; color: var(--gray-500);">Bitcoin: 121 TWh/년</p>
-                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width: 1.5%;"></div></div>
-                    <p style="font-size: 12px; color: var(--gray-500);">OpenHash: ~1.8 TWh/년</p>
+                    <p>Bitcoin 대비 <strong style="color:#0d6832;">98.5% 절감</strong></p>
+                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width:100%;"></div></div>
+                    <p style="font-size:11px;color:#6c757d;">Bitcoin: 121 TWh/년</p>
+                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width:1.5%;"></div></div>
+                    <p style="font-size:11px;color:#6c757d;">OpenHash: ~1.8 TWh/년</p>
                 </div>
                 <div class="perf-card" data-type="speed">
                     <h4>🚀 검증 속도</h4>
-                    <p>Bitcoin 대비 <strong style="color: var(--success);">150,000배 빠름</strong></p>
-                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width: 100%;"></div></div>
-                    <p style="font-size: 12px; color: var(--gray-500);">Bitcoin: 600,000ms (10분)</p>
-                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width: 0.1%;"></div></div>
-                    <p style="font-size: 12px; color: var(--gray-500);">OpenHash: 4ms</p>
+                    <p>Bitcoin 대비 <strong style="color:#0d6832;">150,000배 빠름</strong></p>
+                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width:100%;"></div></div>
+                    <p style="font-size:11px;color:#6c757d;">Bitcoin: 600,000ms (10분)</p>
+                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width:0.1%;"></div></div>
+                    <p style="font-size:11px;color:#6c757d;">OpenHash: 4ms</p>
                 </div>
                 <div class="perf-card" data-type="bandwidth">
                     <h4>📡 대역폭 효율</h4>
-                    <p>머클 루트만 전송하여 <strong style="color: var(--success);">90% 절감</strong></p>
-                    <p style="font-size: 12px; color: var(--gray-600); margin-top: var(--space-4);">거래당 전송량: ~128 bytes</p>
-                    <p style="font-size: 12px; color: var(--gray-600);">기존 트래픽에 실질적 부하 없음</p>
+                    <p>머클 루트만 전송 <strong style="color:#0d6832;">90% 절감</strong></p>
+                    <p style="font-size:11px;color:#6c757d;margin-top:1rem;">거래당 전송량: ~128 bytes</p>
+                    <p style="font-size:11px;color:#6c757d;">기존 트래픽에 실질적 부하 없음</p>
                 </div>
                 <div class="perf-card" data-type="infra">
                     <h4>🏗️ 인프라 비용</h4>
                     <p>기존 이동통신 네트워크 활용</p>
-                    <p style="font-size: 12px; color: var(--gray-600); margin-top: var(--space-4);">인프라 투자: <strong style="color: var(--success);">100% 절감</strong></p>
-                    <p style="font-size: 12px; color: var(--gray-600);">유지보수: <strong style="color: var(--success);">80-90% 절감</strong></p>
+                    <p style="font-size:11px;color:#6c757d;margin-top:1rem;">인프라 투자: <strong style="color:#0d6832;">100% 절감</strong></p>
+                    <p style="font-size:11px;color:#6c757d;">유지보수: <strong style="color:#0d6832;">80-90% 절감</strong></p>
                 </div>
             </div>
-            <div class="perf-detail-panel" id="perf-detail-panel">
-                <div class="perf-detail-content" id="perf-detail-content">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SSI -->
-    <section class="section alt" id="ssi">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">SSI</span>
-                <h2 class="section-title">자기주권 <span class="highlight">신원 인증</span></h2>
-                <p class="section-desc">중앙 기관 없이 사용자가 직접 신원을 증명합니다.</p>
-            </div>
-            <div class="ssi-flow">
-                <div class="ssi-step"><div class="ssi-icon">🪪</div><h4>신분증 해싱</h4><p>SHA-256으로 해시값 생성</p></div>
-                <div class="ssi-step"><div class="ssi-icon">📊</div><h4>계층 저장</h4><p>확률적 계층 선택 후 저장</p></div>
-                <div class="ssi-step"><div class="ssi-icon">✍️</div><h4>발행자 서명</h4><p>정부 기관 디지털 서명</p></div>
-                <div class="ssi-step"><div class="ssi-icon">✅</div><h4>신원 증명</h4><p>5요소 제시로 인증</p></div>
-            </div>
-            <h4 style="text-align: center; margin-bottom: var(--space-6); font-size: 15px; font-weight: 600;">신원 증명 5요소</h4>
-            <div class="ssi-elements">
-                <div class="ssi-element"><span>1</span>신분증 원본</div>
-                <div class="ssi-element"><span>2</span>발행자 서명</div>
-                <div class="ssi-element"><span>3</span>해시값</div>
-                <div class="ssi-element"><span>4</span>계층/노드 정보</div>
-                <div class="ssi-element"><span>5</span>저장 시각</div>
+            <div class="detail-panel" id="perf-panel">
+                <div class="detail-content" id="perf-content"></div>
             </div>
         </div>
     </section>
@@ -326,26 +182,10 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <a href="#" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-                <div class="footer-links">
-                    <a href="#problem">문제점</a>
-                    <a href="#hierarchy">계층구조</a>
-                    <a href="#simulation">시뮬레이션</a>
-                    <a href="#verification">검증</a>
-                    <a href="/tests/">테스트 센터</a>
-                </div>
-            </div>
-            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
+            <p>© 2026 OpenHash. 블록체인을 넘어서는 신뢰 인프라. | <a href="/principle/">기술 원리</a> | <a href="/technology/">기술 문서</a></p>
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
-    <script src="js/problem-cards.js"></script>
-    <script src="js/simulation.js"></script>
-    <script src="js/hierarchy.js"></script>
-    <script src="js/value-cards.js"></script>
-    <script src="js/perf-cards.js"></script>
-    <script src="js/verify-cards.js"></script>
+    <script src="js/home.js"></script>
 </body>
 </html>
