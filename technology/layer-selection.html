@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>확률적 계층 선택 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --l1-color: #10b981;
+            --l2-color: #3b82f6;
+            --l3-color: #8b5cf6;
+            --l4-color: #f59e0b;
+            --l5-color: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .section-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .section-title .highlight { color: var(--primary); }
+        .section-desc {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        /* Main Layout */
+        .layer-selection-container {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Map Panel - 정부 스타일 */
+        .map-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+        }
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .map-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        .map-scale {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            background: var(--gray-100);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+        }
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* SVG Maps */
+        .map-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+        .map-svg.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .map-svg path, .map-svg rect, .map-svg polygon {
+            fill: var(--gray-200);
+            stroke: white;
+            stroke-width: 1.5;
+            transition: fill 0.3s;
+        }
+        .map-svg .region-active {
+            fill: rgba(99, 102, 241, 0.25);
+            stroke: var(--primary);
+            stroke-width: 2;
+        }
+        .map-svg .region-label {
+            font-size: 11px;
+            fill: var(--gray-600);
+            text-anchor: middle;
+            pointer-events: none;
+        }
+        .map-svg .region-label-sm {
+            font-size: 9px;
+        }
+
+        /* User Markers */
+        .user-marker {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+        .user-marker .marker-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .user-marker .marker-pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .user-marker.user-a .marker-dot { background: #ef4444; }
+        .user-marker.user-a .marker-pulse { background: rgba(239, 68, 68, 0.3); }
+        .user-marker.user-b .marker-dot { background: #3b82f6; }
+        .user-marker.user-b .marker-pulse { background: rgba(59, 130, 246, 0.3); }
+        .user-marker .marker-label {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gray-800);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .user-marker .marker-label::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid var(--gray-800);
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        /* Connection Line */
+        .connection-line {
+            position: absolute;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #8b5cf6, #3b82f6);
+            transform-origin: left center;
+            z-index: 5;
+            opacity: 0;
+            border-radius: 2px;
+            transition: opacity 0.5s;
+        }
+        .connection-line.active { opacity: 1; }
+
+        /* Hash Animation */
+        .hash-flow {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            z-index: 15;
+            opacity: 0;
+            box-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .hash-flow.active {
+            opacity: 1;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Cards - 정부 스타일 */
+        .info-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            border: 1px solid var(--gray-200);
+        }
+        .info-card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-card-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--gray-500);
+        }
+
+        /* Layer Probability */
+        .layer-probs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .layer-prob {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: opacity 0.3s;
+        }
+        .layer-prob.disabled { opacity: 0.25; }
+        .layer-prob.selected {
+            background: rgba(99, 102, 241, 0.08);
+            border-radius: 8px;
+            margin: -4px -8px;
+            padding: 4px 8px;
+        }
+        .layer-prob.selected .layer-name {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .layer-prob.selected .prob-text {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .layer-badge {
+            min-width: 38px;
+            height: 26px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            background: var(--gray-400);
+            transition: all 0.3s;
+        }
+        .layer-prob.selected .layer-badge {
+            background: var(--primary);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+        }
+        .layer-name {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            width: 60px;
+        }
+        .prob-bar-wrap {
+            flex: 1;
+            height: 26px;
+            background: var(--gray-100);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .prob-bar {
+            height: 100%;
+            border-radius: 5px;
+            background: var(--gray-300);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+        }
+        .layer-prob.selected .prob-bar {
+            background: linear-gradient(90deg, var(--primary), #818cf8);
+        }
+        .prob-text {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        /* Transaction Info */
+        .tx-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .tx-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray-100);
+            font-size: 0.85rem;
+        }
+        .tx-row:last-child { border-bottom: none; }
+        .tx-label { color: var(--gray-500); }
+        .tx-value { font-weight: 600; color: var(--gray-800); }
+        .tx-value.hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        /* Result Card - 정부 스타일 */
+        .result-card {
+            background: var(--gray-800);
+            border-radius: 8px;
+            padding: 1.25rem;
+            color: white;
+        }
+        .result-card-title {
+            font-size: 0.8rem;
+            color: var(--gray-400);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-700);
+        }
+        .result-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .result-layer {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--gray-500);
+            transition: transform 0.3s, color 0.3s;
+        }
+        .result-layer.selected {
+            color: #60a5fa;
+        }
+        .result-detail { flex: 1; }
+        .result-node {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        .result-note {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+        .security-badge {
+            margin-top: 1rem;
+            padding: 0.625rem 0.75rem;
+            background: rgba(96, 165, 250, 0.15);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            color: #93c5fd;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .security-badge svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Scenario Buttons - 정부 스타일 */
+        .scenario-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .scenario-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-300);
+            background: white;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .scenario-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        .scenario-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Play Button - 정부 스타일 */
+        .play-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1.5rem;
+        }
+        .play-btn:hover {
+            background: var(--primary-dark);
+        }
+        .play-btn:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+        .play-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Step Indicator */
+        .step-indicator {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gray-300);
+            transition: all 0.3s;
+        }
+        .step-dot.active {
+            background: var(--primary);
+            transform: scale(1.4);
+        }
+        .step-dot.done { background: var(--l1-color); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .layer-selection-container { grid-template-columns: 1fr; }
+            .map-container { height: 320px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Security</span>
+            <h2 class="section-title">확률적 <span class="highlight">계층 선택</span></h2>
+            <p class="section-desc">거래 기록 위치를 예측 불가능하게 만들어 공격을 원천 차단합니다.</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step-dot" data-step="1"></div>
+            <div class="step-dot" data-step="2"></div>
+            <div class="step-dot" data-step="3"></div>
+            <div class="step-dot" data-step="4"></div>
+            <div class="step-dot" data-step="5"></div>
+        </div>
+
+        <div class="layer-selection-container">
+            <div class="map-panel">
+                <div class="map-header">
+                    <span class="map-title" id="map-title">제주시 한림읍</span>
+                    <span class="map-scale" id="map-scale">읍면동 수준</span>
+                </div>
+                <div class="map-container" id="map-container">
+
+                    <!-- Map 1: 한림읍 (같은 읍면동) -->
+                    <svg class="map-svg active" id="map-dong" viewBox="0 0 400 420">
+                        <rect x="20" y="20" width="360" height="380" rx="8" fill="#e0f2fe"/>
+                        <!-- 한림읍 리(里) 구역들 -->
+                        <path id="dong-hanrim" d="M60,60 L160,50 L180,100 L150,150 L80,140 Z" data-name="한림리"/>
+                        <path id="dong-hyeopjae" d="M160,50 L280,55 L290,120 L180,100 Z" data-name="협재리"/>
+                        <path id="dong-geumak" d="M280,55 L350,70 L340,150 L290,120 Z" data-name="금악리"/>
+                        <path id="dong-gwideok" d="M80,140 L150,150 L140,230 L70,210 Z" data-name="귀덕리"/>
+                        <path id="dong-dongmyeong" d="M150,150 L180,100 L290,120 L260,200 L140,230 Z" data-name="동명리"/>
+                        <path id="dong-suwo" d="M290,120 L340,150 L320,240 L260,200 Z" data-name="수원리"/>
+                        <path id="dong-jangsu" d="M70,210 L140,230 L120,320 L50,300 Z" data-name="장수리"/>
+                        <path id="dong-okupo" d="M140,230 L260,200 L240,300 L120,320 Z" data-name="옥포리"/>
+                        <path id="dong-myeongwol" d="M260,200 L320,240 L300,330 L240,300 Z" data-name="명월리"/>
+                        <path id="dong-sangdae" d="M50,300 L120,320 L100,380 L40,370 Z" data-name="상대리"/>
+                        <path id="dong-sangmyeong" d="M120,320 L240,300 L220,380 L100,380 Z" data-name="상명리"/>
+                        <path id="dong-geumneung" d="M240,300 L300,330 L280,390 L220,380 Z" data-name="금능리"/>
+                        <!-- Labels -->
+                        <text x="110" y="105" class="region-label region-label-sm">한림리</text>
+                        <text x="220" y="90" class="region-label region-label-sm">협재리</text>
+                        <text x="310" y="105" class="region-label region-label-sm">금악리</text>
+                        <text x="105" y="185" class="region-label region-label-sm">귀덕리</text>
+                        <text x="200" y="175" class="region-label region-label-sm">동명리</text>
+                        <text x="305" y="185" class="region-label region-label-sm">수원리</text>
+                        <text x="85" y="270" class="region-label region-label-sm">장수리</text>
+                        <text x="185" y="270" class="region-label region-label-sm">옥포리</text>
+                        <text x="280" y="275" class="region-label region-label-sm">명월리</text>
+                        <text x="75" y="345" class="region-label region-label-sm">상대리</text>
+                        <text x="165" y="350" class="region-label region-label-sm">상명리</text>
+                        <text x="260" y="355" class="region-label region-label-sm">금능리</text>
+                    </svg>
+
+                    <!-- Map 2: 제주시 (같은 시군구) -->
+                    <svg class="map-svg" id="map-sigungu" viewBox="0 0 500 400">
+                        <rect x="20" y="20" width="460" height="360" rx="8" fill="#e0f2fe"/>
+                        <!-- 제주시 읍면 - 실제 배치 근사 -->
+                        <!-- 추자면 (북서쪽 섬) -->
+                        <path id="si-chuja" d="M55,45 L85,40 L92,60 L80,75 L50,70 L45,55 Z" data-name="추자면"/>
+                        <!-- 한경면 (서쪽) -->
+                        <path id="si-hallim2" d="M65,145 L110,125 L125,180 L120,240 L85,260 L55,240 L50,190 Z" data-name="한경면"/>
+                        <!-- 한림읍 -->
+                        <path id="si-hanrim" d="M110,125 L175,105 L195,145 L185,195 L125,180 Z" data-name="한림읍"/>
+                        <!-- 애월읍 -->
+                        <path id="si-aewol" d="M175,105 L255,90 L275,130 L260,180 L195,170 L195,145 Z" data-name="애월읍"/>
+                        <!-- 제주시 동지역 (도심) -->
+                        <path id="si-jeju" d="M255,90 L340,95 L355,140 L335,185 L275,195 L260,180 L275,130 Z" data-name="제주시내"/>
+                        <!-- 조천읍 -->
+                        <path id="si-jocheon" d="M340,95 L410,110 L420,165 L390,210 L355,200 L355,140 Z" data-name="조천읍"/>
+                        <!-- 구좌읍 -->
+                        <path id="si-gujwa" d="M390,210 L420,165 L455,180 L465,240 L440,290 L395,280 Z" data-name="구좌읍"/>
+                        <!-- 우도면 -->
+                        <ellipse id="si-udo" cx="480" cy="210" rx="18" ry="12" data-name="우도면"/>
+                        <!-- 중앙 (산악 지역 표시) -->
+                        <path d="M185,195 L260,180 L275,195 L335,185 L355,200 L390,210 L395,280 L350,310 L250,320 L150,300 L120,240 L125,180 Z" fill="rgba(200,200,200,0.3)" stroke="none"/>
+                        <!-- 한라산 -->
+                        <circle cx="280" cy="260" r="20" fill="rgba(34, 197, 94, 0.2)" stroke="rgba(34, 197, 94, 0.4)" stroke-width="1.5"/>
+                        <!-- 라벨 -->
+                        <text x="68" y="60" class="region-label region-label-sm">추자면</text>
+                        <text x="80" y="200" class="region-label">한경면</text>
+                        <text x="155" y="155" class="region-label">한림읍</text>
+                        <text x="225" y="145" class="region-label">애월읍</text>
+                        <text x="305" y="145" class="region-label">제주시내</text>
+                        <text x="380" y="160" class="region-label">조천읍</text>
+                        <text x="420" y="250" class="region-label">구좌읍</text>
+                        <text x="480" y="215" class="region-label region-label-sm">우도</text>
+                    </svg>
+
+                    <!-- Map 3: 제주도 (같은 광역시도) -->
+                    <svg class="map-svg" id="map-sido" viewBox="0 0 500 450">
+                        <rect x="20" y="20" width="460" height="410" rx="8" fill="#e0f2fe"/>
+                        <!-- 제주도 실제 윤곽 근사 - 타원형 섬 -->
+                        <!-- 제주시 (북부) -->
+                        <path id="sido-jejusi" d="M95,165 L130,140 L180,120 L250,110 L320,115 L370,130 L410,155 L420,185 L405,210 L250,220 L100,210 L85,190 Z" data-name="제주시" style="fill: #c7d2fe;"/>
+                        <!-- 서귀포시 (남부) -->
+                        <path id="sido-seogwipo" d="M100,210 L250,220 L405,210 L415,250 L400,300 L360,340 L290,365 L210,370 L140,355 L90,320 L70,270 L80,235 Z" data-name="서귀포시"/>
+                        <!-- 우도 -->
+                        <ellipse id="sido-udo" cx="455" cy="170" rx="18" ry="12" data-name="우도"/>
+                        <!-- 추자도 -->
+                        <path id="sido-chuja" d="M70,55 L95,50 L100,65 L90,78 L65,75 L60,62 Z" data-name="추자도"/>
+                        <!-- 마라도 -->
+                        <ellipse cx="115" cy="390" rx="8" ry="5" style="fill: var(--gray-200); stroke: white;"/>
+                        <!-- 한라산 표시 -->
+                        <circle cx="250" cy="240" r="25" fill="rgba(34, 197, 94, 0.2)" stroke="rgba(34, 197, 94, 0.5)" stroke-width="2"/>
+                        <text x="250" y="245" class="region-label region-label-sm" style="fill: #16a34a;">한라산</text>
+                        <!-- 라벨 -->
+                        <text x="260" y="170" class="region-label" style="font-size: 16px; font-weight: 600;">제주시</text>
+                        <text x="260" y="310" class="region-label" style="font-size: 16px; font-weight: 600;">서귀포시</text>
+                        <text x="455" y="175" class="region-label region-label-sm">우도</text>
+                        <text x="80" y="68" class="region-label region-label-sm">추자도</text>
+                        <text x="115" y="405" class="region-label region-label-sm" style="font-size: 8px;">마라도</text>
+                        <!-- 제목 -->
+                        <text x="250" y="420" class="region-label" style="font-size: 14px; fill: var(--gray-400);">제주특별자치도</text>
+                    </svg>
+
+                    <!-- Map 4: 대한민국 (같은 국가) -->
+                    <svg class="map-svg" id="map-korea" viewBox="0 0 500 520">
+                        <rect x="20" y="20" width="460" height="480" rx="8" fill="#e0f2fe"/>
+                        <!-- 대한민국 - 실제 윤곽 근사 -->
+                        <!-- 서울 -->
+                        <path id="korea-seoul" d="M248,82 L258,78 L268,82 L270,92 L262,98 L250,96 L244,88 Z" data-name="서울"/>
+                        <!-- 인천 -->
+                        <path id="korea-incheon" d="M218,85 L235,80 L244,88 L240,100 L225,105 L210,98 L208,90 Z" data-name="인천"/>
+                        <!-- 경기 -->
+                        <path id="korea-gyeonggi" d="M225,55 L280,48 L305,65 L298,95 L270,92 L268,82 L258,78 L248,82 L244,88 L250,96 L262,98 L270,110 L265,130 L230,140 L200,130 L195,105 L210,98 L225,105 L240,100 L244,88 L235,80 L218,85 L208,90 L195,75 Z" data-name="경기"/>
+                        <!-- 강원 -->
+                        <path id="korea-gangwon" d="M280,48 L310,35 L360,30 L385,50 L390,95 L380,140 L350,165 L310,175 L270,160 L265,130 L270,110 L298,95 L305,65 Z" data-name="강원"/>
+                        <!-- 충북 -->
+                        <path id="korea-chungbuk" d="M230,140 L265,130 L270,160 L280,185 L260,210 L225,215 L200,195 L195,165 L200,145 Z" data-name="충북"/>
+                        <!-- 세종 -->
+                        <path id="korea-sejong" d="M185,175 L200,170 L205,185 L195,195 L180,190 Z" data-name="세종"/>
+                        <!-- 대전 -->
+                        <path id="korea-daejeon" d="M195,195 L215,190 L225,205 L218,220 L200,222 L190,210 Z" data-name="대전"/>
+                        <!-- 충남 -->
+                        <path id="korea-chungnam" d="M140,120 L195,105 L200,130 L200,145 L195,165 L200,170 L185,175 L180,190 L195,195 L190,210 L165,225 L130,235 L100,220 L95,180 L110,150 L125,130 Z" data-name="충남"/>
+                        <!-- 전북 -->
+                        <path id="korea-jeonbuk" d="M100,220 L130,235 L165,225 L190,210 L200,222 L210,245 L195,275 L155,290 L115,280 L90,255 L85,230 Z" data-name="전북"/>
+                        <!-- 광주 -->
+                        <path id="korea-gwangju" d="M130,310 L145,305 L155,315 L150,330 L135,332 L125,322 Z" data-name="광주"/>
+                        <!-- 전남 -->
+                        <path id="korea-jeonnam" d="M70,265 L90,255 L115,280 L155,290 L165,305 L145,305 L130,310 L125,322 L135,332 L150,330 L165,345 L150,380 L120,400 L75,395 L50,365 L45,320 L55,285 Z" data-name="전남"/>
+                        <!-- 경북 -->
+                        <path id="korea-gyeongbuk" d="M270,160 L310,175 L350,165 L380,180 L395,220 L385,270 L355,295 L320,300 L290,280 L275,245 L280,220 L260,210 L280,185 Z" data-name="경북"/>
+                        <!-- 대구 -->
+                        <path id="korea-daegu" d="M305,250 L325,245 L335,260 L325,280 L308,282 L298,268 Z" data-name="대구"/>
+                        <!-- 울산 -->
+                        <path id="korea-ulsan" d="M365,295 L390,290 L400,315 L385,335 L360,330 L355,310 Z" data-name="울산"/>
+                        <!-- 경남 -->
+                        <path id="korea-gyeongnam" d="M195,275 L275,245 L290,280 L308,282 L325,280 L355,295 L355,310 L360,330 L340,360 L295,380 L240,375 L195,355 L165,345 L165,305 L155,290 Z" data-name="경남"/>
+                        <!-- 부산 -->
+                        <path id="korea-busan" d="M340,360 L360,330 L385,335 L395,365 L375,390 L345,385 Z" data-name="부산"/>
+                        <!-- 제주 -->
+                        <path id="korea-jeju" d="M120,460 L180,450 L210,465 L205,490 L165,505 L115,500 L95,480 L100,460 Z" data-name="제주"/>
+                        <!-- 라벨 -->
+                        <text x="258" y="90" class="region-label region-label-sm">서울</text>
+                        <text x="220" y="95" class="region-label region-label-sm">인천</text>
+                        <text x="240" y="115" class="region-label region-label-sm">경기</text>
+                        <text x="340" y="100" class="region-label region-label-sm">강원</text>
+                        <text x="245" y="180" class="region-label region-label-sm">충북</text>
+                        <text x="130" y="175" class="region-label region-label-sm">충남</text>
+                        <text x="140" y="255" class="region-label region-label-sm">전북</text>
+                        <text x="100" y="340" class="region-label region-label-sm">전남</text>
+                        <text x="320" y="225" class="region-label region-label-sm">경북</text>
+                        <text x="312" y="267" class="region-label region-label-sm">대구</text>
+                        <text x="375" y="315" class="region-label region-label-sm">울산</text>
+                        <text x="260" y="330" class="region-label region-label-sm">경남</text>
+                        <text x="362" y="375" class="region-label region-label-sm">부산</text>
+                        <text x="155" y="480" class="region-label region-label-sm">제주</text>
+                    </svg>
+
+                    <!-- Map 5: 동아시아 (다른 국가) -->
+                    <svg class="map-svg" id="map-asia" viewBox="0 0 500 450">
+                        <rect x="20" y="20" width="460" height="410" rx="8" fill="#e0f2fe"/>
+                        <!-- 동아시아 - 실제 윤곽 근사 -->
+                        <!-- 중국 (동부 해안) -->
+                        <path id="asia-china" d="M40,40 L150,35 L200,60 L230,100 L240,150 L230,200 L200,250 L160,290 L120,310 L80,290 L50,240 L35,180 L30,120 L35,70 Z" data-name="중국" style="fill: #fecaca;"/>
+                        <!-- 한반도 -->
+                        <path id="asia-korea" d="M270,95 L295,85 L320,95 L335,130 L340,175 L325,220 L300,255 L275,260 L260,235 L255,190 L260,145 L265,115 Z" data-name="한국" style="fill: #bfdbfe;"/>
+                        <!-- 일본 열도 -->
+                        <path id="asia-japan" d="M365,70 L395,65 L420,80 L430,110 L425,150 L410,190 L420,230 L415,280 L395,310 L370,295 L360,250 L370,210 L365,170 L375,130 L370,95 Z" data-name="일본" style="fill: #d9f99d;"/>
+                        <!-- 대만 -->
+                        <path id="asia-taiwan" d="M275,315 L295,310 L305,340 L295,370 L275,365 L268,340 Z" data-name="대만"/>
+                        <!-- 바다 -->
+                        <text x="200" y="360" class="region-label" style="fill: #60a5fa; font-size: 11px;">동중국해</text>
+                        <text x="320" y="150" class="region-label" style="fill: #60a5fa; font-size: 10px;">동해</text>
+                        <text x="355" y="250" class="region-label" style="fill: #60a5fa; font-size: 10px;">태평양</text>
+                        <!-- 국가명 -->
+                        <text x="130" y="170" class="region-label" style="font-size: 18px; font-weight: 700; fill: #dc2626;">中國</text>
+                        <text x="290" y="180" class="region-label" style="font-size: 13px; font-weight: 600; fill: #2563eb;">한국</text>
+                        <text x="390" y="190" class="region-label" style="font-size: 15px; font-weight: 600; fill: #65a30d;">日本</text>
+                        <text x="285" y="345" class="region-label region-label-sm">대만</text>
+                        <!-- 주요 도시 -->
+                        <circle cx="295" cy="140" r="4" fill="#3b82f6"/>
+                        <text x="295" y="132" class="region-label region-label-sm" style="fill:#3b82f6;">서울</text>
+                        <circle cx="405" cy="115" r="4" fill="#65a30d"/>
+                        <text x="405" y="107" class="region-label region-label-sm" style="fill:#65a30d;">도쿄</text>
+                        <circle cx="140" cy="120" r="4" fill="#dc2626"/>
+                        <text x="140" y="112" class="region-label region-label-sm" style="fill:#dc2626;">베이징</text>
+                        <circle cx="195" cy="220" r="4" fill="#dc2626"/>
+                        <text x="195" y="212" class="region-label region-label-sm" style="fill:#dc2626;">상하이</text>
+                    </svg>
+
+                    <!-- User Markers -->
+                    <div class="user-marker user-a" id="user-a" style="left: 200px; top: 175px;">
+                        <div class="marker-pulse"></div>
+                        <div class="marker-dot"></div>
+                        <div class="marker-label">A: 동명리</div>
+                    </div>
+                    <div class="user-marker user-b" id="user-b" style="left: 220px; top: 175px;">
+                        <div class="marker-pulse"></div>
+                        <div class="marker-dot"></div>
+                        <div class="marker-label">B: 동명리</div>
+                    </div>
+
+                    <!-- Connection Line -->
+                    <div class="connection-line" id="connection-line"></div>
+
+                    <!-- Hash Flow -->
+                    <div class="hash-flow" id="hash-flow">#</div>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <div class="info-card">
+                    <div class="info-card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        계층별 선택 확률
+                    </div>
+                    <div class="layer-probs" id="layer-probs">
+                        <div class="layer-prob" data-layer="1">
+                            <span class="layer-badge">L1</span>
+                            <span class="layer-name">읍면동</span>
+                            <div class="prob-bar-wrap">
+                                <div class="prob-bar" style="width: 70%"></div>
+                                <span class="prob-text">70%</span>
+                            </div>
+                        </div>
+                        <div class="layer-prob" data-layer="2">
+                            <span class="layer-badge">L2</span>
+                            <span class="layer-name">시군구</span>
+                            <div class="prob-bar-wrap">
+                                <div class="prob-bar" style="width: 20%"></div>
+                                <span class="prob-text">20%</span>
+                            </div>
+                        </div>
+                        <div class="layer-prob" data-layer="3">
+                            <span class="layer-badge">L3</span>
+                            <span class="layer-name">광역시도</span>
+                            <div class="prob-bar-wrap">
+                                <div class="prob-bar" style="width: 8%"></div>
+                                <span class="prob-text">8%</span>
+                            </div>
+                        </div>
+                        <div class="layer-prob" data-layer="4">
+                            <span class="layer-badge">L4</span>
+                            <span class="layer-name">국가</span>
+                            <div class="prob-bar-wrap">
+                                <div class="prob-bar" style="width: 2%"></div>
+                                <span class="prob-text">2%</span>
+                            </div>
+                        </div>
+                        <div class="layer-prob disabled" data-layer="5">
+                            <span class="layer-badge">L5</span>
+                            <span class="layer-name">글로벌</span>
+                            <div class="prob-bar-wrap">
+                                <div class="prob-bar" style="width: 0%"></div>
+                                <span class="prob-text">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9"/>
+                        </svg>
+                        거래 정보
+                    </div>
+                    <div class="tx-info">
+                        <div class="tx-row">
+                            <span class="tx-label">최소 공통 계층</span>
+                            <span class="tx-value" id="min-layer">L1 (읍면동)</span>
+                        </div>
+                        <div class="tx-row">
+                            <span class="tx-label">거래 Hash</span>
+                            <span class="tx-value hash" id="tx-hash">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-card-title">기록 위치 (확률적 선택 결과)</div>
+                    <div class="result-content">
+                        <span class="result-layer" id="result-layer">-</span>
+                        <div class="result-detail">
+                            <div class="result-node" id="result-node">대기 중...</div>
+                            <div class="result-note" id="result-note">시뮬레이션을 실행하세요</div>
+                        </div>
+                    </div>
+                    <div class="security-badge">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>공격자는 어느 노드에 기록될지 <strong>사전 예측 불가</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-buttons">
+            <button class="scenario-btn active" data-scenario="same-dong">같은 읍면동</button>
+            <button class="scenario-btn" data-scenario="same-sigungu">같은 시군구</button>
+            <button class="scenario-btn" data-scenario="same-sido">같은 광역시도</button>
+            <button class="scenario-btn" data-scenario="same-country">같은 국가</button>
+            <button class="scenario-btn" data-scenario="diff-country">다른 국가</button>
+        </div>
+
+        <button class="play-btn" id="play-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            시뮬레이션 실행
+        </button>
+    </div>
+
+    <script>
+        // Scenario Data
+        const scenarios = {
+            'same-dong': {
+                label: '같은 읍면동 거래',
+                mapId: 'map-dong',
+                mapTitle: '제주시 한림읍',
+                mapScale: '읍면동 수준',
+                // 한림읍 내 리(里)들 - 같은 읍면동이므로 L1
+                locations: [
+                    { name: '한림리', x: 280, y: 90, region: 'dong-hanrim' },
+                    { name: '협재리', x: 385, y: 70, region: 'dong-hyeopjae' },
+                    { name: '금악리', x: 475, y: 95, region: 'dong-geumak' },
+                    { name: '귀덕리', x: 275, y: 175, region: 'dong-gwideok' },
+                    { name: '동명리', x: 370, y: 160, region: 'dong-dongmyeong' },
+                    { name: '수원리', x: 470, y: 170, region: 'dong-suwo' },
+                    { name: '옥포리', x: 355, y: 255, region: 'dong-okupo' },
+                    { name: '명월리', x: 445, y: 260, region: 'dong-myeongwol' },
+                    { name: '금능리', x: 425, y: 340, region: 'dong-geumneung' }
+                ],
+                minLayer: 1,
+                minLayerText: 'L1 (읍면동)',
+                probs: [70, 20, 8, 2, 0],
+                nodes: ['한림읍 노드', '제주시 노드', '제주도 노드', '대한민국 노드', '-']
+            },
+            'same-sigungu': {
+                label: '같은 시군구 거래',
+                mapId: 'map-sigungu',
+                mapTitle: '제주시',
+                mapScale: '시군구 수준',
+                // 제주시 내 읍면동들 - 같은 시군구이므로 L2
+                locations: [
+                    { name: '한림읍', x: 225, y: 130, region: 'si-hanrim' },
+                    { name: '애월읍', x: 305, y: 115, region: 'si-aewol' },
+                    { name: '제주시내', x: 385, y: 120, region: 'si-jeju' },
+                    { name: '조천읍', x: 460, y: 135, region: 'si-jocheon' },
+                    { name: '구좌읍', x: 470, y: 230, region: 'si-gujwa' },
+                    { name: '한경면', x: 205, y: 210, region: 'si-hallim2' }
+                ],
+                minLayer: 2,
+                minLayerText: 'L2 (시군구)',
+                probs: [0, 77, 19, 4, 0],
+                nodes: ['-', '제주시 노드', '제주도 노드', '대한민국 노드', '-']
+            },
+            'same-sido': {
+                label: '같은 광역시도 거래',
+                mapId: 'map-sido',
+                mapTitle: '제주특별자치도',
+                mapScale: '광역시도 수준',
+                // 제주도 내 시군 - 같은 광역시도이므로 L3
+                locations: [
+                    { name: '제주시', x: 360, y: 160, region: 'sido-jejusi' },
+                    { name: '서귀포시', x: 360, y: 280, region: 'sido-seogwipo' },
+                    { name: '우도', x: 520, y: 160, region: 'sido-udo' }
+                ],
+                minLayer: 3,
+                minLayerText: 'L3 (광역시도)',
+                probs: [0, 0, 80, 20, 0],
+                nodes: ['-', '-', '제주도 노드', '대한민국 노드', '-']
+            },
+            'same-country': {
+                label: '같은 국가 거래',
+                mapId: 'map-korea',
+                mapTitle: '대한민국',
+                mapScale: '국가 수준',
+                // 대한민국 내 광역시도 - 같은 국가이므로 L4
+                locations: [
+                    { name: '서울', x: 338, y: 105, region: 'korea-seoul' },
+                    { name: '부산', x: 405, y: 330, region: 'korea-busan' },
+                    { name: '제주', x: 260, y: 395, region: 'korea-jeju' },
+                    { name: '강원', x: 410, y: 100, region: 'korea-gangwon' },
+                    { name: '전남', x: 225, y: 280, region: 'korea-jeonnam' },
+                    { name: '경북', x: 390, y: 220, region: 'korea-gyeongbuk' }
+                ],
+                minLayer: 4,
+                minLayerText: 'L4 (국가)',
+                probs: [0, 0, 0, 100, 0],
+                nodes: ['-', '-', '-', '대한민국 노드', '-']
+            },
+            'diff-country': {
+                label: '다른 국가 거래',
+                mapId: 'map-asia',
+                mapTitle: '동아시아',
+                mapScale: '글로벌 수준',
+                // 동아시아 국가들 - 다른 국가이므로 L5
+                locations: [
+                    { name: '서울', x: 390, y: 180, region: 'asia-korea' },
+                    { name: '도쿄', x: 480, y: 140, region: 'asia-japan' },
+                    { name: '베이징', x: 260, y: 100, region: 'asia-china' },
+                    { name: '상하이', x: 300, y: 180, region: 'asia-china' }
+                ],
+                minLayer: 5,
+                minLayerText: 'L5 (글로벌)',
+                probs: [0, 0, 0, 0, 100],
+                nodes: ['-', '-', '-', '-', '글로벌 노드']
+            }
+        };
+
+        let currentScenario = 'same-dong';
+        let isPlaying = false;
+
+        // DOM Elements
+        const mapContainer = document.getElementById('map-container');
+        const userA = document.getElementById('user-a');
+        const userB = document.getElementById('user-b');
+        const connectionLine = document.getElementById('connection-line');
+        const hashFlow = document.getElementById('hash-flow');
+        const mapTitle = document.getElementById('map-title');
+        const mapScale = document.getElementById('map-scale');
+        const minLayerEl = document.getElementById('min-layer');
+        const txHashEl = document.getElementById('tx-hash');
+        const resultLayerEl = document.getElementById('result-layer');
+        const resultNodeEl = document.getElementById('result-node');
+        const resultNoteEl = document.getElementById('result-note');
+        const playBtn = document.getElementById('play-btn');
+        const layerProbs = document.getElementById('layer-probs');
+        const scenarioBtns = document.querySelectorAll('.scenario-btn');
+        const stepDots = document.querySelectorAll('.step-dot');
+
+        // Initialize
+        function init() {
+            updateScenario(currentScenario);
+        }
+
+        // Update Scenario
+        function updateScenario(scenarioId, randomize = true) {
+            currentScenario = scenarioId;
+            const s = scenarios[scenarioId];
+
+            // Switch map
+            document.querySelectorAll('.map-svg').forEach(m => m.classList.remove('active'));
+            document.getElementById(s.mapId).classList.add('active');
+
+            // Update header
+            mapTitle.textContent = s.mapTitle;
+            mapScale.textContent = s.mapScale;
+            minLayerEl.textContent = s.minLayerText;
+
+            // 랜덤하게 두 위치 선택 (A와 B는 다른 위치)
+            let locA, locB;
+            if (randomize && s.locations.length >= 2) {
+                const shuffled = [...s.locations].sort(() => Math.random() - 0.5);
+                locA = shuffled[0];
+                locB = shuffled[1];
+            } else {
+                locA = s.locations[0];
+                locB = s.locations[Math.min(1, s.locations.length - 1)];
+            }
+
+            // Update user positions
+            userA.style.left = locA.x + 'px';
+            userA.style.top = locA.y + 'px';
+            userA.querySelector('.marker-label').textContent = 'A: ' + locA.name;
+
+            userB.style.left = locB.x + 'px';
+            userB.style.top = locB.y + 'px';
+            userB.querySelector('.marker-label').textContent = 'B: ' + locB.name;
+
+            // 현재 선택된 위치 저장
+            s.currentA = locA;
+            s.currentB = locB;
+
+            // Highlight active regions
+            document.querySelectorAll('.map-svg path, .map-svg ellipse').forEach(p => p.classList.remove('region-active'));
+            [locA.region, locB.region].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('region-active');
+            });
+
+            // Update probability bars
+            const layerProbEls = layerProbs.querySelectorAll('.layer-prob');
+            layerProbEls.forEach((el, i) => {
+                const prob = s.probs[i];
+                const bar = el.querySelector('.prob-bar');
+                const text = el.querySelector('.prob-text');
+                
+                bar.style.width = (prob * 0.9) + '%'; // Scale for visual
+                text.textContent = prob > 0 ? prob + '%' : '-';
+                
+                el.classList.toggle('disabled', prob === 0);
+                el.classList.remove('selected');
+            });
+
+            // Reset UI
+            txHashEl.textContent = '-';
+            resultLayerEl.textContent = '-';
+            resultLayerEl.className = 'result-layer';
+            resultNodeEl.textContent = '대기 중...';
+            resultNoteEl.textContent = '시뮬레이션을 실행하세요';
+            connectionLine.classList.remove('active');
+            hashFlow.classList.remove('active');
+            resetSteps();
+
+            // Update buttons
+            scenarioBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.scenario === scenarioId);
+            });
+        }
+
+        // Generate fake hash
+        function generateHash() {
+            const chars = '0123456789abcdef';
+            let hash = '';
+            for (let i = 0; i < 12; i++) {
+                hash += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return hash + '...';
+        }
+
+        // Weighted random selection
+        function selectLayer(probs) {
+            const total = probs.reduce((a, b) => a + b, 0);
+            let rand = Math.random() * total;
+            for (let i = 0; i < probs.length; i++) {
+                if (rand < probs[i]) return i + 1;
+                rand -= probs[i];
+            }
+            return probs.length;
+        }
+
+        // Step indicator
+        function setStep(step) {
+            stepDots.forEach((dot, i) => {
+                dot.classList.remove('active', 'done');
+                if (i + 1 < step) dot.classList.add('done');
+                if (i + 1 === step) dot.classList.add('active');
+            });
+        }
+
+        function resetSteps() {
+            stepDots.forEach(dot => dot.classList.remove('active', 'done'));
+        }
+
+        // Draw connection
+        function drawConnection() {
+            const rect = mapContainer.getBoundingClientRect();
+            const ax = parseFloat(userA.style.left);
+            const ay = parseFloat(userA.style.top);
+            const bx = parseFloat(userB.style.left);
+            const by = parseFloat(userB.style.top);
+
+            const length = Math.sqrt((bx-ax)**2 + (by-ay)**2);
+            const angle = Math.atan2(by-ay, bx-ax) * 180 / Math.PI;
+
+            connectionLine.style.left = ax + 'px';
+            connectionLine.style.top = ay + 'px';
+            connectionLine.style.width = length + 'px';
+            connectionLine.style.transform = `rotate(${angle}deg)`;
+        }
+
+        // Animate hash text
+        async function animateHash(hash) {
+            txHashEl.textContent = '';
+            for (let i = 0; i < hash.length; i++) {
+                txHashEl.textContent += hash[i];
+                await sleep(40);
+            }
+        }
+
+        // Animate layer selection (roulette effect)
+        async function animateLayerSelection(selectedLayer, probs) {
+            const layerProbEls = layerProbs.querySelectorAll('.layer-prob');
+            const available = probs.map((p, i) => p > 0 ? i : -1).filter(i => i >= 0);
+            
+            // Fast spin
+            for (let i = 0; i < 12; i++) {
+                const randIdx = available[Math.floor(Math.random() * available.length)];
+                layerProbEls.forEach((el, j) => el.classList.toggle('selected', j === randIdx));
+                await sleep(80 + i * 15);
+            }
+
+            // Final selection
+            layerProbEls.forEach((el, i) => el.classList.toggle('selected', i === selectedLayer - 1));
+        }
+
+        // Run simulation
+        async function runSimulation() {
+            if (isPlaying) return;
+            isPlaying = true;
+            playBtn.disabled = true;
+
+            // 매 시뮬레이션마다 위치 랜덤화
+            updateScenario(currentScenario, true);
+            
+            const s = scenarios[currentScenario];
+
+            // Step 1: Show users with new positions
+            setStep(1);
+            await sleep(600);
+
+            // Step 2: Connect users
+            setStep(2);
+            drawConnection();
+            connectionLine.classList.add('active');
+            await sleep(800);
+
+            // Step 3: Generate hash
+            setStep(3);
+            const hash = generateHash();
+            await animateHash(hash);
+            await sleep(600);
+
+            // Step 4: Layer selection
+            setStep(4);
+            const selectedLayer = selectLayer(s.probs);
+            await animateLayerSelection(selectedLayer, s.probs);
+            await sleep(400);
+
+            // Step 5: Show result
+            setStep(5);
+            const layerNames = ['읍면동', '시군구', '광역시도', '국가', '글로벌'];
+            const nodeName = s.nodes[selectedLayer - 1];
+
+            resultLayerEl.textContent = 'L' + selectedLayer;
+            resultLayerEl.className = 'result-layer selected';
+            resultLayerEl.style.transform = 'scale(1.2)';
+            await sleep(200);
+            resultLayerEl.style.transform = 'scale(1)';
+
+            resultNodeEl.textContent = nodeName + '에 기록';
+            resultNoteEl.textContent = `${layerNames[selectedLayer - 1]} 계층 선택됨 (확률: ${s.probs[selectedLayer - 1]}%)`;
+
+            isPlaying = false;
+            playBtn.disabled = false;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Event Listeners
+        scenarioBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!isPlaying) updateScenario(btn.dataset.scenario, true);
+            });
+        });
+
+        playBtn.addEventListener('click', runSimulation);
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
