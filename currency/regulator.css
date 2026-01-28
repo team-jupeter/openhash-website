@@ -1,0 +1,170 @@
+/* KRDS + Material Design 3 기반 금융 감독 시스템 */
+:root {
+    --primary: #0b5394;
+    --primary-dark: #073763;
+    --primary-light: #d6e9f8;
+    --secondary: #0d9488;
+    --accent: #d4a017;
+    --success: #16a34a;
+    --warning: #f59e0b;
+    --danger: #dc2626;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.6; font-size: 15px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+/* Hero - KRDS 스타일 */
+.hero { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); color: white; padding: 1.5rem 0; border-bottom: 4px solid var(--accent); }
+.hero .container { display: flex; flex-direction: column; gap: 0.5rem; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.15); padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.75rem; width: fit-content; }
+.hero-title { font-size: 1.5rem; font-weight: 700; }
+.hero-desc { font-size: 0.9rem; opacity: 0.9; }
+.breadcrumb { font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem; }
+.breadcrumb a { color: white; text-decoration: none; }
+
+/* 통계 카드 그리드 - Material 3 Elevation */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.stat-card { background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--gray-200); transition: box-shadow 0.2s, transform 0.2s; }
+.stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); font-family: 'Consolas', monospace; }
+.stat-label { font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem; }
+.stat-note { font-size: 0.65rem; color: var(--gray-400); }
+
+/* 기능 카드 - KRDS 컴포넌트 */
+.feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+@media (max-width: 1024px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .feature-grid { grid-template-columns: 1fr; } }
+.feature-card { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1.25rem; cursor: pointer; transition: all 0.2s; }
+.feature-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
+.feature-card.active { border-color: var(--primary); background: var(--primary-light); }
+.feature-icon { width: 40px; height: 40px; background: var(--primary-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; }
+.feature-icon svg { width: 20px; height: 20px; color: var(--primary); }
+.feature-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+.feature-desc { font-size: 0.8rem; color: var(--gray-500); line-height: 1.5; }
+
+/* 패널 - Material 3 Surface */
+.detail-panel { max-height: 0; overflow: hidden; background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); margin-bottom: 1.5rem; transition: max-height 0.3s ease, padding 0.3s ease; }
+.detail-panel.open { max-height: 400px; padding: 1.25rem; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray-200); }
+.panel-title { font-size: 1rem; font-weight: 600; color: var(--primary); }
+.panel-close { background: var(--gray-100); border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.panel-content { color: var(--gray-600); font-size: 0.9rem; line-height: 1.8; }
+.panel-content p { margin-bottom: 0.75rem; }
+.panel-content strong { color: var(--primary); }
+
+/* 메인 레이아웃 */
+.main-grid { display: grid; grid-template-columns: 1fr 360px; gap: 1.5rem; }
+@media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+/* 검증 섹션 - KRDS 입력 패턴 */
+.section { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+.section-header { background: var(--gray-800); color: white; padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+.section-badge { background: var(--secondary); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.65rem; }
+.section-body { padding: 1.25rem; }
+
+/* 폼 요소 - KRDS 입력 컴포넌트 */
+.form-group { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--gray-700); margin-bottom: 0.4rem; }
+.form-select, .form-input { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--gray-300); border-radius: 6px; font-size: 0.9rem; background: white; transition: border-color 0.2s, box-shadow 0.2s; }
+.form-select:focus, .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(11,83,148,0.1); }
+.form-help { font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem; }
+
+/* 검증 대상 정보 */
+.target-info { background: var(--gray-50); border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
+.target-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid var(--gray-200); font-size: 0.85rem; }
+.target-row:last-child { border-bottom: none; }
+.target-label { color: var(--gray-500); }
+.target-value { font-weight: 500; font-family: 'Consolas', monospace; }
+
+/* 해시 표시 */
+.hash-display { background: var(--gray-800); border-radius: 6px; padding: 0.75rem; margin: 0.75rem 0; }
+.hash-label { font-size: 0.7rem; color: var(--gray-400); margin-bottom: 0.25rem; }
+.hash-value { font-family: 'Consolas', monospace; font-size: 0.75rem; color: var(--accent); word-break: break-all; }
+
+/* 버튼 - KRDS 액션 컴포넌트 */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.25rem; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-primary { background: var(--primary); color: white; width: 100%; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 1px solid var(--gray-300); }
+.btn-secondary:hover { background: var(--gray-200); }
+.btn-success { background: var(--success); color: white; }
+
+/* 계층 시각화 */
+.layer-viz { padding: 1rem; }
+.layer-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; margin-bottom: 0.5rem; background: var(--gray-50); border-radius: 6px; border-left: 3px solid var(--gray-300); font-size: 0.85rem; transition: all 0.3s; }
+.layer-item.active { background: var(--primary-light); border-left-color: var(--primary); }
+.layer-item.done { background: #ecfdf5; border-left-color: var(--success); }
+.layer-item.error { background: #fef2f2; border-left-color: var(--danger); }
+.layer-num { width: 24px; height: 24px; background: var(--gray-300); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; }
+.layer-item.active .layer-num { background: var(--primary); }
+.layer-item.done .layer-num { background: var(--success); }
+.layer-name { flex: 1; }
+.layer-code { font-family: 'Consolas', monospace; font-size: 0.75rem; color: var(--gray-500); }
+.layer-status { font-size: 0.75rem; color: var(--gray-400); }
+.layer-item.done .layer-status { color: var(--success); }
+
+/* 결과 섹션 */
+.result-section { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); border-radius: var(--radius); padding: 1.25rem; color: white; }
+.result-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.2); }
+.result-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.result-title { font-size: 1rem; font-weight: 600; }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.result-item { background: rgba(255,255,255,0.1); border-radius: 6px; padding: 0.6rem; text-align: center; }
+.result-value { font-size: 1.1rem; font-weight: 700; }
+.result-label { font-size: 0.7rem; opacity: 0.8; }
+
+/* 인증서 */
+.certificate { background: white; border: 2px solid var(--accent); border-radius: var(--radius); padding: 1.25rem; margin-top: 1rem; }
+.cert-header { text-align: center; padding-bottom: 0.75rem; border-bottom: 1px dashed var(--gray-300); margin-bottom: 0.75rem; }
+.cert-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); }
+.cert-subtitle { font-size: 0.75rem; color: var(--gray-500); }
+.cert-body { font-size: 0.8rem; color: var(--gray-600); }
+.cert-row { display: flex; justify-content: space-between; padding: 0.3rem 0; }
+.cert-hash { background: var(--gray-100); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem; font-family: 'Consolas', monospace; font-size: 0.7rem; color: var(--gray-600); word-break: break-all; }
+.cert-footer { text-align: center; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed var(--gray-300); }
+.cert-stamp { display: inline-block; border: 2px solid var(--success); border-radius: 50%; padding: 0.5rem; color: var(--success); font-size: 0.7rem; font-weight: 700; }
+
+/* 모달 - Material 3 Dialog */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; }
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-box { background: white; border-radius: 12px; width: 90%; max-width: 480px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); transform: scale(0.95); transition: transform 0.3s; }
+.modal-overlay.active .modal-box { transform: scale(1); }
+.modal-header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 1rem 1.25rem; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
+.modal-title { font-size: 1rem; font-weight: 600; }
+.modal-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; }
+.modal-body { padding: 1.25rem; }
+.modal-footer { padding: 0.75rem 1.25rem; background: var(--gray-50); border-top: 1px solid var(--gray-200); border-radius: 0 0 12px 12px; text-align: center; }
+.modal-status { font-size: 0.85rem; color: var(--gray-600); }
+
+/* 검증 단계 */
+.verify-steps { display: flex; flex-direction: column; gap: 0.5rem; }
+.v-step { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; background: var(--gray-50); border-radius: 6px; border-left: 3px solid var(--gray-300); transition: all 0.3s; }
+.v-step.active { background: var(--primary-light); border-left-color: var(--primary); }
+.v-step.done { background: #ecfdf5; border-left-color: var(--success); }
+.v-step.error { background: #fef2f2; border-left-color: var(--danger); }
+.v-num { width: 22px; height: 22px; background: var(--gray-300); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: white; flex-shrink: 0; }
+.v-step.active .v-num { background: var(--primary); }
+.v-step.done .v-num { background: var(--success); }
+.v-step.error .v-num { background: var(--danger); }
+.v-text { font-size: 0.8rem; color: var(--gray-600); }
+.v-step.active .v-text { color: var(--primary); font-weight: 500; }
+.v-step.done .v-text { color: var(--success); }
+.v-time { font-size: 0.7rem; color: var(--gray-400); margin-left: auto; font-family: 'Consolas', monospace; }
+
+/* 프로그레스 바 */
+.progress-bar { height: 4px; background: var(--gray-200); border-radius: 2px; margin: 1rem 0; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; transition: width 0.3s; }
+
+.hidden { display: none; }

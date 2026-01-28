@@ -10,7 +10,7 @@
     // 메뉴 항목 정의
     const menuItems = [
         { href: '/', label: '홈' },
-        { href: '/test/layer-selection.html', label: '원리' },
+        { href: '/principle/', label: '원리' },
         { href: '/currency/', label: '화폐' },
         { href: '/practical/', label: '실용' },
         { href: '/technology/', label: '기술' },

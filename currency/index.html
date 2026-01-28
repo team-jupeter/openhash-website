@@ -37,60 +37,26 @@
 
         /* EGCT 정보 - 심플 스타일 */
         .egct-info {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            border-radius: 0;
+            padding: 1.25rem 2rem;
+            margin-bottom: 0; border-bottom: 4px solid #d4a017;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 2.5rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid var(--gray-200);
+            gap: 2rem;
         }
-        .egct-header {
-            flex-shrink: 0;
-        }
-        .egct-logo {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: 0.05em;
-            margin-bottom: 0.25rem;
-        }
-        .egct-fullname {
-            font-size: 0.85rem;
-            color: var(--gray-500);
-            margin-bottom: 0.15rem;
-        }
-        .egct-tagline {
-            font-size: 0.8rem;
-            color: var(--gray-400);
-        }
-        .egct-stats {
-            display: flex;
-            gap: 3rem;
-        }
-        .egct-stat {
-            text-align: center;
-        }
-        .egct-stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-800);
-        }
-        .egct-stat-label {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            margin-top: 0.25rem;
-        }
-        .egct-stat-note {
-            font-size: 0.65rem;
-            color: var(--gray-400);
-            margin-top: 0.15rem;
-        }
-
-        /* 섹션 헤더 */
-        .section-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+        .egct-header { flex-shrink: 0; }
+        .egct-logo { font-size: 2rem; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+        .egct-fullname { font-size: 0.8rem; opacity: 0.9; margin-bottom: 0.1rem; }
+        .egct-tagline { font-size: 0.75rem; opacity: 0.7; }
+        .egct-stats { display: flex; gap: 2rem; }
+        .egct-stat { text-align: center; }
+        .egct-stat-value { font-size: 1.3rem; font-weight: 700; }
+        .egct-stat-label { font-size: 0.7rem; opacity: 0.8; margin-top: 0.2rem; }
+        .egct-stat-note { font-size: 0.6rem; opacity: 0.6; }
+        @media (max-width: 900px) { .egct-info { flex-direction: column; text-align: center; } .egct-stats { justify-content: center; flex-wrap: wrap; } }
         .section-badge {
             display: inline-block;
             padding: 0.25rem 0.75rem;
@@ -351,15 +317,8 @@
 </head>
 <body>
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">EGCT</h1>
-            <p class="hero-desc">민간 경쟁형 디지털 화폐 · 오픈해시 기반 차세대 금융 인프라</p>
-        </div>
-    </section>
-
-    <div class="container">
-        <!-- EGCT 정보 -->
+    <!-- EGCT Hero -->
+        
         <div class="egct-info">
             <div class="egct-header">
                 <h2 class="egct-logo">EGCT</h2>
@@ -387,6 +346,7 @@
                 </div>
             </div>
         </div>
+    <div class="container">
 
         <!-- 서비스 네비게이션 -->
         <div class="section-header">
