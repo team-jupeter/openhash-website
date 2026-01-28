@@ -202,10 +202,10 @@
             <div class="section-header">
                 <span class="section-badge">Verification</span>
                 <h2 class="section-title">5단계 <span class="highlight">거래 검증</span></h2>
-                <p class="section-desc">모든 거래는 5단계 파이프라인을 순차적으로 통과해야 합니다.</p>
+                <p class="section-desc">모든 거래는 5단계 파이프라인을 순차적으로 통과해야 합니다. <strong>단계를 클릭</strong>하여 상세 내용을 확인하세요.</p>
             </div>
             <div class="verify-pipeline">
-                <div class="verify-step">
+                <div class="verify-step" data-type="balance">
                     <div class="verify-num">1</div>
                     <div class="verify-content">
                         <h4>잔액 확인</h4>
@@ -213,7 +213,7 @@
                     </div>
                 </div>
                 <div class="verify-arrow">→</div>
-                <div class="verify-step">
+                <div class="verify-step" data-type="identity">
                     <div class="verify-num">2</div>
                     <div class="verify-content">
                         <h4>신원 확인</h4>
@@ -221,7 +221,7 @@
                     </div>
                 </div>
                 <div class="verify-arrow">→</div>
-                <div class="verify-step">
+                <div class="verify-step" data-type="limit">
                     <div class="verify-num">3</div>
                     <div class="verify-content">
                         <h4>한도 확인</h4>
@@ -229,7 +229,7 @@
                     </div>
                 </div>
                 <div class="verify-arrow">→</div>
-                <div class="verify-step">
+                <div class="verify-step" data-type="anomaly">
                     <div class="verify-num">4</div>
                     <div class="verify-content">
                         <h4>이상 탐지</h4>
@@ -237,12 +237,16 @@
                     </div>
                 </div>
                 <div class="verify-arrow">→</div>
-                <div class="verify-step">
+                <div class="verify-step" data-type="compliance">
                     <div class="verify-num">5</div>
                     <div class="verify-content">
                         <h4>규정 준수</h4>
                         <p>AML/CFT 검증</p>
                     </div>
+                </div>
+            </div>
+            <div class="verify-detail-panel" id="verify-detail-panel">
+                <div class="verify-detail-content" id="verify-detail-content">
                 </div>
             </div>
             <p class="verify-footer">평균 처리 시간: <strong>100ms</strong> | 부정거래 탐지율: <strong>99.4%</strong></p>
@@ -342,5 +346,6 @@
     <script src="js/hierarchy.js"></script>
     <script src="js/value-cards.js"></script>
     <script src="js/perf-cards.js"></script>
+    <script src="js/verify-cards.js"></script>
 </body>
 </html>
