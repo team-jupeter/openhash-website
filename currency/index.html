@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGCT - 민간 경쟁형 디지털 화폐 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --gold: #d4a017;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* EGCT 정보 - 심플 스타일 */
+        .egct-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2.5rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .egct-header {
+            flex-shrink: 0;
+        }
+        .egct-logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+        .egct-fullname {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-bottom: 0.15rem;
+        }
+        .egct-tagline {
+            font-size: 0.8rem;
+            color: var(--gray-400);
+        }
+        .egct-stats {
+            display: flex;
+            gap: 3rem;
+        }
+        .egct-stat {
+            text-align: center;
+        }
+        .egct-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+        .egct-stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+        .egct-stat-note {
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            margin-top: 0.15rem;
+        }
+
+        /* 섹션 헤더 */
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .section-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .section-title .highlight { color: var(--primary); }
+        .section-desc {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+
+        /* 서비스 네비게이션 카드 */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .service-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+        .service-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(99, 102, 241, 0.15);
+        }
+        .service-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1rem;
+            background: var(--gray-100);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .service-icon svg {
+            width: 28px;
+            height: 28px;
+            color: var(--gray-500);
+            transition: color 0.3s;
+        }
+        .service-card:hover .service-icon {
+            background: var(--primary);
+        }
+        .service-card:hover .service-icon svg {
+            color: white;
+        }
+        .service-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .service-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            line-height: 1.4;
+        }
+        .service-status {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            background: var(--gray-100);
+            border-radius: 4px;
+            font-size: 0.65rem;
+            color: var(--gray-500);
+        }
+
+        /* 기술 카드 그리드 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1.5rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .card:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.02);
+        }
+        .card.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            background: var(--gray-100);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--gray-500);
+            transition: color 0.2s;
+        }
+        .card:hover .card-icon,
+        .card.active .card-icon {
+            background: var(--primary);
+        }
+        .card:hover .card-icon svg,
+        .card.active .card-icon svg {
+            color: white;
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        /* 상세 패널 */
+        .detail-panel {
+            max-height: 0;
+            overflow: hidden;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+            margin-bottom: 0;
+            opacity: 0;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s ease,
+                        margin-bottom 0.3s ease;
+            position: relative;
+        }
+        .detail-panel.open {
+            max-height: 600px;
+            opacity: 1;
+            margin-bottom: 1.5rem;
+        }
+        .panel-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: 50%;
+            font-size: 1.25rem;
+            color: var(--gray-500);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .panel-close:hover {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+        .panel-content {
+            padding: 2rem;
+        }
+        .panel-content h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+            padding-right: 2rem;
+        }
+        .panel-content p {
+            font-size: 0.95rem;
+            color: var(--gray-600);
+            line-height: 1.8;
+        }
+        .panel-content strong {
+            color: var(--gray-800);
+        }
+
+        /* 특징 박스 */
+        .feature-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .feature-item {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .feature-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .feature-label {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        /* 섹션 구분 */
+        .section-divider {
+            margin: 3rem 0 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* 반응형 */
+        @media (max-width: 1000px) {
+            .service-grid { grid-template-columns: repeat(3, 1fr); }
+            .egct-info { flex-direction: column; gap: 2rem; text-align: center; }
+            .egct-stats { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .service-grid { grid-template-columns: repeat(2, 1fr); }
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+            .egct-stats { flex-wrap: wrap; gap: 1.5rem; }
+            .feature-box { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .service-grid { grid-template-columns: 1fr; }
+            .card-grid { grid-template-columns: 1fr; }
+            .egct-stats { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">EGCT</h1>
+            <p class="hero-desc">민간 경쟁형 디지털 화폐 · 오픈해시 기반 차세대 금융 인프라</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- EGCT 정보 -->
+        <div class="egct-info">
+            <div class="egct-header">
+                <h2 class="egct-logo">EGCT</h2>
+                <p class="egct-fullname">Economic Growth Currency Token</p>
+                <p class="egct-tagline">오픈해시 기반 민간 경쟁형 디지털 화폐</p>
+            </div>
+            <div class="egct-stats">
+                <div class="egct-stat">
+                    <div class="egct-stat-value">T</div>
+                    <div class="egct-stat-label">화폐 단위</div>
+                </div>
+                <div class="egct-stat">
+                    <div class="egct-stat-value">2천만</div>
+                    <div class="egct-stat-label">초기 발행량</div>
+                    <div class="egct-stat-note">은행 예치금 비례 증가</div>
+                </div>
+                <div class="egct-stat">
+                    <div class="egct-stat-value">₩10,000</div>
+                    <div class="egct-stat-label">1T 초기 가치</div>
+                </div>
+                <div class="egct-stat">
+                    <div class="egct-stat-value">2,000억</div>
+                    <div class="egct-stat-label">초기 자본금</div>
+                    <div class="egct-stat-note">KRW 환산</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 서비스 네비게이션 -->
+        <div class="section-header">
+            <span class="section-badge">EGCT Services</span>
+            <h2 class="section-title">자율 <span class="highlight">금융 서비스</span></h2>
+            <p class="section-desc">AI 기반 완전 자율 금융 서비스 생태계</p>
+        </div>
+
+        <div class="service-grid">
+            <a href="/currency/bank.html" class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">자율 은행</h3>
+                <p class="service-desc">신용평가 · 대출 · 예금<br>실시간 재무제표 기반</p>
+                <span class="service-status">준비중</span>
+            </a>
+            <a href="/currency/insurance.html" class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">자율 보험</h3>
+                <p class="service-desc">위험평가 · 보험료 산정<br>자동 보험금 지급</p>
+                <span class="service-status">준비중</span>
+            </a>
+            <a href="/currency/securities.html" class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">자율 증권</h3>
+                <p class="service-desc">포트폴리오 최적화<br>위험성향 분석</p>
+                <span class="service-status">준비중</span>
+            </a>
+            <a href="/currency/exchange.html" class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">거래소</h3>
+                <p class="service-desc">EGCT ↔ KRW 교환<br>실시간 시세</p>
+                <span class="service-status">준비중</span>
+            </a>
+            <a href="/currency/regulator.html" class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                </div>
+                <h3 class="service-title">감독기관</h3>
+                <p class="service-desc">규제 준수 모니터링<br>투명성 보고</p>
+                <span class="service-status">준비중</span>
+            </a>
+        </div>
+
+        <!-- 핵심 기술 섹션 -->
+        <div class="section-divider">
+            <div class="section-header">
+                <span class="section-badge">Core Technology</span>
+                <h2 class="section-title">EGCT <span class="highlight">핵심 기술</span></h2>
+                <p class="section-desc">오픈해시 기반 차세대 금융 인프라 기술</p>
+            </div>
+        </div>
+
+        <div class="card-grid" id="tech-cards">
+            <div class="card" data-card="issue">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">민간 화폐 발행</h3>
+                <p class="card-desc">경쟁적 디지털 화폐 발행 및 운용</p>
+            </div>
+            <div class="card" data-card="ai">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">AI 거래 검증</h3>
+                <p class="card-desc">BERT-CNN-LSTM 앙상블 99.4% 정확도</p>
+            </div>
+            <div class="card" data-card="realtime">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">실시간 재무제표</h3>
+                <p class="card-desc">거래 승인 즉시 자동 생성</p>
+            </div>
+            <div class="card" data-card="fpga">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">FPGA 가속</h3>
+                <p class="card-desc">0.032ms 거래 검증</p>
+            </div>
+        </div>
+
+        <div class="detail-panel" id="tech-panel">
+            <button class="panel-close" id="tech-close">&times;</button>
+            <div class="panel-content" id="tech-content"></div>
+        </div>
+
+        <!-- 핵심 수치 -->
+        <div class="feature-box">
+            <div class="feature-item">
+                <div class="feature-value">99.4%</div>
+                <div class="feature-label">부정거래 탐지 정확도</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-value">0.032ms</div>
+                <div class="feature-label">거래 검증 시간</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-value">98.5%</div>
+                <div class="feature-label">에너지 절감</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const techData = {
+            issue: {
+                title: '민간 경쟁형 화폐 발행',
+                content: `오픈해시 기반의 EGCT는 <strong>민간 기업이 경쟁적으로 디지털 화폐를 발행하고 운용</strong>할 수 있는 차세대 금융 인프라입니다.<br><br><strong>화폐 핵심 모듈:</strong><br>• <strong>발행(Mint)</strong>: 은행 예치금에 비례하여 EGCT 발행<br>• <strong>전송(Transfer)</strong>: 5단계 거래 검증을 거친 안전한 자산 이동<br>• <strong>소각(Burn)</strong>: 투명한 화폐 소각 및 공급량 관리<br><br>초기 발행량 <strong>2천만 T</strong> (초기 자본금 2,000억원 상당)로 시작하며, 은행 예치금 증가에 비례하여 점진적으로 발행량이 증가합니다.`
+            },
+            ai: {
+                title: 'AI 기반 거래 검증',
+                content: `<strong>BERT-CNN-LSTM 앙상블 모델</strong>을 활용하여 모든 거래의 의심도 점수를 실시간으로 산출합니다.<br><br><strong>AI 검증 파이프라인:</strong><br>• <strong>BERT 임베딩</strong>: 거래 컨텍스트의 의미론적 분석<br>• <strong>CNN 패턴 추출</strong>: 거래 패턴의 공간적 특징 추출<br>• <strong>LSTM 시계열 분석</strong>: 거래 시퀀스의 시간적 이상 탐지<br><br><strong>적대적 훈련(Adversarial Training)</strong>으로 모델의 강건성을 확보하여 <strong>99.4%의 부정거래 탐지 정확도</strong>를 달성합니다.`
+            },
+            realtime: {
+                title: '실시간 재무제표 생성',
+                content: `승인된 거래 데이터를 기반으로 <strong>실시간 재무제표를 자동 생성</strong>합니다.<br><br><strong>자동 생성되는 재무제표:</strong><br>• <strong>재무상태표</strong>: 자산, 부채, 자본의 실시간 현황<br>• <strong>손익계산서</strong>: 수익과 비용의 실시간 집계<br>• <strong>현금흐름표</strong>: 현금의 유입/유출 실시간 추적<br><br>모든 거래가 오픈해시에 기록되므로, 재무제표의 <strong>진실성이 자동으로 보장</strong>됩니다. 이는 자율 은행의 신용도 평가와 대출 승인의 기초 데이터가 됩니다.`
+            },
+            fpga: {
+                title: 'FPGA 하드웨어 가속',
+                content: `<strong>FPGA(Field-Programmable Gate Array)</strong>를 활용하여 영지식 증명의 병렬 페어링 연산을 가속합니다.<br><br><strong>기술적 특징:</strong><br>• <strong>BN254 타원곡선</strong> 상의 ate 페어링 연산 병렬 수행<br>• <strong>0.032밀리초</strong>의 초고속 거래 검증<br>• 소프트웨어 대비 <strong>100배 이상</strong>의 성능 향상<br><br><strong>영지식 증명(Zero-Knowledge Proof)</strong>을 통해 거래의 유효성은 증명하면서도 거래 내용은 비공개로 유지할 수 있습니다.`
+            }
+        };
+
+        const techCards = document.querySelectorAll('#tech-cards .card');
+        const techPanel = document.getElementById('tech-panel');
+        const techContent = document.getElementById('tech-content');
+        const techClose = document.getElementById('tech-close');
+        let activeTechCard = null;
+
+        techCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const cardType = card.dataset.card;
+                const data = techData[cardType];
+
+                if (activeTechCard === card) {
+                    closeTechPanel();
+                } else {
+                    techCards.forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    activeTechCard = card;
+                    techContent.innerHTML = `<h4>${data.title}</h4><p>${data.content}</p>`;
+                    techPanel.classList.add('open');
+                }
+            });
+        });
+
+        techClose.addEventListener('click', closeTechPanel);
+
+        function closeTechPanel() {
+            techPanel.classList.remove('open');
+            techCards.forEach(c => c.classList.remove('active'));
+            activeTechCard = null;
+        }
+    </script>
+</body>
+</html>

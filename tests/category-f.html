@@ -102,10 +102,19 @@
     .page-footer a { color: #1a3a6e; text-decoration: none; }
     @media (max-width: 768px) { .summary-table { flex-direction: column; } .invariance-diagram { flex-direction: column; } .test-item-header { flex-wrap: wrap; } .test-name { width: 100%; order: 2; } }
     </style>
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
 </head>
 <body>
-    <header class="page-header"><nav class="nav-inner"><a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a><ul class="nav-menu"><li><a href="/">홈</a></li>
-                <li><a href="/practical/">실용</a></li><li><a href="/technology/">기술</a></li><li><a href="/simulation/">시뮬레이션</a></li><li><a href="/tests/" class="active">테스트</a></li></ul></nav></header>
+    <header class="page-header"><nav class="nav-inner"><a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/test/layer-selection.html">원리</a></li>
+                <li><a href="/test/currency.html">화폐</a></li>
+                <li><a href="/practical/">실용</a></li>
+                <li><a href="/technology/">기술</a></li>
+                <li><a href="/simulation/">시뮬레이션</a></li>
+                <li><a href="/tests/">테스트</a></li>
+            </ul></nav></header>
     <section class="title-section"><div class="container"><div class="breadcrumb"><a href="/tests/">테스트 센터</a> / F. 잔액 불변성</div><h1 class="page-title"><span class="category-badge">F</span>잔액 불변성 테스트</h1><p class="page-subtitle">모듈 350 - 계층별 총액 불변성 검증 (4개 테스트)</p></div></section>
     <section class="summary-section"><div class="summary-table"><div class="summary-cell"><div class="summary-label">테스트 수</div><div class="summary-value">4개</div></div><div class="summary-cell"><div class="summary-label">관련 모듈</div><div class="summary-value">350</div></div><div class="summary-cell"><div class="summary-label">중요도</div><div class="summary-value">Critical</div></div><div class="summary-cell"><div class="summary-label">상태</div><div class="summary-value" id="categoryStatus">대기</div></div></div></section>
     <main class="main-content">

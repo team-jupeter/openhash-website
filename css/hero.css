@@ -1,0 +1,28 @@
+/**
+ * OpenHash 공통 Hero 스타일
+ * 모든 페이지에서 동일한 Hero 패널 사용
+ */
+
+.hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+    padding: 1.25rem 0 1rem;
+    text-align: center;
+    color: white;
+    border-bottom: 4px solid #d4a017;
+}
+
+.hero h1,
+.hero-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.hero p,
+.hero-desc {
+    font-size: 1rem;
+    opacity: 0.9;
+    color: white;
+    margin: 0;
+}

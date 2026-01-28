@@ -1349,3 +1349,16 @@ button { font-family: inherit; cursor: pointer; }
     .layer-selection-container { grid-template-columns: 1fr; }
     .map-container { height: 320px; }
 }
+
+    .hero-tagline {
+        display: inline-block;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #fcd34d;
+        letter-spacing: 1px;
+        margin-bottom: 1.25rem;
+        padding: 0.5rem 1.5rem;
+        border: 1px solid rgba(252, 211, 77, 0.5);
+        border-radius: 100px;
+        background: rgba(252, 211, 77, 0.1);
+    }

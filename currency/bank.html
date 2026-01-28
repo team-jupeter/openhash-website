@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자율 은행 - EGCT - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+        /* 브레드크럼 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+        }
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb span { color: var(--gray-800); font-weight: 500; }
+
+        /* 페이지 헤더 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .page-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .page-title .highlight { color: var(--primary); }
+        .page-desc {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        /* 카드 그리드 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1.5rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .card:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.02);
+        }
+        .card.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            background: var(--gray-100);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--gray-500);
+            transition: color 0.2s;
+        }
+        .card:hover .card-icon,
+        .card.active .card-icon { background: var(--primary); }
+        .card:hover .card-icon svg,
+        .card.active .card-icon svg { color: white; }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        /* 상세 패널 */
+        .detail-panel {
+            max-height: 0;
+            overflow: hidden;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+            margin-bottom: 0;
+            opacity: 0;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s ease,
+                        margin-bottom 0.3s ease;
+            position: relative;
+        }
+        .detail-panel.open {
+            max-height: 800px;
+            opacity: 1;
+            margin-bottom: 1.5rem;
+        }
+        .panel-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: 50%;
+            font-size: 1.25rem;
+            color: var(--gray-500);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .panel-close:hover {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+        .panel-content {
+            padding: 2rem;
+        }
+        .panel-content h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+            padding-right: 2rem;
+        }
+        .panel-content p {
+            font-size: 0.95rem;
+            color: var(--gray-600);
+            line-height: 1.9;
+        }
+        .panel-content strong { color: var(--gray-800); }
+
+        /* 반응형 */
+        @media (max-width: 900px) {
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .card-grid { grid-template-columns: 1fr; }
+        }
+        /* 시뮬레이션 섹션 */
+        .section-divider {
+            margin: 3rem 0 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        .simulation-container {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        /* 거래 설정 */
+        .trade-setup {
+            margin-bottom: 2rem;
+        }
+        .trade-parties {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .party-box {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+            min-width: 150px;
+        }
+        .party-a { border-color: #3b82f6; background: rgba(59,130,246,0.05); }
+        .party-b { border-color: #10b981; background: rgba(16,185,129,0.05); }
+        .party-label { font-size: 0.75rem; color: var(--gray-500); margin-bottom: 0.25rem; }
+        .party-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .party-type-select {
+            padding: 0.35rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            background: white;
+        }
+        .trade-arrow {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .arrow-line { width: 40px; height: 2px; background: var(--gray-300); }
+        .arrow-icon { font-size: 1.5rem; }
+
+        .trade-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .trade-selector label { font-weight: 600; color: var(--gray-700); }
+        .trade-select {
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            min-width: 220px;
+            background: white;
+        }
+        .trade-amount {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--gray-100);
+            border-radius: 8px;
+        }
+        .amount-label { font-size: 0.85rem; color: var(--gray-600); }
+        .amount-value { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+
+        .trade-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .btn-execute {
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-execute:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-reset {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: var(--gray-600);
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-reset:hover { background: var(--gray-100); }
+
+        /* 재무제표 비교 */
+        .financial-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .financial-panel {
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 1.25rem;
+            background: var(--gray-50);
+        }
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .party-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        .party-tag.buyer { background: #dbeafe; color: #1d4ed8; }
+        .party-tag.seller { background: #d1fae5; color: #059669; }
+
+        .fs-section { margin-bottom: 1rem; }
+        .fs-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .fs-table {
+            width: 100%;
+            font-size: 0.85rem;
+            border-collapse: collapse;
+        }
+        .fs-table td {
+            padding: 0.35rem 0.5rem;
+        }
+        .fs-table td:first-child { color: var(--gray-600); }
+        .fs-table td:last-child { color: var(--gray-400); width: 20px; }
+        .fs-table .value {
+            text-align: right;
+            font-weight: 600;
+            font-family: 'Consolas', monospace;
+            transition: all 0.3s;
+        }
+        .fs-table tr.total td { border-top: 1px solid var(--gray-300); font-weight: 700; }
+        .fs-table tr.total .value { color: var(--primary); }
+
+        .value.increase { color: #059669 !important; background: rgba(16,185,129,0.1); }
+        .value.decrease { color: #dc2626 !important; background: rgba(220,38,38,0.1); }
+
+        /* 검증 박스 */
+        .verification-box {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        .verification-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .verify-icon { font-size: 1.25rem; }
+        .verify-title { font-weight: 700; font-size: 1rem; }
+        .verification-content { display: flex; flex-direction: column; gap: 1rem; }
+        .hash-display {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .hash-label { font-size: 0.85rem; opacity: 0.8; }
+        .hash-value {
+            font-family: 'Consolas', monospace;
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            word-break: break-all;
+        }
+        .layer-verification {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.6rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+        .layer-item.verified { opacity: 1; background: rgba(16,185,129,0.3); }
+        .layer-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+        .balance-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .balance-check.success .check-icon { color: #34d399; }
+        .balance-check.success .check-text { color: #a7f3d0; }
+
+        /* 거래 이력 */
+        .transaction-history {
+            border-top: 1px solid var(--gray-200);
+            padding-top: 1.5rem;
+        }
+        .history-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-700);
+        }
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+        .history-empty { color: var(--gray-400); text-align: center; padding: 1rem; }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0.75rem;
+            background: var(--gray-50);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+        .history-item .tx-info { display: flex; gap: 1rem; }
+        .history-item .tx-hash { font-family: monospace; color: var(--gray-400); font-size: 0.75rem; }
+
+        @media (max-width: 768px) {
+            .financial-comparison { grid-template-columns: 1fr; }
+            .trade-parties { flex-direction: column; gap: 1rem; }
+            .trade-arrow { transform: rotate(90deg); }
+        }
+
+        /* 거래 처리 프로세스 */
+        .process-container {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .process-flow {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .process-step {
+            display: grid;
+            grid-template-columns: 40px 1fr 50px;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            background: var(--gray-50);
+            transition: all 0.3s;
+        }
+        .process-step.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        .process-step.completed {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--gray-300);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .process-step.active .step-number { background: var(--primary); }
+        .process-step.completed .step-number { background: #10b981; }
+        .step-content { flex: 1; }
+        .step-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.25rem;
+        }
+        .step-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .step-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--gray-400);
+            transition: color 0.3s;
+        }
+        .process-step.active .step-icon svg { color: var(--primary); }
+        .process-step.completed .step-icon svg { color: #10b981; }
+
+        .step-detail {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--gray-200);
+            font-size: 0.8rem;
+            display: none;
+        }
+        .process-step.active .step-detail,
+        .process-step.completed .step-detail { display: block; }
+
+        .process-arrow {
+            text-align: center;
+            color: var(--gray-300);
+            font-size: 1.25rem;
+            padding: 0.5rem 0;
+        }
+
+        /* Step 1: 서명 */
+        .party-signature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .sig-label {
+            font-weight: 600;
+            color: var(--gray-600);
+            min-width: 50px;
+        }
+        .sig-value {
+            font-family: monospace;
+            font-size: 0.7rem;
+            background: var(--gray-100);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        .tx-statement { margin-top: 0.5rem; }
+        .stmt-label { font-weight: 600; color: var(--gray-600); }
+        .stmt-content {
+            margin-top: 0.25rem;
+            padding: 0.5rem;
+            background: var(--gray-100);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        /* Step 2: Hash */
+        .hash-extraction { display: flex; flex-direction: column; gap: 0.5rem; }
+        .hash-item { display: flex; align-items: center; gap: 0.5rem; }
+        .hash-label { font-weight: 600; color: var(--gray-600); min-width: 60px; }
+        .hash-code {
+            font-family: monospace;
+            font-size: 0.65rem;
+            background: var(--gray-100);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+
+        /* Step 3: Layer 선택 */
+        .layer-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .layer-option {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.6rem;
+            background: var(--gray-100);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        .layer-option.selected {
+            opacity: 1;
+            background: var(--primary);
+            color: white;
+        }
+        .layer-option .layer-badge {
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+        .layer-option .layer-prob { opacity: 0.7; font-size: 0.65rem; }
+        .selected-node {
+            padding: 0.5rem;
+            background: var(--gray-100);
+            border-radius: 4px;
+        }
+        .node-label { color: var(--gray-600); }
+        .node-value { font-weight: 600; color: var(--primary); }
+
+        /* Step 4: 검증 */
+        .verification-checks { display: flex; flex-direction: column; gap: 0.4rem; }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.5rem;
+            background: var(--gray-100);
+            border-radius: 4px;
+        }
+        .check-item.passed { background: rgba(16, 185, 129, 0.1); }
+        .check-item.passed .check-icon { color: #10b981; }
+        .check-icon { font-size: 0.9rem; }
+        .check-text { font-size: 0.75rem; color: var(--gray-700); }
+
+        /* Step 5: Chain */
+        .chain-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .chain-block {
+            padding: 0.5rem;
+            background: var(--gray-100);
+            border-radius: 6px;
+            text-align: center;
+            min-width: 100px;
+        }
+        .chain-block.current { background: rgba(99, 102, 241, 0.1); border: 1px solid var(--primary); }
+        .block-label { display: block; font-size: 0.65rem; color: var(--gray-500); margin-bottom: 0.25rem; }
+        .block-hash { font-size: 0.6rem; word-break: break-all; }
+        .chain-link { color: var(--gray-400); font-weight: bold; }
+
+        /* Step 6: 전파 */
+        .propagation-visual { text-align: center; }
+        .prop-source {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .prop-arrows { display: flex; justify-content: center; gap: 1rem; margin-bottom: 0.5rem; }
+        .prop-arrow { font-size: 0.75rem; color: var(--gray-500); }
+        .prop-status {
+            padding: 0.35rem 0.75rem;
+            background: var(--gray-100);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .prop-status.done { background: rgba(16, 185, 129, 0.1); color: #059669; }
+
+        /* Step 7: 개인 Chain */
+        .personal-chains { display: flex; gap: 1rem; }
+        .personal-chain {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .personal-chain.chain-a { background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; }
+        .personal-chain.chain-b { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; }
+        .chain-owner { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .chain-hash { font-size: 0.6rem; word-break: break-all; }
+
+        /* Step 8: 재무제표 이력 */
+        .fs-history { display: flex; flex-direction: column; gap: 0.5rem; }
+        .history-entry {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--gray-100);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            align-items: center;
+        }
+        .entry-party { font-weight: 600; color: var(--gray-700); }
+        .entry-time { color: var(--gray-500); font-size: 0.7rem; }
+        .entry-hash { font-family: monospace; font-size: 0.6rem; word-break: break-all; }
+
+        /* 프로세스 컨트롤 */
+        .process-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .btn-process {
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-process:hover { background: var(--primary-dark); }
+        .btn-process-reset {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: var(--gray-600);
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-process-reset:hover { background: var(--gray-100); }
+
+        /* 탭 컨테이너 */
+        .tabbed-container {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: var(--gray-700); background: var(--gray-100); }
+        .tab-btn.active { color: var(--primary); background: white; border-bottom: 2px solid var(--primary); }
+        .tab-content { display: block; padding: 1rem; }
+        .tab-content { margin-bottom: 1rem; }
+
+        /* 시뮬레이션 레이아웃 */
+        .sim-layout { display: flex; flex-direction: column; gap: 0.75rem; }
+        .sim-controls {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.15);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+        .compact-parties {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cp-party {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        .cp-a { background: rgba(59,130,246,0.1); border: 1px solid #3b82f6; }
+        .cp-b { background: rgba(16,185,129,0.1); border: 1px solid #10b981; }
+        .cp-role { font-size: 0.65rem; color: var(--gray-500); }
+        .cp-select { padding: 0.2rem; font-size: 0.7rem; border: 1px solid var(--gray-300); border-radius: 4px; }
+        .cp-arrow { color: var(--gray-400); }
+        .trade-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .trade-select-compact {
+            border: 2px solid var(--primary);
+            background: linear-gradient(135deg, #fff 0%, #f0f4ff 100%);
+            box-shadow: 0 2px 8px rgba(99,102,241,0.2);
+            font-weight: 600;
+            color: var(--gray-800);
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            min-width: 140px;
+        }
+        .trade-amt {
+            padding: 0.35rem 0.6rem;
+            background: var(--gray-100);
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+        .btn-exec {
+            padding: 0.45rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-exec:hover { background: var(--primary-dark); }
+        .btn-rst {
+            padding: 0.45rem 0.75rem;
+            background: white;
+            color: var(--gray-600);
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* 재무제표 그리드 */
+        .fs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .fs-panel {
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 0.6rem;
+            background: var(--gray-50);
+        }
+        .fs-header {
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .tag-buyer { font-size: 0.6rem; padding: 0.15rem 0.35rem; background: #dbeafe; color: #1d4ed8; border-radius: 3px; }
+        .tag-seller { font-size: 0.6rem; padding: 0.15rem 0.35rem; background: #d1fae5; color: #059669; border-radius: 3px; }
+        .fs-compact { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+        .fs-compact td { padding: 0.2rem 0.3rem; }
+        .fs-compact td:first-child { color: var(--gray-600); }
+        .fs-compact .val { text-align: right; font-weight: 600; font-family: monospace; transition: all 0.3s; }
+        .fs-compact tr.total td { font-weight: 700; }
+        .fs-compact tr.total .val { color: var(--primary); }
+        .fs-compact tr.divider td { height: 4px; border-bottom: 1px dashed var(--gray-200); }
+        .val.increase { color: #059669 !important; background: rgba(16,185,129,0.15); }
+        .val.decrease { color: #dc2626 !important; background: rgba(220,38,38,0.15); }
+
+        /* 검증 바 */
+        .verify-bar {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #2b6cb0 100%);
+            border-radius: 10px;
+            padding: 0.75rem 1.25rem;
+            box-shadow: 0 4px 20px rgba(26,54,93,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0.75rem;
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            border-radius: 6px;
+            color: white;
+            font-size: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .vb-hash { display: flex; align-items: center; gap: 0.35rem; }
+        .vb-hash code { font-size: 0.65rem; background: rgba(255,255,255,0.15); padding: 0.2rem 0.4rem; border-radius: 3px; }
+        .vb-layers { display: flex; gap: 0.25rem; }
+        .vb-layer {
+            padding: 0.15rem 0.35rem;
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+            font-size: 0.65rem;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+        .vb-layer.verified { opacity: 1; background: linear-gradient(135deg, #10b981, #34d399); box-shadow: 0 0 12px rgba(16,185,129,0.7); transform: scale(1.1); font-weight: 700; }
+        .vb-layer.checking { opacity: 0.7; background: rgba(156,163,175,0.5); }
+        .vb-layer.selected { opacity: 1; background: linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow: 0 0 10px rgba(99,102,241,0.6); transform: scale(1.1); }
+        .vb-status { margin-left: auto; }
+        .vb-status.success { color: #a7f3d0; }
+
+        /* 이력 바 */
+        .history-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            background: var(--gray-50);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            overflow-x: auto;
+        }
+        .hb-list { display: flex; gap: 0.5rem; flex-wrap: nowrap; }
+        .hb-empty { color: var(--gray-400); }
+        .hb-item {
+            display: flex;
+            gap: 0.35rem;
+            padding: 0.2rem 0.4rem;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        /* 프로세스 레이아웃 */
+        .proc-layout { display: flex; flex-direction: column; gap: 0.75rem; }
+        .proc-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+        .proc-step {
+            display: flex;
+            gap: 0.4rem;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            background: var(--gray-50);
+            transition: all 0.3s;
+        }
+        .proc-step.active { border-color: var(--primary); background: rgba(99,102,241,0.05); }
+        .proc-step.completed { border-color: #10b981; background: rgba(16,185,129,0.05); }
+        .ps-num {
+            width: 20px;
+            height: 20px;
+            background: var(--gray-300);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .proc-step.active .ps-num { background: var(--primary); }
+        .proc-step.completed .ps-num { background: #10b981; }
+        .ps-info { flex: 1; min-width: 0; }
+        .ps-info strong { font-size: 0.75rem; display: block; margin-bottom: 0.2rem; }
+        .ps-detail { font-size: 0.65rem; color: var(--gray-500); word-break: break-all; }
+        .ps-detail code { background: var(--gray-100); padding: 0.1rem 0.2rem; border-radius: 2px; font-size: 0.6rem; }
+        .layer-opt {
+            display: inline-block;
+            padding: 0.1rem 0.25rem;
+            background: var(--gray-200);
+            border-radius: 3px;
+            font-size: 0.6rem;
+            margin-right: 0.15rem;
+            opacity: 0.5;
+        }
+        .layer-opt.selected { opacity: 1; background: var(--primary); color: white; }
+        .sel-node { display: block; margin-top: 0.2rem; color: var(--primary); font-weight: 600; }
+        .chk {
+            display: inline-block;
+            padding: 0.1rem 0.3rem;
+            background: var(--gray-200);
+            border-radius: 3px;
+            font-size: 0.6rem;
+            margin-right: 0.2rem;
+        }
+        .chk.passed { background: rgba(16,185,129,0.2); color: #059669; }
+        .proc-controls { display: flex; justify-content: center; gap: 0.75rem; padding-top: 0.5rem; }
+
+        @media (max-width: 768px) {
+            .fs-grid { grid-template-columns: 1fr; }
+            .proc-steps { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .proc-steps { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">자율 은행</h1>
+            <p class="hero-desc">EGCT 기반 완전 무인 AI 금융 시스템</p>
+        </div>
+    </section>
+        </div>
+
+        <div class="card-grid" id="bank-cards">
+            <div class="card" data-card="integrity">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">오픈해시 기반 데이터 무결성</h3>
+                <p class="card-desc">위변조 불가능한 거래 기록</p>
+            </div>
+            <div class="card" data-card="unmanned">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">완전 무인 시스템</h3>
+                <p class="card-desc">AI 모듈 + 고팡 웹앱</p>
+            </div>
+            <div class="card" data-card="global">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">글로벌 시스템</h3>
+                <p class="card-desc">국경 없는 금융 서비스</p>
+            </div>
+            <div class="card" data-card="realtime">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">실시간 재무제표 갱신</h3>
+                <p class="card-desc">거래 즉시 재무제표 반영</p>
+            </div>
+        </div>
+
+        <div class="detail-panel" id="bank-panel">
+            <button class="panel-close" id="bank-close">&times;</button>
+            <div class="panel-content" id="bank-content"></div>
+        </div>
+    </div>
+        <!-- 통합 시뮬레이션 섹션 -->
+
+        <div class="tabbed-container">
+            <!-- Tab 1: 재무제표 시뮬레이션 -->
+            <div class="tab-content active" id="tab-simulation">
+                <div class="sim-layout">
+                    <div class="sim-controls">
+                        <div class="compact-parties">
+                            <div class="cp-party cp-a">
+                                <span class="cp-role">구매자</span>
+                                <strong>A</strong>
+                                <select id="partyAType" class="cp-select"><option value="individual">개인</option><option value="business">사업자</option></select>
+                            </div>
+                            <span class="cp-arrow">→</span>
+                            <div class="cp-party cp-b">
+                                <span class="cp-role">판매자</span>
+                                <strong>B</strong>
+                                <select id="partyBType" class="cp-select"><option value="business" selected>사업자</option><option value="individual">개인</option></select>
+                            </div>
+                        </div>
+                        <div class="trade-row">
+                            <select id="tradeType" class="trade-select-compact">
+                                <optgroup label="🍽️ 식품">
+                                    <option value="meal" data-amount="50">식사 50T</option>
+                                    <option value="grocery" data-amount="150">식료품 150T</option>
+                                    <option value="coffee" data-amount="8">커피 8T</option>
+                                </optgroup>
+                                <optgroup label="🏠 가전">
+                                    <option value="refrigerator" data-amount="200">냉장고 200T</option>
+                                    <option value="tv" data-amount="150">TV 150T</option>
+                                    <option value="laptop" data-amount="300">노트북 300T</option>
+                                    <option value="phone" data-amount="120">스마트폰 120T</option>
+                                </optgroup>
+                                <optgroup label="🏢 부동산">
+                                    <option value="house" data-amount="50000">주택 50,000T</option>
+                                    <option value="apartment" data-amount="80000">아파트 80,000T</option>
+                                </optgroup>
+                                <optgroup label="🚗 차량">
+                                    <option value="car" data-amount="5000">승용차 5,000T</option>
+                                    <option value="motorcycle" data-amount="800">오토바이 800T</option>
+                                </optgroup>
+                                <optgroup label="📈 금융">
+                                    <option value="stock" data-amount="1000">주식 1,000T</option>
+                                    <option value="fund" data-amount="2000">펀드 2,000T</option>
+                                </optgroup>
+                                <optgroup label="🎓 서비스">
+                                    <option value="education" data-amount="300">교육 300T</option>
+                                    <option value="medical" data-amount="100">의료 100T</option>
+                                    <option value="rent" data-amount="1000">월세 1,000T</option>
+                                </optgroup>
+                            </select>
+                            <span class="trade-amt" id="tradeAmount">50 T</span>
+                            <button id="executeBtn" class="btn-exec">거래 실행</button>
+                            <button id="resetBtn" class="btn-rst">초기화</button>
+                        </div>
+                    </div>
+
+                    <div class="sim-main">
+                        <div class="fs-grid">
+                            <div class="fs-panel">
+                                <div class="fs-header"><strong>당사자 A</strong> <span class="tag-buyer">구매</span></div>
+                                <table class="fs-compact">
+                                    <tr><td>현금</td><td class="val" id="a-cash">10,000</td></tr>
+                                    <tr><td>재고</td><td class="val" id="a-inventory">0</td></tr>
+                                    <tr><td>장비</td><td class="val" id="a-equipment">5,000</td></tr>
+                                    <tr><td>차량</td><td class="val" id="a-vehicle">0</td></tr>
+                                    <tr><td>부동산</td><td class="val" id="a-realestate">0</td></tr>
+                                    <tr><td>투자</td><td class="val" id="a-investment">2,000</td></tr>
+                                    <tr class="total"><td>자산</td><td class="val" id="a-totalassets">17,000</td></tr>
+                                    <tr><td>부채</td><td class="val" id="a-liability">0</td></tr>
+                                    <tr class="total"><td>자본</td><td class="val" id="a-equity">17,000</td></tr>
+                                    <tr class="divider"><td colspan="2"></td></tr>
+                                    <tr><td>수익</td><td class="val" id="a-revenue">0</td></tr>
+                                    <tr><td>비용</td><td class="val" id="a-expense">0</td></tr>
+                                    <tr class="total"><td>손익</td><td class="val" id="a-profit">0</td></tr>
+                                    <tr class="divider"><td colspan="2"></td></tr>
+                                    <tr><td>영업CF</td><td class="val" id="a-cf-operating">0</td></tr>
+                                    <tr><td>투자CF</td><td class="val" id="a-cf-investing">0</td></tr>
+                                </table>
+                            </div>
+                            <div class="fs-panel">
+                                <div class="fs-header"><strong>당사자 B</strong> <span class="tag-seller">판매</span></div>
+                                <table class="fs-compact">
+                                    <tr><td>현금</td><td class="val" id="b-cash">5,000</td></tr>
+                                    <tr><td>재고</td><td class="val" id="b-inventory">10,000</td></tr>
+                                    <tr><td>장비</td><td class="val" id="b-equipment">3,000</td></tr>
+                                    <tr><td>차량</td><td class="val" id="b-vehicle">2,000</td></tr>
+                                    <tr><td>부동산</td><td class="val" id="b-realestate">50,000</td></tr>
+                                    <tr><td>투자</td><td class="val" id="b-investment">5,000</td></tr>
+                                    <tr class="total"><td>자산</td><td class="val" id="b-totalassets">75,000</td></tr>
+                                    <tr><td>부채</td><td class="val" id="b-liability">10,000</td></tr>
+                                    <tr class="total"><td>자본</td><td class="val" id="b-equity">65,000</td></tr>
+                                    <tr class="divider"><td colspan="2"></td></tr>
+                                    <tr><td>매출</td><td class="val" id="b-revenue">0</td></tr>
+                                    <tr><td>원가</td><td class="val" id="b-cogs">0</td></tr>
+                                    <tr class="total"><td>손익</td><td class="val" id="b-profit">0</td></tr>
+                                    <tr class="divider"><td colspan="2"></td></tr>
+                                    <tr><td>영업CF</td><td class="val" id="b-cf-operating">0</td></tr>
+                                    <tr><td>투자CF</td><td class="val" id="b-cf-investing">0</td></tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="verify-bar">
+                            <div class="vb-hash"><span>Hash:</span> <code id="txHash">-</code></div>
+                            <div class="vb-layers" id="layerVerification">
+                                <span class="vb-layer" data-layer="5">L5</span>
+                                <span class="vb-layer" data-layer="4">L4</span>
+                                <span class="vb-layer" data-layer="3">L3</span>
+                                <span class="vb-layer" data-layer="2">L2</span>
+                                <span class="vb-layer" data-layer="1">L1</span>
+                            </div>
+                            <div class="vb-status" id="balanceCheck">⏳ 대기</div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: 거래 처리 프로세스 -->
+            <div class="tab-content" id="tab-process">
+                <div class="proc-layout">
+                    <div class="proc-steps">
+                        <div class="proc-step" data-step="1">
+                            <div class="ps-num">1</div>
+                            <div class="ps-info">
+                                <strong>거래 명세서 생성</strong>
+                                <div class="ps-detail" id="pd1"><code id="sigA">-</code> / <code id="sigB">-</code></div>
+                            </div>
+                        </div>
+                        <div class="proc-step" data-step="2">
+                            <div class="ps-num">2</div>
+                            <div class="ps-info">
+                                <strong>Hash 인출</strong>
+                                <div class="ps-detail" id="pd2"><code id="hashA">-</code></div>
+                            </div>
+                        </div>
+                        <div class="proc-step" data-step="3">
+                            <div class="ps-num">3</div>
+                            <div class="ps-info">
+                                <strong>노드 선택</strong>
+                                <div class="ps-detail" id="pd3">
+                                    <span class="layer-opt" data-layer="5">L5</span>
+                                    <span class="layer-opt" data-layer="4">L4</span>
+                                    <span class="layer-opt" data-layer="3">L3</span>
+                                    <span class="layer-opt" data-layer="2">L2</span>
+                                    <span class="layer-opt" data-layer="1">L1</span>
+                                    <span class="sel-node" id="selectedNode">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="proc-step" data-step="4">
+                            <div class="ps-num">4</div>
+                            <div class="ps-info">
+                                <strong>검증</strong>
+                                <div class="ps-detail" id="pd4">
+                                    <span class="chk" id="chkHash">Hash</span>
+                                    <span class="chk" id="chkSigA">서명A</span>
+                                    <span class="chk" id="chkSigB">서명B</span>
+                                    <span class="chk" id="chkBal">잔액</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="proc-step" data-step="5">
+                            <div class="ps-num">5</div>
+                            <div class="ps-info">
+                                <strong>Chain 연결</strong>
+                                <div class="ps-detail" id="pd5"><code id="prevHash">-</code> → <code id="currHash">-</code> → <code id="nodeHash">-</code></div>
+                            </div>
+                        </div>
+                        <div class="proc-step" data-step="6">
+                            <div class="ps-num">6</div>
+                            <div class="ps-info">
+                                <strong>전파</strong>
+                                <div class="ps-detail" id="pd6"><span id="propStatus">대기</span></div>
+                            </div>
+                        </div>
+                        <div class="proc-step" data-step="7">
+                            <div class="ps-num">7</div>
+                            <div class="ps-info">
+                                <strong>개인 Chain 갱신</strong>
+                                <div class="ps-detail" id="pd7">A: <code id="chainA">-</code> / B: <code id="chainB">-</code></div>
+                            </div>
+                        </div>
+                        <div class="proc-step" data-step="8">
+                            <div class="ps-num">8</div>
+                            <div class="ps-info">
+                                <strong>재무제표 이력</strong>
+                                <div class="ps-detail" id="pd8"><span id="fsTimeA">-</span> <code id="fsHashA">-</code></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+
+    <script>
+        const bankData = {
+            integrity: {
+                title: '오픈해시 기반 데이터 무결성',
+                content: `오픈해시 기술은 모든 데이터가 참(true)임을 보장하며, 한번 기록된 데이터는 항구적으로 위변조가 불가능합니다. 즉, <strong>내 통장에 적힌 잔고(balance)는 거짓일 수 없습니다.</strong><br><br>EGCT 통화 발행량은 어느 한 시점에 어느 한 액수로 고정되며, 매 거래마다 누군가의 차감액과 다른 누군가의 증감액은 정확히 일치해야 하며, 발행 총액의 변동이 없어야 합니다.<br><br>또한, 디지털 화폐 발행 총액이 <strong>Layer 1, 2, 3, 4, 5 단위에서 검증</strong>됩니다. 가령, 어느 한 읍면동에 속한 두 거래 당사자의 차감액과 증감액은 일치하며, 해당 읍면동의 통화 총액(Balance)은 불변입니다.`
+            },
+            unmanned: {
+                title: '완전 무인 시스템',
+                content: `직원도, 경영진도, 점포도 없으며, 오직 <strong>Fine-tuning된 AI 모듈</strong>과 <strong>고팡 웹앱(http://gopang.net)</strong>으로 운영됩니다.<br><br>그러므로, 시중 은행보다 <strong>예금 이자율은 현저히 높고</strong>, <strong>대출 이자율은 현저히 낮으며</strong>, 예대 마진(deposit-loan margin)은 실시간으로 갱신됩니다.<br><br><strong>대출 이자율에서 시스템 운영 비용을 차감한 금액이 곧 예금 이자율입니다.</strong>`
+            },
+            global: {
+                title: '글로벌 시스템',
+                content: `오픈해시 기술은 국경이 없습니다. <strong>전세계 어디서나 동일한 금융 서비스</strong>를 이용할 수 있습니다.<br><br>상상해 보십시오. <strong>외환 환전 수수료도 없고, 송금 수수료도 없으며, 결제 수수료도 없거나, 기존 대비 1/10 이하</strong>인 글로벌 금융 인프라를 상상해 보십시오.<br><br>사용자가 세계 어느 나라에 가든지 런던 등 글로벌 외환 시스템의 공식 환율에 따라, <strong>실시간으로 각국 통화로 환전 및 결제</strong>됩니다.`
+            },
+            realtime: {
+                title: '실시간 재무제표 갱신',
+                content: `매 거래마다 거래 당사자(= 고팡 웹앱 사용자)의 재무제표를 실시간으로 갱신하며, 갱신된 데이터의 <strong>Hash 값이 오픈해시 네트워크에 항구적으로 기록</strong>됩니다.<br><br>공정 거래를 보장하는 AI 모듈로 인해, <strong>재무제표는 분식이나 허위가 불가능</strong>합니다.<br><br>한국의 경우, 5천만 인구, 1천만 사업자 및 기관의 재무제표가 상호 연동되므로, 어느 한 사람 혹은 기관의 재무제표를 허위로 작성할 수 없습니다. 가령, 어느 한 판매자가 보유하지 않은 상품을 판매할 수도 없고, 어느 한 구매자가 구매하지 않은 물품을 기록할 수도 없습니다.`
+            }
+        };
+
+        const bankCards = document.querySelectorAll('#bank-cards .card');
+        const bankPanel = document.getElementById('bank-panel');
+        const bankContent = document.getElementById('bank-content');
+        const bankClose = document.getElementById('bank-close');
+        let activeCard = null;
+
+        bankCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const cardType = card.dataset.card;
+                const data = bankData[cardType];
+
+                if (activeCard === card) {
+                    closePanel();
+                } else {
+                    bankCards.forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    activeCard = card;
+                    bankContent.innerHTML = `<h4>${data.title}</h4><p>${data.content}</p>`;
+                    bankPanel.classList.add('open');
+                }
+            });
+        });
+
+        bankClose.addEventListener('click', closePanel);
+
+        function closePanel() {
+            bankPanel.classList.remove('open');
+            bankCards.forEach(c => c.classList.remove('active'));
+            activeCard = null;
+        }
+    </script>
+
+    <script>
+        // 탭 전환
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // === 재무제표 시뮬레이션 ===
+        const initialA = { cash: 10000, inventory: 0, equipment: 5000, vehicle: 0, realestate: 0, investment: 2000, liability: 0, revenue: 0, expense: 0, cfOp: 0, cfInv: 0 };
+        const initialB = { cash: 5000, inventory: 10000, equipment: 3000, vehicle: 2000, realestate: 50000, investment: 5000, liability: 10000, revenue: 0, cogs: 0, cfOp: 0, cfInv: 0 };
+        let stA = { ...initialA }, stB = { ...initialB };
+        const tradeDef = {
+            meal: { cat: 'expense', cost: 0.6 }, grocery: { cat: 'expense', cost: 0.7 }, coffee: { cat: 'expense', cost: 0.5 },
+            refrigerator: { cat: 'equipment', cost: 0.65 }, tv: { cat: 'equipment', cost: 0.6 }, laptop: { cat: 'equipment', cost: 0.7 }, phone: { cat: 'equipment', cost: 0.65 },
+            house: { cat: 'realestate', cost: 0.9 }, apartment: { cat: 'realestate', cost: 0.9 },
+            car: { cat: 'vehicle', cost: 0.75 }, motorcycle: { cat: 'vehicle', cost: 0.7 },
+            stock: { cat: 'investment', cost: 1 }, fund: { cat: 'investment', cost: 1 },
+            education: { cat: 'expense', cost: 0.8 }, medical: { cat: 'expense', cost: 0.7 }, rent: { cat: 'expense', cost: 0.95 }
+        };
+
+        const tradeSelect = document.getElementById('tradeType');
+        const tradeAmtEl = document.getElementById('tradeAmount');
+        tradeSelect.addEventListener('change', () => {
+            tradeAmtEl.textContent = Number(tradeSelect.selectedOptions[0].dataset.amount).toLocaleString() + ' T';
+        });
+
+        document.getElementById('executeBtn').addEventListener('click', executeTrade);
+        document.getElementById('resetBtn').addEventListener('click', resetSim);
+
+        function executeTrade() {
+            runProcess(); // 프로세스 동시 실행
+            const type = tradeSelect.value, amt = parseInt(tradeSelect.selectedOptions[0].dataset.amount);
+            const def = tradeDef[type], name = tradeSelect.selectedOptions[0].text;
+            stA.cash -= amt;
+            if (def.cat === 'expense') { stA.expense += amt; stA.cfOp -= amt; }
+            else { stA[def.cat] += amt; stA.cfInv -= amt; }
+            const cost = Math.round(amt * def.cost);
+            stB.cash += amt; stB.revenue += amt;
+            if (def.cat !== 'investment') { stB.cogs += cost; stB.inventory -= cost; }
+            else { stB.investment -= amt; }
+            stB.cfOp += amt;
+            updateFS();
+            const hash = genHash(48);
+            document.getElementById('txHash').textContent = hash.substring(0, 24) + '...';
+            runLayerVerify(amt);
+            addHistory(name, amt, hash);
+        }
+
+        function updateFS() {
+            animVal('a-cash', stA.cash); animVal('a-inventory', stA.inventory); animVal('a-equipment', stA.equipment);
+            animVal('a-vehicle', stA.vehicle); animVal('a-realestate', stA.realestate); animVal('a-investment', stA.investment);
+            const tA = stA.cash + stA.inventory + stA.equipment + stA.vehicle + stA.realestate + stA.investment;
+            animVal('a-totalassets', tA); animVal('a-liability', stA.liability); animVal('a-equity', tA - stA.liability);
+            animVal('a-revenue', stA.revenue); animVal('a-expense', stA.expense); animVal('a-profit', stA.revenue - stA.expense);
+            animVal('a-cf-operating', stA.cfOp); animVal('a-cf-investing', stA.cfInv);
+
+            animVal('b-cash', stB.cash); animVal('b-inventory', stB.inventory); animVal('b-equipment', stB.equipment);
+            animVal('b-vehicle', stB.vehicle); animVal('b-realestate', stB.realestate); animVal('b-investment', stB.investment);
+            const tB = stB.cash + stB.inventory + stB.equipment + stB.vehicle + stB.realestate + stB.investment;
+            animVal('b-totalassets', tB); animVal('b-liability', stB.liability); animVal('b-equity', tB - stB.liability);
+            animVal('b-revenue', stB.revenue); animVal('b-cogs', stB.cogs); animVal('b-profit', stB.revenue - stB.cogs);
+            animVal('b-cf-operating', stB.cfOp); animVal('b-cf-investing', stB.cfInv);
+        }
+
+        function animVal(id, val) {
+            const el = document.getElementById(id);
+            const old = parseInt(el.textContent.replace(/,/g, '')) || 0;
+            el.textContent = val.toLocaleString();
+            el.classList.remove('increase', 'decrease');
+            if (val > old) el.classList.add('increase');
+            else if (val < old) el.classList.add('decrease');
+            setTimeout(() => el.classList.remove('increase', 'decrease'), 1200);
+        }
+
+        function runLayerVerify(amt) {
+            const layers = document.querySelectorAll(".vb-layer");
+            layers.forEach(l => { l.classList.remove("verified", "checking", "selected"); l.classList.add("checking"); });
+            const chk = document.getElementById("balanceCheck");
+            chk.className = "vb-status"; chk.textContent = "⏳ Layer 선택중...";
+            const rand = Math.random() * 100;
+            let selLayer = rand < 50 ? 5 : rand < 80 ? 4 : rand < 92 ? 3 : rand < 98 ? 2 : 1;
+            setTimeout(() => {
+                layers.forEach(l => l.classList.remove("checking"));
+                layers.forEach(l => { if(parseInt(l.dataset.layer) === selLayer) l.classList.add("selected"); });
+                chk.textContent = "⏳ L" + selLayer + " 검증중...";
+            }, 400);
+            setTimeout(() => {
+                layers.forEach(l => { if(l.classList.contains("selected")) { l.classList.remove("selected"); l.classList.add("verified"); } });
+                chk.className = "vb-status success"; chk.textContent = "✅ L" + selLayer + " 검증완료";
+            }, 900);
+            return; // 기존 코드 무시
+        }
+        function runLayerVerifyOLD(amt) {
+            const layers = document.querySelectorAll('.vb-layer');
+            layers.forEach(l => l.classList.remove('verified'));
+            const chk = document.getElementById('balanceCheck');
+            chk.className = 'vb-status'; chk.textContent = '⏳ 검증중...';
+            [4,3,2,1,0].forEach((idx, i) => setTimeout(() => layers[idx].classList.add('verified'), 150 * (i + 1)));
+            setTimeout(() => { chk.className = 'vb-status success'; chk.textContent = '✅ 총액불변 확인'; }, 900);
+        }
+
+        function addHistory(name, amt, hash) {
+            const list = document.getElementById('historyList');
+            if (list.querySelector('.hb-empty')) list.innerHTML = '';
+            const item = document.createElement('span');
+            item.className = 'hb-item';
+            item.innerHTML = `<span>${name.split(' ')[0]}</span><span>${amt.toLocaleString()}T</span>`;
+            list.insertBefore(item, list.firstChild);
+            if (list.children.length > 5) list.removeChild(list.lastChild);
+        }
+
+        function resetSim() {
+            stA = { ...initialA }; stB = { ...initialB };
+            updateFS();
+            document.getElementById('txHash').textContent = '-';
+            document.querySelectorAll('.vb-layer').forEach(l => l.classList.remove('verified'));
+            document.getElementById('balanceCheck').className = 'vb-status';
+            document.getElementById('balanceCheck').textContent = '⏳ 대기';
+            document.getElementById('historyList').innerHTML = '<span class="hb-empty">없음</span>';
+        }
+
+        function genHash(len = 64) {
+            const c = '0123456789abcdef'; let h = '';
+            for (let i = 0; i < len; i++) h += c[Math.floor(Math.random() * 16)];
+            return h;
+        }
+
+        // === 거래 처리 프로세스 ===
+        const nodeNames = { 5: ['한림읍','애월읍','조천읍'], 4: ['제주시','서귀포시'], 3: ['제주도','서울'], 2: ['대한민국'], 1: ['글로벌'] };
+        const procSteps = document.querySelectorAll('.proc-step');
+
+
+        async function runProcess() {
+            resetProcess();
+            const name = tradeSelect.selectedOptions[0].text.split(' ')[0];
+            const amt = tradeSelect.selectedOptions[0].dataset.amount;
+
+            await actStep(0); 
+            document.getElementById('sigA').textContent = genHash(12) + '...';
+            document.getElementById('sigB').textContent = genHash(12) + '...';
+            await sleep(400); compStep(0);
+
+            await actStep(1);
+            const hash = genHash(48);
+            document.getElementById('hashA').textContent = hash.substring(0, 20) + '...';
+            await sleep(300); compStep(1);
+
+            await actStep(2);
+            const layer = Math.random() < 0.5 ? 5 : Math.random() < 0.7 ? 4 : 3;
+            document.querySelectorAll('.layer-opt').forEach(o => { o.classList.remove('selected'); if (parseInt(o.dataset.layer) === layer) o.classList.add('selected'); });
+            const node = nodeNames[layer][Math.floor(Math.random() * nodeNames[layer].length)];
+            document.getElementById('selectedNode').textContent = 'L' + layer + ' ' + node;
+            await sleep(350); compStep(2);
+
+            await actStep(3);
+            ['chkHash','chkSigA','chkSigB','chkBal'].forEach((id, i) => setTimeout(() => document.getElementById(id).classList.add('passed'), i * 100));
+            await sleep(450); compStep(3);
+
+            await actStep(4);
+            document.getElementById('prevHash').textContent = genHash(8) + '..';
+            document.getElementById('currHash').textContent = hash.substring(0, 8) + '..';
+            document.getElementById('nodeHash').textContent = genHash(8) + '..';
+            await sleep(300); compStep(4);
+
+            await actStep(5);
+            document.getElementById('propStatus').textContent = '✅ 완료';
+            await sleep(250); compStep(5);
+
+            await actStep(6);
+            document.getElementById('chainA').textContent = genHash(12) + '..';
+            document.getElementById('chainB').textContent = genHash(12) + '..';
+            await sleep(300); compStep(6);
+
+            await actStep(7);
+            document.getElementById('fsTimeA').textContent = new Date().toLocaleTimeString('ko-KR');
+            document.getElementById('fsHashA').textContent = genHash(12) + '..';
+            await sleep(250); compStep(7);
+        }
+
+        async function actStep(i) { procSteps[i].classList.add('active'); await sleep(100); }
+        function compStep(i) { procSteps[i].classList.remove('active'); procSteps[i].classList.add('completed'); }
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function resetProcess() {
+            procSteps.forEach(s => s.classList.remove('active', 'completed'));
+            document.getElementById('sigA').textContent = '-';
+            document.getElementById('sigB').textContent = '-';
+            document.getElementById('hashA').textContent = '-';
+            document.querySelectorAll('.layer-opt').forEach(o => o.classList.remove('selected'));
+            document.getElementById('selectedNode').textContent = '-';
+            ['chkHash','chkSigA','chkSigB','chkBal'].forEach(id => document.getElementById(id).classList.remove('passed'));
+            document.getElementById('prevHash').textContent = '-';
+            document.getElementById('currHash').textContent = '-';
+            document.getElementById('nodeHash').textContent = '-';
+            document.getElementById('propStatus').textContent = '대기';
+            document.getElementById('chainA').textContent = '-';
+            document.getElementById('chainB').textContent = '-';
+            document.getElementById('fsTimeA').textContent = '-';
+            document.getElementById('fsHashA').textContent = '-';
+        }
+    </script>
+</body>
+</html>

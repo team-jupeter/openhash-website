@@ -66,23 +66,21 @@
         font-weight: 500;
         color: var(--primary);
     }
+    
+        .hero {
+            text-align: center;
+            padding: 1.5rem 0 1.25rem !important;
+        }
+        .hero-title {
+            font-size: 1.75rem !important;
+        }
     </style>
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-inner">
-            <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-            <ul class="nav-menu">
-                <li><a href="/">홈</a></li>
-                <li><a href="/practical/">실용</a></li>
-                <li><a href="/technology/">기술</a></li>
-                <li><a href="/simulation/" class="active">시뮬레이션</a></li>
-                <li><a href="/tests/">테스트</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <section class="hero" style="padding: calc(var(--nav-height) + var(--space-10)) 0 var(--space-10);">
+    <section class="hero">
         <div class="container">
             <h1 class="hero-title" style="font-size: 28px;">인터랙티브 시뮬레이션</h1>
             <p class="hero-desc" style="font-size: 15px; margin-bottom: 0;">OpenHash 핵심 기능을 직접 체험해보세요</p>

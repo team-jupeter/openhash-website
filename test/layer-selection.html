@@ -25,6 +25,24 @@
             --l4-color: #f59e0b;
             --l5-color: #ef4444;
         }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            padding: 1.25rem 0 1rem;
+            text-align: center;
+            color: white;
+            border-bottom: 4px solid #d4a017;
+        }
+        .hero-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .hero-desc {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Noto Sans KR', sans-serif;
@@ -785,8 +803,18 @@
         }
 
     </style>
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
 </head>
 <body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">오픈해시 원리</h1>
+            <p class="hero-desc">확률적 계층 선택과 데이터 무결성 검증의 핵심 기술</p>
+        </div>
+    </section>
+
     <div class="container">
 
         <!-- 오픈해시 기술과 AI 섹션 -->
