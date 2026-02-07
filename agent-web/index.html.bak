@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새로운 웹 - OpenHash 기반 Agent Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="/js/header.js"></script>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">새로운 웹: Agent Web</h1>
+            <p class="hero-desc">기존 웹은 사람이 데이터를 생산하고 소비합니다. Agent Web에서는 AI가 데이터를 생산하고, AI가 소비합니다. OpenHash는 AI 간의 데이터 신뢰를 보장하는 유일한 기술입니다.</p>
+        </div>
+    </section>
+
+    <!-- Section 1: 패러다임 전환 -->
+    <section class="section" id="paradigm">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Paradigm Shift</span>
+                <h2 class="section-title">웹의 <span class="highlight">패러다임 전환</span></h2>
+                <p class="section-desc">Web 1.0에서 Agent Web까지, 데이터 주체의 진화. <strong>카드를 클릭</strong>하여 상세 내용을 확인하세요.</p>
+            </div>
+            <div class="card-grid" id="paradigm-cards">
+                <div class="card" data-type="web1">
+                    <div class="card-icon">📄</div>
+                    <h4>Web 1.0</h4>
+                    <p>읽기 전용 웹, 정적 콘텐츠</p>
+                </div>
+                <div class="card" data-type="web2">
+                    <div class="card-icon">👥</div>
+                    <h4>Web 2.0</h4>
+                    <p>소셜 웹, 사용자 생성 콘텐츠</p>
+                </div>
+                <div class="card" data-type="web3">
+                    <div class="card-icon">🔗</div>
+                    <h4>Web 3.0</h4>
+                    <p>블록체인 기반 탈중앙화 웹</p>
+                </div>
+                <div class="card" data-type="agentweb">
+                    <div class="card-icon">🤖</div>
+                    <h4>Agent Web</h4>
+                    <p>AI 에이전트 중심의 새로운 웹</p>
+                </div>
+            </div>
+            <div class="detail-panel" id="paradigm-panel">
+                <div class="detail-content" id="paradigm-content"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: AI 에이전트 아키텍처 -->
+    <section class="section alt" id="agent">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">AI Agent</span>
+                <h2 class="section-title">AI 에이전트 <span class="highlight">아키텍처</span></h2>
+                <p class="section-desc">사용자를 대신하여 데이터를 처리하고 의사결정을 수행하는 AI 에이전트. <strong>카드를 클릭</strong>하여 상세 내용을 확인하세요.</p>
+            </div>
+            <div class="card-grid three-col" id="agent-cards">
+                <div class="card" data-type="personal">
+                    <div class="card-icon">🧑‍💼</div>
+                    <h4>개인 AI 에이전트</h4>
+                    <p>사용자의 비서 역할, 데이터 금고 관리</p>
+                </div>
+                <div class="card" data-type="institutional">
+                    <div class="card-icon">🏛️</div>
+                    <h4>기관 AI 에이전트</h4>
+                    <p>정부/기업의 자동화된 서비스 처리</p>
+                </div>
+                <div class="card" data-type="interaction">
+                    <div class="card-icon">🔄</div>
+                    <h4>에이전트 간 상호작용</h4>
+                    <p>AI-to-AI 통신과 데이터 교환</p>
+                </div>
+            </div>
+            <div class="detail-panel" id="agent-panel">
+                <div class="detail-content" id="agent-content"></div>
+            </div>
+
+            <!-- 시나리오 스텝퍼 -->
+            <div class="scenario-stepper">
+                <div class="scenario-stepper-header">
+                    <h4>💡 부가세 신고 시나리오</h4>
+                    <span>Agent Web에서의 자동 처리 흐름</span>
+                </div>
+                <div class="stepper-flow">
+                    <div class="stepper-item">
+                        <div class="stepper-icon">1</div>
+                        <div class="stepper-label">사용자 명령</div>
+                        <div class="stepper-desc">"부가세 신고해 줘"</div>
+                    </div>
+                    <div class="stepper-arrow">→</div>
+                    <div class="stepper-item">
+                        <div class="stepper-icon">2</div>
+                        <div class="stepper-label">개인 AI</div>
+                        <div class="stepper-desc">Vault에서 데이터 추출</div>
+                    </div>
+                    <div class="stepper-arrow">→</div>
+                    <div class="stepper-item">
+                        <div class="stepper-icon">3</div>
+                        <div class="stepper-label">AI → 국세청</div>
+                        <div class="stepper-desc">OpenHash 검증 전송</div>
+                    </div>
+                    <div class="stepper-arrow">→</div>
+                    <div class="stepper-item">
+                        <div class="stepper-icon">4</div>
+                        <div class="stepper-label">국세청 AI</div>
+                        <div class="stepper-desc">세액 계산 및 회신</div>
+                    </div>
+                    <div class="stepper-arrow">→</div>
+                    <div class="stepper-item">
+                        <div class="stepper-icon">5</div>
+                        <div class="stepper-label">승인 및 납부</div>
+                        <div class="stepper-desc">자동 송금, 영구 기록</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: 데이터 진실성 -->
+    <section class="section" id="trust">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Data Integrity</span>
+                <h2 class="section-title">데이터 <span class="highlight">진실성 보장</span></h2>
+                <p class="section-desc">AI가 데이터의 진위를 판단할 수 있는 유일한 방법. <strong>카드를 클릭</strong>하여 상세 내용을 확인하세요.</p>
+            </div>
+            <div class="card-grid" id="trust-cards">
+                <div class="card" data-type="problem">
+                    <div class="card-icon">❓</div>
+                    <h4>AI 시대의 문제</h4>
+                    <p>AI가 위조 문서를 어떻게 구별할 것인가?</p>
+                </div>
+                <div class="card" data-type="solution">
+                    <div class="card-icon">✅</div>
+                    <h4>OpenHash 해법</h4>
+                    <p>해시 체인으로 데이터 진실성 기술적 증명</p>
+                </div>
+                <div class="card" data-type="vault">
+                    <div class="card-icon">🔐</div>
+                    <h4>데이터 금고 (Vault)</h4>
+                    <p>개인/기관의 검증된 데이터 저장소</p>
+                </div>
+                <div class="card" data-type="certificate">
+                    <div class="card-icon">📜</div>
+                    <h4>디지털 증명서</h4>
+                    <p>위변조 불가능한 각종 증명 문서</p>
+                </div>
+            </div>
+            <div class="detail-panel" id="trust-panel">
+                <div class="detail-content" id="trust-content"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: 아키텍처 보고서 (lazy loaded) -->
+    <section class="section dark" id="architecture">
+        <div class="container">
+            <div id="architecture-container">
+                <div style="text-align:center;padding:60px 0;color:#666;font-size:.9rem;">아키텍처 보고서 로딩 중...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture lazy loader -->
+    <script>
+    (function(){
+      var container=document.getElementById('architecture-container');
+      if(!container) return;
+      var loaded=false;
+      var observer=new IntersectionObserver(function(entries){
+        if(entries[0].isIntersecting && !loaded){
+          loaded=true;
+          observer.disconnect();
+          fetch('architecture.html')
+            .then(function(r){return r.text();})
+            .then(function(html){
+              container.innerHTML=html;
+              container.querySelectorAll('script').forEach(function(old){
+                var s=document.createElement('script');
+                s.textContent=old.textContent;
+                old.parentNode.replaceChild(s,old);
+              });
+            })
+            .catch(function(){
+              container.innerHTML='<p style="color:#f87171;text-align:center;">아키텍처 보고서를 불러오지 못했습니다.</p>';
+            });
+        }
+      },{rootMargin:'200px'});
+      observer.observe(container);
+    })();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>

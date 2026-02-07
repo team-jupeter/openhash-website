@@ -1,0 +1,272 @@
+<!-- tax-scenario.html — 국세 행정 자동화 시나리오 (lazy-loaded fragment) -->
+<style>
+.scn{max-width:860px;margin:0 auto;padding:0 20px;font-family:'Noto Sans KR',sans-serif;color:#e8e8e8;line-height:1.8}
+.scn section{padding:48px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.scn section:last-child{border-bottom:none}
+.scn h2{font-size:1.35rem;font-weight:700;color:#fff;margin:0 0 8px}
+.scn h3{font-size:1.12rem;font-weight:600;color:#e8e8e8;margin:32px 0 8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08)}
+.scn h3:first-child{margin-top:0}
+.scn p{font-size:.92rem;color:#ccd0d4;margin:0 0 16px}
+.scn .lead{font-size:.96rem;color:#d5d9dd;margin-bottom:28px}
+.scn .badge{display:inline-block;font-size:.88rem;font-weight:600;letter-spacing:.06em;color:#90caf9;margin-bottom:12px}
+.scn .formula{background:rgba(255,255,255,.03);border-left:3px solid rgba(144,202,249,.3);padding:12px 16px;margin:12px 0 20px;font-size:.92rem;color:#d5d9dd;line-height:1.7}
+.scn .tbl-wrap{overflow-x:auto;margin:16px 0 24px}
+.scn table{width:100%;border-collapse:collapse;font-size:.92rem}
+.scn table th{background:rgba(255,255,255,.05);color:#dde0e4;font-weight:600;text-align:left;padding:10px 14px;border-bottom:2px solid rgba(255,255,255,.1)}
+.scn table td{padding:10px 14px;color:#ccd0d4;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+.scn table tr:last-child td{border-bottom:none}
+.scn .g{color:#81c784}
+.scn .r{color:#e57373}
+.scn strong{color:#e8e8e8}
+
+/* ── 흐름도 ── */
+.flow{display:flex;flex-direction:column;gap:0;margin:24px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;position:relative;padding:0 0 0 48px;min-height:72px}
+.flow-step::before{content:attr(data-n);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:6px;background:rgba(144,202,249,.15);color:#90caf9;font-size:.88rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.flow-step::after{content:'';position:absolute;left:15px;top:32px;width:2px;height:calc(100% - 32px);background:rgba(255,255,255,.06)}
+.flow-step:last-child::after{display:none}
+.flow-body{flex:1;padding-bottom:20px}
+.flow-title{font-size:.92rem;font-weight:600;color:#e8e8e8;margin-bottom:4px}
+.flow-desc{font-size:.92rem;color:#b8bcc0;line-height:1.7}
+
+/* ── Agent 상호작용 ── */
+.agent-exchange{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin:20px 0}
+.agent-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:16px}
+.agent-box-id{font-size:.92rem;font-weight:700;margin-bottom:6px}
+.agent-box-id.tax{color:#90caf9}
+.agent-box-id.nts{color:#e57373}
+.agent-box-id.sec{color:#81c784}
+.agent-box p{font-size:.92rem;color:#b8bcc0;line-height:1.6;margin:0 0 6px}
+.agent-box p:last-child{margin:0}
+.agent-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:rgba(255,255,255,.3);font-size:.88rem;min-width:60px}
+.agent-mid span{font-size:1.2rem}
+@media(max-width:640px){.agent-exchange{grid-template-columns:1fr;text-align:center}.agent-mid span{transform:rotate(90deg)}}
+
+/* ── 하이라이트 박스 ── */
+.highlight-box{background:rgba(144,202,249,.06);border:1px solid rgba(144,202,249,.15);border-radius:8px;padding:20px;margin:20px 0}
+.highlight-box h4{font-size:.96rem;font-weight:700;color:#90caf9;margin:0 0 8px}
+.highlight-box p{font-size:.92rem;color:#d5d9dd;margin:0 0 8px}
+.highlight-box p:last-child{margin:0}
+
+/* ── 비교 카드 ── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.compare-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:20px}
+.compare-card h4{font-size:.92rem;font-weight:700;margin:0 0 8px}
+.compare-card.before h4{color:#e57373}
+.compare-card.after h4{color:#81c784}
+.compare-card p{font-size:.92rem;color:#b8bcc0;margin:0 0 6px}
+.compare-card p:last-child{margin:0}
+@media(max-width:640px){.compare{grid-template-columns:1fr}}
+
+/* ── 주기 선택 표현 ── */
+.cycle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 24px}
+.cycle-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:14px;text-align:center}
+.cycle-item .label{font-size:.92rem;font-weight:600;color:#e8e8e8;margin-bottom:4px}
+.cycle-item .desc{font-size:.92rem;color:#b8bcc0;line-height:1.5}
+@media(max-width:640px){.cycle-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+<div class="scn">
+
+  <!-- S1: 개요 -->
+  <section>
+    <div class="badge">TAX AUTOMATION — OVERVIEW</div>
+    <h2>AI Agent 기반 국세 행정 완전 자동화</h2>
+    <p class="lead">사업자가 <strong>고팡(Gopang)</strong> 채팅 앱을 통해 자신의 <strong>AI 비서</strong>에게 세금 신고를 지시하면, AI 비서가 사업자의 Private Data Vault에서 재무 데이터를 인출하고, 세무사 Agent·국세청 Agent 등 외부 기관 Agent를 호출하여 신고·납부 전 과정을 자율적으로 수행합니다. Private Data Vault에 접근할 수 있는 것은 오직 해당 사업자의 AI 비서뿐이며, 외부 Agent에게는 AI 비서가 필요한 정보만 선별 제공합니다.</p>
+
+    <div class="highlight-box">
+      <h4>고팡(Gopang): 사람과 AI Agent 간의 소통 경로</h4>
+      <p>고팡은 사업자와 AI 비서 간, 그리고 필요시 사업자와 외부 기관 Agent 간의 직접 소통을 지원하는 채팅 앱입니다. 사업자는 고팡을 통해 AI 비서에게 업무를 지시하고, AI 비서가 세무사 Agent·국세청 Agent와 소통하며 업무를 진행합니다. 사업자가 직접 외부 Agent와 대화해야 할 경우에도 고팡이 그 소통 경로 역할을 합니다.</p>
+    </div>
+
+    <div class="compare">
+      <div class="compare-card before">
+        <h4>기존 방식</h4>
+        <p>세무사 수임료: 수십만 ~ 수백만 원</p>
+        <p>신고 준비: 수일 ~ 수주 (장부 정리, 세무 조정)</p>
+        <p>재무제표 신뢰성: 사후 감사에 의존</p>
+        <p>세법 적용: 세무사 개인 역량에 의존</p>
+      </div>
+      <div class="compare-card after">
+        <h4>Agent Web 방식</h4>
+        <p>고팡에서 AI 비서에 지시 → 자동 처리: 수천 원</p>
+        <p>신고 처리: 수분 ~ 1시간</p>
+        <p>재무제표 신뢰성: OpenHash 기반 실시간 무결성 검증</p>
+        <p>세법 적용: 최신 세법 DB 실시간 인출 + AI 적용</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2: 전체 흐름 -->
+  <section>
+    <div class="badge">PROCESS FLOW</div>
+    <h2>국세 행정 자동화 흐름</h2>
+
+    <div class="flow">
+      <div class="flow-step" data-n="1">
+        <div class="flow-body">
+          <div class="flow-title">사업자 → AI 비서: 업무 지시 (고팡)</div>
+          <div class="flow-desc">사업자가 고팡 채팅 앱을 통해 자신의 AI 비서에게 세금 신고를 지시합니다. 신고 유형(부가세, 법인세 등), 대상 기간, 특이 사항을 대화 형식으로 전달합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="2">
+        <div class="flow-body">
+          <div class="flow-title">AI 비서: Vault 데이터 인출 및 정리</div>
+          <div class="flow-desc">AI 비서가 사업자의 Private Data Vault에서 매출·매입 전표, 세금계산서, 인건비 지급 내역, 감가상각 대상 자산 목록, 이전 과세 연도 신고 이력을 인출합니다. Private Data Vault에 접근할 수 있는 것은 오직 이 AI 비서뿐이며, 모든 데이터에는 OpenHash 무결성 검증 태그가 첨부되어 위변조 여부가 즉시 확인됩니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="3">
+        <div class="flow-body">
+          <div class="flow-title">AI 비서 → 세무사 Agent 호출</div>
+          <div class="flow-desc">AI 비서가 세무사 Agent(조력 LLM)를 호출하고, 선별된 재무 데이터를 전달합니다. 세무사 Agent는 현행 세법, 시행령, 시행규칙, 국세청 유권해석, 판례를 실시간으로 인출하여 사업자의 법적 지위에 적용되는 모든 관련 법규를 참조합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="4">
+        <div class="flow-body">
+          <div class="flow-title">최적 납세 방안 도출 (조력-방해 반복)</div>
+          <div class="flow-desc">세무사 Agent(조력)가 적법한 범위 내 최적 절세 전략을 수립하면, 국세청 조사관 Agent(방해)가 AI 비서로부터 제공받은 동일한 재무 데이터와 세법을 참조하여 과소 신고·부당 공제·비용 과다 계상을 탐색합니다. 반복 수렴 후, 심판관 Agent(중재)가 최종 납세 방안을 확정합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="5">
+        <div class="flow-body">
+          <div class="flow-title">세금 신고서 작성 및 전송</div>
+          <div class="flow-desc">확정된 납세 방안에 따라 세금 신고서(tax report)를 자동 작성하고, OpenHash 기반 무결성 태그를 첨부합니다. AI 비서가 국세청 Agent에 신고서를 전송합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="6">
+        <div class="flow-body">
+          <div class="flow-title">국세청 Agent 검증 및 세금 고지</div>
+          <div class="flow-desc">국세청 Agent가 신고서와 첨부 재무제표의 OpenHash 무결성을 검증하고, 과세 표준과 세액을 확인합니다. 검증 완료 후, 납부할 세금을 AI 비서에 고지합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="7">
+        <div class="flow-body">
+          <div class="flow-title">사업자 승인 및 납부 (고팡)</div>
+          <div class="flow-desc">AI 비서가 고팡을 통해 사업자에게 세금 고지 내역을 보고하고, 사업자의 명시적 승인을 받은 뒤, 국세청 Agent의 지정 계좌로 세금을 송금합니다. 필요시 사업자는 고팡을 통해 국세청 Agent와 직접 소통할 수도 있습니다. 모든 거래 기록은 OpenHash로 불변 기록됩니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>실행 주기 선택</h3>
+    <p>이 과정은 사업자의 선택에 따라 다양한 주기로 실행할 수 있습니다.</p>
+    <div class="cycle-grid">
+      <div class="cycle-item">
+        <div class="label">거래별</div>
+        <div class="desc">매 거래 발생 시 즉시 세무 처리. 실시간 세금 정산.</div>
+      </div>
+      <div class="cycle-item">
+        <div class="label">월별</div>
+        <div class="desc">월 단위 집계 후 일괄 신고. 부가세 예정 신고에 적합.</div>
+      </div>
+      <div class="cycle-item">
+        <div class="label">분기별</div>
+        <div class="desc">분기 단위 정산. 부가세 확정 신고, 원천세 신고에 적합.</div>
+      </div>
+      <div class="cycle-item">
+        <div class="label">반기/연간</div>
+        <div class="desc">법인세, 종합소득세 등 연간 신고. 결산 자동화.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3: 조력-방해 상세 -->
+  <section>
+    <div class="badge">ADVERSARIAL REFINEMENT</div>
+    <h2>세무사-국세청 조사관 Agent 대립 구조</h2>
+    <p class="lead">AI 비서가 Vault에서 인출하여 제공한 동일한 OpenHash 검증 재무제표를 양측 Agent가 참조하면서 대립적 관점으로 논쟁합니다. 추가 자료가 필요하면 외부 Agent가 AI 비서에게 요청하고, AI 비서가 Vault에서 선별 인출하여 제공합니다. 명문 규정 쟁점은 즉시 합의하고, 해석의 여지가 있는 쟁점만 반복 논쟁합니다.</p>
+
+    <div class="agent-exchange">
+      <div class="agent-box">
+        <div class="agent-box-id tax">세무사 Agent (조력)</div>
+        <p>적법한 범위 내 최적 절세 전략을 수립합니다.</p>
+        <p>세법상 인정되는 모든 공제·감면·세액공제를 탐색하여 납세자의 세 부담을 최소화합니다.</p>
+        <p>추가 증빙이 필요하면 AI 비서에게 요청하여 Vault의 거래 기록, 지출 증빙, 계약서를 제공받습니다.</p>
+      </div>
+      <div class="agent-mid">
+        <span>→</span>
+        절세 전략
+        <span>←</span>
+        부당 지적
+      </div>
+      <div class="agent-box">
+        <div class="agent-box-id nts">국세청 조사관 Agent (방해)</div>
+        <p>AI 비서로부터 제공받은 동일한 재무 데이터와 세법을 참조하여 과소 신고, 부당 공제, 비용 과다 계상을 탐색합니다.</p>
+        <p>거래의 실질과세 원칙 위반, 특수관계인 거래의 시가 괴리, 가공 경비 계상 등을 구조적으로 검토합니다.</p>
+      </div>
+    </div>
+
+    <div class="formula">
+      쟁점 분해 예시:<br>
+      ① 매출 누락 여부 — Vault 기록 대조로 즉시 합의 (명문 규정)<br>
+      ② 접대비 한도 초과 — 법인세법 시행령 기준 자동 산출로 즉시 합의<br>
+      ③ 연구개발비 세액공제 적격성 — 해석 쟁점, 반복 논쟁 후 합의<br>
+      ④ 특수관계인 거래 시가 적정성 — 해석 쟁점, 반복 논쟁 후 합의
+    </div>
+  </section>
+
+  <!-- S4: OpenHash 기반 재무제표 -->
+  <section>
+    <div class="badge">OPENHASH FINANCIAL STATEMENTS</div>
+    <h2>위변조 불가능한 재무제표</h2>
+    <p class="lead">기존의 재무제표는 사후 감사에 의존하여 분식회계와 위변조의 위험이 존재합니다. OpenHash 기반 재무제표는 모든 거래가 발생 즉시 해시값으로 기록되어, 사후 변경이 원천적으로 불가능합니다.</p>
+
+    <h3>거래 기록 메커니즘</h3>
+    <div class="formula">
+      매 거래 발생 시:<br>
+      H = SHA-256(거래 데이터: 일시, 금액, 거래처, 계정과목, 증빙)<br>
+      H′ = SHA-256(H ∥ T) → 계층적 DHT 네트워크에 분산 저장<br>
+      <br>
+      재무제표 생성 시:<br>
+      H<sub>FS</sub> = SHA-256(재무제표 전체)<br>
+      H′<sub>FS</sub> = SHA-256(H<sub>FS</sub> ∥ T<sub>FS</sub>) → DHT에 기록<br>
+      ※ 재무제표의 해시와 개별 거래 해시의 정합성을 머클 트리로 검증 가능
+    </div>
+
+    <p>이 구조에 의해, 재무제표의 어떤 수치라도 변경되면 해시값이 달라지므로 즉시 탐지됩니다. 개별 거래 기록부터 최종 재무제표까지 전체 산출 경로의 무결성이 보장됩니다.</p>
+
+    <div class="highlight-box">
+      <h4>글로벌 적용: 국경을 초월한 세무 자동화</h4>
+      <p>OpenHash 기반 재무제표는 대한민국 국세청뿐 아니라 전 세계 세무 당국이 신뢰할 수 있는 공통 기반을 제공합니다.</p>
+      <p><strong>① 다국적 기업의 이전가격 검증</strong> — 각국 법인 간 거래의 시가 적정성을 OpenHash 기록으로 증명합니다. 이전가격 분쟁 시, 거래 시점의 원본 기록이 위변조 불가능한 형태로 존재하므로 분쟁 해결이 용이합니다.</p>
+      <p><strong>② 국제 조세조약 적용</strong> — 거주지국과 원천지국 간의 세액 배분 시, 양국 세무 당국이 동일한 OpenHash 기록을 참조하여 과세 근거를 검증합니다. 별도의 정보 교환 절차가 불필요합니다.</p>
+      <p><strong>③ 분식회계 원천 차단</strong> — 매 거래가 발생 즉시 불변 기록되므로, 결산 시점의 소급 수정이 불가능합니다. 이는 투자자 보호와 자본시장 건전성에 기여합니다.</p>
+      <p><strong>④ 글로벌 규정 준수</strong> — GDPR, OECD BEPS(세원잠식 방지), CRS(공통보고기준)에 대응합니다. 원본 데이터는 관할 법규에 따라 저장되고, DHT에는 해시값만 존재하므로 데이터 주권이 보장됩니다.</p>
+    </div>
+
+    <h3>종래 방식과의 비교</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>비교 항목</th><th>종래 재무제표</th><th>OpenHash 재무제표</th></tr></thead>
+        <tbody>
+          <tr><td>무결성 보장</td><td class="r">사후 감사에 의존 (연 1~2회)</td><td class="g">거래 발생 즉시 해시 기록 (실시간)</td></tr>
+          <tr><td>분식회계 탐지</td><td class="r">감사인 발견 시까지 잠복</td><td class="g">소급 수정 시 해시 불일치로 즉시 탐지</td></tr>
+          <tr><td>세무 조사 대응</td><td class="r">장부 재구성, 증빙 수집에 수주 소요</td><td class="g">Vault에서 무결성 태그 포함 즉시 인출</td></tr>
+          <tr><td>국제 검증</td><td class="r">각국 회계 기준 차이로 번역·변환 필요</td><td class="g">원본 거래 해시는 범용 — 기준 무관하게 검증 가능</td></tr>
+          <tr><td>보존 기간</td><td class="r">법정 보존 기간(5~10년) 후 폐기 가능</td><td class="g">DHT 해시값은 반영구 보존 — 과거 기록도 검증 가능</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S5: 기대 효과 -->
+  <section>
+    <div class="badge">EXPECTED IMPACT</div>
+    <h2>기대 효과</h2>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>기존</th><th>Agent Web</th></tr></thead>
+        <tbody>
+          <tr><td>세무 신고 소요 시간</td><td>수일 ~ 수주</td><td class="g">수분 ~ 1시간</td></tr>
+          <tr><td>비용</td><td>수십만 ~ 수백만 원</td><td class="g">수천 원</td></tr>
+          <tr><td>세법 적용 정확도</td><td>세무사 개인 역량 의존</td><td class="g">최신 세법 DB + 조력-방해 반복 검증</td></tr>
+          <tr><td>재무제표 신뢰성</td><td>사후 감사</td><td class="g">OpenHash 실시간 무결성 검증</td></tr>
+          <tr><td>세무 조사 대응</td><td>수주 ~ 수개월</td><td class="g">Vault에서 즉시 인출 + 무결성 증명</td></tr>
+          <tr><td>국제 세무</td><td>각국 별도 전문가 필요</td><td class="g">글로벌 Agent 네트워크 + OpenHash 공통 검증</td></tr>
+          <tr><td>감사 추적</td><td>서면 기록</td><td class="g">해시 체인 기반 불변 감사 로그</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>

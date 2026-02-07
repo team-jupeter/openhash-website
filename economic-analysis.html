@@ -1,0 +1,770 @@
+<!-- ============================================
+     OpenHash 경제적 효과 분석 섹션
+     - 독립 파일: fetch()로 preview.html에 삽입
+     - 특허 명세서 v8 기반 정량적 데이터 통합
+     - 단독 열기 시에도 fallback CSS 적용
+     ============================================ -->
+
+<style>
+/* --- 경제효과 섹션 전용 스타일 --- */
+:root {
+    --color-navy: #1a3a6e;
+    --color-gold: #d4a017;
+    --color-text: #212529;
+    --color-text-muted: #495057;
+    --color-border: #dee2e6;
+    --radius-md: 4px;
+    --radius-lg: 6px;
+}
+
+.econ-section {
+    background: linear-gradient(165deg, #0f1b2d 0%, #162544 35%, var(--color-navy) 70%, #1e3f72 100%);
+    color: #e8ecf2;
+    padding: 4.5rem 0 4rem;
+    position: relative;
+    overflow: hidden;
+}
+.econ-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+        radial-gradient(ellipse 800px 600px at 20% 30%, rgba(26,58,110,0.3) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 80% 70%, rgba(212,160,23,0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+.econ-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+}
+.econ-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+.econ-badge {
+    display: inline-block;
+    background: rgba(212,160,23,0.15);
+    color: var(--color-gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(212,160,23,0.25);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+}
+.econ-header h2 {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.8rem;
+    line-height: 1.35;
+}
+.econ-header .subtitle {
+    font-size: 0.95rem;
+    color: rgba(232,236,242,0.65);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+.econ-header .patent-ref {
+    margin-top: 0.8rem;
+    font-size: 0.78rem;
+    color: rgba(232,236,242,0.4);
+    font-style: italic;
+}
+.econ-basis {
+    margin-bottom: 3.5rem;
+}
+.econ-basis-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.econ-basis-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 1.1rem;
+    background: var(--color-gold);
+    border-radius: 2px;
+}
+.econ-basis-lead {
+    font-size: 0.92rem;
+    color: rgba(232,236,242,0.6);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
+.sim-results {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.sim-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-lg);
+    padding: 1.3rem 1.2rem;
+    text-align: center;
+    transition: border-color 0.3s, background 0.3s;
+}
+.sim-card:hover {
+    border-color: rgba(212,160,23,0.3);
+    background: rgba(255,255,255,0.06);
+}
+.sim-number {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--color-gold);
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+}
+.sim-unit {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(212,160,23,0.7);
+}
+.sim-label {
+    font-size: 0.78rem;
+    color: rgba(232,236,242,0.55);
+    margin-top: 0.4rem;
+    line-height: 1.45;
+}
+.domain-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 0.8rem;
+    -webkit-overflow-scrolling: touch;
+}
+.domain-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    min-width: 680px;
+}
+.domain-table thead th {
+    background: rgba(212,160,23,0.12);
+    color: var(--color-gold);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 0.7rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(212,160,23,0.2);
+    white-space: nowrap;
+}
+.domain-table thead th:first-child { border-radius: var(--radius-md) 0 0 0; }
+.domain-table thead th:last-child { border-radius: 0 var(--radius-md) 0 0; }
+.domain-table tbody td {
+    padding: 0.65rem 0.8rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(232,236,242,0.75);
+    vertical-align: top;
+    line-height: 1.5;
+}
+.domain-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+.domain-table .domain-name { font-weight: 600; color: #ffffff; white-space: nowrap; }
+.domain-table .module-ref { color: rgba(212,160,23,0.6); font-size: 0.7rem; }
+.table-note {
+    font-size: 0.72rem;
+    color: rgba(232,236,242,0.35);
+    margin-top: 0.4rem;
+    text-align: right;
+}
+.compare-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+.compare-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.2rem;
+}
+.compare-card .cc-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(232,236,242,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+}
+.compare-card .cc-before {
+    font-size: 0.82rem;
+    color: rgba(232,236,242,0.45);
+    text-decoration: line-through;
+    margin-bottom: 0.15rem;
+}
+.compare-card .cc-after {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-gold);
+}
+.compare-card .cc-note {
+    font-size: 0.72rem;
+    color: rgba(232,236,242,0.35);
+    margin-top: 0.3rem;
+}
+.econ-subsection { margin-bottom: 3.5rem; }
+.econ-sub-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin-bottom: 0.5rem;
+}
+.econ-sub-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    background: rgba(212,160,23,0.12);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 3px;
+    padding: 0.15rem 0.55rem;
+    letter-spacing: 0.06em;
+}
+.econ-sub-header h3 { font-size: 1.15rem; font-weight: 700; color: #ffffff; }
+.econ-sub-lead {
+    font-size: 0.9rem;
+    color: rgba(232,236,242,0.55);
+    margin-bottom: 1.8rem;
+    line-height: 1.7;
+}
+.bar-chart { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 2rem; }
+.bar-row { display: grid; grid-template-columns: 90px 1fr 80px; align-items: center; gap: 0.8rem; }
+.bar-label { font-size: 0.82rem; font-weight: 500; color: rgba(232,236,242,0.7); text-align: right; }
+.bar-track { height: 28px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; position: relative; }
+.bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding-left: 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.bar-fill.direct { background: linear-gradient(90deg, rgba(212,160,23,0.6) 0%, rgba(212,160,23,0.85) 100%); }
+.bar-fill.indirect { background: linear-gradient(90deg, rgba(100,149,237,0.4) 0%, rgba(100,149,237,0.65) 100%); }
+.bar-value { font-size: 0.85rem; font-weight: 700; color: #ffffff; text-align: right; }
+.bar-legend { display: flex; gap: 1.5rem; margin-bottom: 0.6rem; font-size: 0.75rem; color: rgba(232,236,242,0.5); }
+.bar-legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.35rem; vertical-align: -1px; }
+.bar-legend .leg-direct::before { background: rgba(212,160,23,0.75); }
+.bar-legend .leg-indirect::before { background: rgba(100,149,237,0.55); }
+.cumulative-highlight {
+    background: rgba(212,160,23,0.08);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+.cum-big { font-size: 2.5rem; font-weight: 900; color: var(--color-gold); line-height: 1; white-space: nowrap; }
+.cum-big .cum-unit { font-size: 1rem; font-weight: 600; color: rgba(212,160,23,0.7); }
+.cum-desc { font-size: 0.88rem; color: rgba(232,236,242,0.6); line-height: 1.65; }
+.cum-desc strong { color: rgba(232,236,242,0.85); }
+.timeline { position: relative; padding-left: 2rem; margin-bottom: 2rem; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, rgba(212,160,23,0.5) 0%, rgba(100,149,237,0.3) 50%, rgba(144,238,144,0.3) 100%); }
+.tl-item { position: relative; padding: 0 0 2rem 1.5rem; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before { content: ''; position: absolute; left: -1.55rem; top: 0.35rem; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--color-gold); background: #162544; }
+.tl-item.phase-2::before { border-color: rgba(100,149,237,0.7); }
+.tl-item.phase-3::before { border-color: rgba(144,238,144,0.7); }
+.tl-year { font-size: 0.75rem; font-weight: 700; color: var(--color-gold); letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+.tl-item.phase-2 .tl-year { color: rgba(100,149,237,0.9); }
+.tl-item.phase-3 .tl-year { color: rgba(144,238,144,0.9); }
+.tl-title { font-size: 0.95rem; font-weight: 700; color: #ffffff; margin-bottom: 0.25rem; }
+.tl-desc { font-size: 0.85rem; color: rgba(232,236,242,0.55); line-height: 1.6; }
+.tl-amount { display: inline-block; font-weight: 700; color: rgba(232,236,242,0.85); background: rgba(255,255,255,0.05); padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.82rem; margin-top: 0.3rem; }
+.obstacles { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+.obstacle-item { border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); overflow: hidden; transition: border-color 0.3s; }
+.obstacle-item.open { border-color: rgba(212,160,23,0.25); }
+.obstacle-header { display: flex; align-items: center; gap: 0.7rem; padding: 0.9rem 1.2rem; cursor: pointer; background: rgba(255,255,255,0.03); transition: background 0.2s; user-select: none; }
+.obstacle-header:hover { background: rgba(255,255,255,0.06); }
+.obstacle-num { font-size: 0.7rem; font-weight: 700; color: var(--color-gold); background: rgba(212,160,23,0.15); border-radius: 3px; padding: 0.15rem 0.45rem; flex-shrink: 0; }
+.obstacle-title { font-size: 0.9rem; font-weight: 600; color: #ffffff; flex: 1; }
+.obstacle-chevron { font-size: 0.7rem; color: rgba(232,236,242,0.35); transition: transform 0.3s; flex-shrink: 0; }
+.obstacle-item.open .obstacle-chevron { transform: rotate(180deg); }
+.obstacle-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.obstacle-body-inner { padding: 0 1.2rem 1.1rem 3rem; font-size: 0.85rem; color: rgba(232,236,242,0.6); line-height: 1.7; }
+.obstacle-body-inner .ob-problem { margin-bottom: 0.5rem; }
+.obstacle-body-inner .ob-solution { color: rgba(212,160,23,0.75); font-weight: 500; }
+.obstacle-body-inner .ob-solution::before { content: '→ '; color: rgba(212,160,23,0.5); }
+.econ-summary {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    background: rgba(212,160,23,0.06);
+    border: 1px solid rgba(212,160,23,0.15);
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+.summary-mega { font-size: 3rem; font-weight: 900; color: var(--color-gold); line-height: 1.1; margin-bottom: 0.2rem; }
+.summary-mega .mega-unit { font-size: 1.2rem; font-weight: 600; color: rgba(212,160,23,0.7); }
+.summary-usd { font-size: 1.1rem; font-weight: 600; color: rgba(232,236,242,0.5); margin-bottom: 1rem; }
+.summary-breakdown { display: flex; justify-content: center; gap: 2.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.summary-item { text-align: center; }
+.summary-item .si-val { font-size: 1.15rem; font-weight: 700; color: #ffffff; }
+.summary-item .si-label { font-size: 0.72rem; color: rgba(232,236,242,0.45); margin-top: 0.1rem; }
+.summary-quote { font-size: 0.88rem; color: rgba(232,236,242,0.5); max-width: 580px; margin: 0 auto; line-height: 1.7; font-style: italic; }
+
+@media (max-width: 768px) {
+    .econ-section { padding: 3rem 0; }
+    .econ-header h2 { font-size: 1.35rem; }
+    .sim-results { grid-template-columns: 1fr; gap: 0.7rem; }
+    .sim-results.three-col { grid-template-columns: repeat(3, 1fr); }
+    .bar-row { grid-template-columns: 70px 1fr 65px; gap: 0.5rem; }
+    .bar-label { font-size: 0.75rem; }
+    .cumulative-highlight { flex-direction: column; text-align: center; gap: 0.8rem; }
+    .cum-big { font-size: 2rem; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .summary-mega { font-size: 2.2rem; }
+    .summary-breakdown { gap: 1.5rem; }
+    .domain-table { font-size: 0.73rem; }
+}
+@media (max-width: 480px) {
+    .sim-results.three-col { grid-template-columns: 1fr; }
+}
+</style>
+
+<section class="econ-section" id="economic-impact" aria-label="경제적 효과 분석">
+    <div class="econ-inner">
+
+        <!-- 헤더 -->
+        <header class="econ-header">
+            <div class="econ-badge">Economic Impact Analysis</div>
+            <h2>OpenHash &amp; 고팡 시스템<br>경제적 효과 분석</h2>
+            <p class="subtitle">다중 LLM 자율 협업 시스템과 계층적 해시 분산 기반 Private Data Vault의 결합이 창출하는 정량적 경제 효과를 분석합니다.</p>
+            <p class="patent-ref">기반 기술: 다중 대규모 언어 모델 간 자율 협업 기반 의사결정 지원 시스템 (특허출원 명세서 v8)</p>
+        </header>
+
+        <!-- ① 기술 기반 경제효과 도출 근거 -->
+        <div class="econ-basis">
+            <div class="econ-basis-title">기술 기반 경제효과 도출 근거</div>
+            <p class="econ-basis-lead">
+                본 경제효과는 특허 출원 도메인에서의 시뮬레이션 결과에 기초합니다. 조력 LLM(100)과 방해 LLM(200) 간 반복적 개선 사이클을 코사인 유사도 기반 수렴 판단 모듈(700)이 정량적으로 관리하고, 합의 도출 엔진(900)이 쟁점별 순차 합의를 수행하여 다음의 검증된 성과를 달성했습니다.
+            </p>
+
+            <div class="sim-results three-col">
+                <div class="sim-card">
+                    <div class="sim-number">41.2<span class="sim-unit">%</span></div>
+                    <div class="sim-label">초기 대비 최종 품질 향상률<br>(인간 전문가 5인 평가)</div>
+                </div>
+                <div class="sim-card">
+                    <div class="sim-number">50~100<span class="sim-unit">배</span></div>
+                    <div class="sim-label">시간 효율 향상<br>(40~80시간 → 47분)</div>
+                </div>
+                <div class="sim-card">
+                    <div class="sim-number">7.3<span class="sim-unit">라운드</span></div>
+                    <div class="sim-label">평균 수렴 라운드 수<br>(θ<sub>R</sub>=0.05, θ<sub>C</sub>=0.1)</div>
+                </div>
+            </div>
+
+            <!-- 도메인별 역할 매핑 -->
+            <div class="domain-table-wrap">
+                <table class="domain-table" aria-label="도메인별 역할 정의 매핑 테이블(150)">
+                    <thead>
+                        <tr>
+                            <th>적용 도메인</th>
+                            <th>조력 LLM-A <span class="module-ref">(100)</span></th>
+                            <th>방해 LLM-B <span class="module-ref">(200)</span></th>
+                            <th>중재 LLM-C <span class="module-ref">(300)</span></th>
+                            <th>승인 MODULE-D <span class="module-ref">(400)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="domain-name">특허 출원</td>
+                            <td>변리사 (출원인 대리)</td>
+                            <td>특허 심사관</td>
+                            <td>특허 심판관</td>
+                            <td>인간 변리사/발명자</td>
+                        </tr>
+                        <tr>
+                            <td class="domain-name">민형사 소송</td>
+                            <td>원고측 법률 대리인</td>
+                            <td>피고측 법률 대리인</td>
+                            <td>1심 판사</td>
+                            <td>인간 법률 전문가</td>
+                        </tr>
+                        <tr>
+                            <td class="domain-name">국세 행정</td>
+                            <td>세무사 (납세자 대리)</td>
+                            <td>국세청 조사관</td>
+                            <td>국세 심판관</td>
+                            <td>인간 세무 전문가</td>
+                        </tr>
+                        <tr>
+                            <td class="domain-name">의료·건강</td>
+                            <td>주치의 (치유 극대화)</td>
+                            <td>건강보험 심사 에이전트</td>
+                            <td>의료 경제성 평가관</td>
+                            <td>인간 의료진</td>
+                        </tr>
+                        <tr>
+                            <td class="domain-name">교육</td>
+                            <td>학습 설계사</td>
+                            <td>학습 장애 시뮬레이터</td>
+                            <td>교육 효과 평가관</td>
+                            <td>인간 교육 전문가</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-note">※ 역할 정의 매핑 테이블(150) + 도메인별 프롬프트 템플릿(160) 교체만으로 신규 도메인 즉시 적용</p>
+
+            <!-- 기술 비교: Private Data Vault vs 블록체인 -->
+            <div class="compare-grid" style="margin-top:1.5rem;">
+                <div class="compare-card">
+                    <div class="cc-label">무결성 검증 시간복잡도</div>
+                    <div class="cc-before">블록체인: O(n) 체인 순회</div>
+                    <div class="cc-after">Private Data Vault: O(1)</div>
+                    <div class="cc-note">SHA-256 이중 재해싱 + DHT 즉시 대조</div>
+                </div>
+                <div class="compare-card">
+                    <div class="cc-label">합의 메커니즘 에너지 소비</div>
+                    <div class="cc-before">PoW/PoS: 높은 에너지·처리 지연</div>
+                    <div class="cc-after">합의 메커니즘 불필요 → 제로</div>
+                    <div class="cc-note">해시 연산만으로 무결성 보장</div>
+                </div>
+                <div class="compare-card">
+                    <div class="cc-label">분산 네트워크 데이터</div>
+                    <div class="cc-before">블록체인: 트랜잭션 전체 복제</div>
+                    <div class="cc-after">이중 해시값(32바이트)만 분산</div>
+                    <div class="cc-note">원본 데이터 유출 원천 불가 · 데이터 주권 보장</div>
+                </div>
+                <div class="compare-card">
+                    <div class="cc-label">GDPR 삭제권 보장</div>
+                    <div class="cc-before">블록체인: 불변성으로 삭제 불가</div>
+                    <div class="cc-after">원본 삭제 + 해시 무효화로 즉시 대응</div>
+                    <div class="cc-note">개인정보보호법·GDPR·HIPAA 구조적 준수</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ② 한국 적용 효과 (2027–2030) -->
+        <div class="econ-subsection">
+            <div class="econ-sub-header">
+                <span class="econ-sub-num">01</span>
+                <h3>한국 적용 효과 (2027–2030)</h3>
+            </div>
+            <p class="econ-sub-lead">
+                5대 핵심 도메인(사법·행정·의료·교육·특허)에서의 직접 비용 절감과 간접 파급 효과를 산출합니다. 각 도메인에서 효용 함수(Utility Function) 기반 합의 품질 종합 점수(CQS = α×BAS + β×CSI + γ×IRR)가 0.85 이상을 달성하는 것을 전제로 합니다.
+            </p>
+
+            <div class="bar-legend">
+                <span class="leg-direct">직접 절감 효과</span>
+                <span class="leg-indirect">간접 파급 효과</span>
+            </div>
+            <div class="bar-chart">
+                <div class="bar-row">
+                    <div class="bar-label">2027</div>
+                    <div class="bar-track">
+                        <div class="bar-fill direct" style="width: 55%;" aria-label="직접 절감 204조원">204조</div>
+                    </div>
+                    <div class="bar-value">301조</div>
+                </div>
+                <div class="bar-row" style="margin-top:-0.5rem;">
+                    <div class="bar-label" style="visibility:hidden;">2027</div>
+                    <div class="bar-track">
+                        <div class="bar-fill indirect" style="width: 26%;" aria-label="간접 효과 97조원">97조</div>
+                    </div>
+                    <div class="bar-value" style="visibility:hidden;">.</div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">2028</div>
+                    <div class="bar-track">
+                        <div class="bar-fill direct" style="width: 67%;" aria-label="직접 절감 280조원">280조</div>
+                    </div>
+                    <div class="bar-value">395조</div>
+                </div>
+                <div class="bar-row" style="margin-top:-0.5rem;">
+                    <div class="bar-label" style="visibility:hidden;">2028</div>
+                    <div class="bar-track">
+                        <div class="bar-fill indirect" style="width: 31%;" aria-label="간접 효과 115조원">115조</div>
+                    </div>
+                    <div class="bar-value" style="visibility:hidden;">.</div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">2029</div>
+                    <div class="bar-track">
+                        <div class="bar-fill direct" style="width: 80%;" aria-label="직접 절감 345조원">345조</div>
+                    </div>
+                    <div class="bar-value">476조</div>
+                </div>
+                <div class="bar-row" style="margin-top:-0.5rem;">
+                    <div class="bar-label" style="visibility:hidden;">2029</div>
+                    <div class="bar-track">
+                        <div class="bar-fill indirect" style="width: 35%;" aria-label="간접 효과 131조원">131조</div>
+                    </div>
+                    <div class="bar-value" style="visibility:hidden;">.</div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">2030</div>
+                    <div class="bar-track">
+                        <div class="bar-fill direct" style="width: 94%;" aria-label="직접 절감 410조원">410조</div>
+                    </div>
+                    <div class="bar-value">556조</div>
+                </div>
+                <div class="bar-row" style="margin-top:-0.5rem;">
+                    <div class="bar-label" style="visibility:hidden;">2030</div>
+                    <div class="bar-track">
+                        <div class="bar-fill indirect" style="width: 40%;" aria-label="간접 효과 146조원">146조</div>
+                    </div>
+                    <div class="bar-value" style="visibility:hidden;">.</div>
+                </div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <div class="cc-label">특허 출원 비용</div>
+                    <div class="cc-before">전문 변리사 수백만 원 · 40~80시간</div>
+                    <div class="cc-after">수만 원 · 1~2시간</div>
+                    <div class="cc-note">시뮬레이션 평균: 품질 88.3점 (100점 만점)</div>
+                </div>
+                <div class="compare-card">
+                    <div class="cc-label">의료 진단 프로세스</div>
+                    <div class="cc-before">단일 의견 기반 · 편향 위험</div>
+                    <div class="cc-after">CTES 기반 정량적 치료 효과 평가</div>
+                    <div class="cc-note">VSII·SS·TAR·MCEI 가중합 최적화</div>
+                </div>
+            </div>
+
+            <div class="cumulative-highlight">
+                <div class="cum-big">1,180<span class="cum-unit">조 원</span></div>
+                <div class="cum-desc">
+                    2027~2030년 <strong>4개년 누적 경제 효과</strong>입니다. 직접 비용 절감 약 318조 원/연 + 간접 파급 효과(신산업 창출, 행정 효율화, 의료비 최적화) 약 113조 원/연이 합산됩니다. 수렴 판단 알고리즘(θ<sub>R</sub>, θ<sub>C</sub>, θ<sub>n</sub>, W)의 도메인별 베이지안 최적화를 통해 지속적 품질 향상이 가능합니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- ③ 글로벌 확장 효과 (2031–2035) -->
+        <div class="econ-subsection">
+            <div class="econ-sub-header">
+                <span class="econ-sub-num">02</span>
+                <h3>글로벌 확장 효과 (2031–2035)</h3>
+            </div>
+            <p class="econ-sub-lead">
+                역할 정의 매핑 테이블(150)과 도메인별 프롬프트 템플릿(160)의 다국어 확장을 통해 글로벌 시장에 진입합니다. 다중 LLM 자율 협업 구조의 범용성은 문화·법체계를 넘어 적용 가능합니다.
+            </p>
+
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-year">2031–2032</div>
+                    <div class="tl-title">Phase 1 — OECD 선진국 확산</div>
+                    <div class="tl-desc">미국·EU·일본 등 법률·의료·행정 분야에 우선 적용. 각국 규정 준수 엔진(530)을 통한 GDPR·HIPAA·개인정보보호법 자동 대응.</div>
+                    <div class="tl-amount">연 8,800조 원</div>
+                </div>
+                <div class="tl-item phase-2">
+                    <div class="tl-year">2033–2034</div>
+                    <div class="tl-title">Phase 2 — 신흥국 및 아시아 확대</div>
+                    <div class="tl-desc">동남아·중동·남미 시장 진입. Private Data Vault의 계층적 해시 분산(읍면동→시군구→광역→국가→글로벌)이 각국 행정 체계에 맵핑.</div>
+                    <div class="tl-amount">연 14,500조 원</div>
+                </div>
+                <div class="tl-item phase-3">
+                    <div class="tl-year">2035</div>
+                    <div class="tl-title">Phase 3 — 전 세계 표준화</div>
+                    <div class="tl-desc">국제 기구·다국적 기업의 의사결정 인프라로 정착. 병합 모듈(800)의 병렬 처리와 적응적 모델 선택으로 글로벌 규모 실시간 처리.</div>
+                    <div class="tl-amount">연 20,000조 원 이상</div>
+                </div>
+            </div>
+
+            <div class="cumulative-highlight">
+                <div class="cum-big">66,700<span class="cum-unit">조 원</span></div>
+                <div class="cum-desc">
+                    2031~2035년 <strong>5개년 글로벌 누적 경제 효과</strong>입니다. 합의 메커니즘 없는 경량 무결성 검증(O(1) 검증 시간복잡도)과 다중 LLM의 병렬 인스턴스 운영(병합 모듈 800)이 전 세계 규모의 동시 서비스를 가능하게 합니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- ④ 5대 장애요소 및 극복 방안 -->
+        <div class="econ-subsection">
+            <div class="econ-sub-header">
+                <span class="econ-sub-num">03</span>
+                <h3>5대 장애요소 및 극복 방안</h3>
+            </div>
+            <p class="econ-sub-lead">
+                경제효과 실현을 위해 극복해야 할 핵심 과제와, 본 시스템의 구조적 해결 메커니즘입니다.
+            </p>
+
+            <div class="obstacles" id="econ-obstacles">
+                <div class="obstacle-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="obstacle-header">
+                        <span class="obstacle-num">1</span>
+                        <span class="obstacle-title">AI 의사결정의 법적 책임소재 불명확</span>
+                        <span class="obstacle-chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="obstacle-body">
+                        <div class="obstacle-body-inner">
+                            <p class="ob-problem">현행법상 AI 시스템의 판단에 대한 법적 책임 귀속이 모호하여, 의료·법률·행정 분야 도입에 장벽이 존재합니다.</p>
+                            <p class="ob-solution">승인 모듈(400)의 인간-LLM 협력 구조가 이를 구조적으로 해결합니다. AI 모듈(100, 200, 300)의 출력은 "권고(recommendation)" 수준이며, 최종 결정권과 법적 책임은 인간 검토자에게 귀속됩니다. 의사결정 감사 모듈(600)의 해시 체인 기반 불변 로그가 AI 권고 내용, 인간 검토 과정, 최종 결정 사유를 기록하여 사후 책임소재 규명의 근거를 제공합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="obstacle-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="obstacle-header">
+                        <span class="obstacle-num">2</span>
+                        <span class="obstacle-title">개인정보 보호 및 데이터 주권 우려</span>
+                        <span class="obstacle-chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="obstacle-body">
+                        <div class="obstacle-body-inner">
+                            <p class="ob-problem">개인 의료 기록, 세무 정보, 법적 문서 등 민감 데이터가 AI에 노출되는 것에 대한 우려가 존재합니다.</p>
+                            <p class="ob-solution">Private Data Vault(500)의 설계가 데이터 주권을 구조적으로 보장합니다. 원본 데이터는 사용자 관할의 단일 위치에 AES-256-GCM 암호화 저장되고, DHT 네트워크에는 이중 해시값(32바이트)만 존재합니다. 접근 제어 관리자(540)의 RBAC로 모듈별 접근 범위를 관리하고, 규정 준수 엔진(530)이 개인정보보호법·GDPR·HIPAA를 자동 이행합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="obstacle-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="obstacle-header">
+                        <span class="obstacle-num">3</span>
+                        <span class="obstacle-title">기존 전문직 종사자의 저항</span>
+                        <span class="obstacle-chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="obstacle-body">
+                        <div class="obstacle-body-inner">
+                            <p class="ob-problem">변리사, 세무사, 변호사 등 기존 전문직의 업무 대체에 대한 저항이 예상됩니다.</p>
+                            <p class="ob-solution">본 시스템은 대체가 아닌 협업 구조입니다. 승인 모듈(400)의 인간 의사결정 인터페이스(420)는 전문가에게 LLM 보조 엔진(410)이 정리한 핵심 쟁점, 위험 요소, 유사 선행 판단 비교를 제시합니다. 전문가는 AI가 47분에 생성한 초안(기존 40~80시간 분량)을 검토·승인하는 고부가가치 역할에 집중하게 됩니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="obstacle-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="obstacle-header">
+                        <span class="obstacle-num">4</span>
+                        <span class="obstacle-title">다중 LLM 운영의 계산 비용</span>
+                        <span class="obstacle-chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="obstacle-body">
+                        <div class="obstacle-body-inner">
+                            <p class="ob-problem">조력·방해·중재 LLM의 반복적 상호작용에 따른 계산 비용이 경제성을 저해할 수 있습니다.</p>
+                            <p class="ob-solution">4중 최적화 메커니즘이 적용됩니다. ① 적응적 모델 선택: 초기 라운드에 경량 모델(70B↓), 후기에 고성능 모델(400B↑)로 전환하여 40~60% 비용 절감. ② 시맨틱 캐시: 이전 응답을 벡터 임베딩으로 저장, 중복 연산 방지. ③ 병합 모듈(800): 병렬 인스턴스의 품질 점수 기반 최적 출력 선택. ④ 조기 종료: 수렴 지표가 임계값의 1.5배 이내 시 조기 종료 옵션 제시.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="obstacle-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="obstacle-header">
+                        <span class="obstacle-num">5</span>
+                        <span class="obstacle-title">국제 표준화 및 규제 환경 다양성</span>
+                        <span class="obstacle-chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="obstacle-body">
+                        <div class="obstacle-body-inner">
+                            <p class="ob-problem">각국의 상이한 법률 체계, 의료 기준, 행정 구조가 글로벌 확장의 장벽이 됩니다.</p>
+                            <p class="ob-solution">역할 정의 매핑 테이블(150)과 도메인별 프롬프트 템플릿(160)의 교체만으로 신규 도메인 적용이 가능한 범용 아키텍처입니다. 합의 불발 시 기본값(default fallback)도 도메인별 차등 적용됩니다: 의료→조력 LLM(환자 안전), 세무→명문 규정 부합 측, 교육→학습자 이행률 기반, 법률→BATNA 비교 양보 유도. 다국어 지원과 규정 준수 엔진(530)의 각국 법규 플러그인으로 대응합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⑤ 종합 요약 -->
+        <div class="econ-subsection" style="margin-bottom:0;">
+            <div class="econ-sub-header">
+                <span class="econ-sub-num">04</span>
+                <h3>종합 경제 효과</h3>
+            </div>
+
+            <div class="econ-summary">
+                <div class="summary-mega">67,880<span class="mega-unit">조 원</span></div>
+                <div class="summary-usd">≈ 52.2조 달러 (2035년 누적 기준)</div>
+                <div class="summary-breakdown">
+                    <div class="summary-item">
+                        <div class="si-val">1,180조</div>
+                        <div class="si-label">한국 효과 (4년)</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="si-val">66,700조</div>
+                        <div class="si-label">글로벌 효과 (5년)</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="si-val">5개</div>
+                        <div class="si-label">핵심 적용 도메인</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="si-val">O(1)</div>
+                        <div class="si-label">무결성 검증</div>
+                    </div>
+                </div>
+                <p class="summary-quote">
+                    고정 역할 분화(A-B-C-D)에 의한 체계적 자가 검증, 효용 함수 기반 실질적 합의 도출,<br>
+                    그리고 계층적 해시 분산 기반 Private Data Vault의 데이터 주권 보장 —<br>
+                    세계 최초의 다중 LLM 자율 협업 시스템이 창출할 경제적 가치입니다.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- 경제효과 섹션 인터랙션 스크립트 -->
+<script>
+(function() {
+    var obstacles = document.getElementById('econ-obstacles');
+    if (!obstacles) return;
+
+    obstacles.addEventListener('click', function(e) {
+        var item = e.target.closest('.obstacle-item');
+        if (item) toggleObstacle(item);
+    });
+
+    obstacles.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            var item = e.target.closest('.obstacle-item');
+            if (item) { e.preventDefault(); toggleObstacle(item); }
+        }
+    });
+
+    function toggleObstacle(item) {
+        var wasOpen = item.classList.contains('open');
+        obstacles.querySelectorAll('.obstacle-item.open').forEach(function(el) {
+            el.classList.remove('open');
+            el.setAttribute('aria-expanded', 'false');
+            el.querySelector('.obstacle-body').style.maxHeight = '0';
+        });
+        if (!wasOpen) {
+            item.classList.add('open');
+            item.setAttribute('aria-expanded', 'true');
+            var body = item.querySelector('.obstacle-body');
+            body.style.maxHeight = body.scrollHeight + 'px';
+        }
+    }
+
+    // 바 차트 스크롤 애니메이션
+    var barFills = document.querySelectorAll('.econ-section .bar-fill');
+    if (barFills.length > 0 && 'IntersectionObserver' in window) {
+        barFills.forEach(function(fill) {
+            fill.dataset.targetWidth = fill.style.width;
+            fill.style.width = '0';
+        });
+        var chartObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    barFills.forEach(function(fill, i) {
+                        setTimeout(function() { fill.style.width = fill.dataset.targetWidth; }, i * 80);
+                    });
+                    chartObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.15 });
+        var chartSection = document.querySelector('.econ-section .bar-chart');
+        if (chartSection) chartObserver.observe(chartSection);
+    }
+})();
+</script>

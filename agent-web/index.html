@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="style.css">
-    <script src="/js/header.js"></script>
+    
 </head>
 <body>
     <!-- Hero -->
@@ -161,49 +161,89 @@
         </div>
     </section>
 
-    <!-- Section 4: 로드맵 -->
-    <section class="section dark" id="roadmap">
+    <!-- Section 4: 기술 보고서 (3탭) -->
+    <section class="section dark" id="reports">
         <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Roadmap</span>
-                <h2 class="section-title">Agent Web <span class="highlight">전환 로드맵</span></h2>
-                <p class="section-desc">현재 웹에서 Agent Web으로의 단계적 전환</p>
+            <div id="reportTabs" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px;display:inline-flex;gap:4px;margin-bottom:28px">
+                <div class="report-tab on" data-tab="architecture">핵심 아키텍처</div>
+                <div class="report-tab" data-tab="patent">특허청 시나리오</div>
+                <div class="report-tab" data-tab="tax">국세청 시나리오</div>
             </div>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h4>Phase 1: 인프라 구축</h4>
-                        <p>OpenHash 네트워크 전국 배포, 5단계 계층 구조 완성, 6천만 해시 체인 기반 구축</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h4>Phase 2: SSI 도입</h4>
-                        <p>자기주권신원 시스템 배포, 디지털 신분증 해시 등록, 정부 기관 연동</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h4>Phase 3: 데이터 금고</h4>
-                        <p>개인/기관 데이터 금고(Vault) 서비스 시작, 각종 증명서 디지털화</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h4>Phase 4: AI 에이전트</h4>
-                        <p>개인 AI 에이전트 배포, 기관 AI 에이전트 연동, AI-to-AI 프로토콜 표준화</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h4>Phase 5: Agent Web 완성</h4>
-                        <p>전 국민 Agent Web 전환, 기본소득 시스템 연동, 공정한 사회 기반 완성</p>
-                    </div>
-                </div>
+            <div id="report-container">
+                <div style="text-align:center;padding:60px 0;color:#666;font-size:.9rem;">보고서 로딩 중...</div>
             </div>
         </div>
     </section>
 
+    <style>
+    #reportTabs .report-tab{font-size:1rem;font-weight:600;padding:10px 24px;color:#bbb;cursor:pointer;border-radius:6px;white-space:nowrap;transition:color .2s,background .2s}
+    #reportTabs .report-tab:hover{color:#fff;background:rgba(255,255,255,.06)}
+    #reportTabs .report-tab.on{color:#fff;background:rgba(144,202,249,.18)}
+    </style>
+
+    <!-- Report tabs lazy loader -->
+    <script>
+    (function(){
+      var tabs=document.getElementById('reportTabs');
+      var container=document.getElementById('report-container');
+      if(!tabs||!container) return;
+
+      var cache={};
+      var fileMap={architecture:'architecture.html',patent:'patent-scenario.html',tax:'tax-scenario.html'};
+      var current='';
+
+      function loadTab(name){
+        if(current===name) return;
+        current=name;
+        tabs.querySelectorAll('.report-tab').forEach(function(t){
+          t.classList.toggle('on',t.dataset.tab===name);
+        });
+        if(cache[name]){
+          container.innerHTML=cache[name];
+          runScripts();
+          return;
+        }
+        container.innerHTML='<div style="text-align:center;padding:60px 0;color:#666;font-size:.9rem;">보고서 로딩 중...</div>';
+        fetch(fileMap[name])
+          .then(function(r){return r.text();})
+          .then(function(html){
+            cache[name]=html;
+            if(current===name){
+              container.innerHTML=html;
+              runScripts();
+            }
+          })
+          .catch(function(){
+            container.innerHTML='<p style="color:#f87171;text-align:center;">보고서를 불러오지 못했습니다.</p>';
+          });
+      }
+
+      function runScripts(){
+        container.querySelectorAll('script').forEach(function(old){
+          var s=document.createElement('script');
+          s.textContent=old.textContent;
+          old.parentNode.replaceChild(s,old);
+        });
+      }
+
+      tabs.addEventListener('click',function(e){
+        var t=e.target.closest('.report-tab');
+        if(t) loadTab(t.dataset.tab);
+      });
+
+      /* 스크롤 시 기본 탭 로드 */
+      var loaded=false;
+      var observer=new IntersectionObserver(function(entries){
+        if(entries[0].isIntersecting&&!loaded){
+          loaded=true;
+          observer.disconnect();
+          loadTab('architecture');
+        }
+      },{rootMargin:'200px'});
+      observer.observe(container);
+    })();
+    </script>
+
     <script src="script.js"></script>
-</body>
+<script src="/js/nav.js"></script></body>
 </html>

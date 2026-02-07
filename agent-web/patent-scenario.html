@@ -1,0 +1,259 @@
+<!-- patent-scenario.html — 특허 출원 자동화 시나리오 (lazy-loaded fragment) -->
+<style>
+.scn{max-width:860px;margin:0 auto;padding:0 20px;font-family:'Noto Sans KR',sans-serif;color:#e8e8e8;line-height:1.8}
+.scn section{padding:48px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.scn section:last-child{border-bottom:none}
+.scn h2{font-size:1.35rem;font-weight:700;color:#fff;margin:0 0 8px}
+.scn h3{font-size:1.12rem;font-weight:600;color:#e8e8e8;margin:32px 0 8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08)}
+.scn h3:first-child{margin-top:0}
+.scn p{font-size:.92rem;color:#ccd0d4;margin:0 0 16px}
+.scn .lead{font-size:.96rem;color:#d5d9dd;margin-bottom:28px}
+.scn .badge{display:inline-block;font-size:.88rem;font-weight:600;letter-spacing:.06em;color:#90caf9;margin-bottom:12px}
+.scn .formula{background:rgba(255,255,255,.03);border-left:3px solid rgba(144,202,249,.3);padding:12px 16px;margin:12px 0 20px;font-size:.92rem;color:#d5d9dd;line-height:1.7}
+.scn .tbl-wrap{overflow-x:auto;margin:16px 0 24px}
+.scn table{width:100%;border-collapse:collapse;font-size:.92rem}
+.scn table th{background:rgba(255,255,255,.05);color:#dde0e4;font-weight:600;text-align:left;padding:10px 14px;border-bottom:2px solid rgba(255,255,255,.1)}
+.scn table td{padding:10px 14px;color:#ccd0d4;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+.scn table tr:last-child td{border-bottom:none}
+.scn .g{color:#81c784}
+.scn .r{color:#e57373}
+.scn strong{color:#e8e8e8}
+
+/* ── 흐름도 ── */
+.flow{display:flex;flex-direction:column;gap:0;margin:24px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;position:relative;padding:0 0 0 48px;min-height:72px}
+.flow-step::before{content:attr(data-n);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:6px;background:rgba(144,202,249,.15);color:#90caf9;font-size:.88rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.flow-step::after{content:'';position:absolute;left:15px;top:32px;width:2px;height:calc(100% - 32px);background:rgba(255,255,255,.06)}
+.flow-step:last-child::after{display:none}
+.flow-body{flex:1;padding-bottom:20px}
+.flow-title{font-size:.92rem;font-weight:600;color:#e8e8e8;margin-bottom:4px}
+.flow-desc{font-size:.92rem;color:#b8bcc0;line-height:1.7}
+
+/* ── 반복 루프 표현 ── */
+.loop-box{border:1px dashed rgba(144,202,249,.25);border-radius:8px;padding:20px;margin:16px 0 24px;position:relative}
+.loop-box::before{content:'반복 개선 사이클';position:absolute;top:-10px;left:16px;background:#1a1a2e;padding:0 8px;font-size:.88rem;font-weight:600;color:#90caf9}
+.loop-inner{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+.loop-agent{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:14px}
+.loop-agent-id{font-size:.92rem;font-weight:700;margin-bottom:4px}
+.loop-agent-id.a{color:#90caf9}
+.loop-agent-id.b{color:#e57373}
+.loop-agent-desc{font-size:.92rem;color:#b8bcc0;line-height:1.6}
+.loop-arrow{display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,.3);font-size:.88rem}
+.loop-arrow span{font-size:1.2rem}
+@media(max-width:640px){.loop-inner{grid-template-columns:1fr;text-align:center}.loop-arrow span{transform:rotate(90deg)}}
+
+/* ── 하이라이트 박스 ── */
+.highlight-box{background:rgba(144,202,249,.06);border:1px solid rgba(144,202,249,.15);border-radius:8px;padding:20px;margin:20px 0}
+.highlight-box h4{font-size:.96rem;font-weight:700;color:#90caf9;margin:0 0 8px}
+.highlight-box p{font-size:.92rem;color:#d5d9dd;margin:0 0 8px}
+.highlight-box p:last-child{margin:0}
+
+/* ── 비교 카드 ── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.compare-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:20px}
+.compare-card h4{font-size:.92rem;font-weight:700;margin:0 0 8px}
+.compare-card.before h4{color:#e57373}
+.compare-card.after h4{color:#81c784}
+.compare-card p{font-size:.92rem;color:#b8bcc0;margin:0 0 6px}
+.compare-card p:last-child{margin:0}
+@media(max-width:640px){.compare{grid-template-columns:1fr}}
+</style>
+
+<div class="scn">
+
+  <!-- S1: 개요 -->
+  <section>
+    <div class="badge">PATENT AUTOMATION — OVERVIEW</div>
+    <h2>AI Agent 기반 특허 출원 자동화</h2>
+    <p class="lead">출원인이 <strong>고팡(Gopang)</strong> 채팅 앱을 통해 자신의 <strong>AI 비서</strong>에게 특허 출원을 지시하면, AI 비서가 출원인의 Private Data Vault에서 관련 연구 기록과 아이디어를 인출하고, 변리사 Agent·특허청 Agent 등 외부 기관 Agent를 호출하여 전체 출원 과정을 자율적으로 수행합니다. Private Data Vault에 접근할 수 있는 것은 오직 해당 출원인의 AI 비서뿐이며, 외부 Agent에게는 AI 비서가 필요한 정보만 선별 제공합니다.</p>
+
+    <div class="highlight-box">
+      <h4>고팡(Gopang): 사람과 AI Agent 간의 소통 경로</h4>
+      <p>고팡은 출원인과 AI 비서 간, 그리고 필요시 출원인과 외부 기관 Agent 간의 직접 소통을 지원하는 채팅 앱입니다. 출원인은 고팡을 통해 AI 비서에게 업무를 지시하고, AI 비서가 변리사 Agent·특허청 Agent와 소통하며 업무를 진행합니다. 출원인이 직접 외부 Agent와 대화해야 할 경우에도 고팡이 그 소통 경로 역할을 합니다.</p>
+    </div>
+
+    <div class="compare">
+      <div class="compare-card before">
+        <h4>기존 방식</h4>
+        <p>전문 변리사 의뢰: 수백만 원</p>
+        <p>명세서 작성 + 심사: 수십 시간 ~ 수개월</p>
+        <p>출원 시점 입증: 접수 시각 기준 (분쟁 시 불확실)</p>
+      </div>
+      <div class="compare-card after">
+        <h4>Agent Web 방식</h4>
+        <p>고팡에서 AI 비서에 지시 → 자동 처리: 수만 원</p>
+        <p>명세서 도출 + 심사: 1~2시간</p>
+        <p>출원 시점 입증: OpenHash 기록 (위변조 불가능)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- S2: 전체 흐름 -->
+  <section>
+    <div class="badge">PROCESS FLOW</div>
+    <h2>특허 출원 자동화 흐름</h2>
+
+    <div class="flow">
+      <div class="flow-step" data-n="1">
+        <div class="flow-body">
+          <div class="flow-title">출원인 → AI 비서: 업무 지시 (고팡)</div>
+          <div class="flow-desc">출원인이 고팡 채팅 앱을 통해 자신의 AI 비서에게 발명의 핵심 아이디어를 설명하고 특허 출원을 지시합니다. 기술 분야, 해결하려는 문제, 핵심 구성요소를 대화 형식으로 전달합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="2">
+        <div class="flow-body">
+          <div class="flow-title">AI 비서: Vault 데이터 인출 및 정리</div>
+          <div class="flow-desc">AI 비서가 출원인의 Private Data Vault에서 관련 연구 기록, 실험 데이터, 개발 이력을 인출합니다. Private Data Vault에 접근할 수 있는 것은 오직 이 AI 비서뿐이며, 외부 Agent에게는 출원에 필요한 정보만 선별하여 전달합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="3">
+        <div class="flow-body">
+          <div class="flow-title">AI 비서 → 변리사 Agent 호출</div>
+          <div class="flow-desc">AI 비서가 변리사 Agent(조력 LLM)를 호출하고, 선별된 아이디어 자료를 전달합니다. 변리사 Agent는 발명의 기술적 특징, 종래 기술과의 차별점, 청구 권리 범위를 파악하고, 선행기술 데이터베이스를 검색하여 선행기술문헌을 수집합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="4">
+        <div class="flow-body">
+          <div class="flow-title">명세서 초안 작성 → 반복 개선</div>
+          <div class="flow-desc">변리사 Agent가 초안을 작성하면, 심사관 Agent(방해 LLM)가 거절 사유를 지적합니다. 이 반복 피드백을 통해 등록 가능성을 극대화한 명세서를 도출합니다. (아래 상세 설명)</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="5">
+        <div class="flow-body">
+          <div class="flow-title">도면 및 도면 부호 작성</div>
+          <div class="flow-desc">확정된 명세서에 기반하여, 발명의 구성요소와 동작 흐름을 도시하는 도면을 자동 생성하고, 명세서와 일관된 도면 부호를 부여합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="6">
+        <div class="flow-body">
+          <div class="flow-title">청구항 작성</div>
+          <div class="flow-desc">명세서와 도면을 기반으로, 독립항과 종속항을 체계적으로 구성합니다. 청구항의 범위 설정, 신규성·진보성 확보, 기재 요건 충족을 각각 독립 쟁점으로 검증합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="7">
+        <div class="flow-body">
+          <div class="flow-title">OpenHash 시각 증명 기록</div>
+          <div class="flow-desc">AI 비서가 완성된 출원서 전체의 해시값을 OpenHash 네트워크에 기록합니다. 이 기록은 출원 시각을 특정하며, 위변조가 불가능합니다. (아래 상세 설명)</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="8">
+        <div class="flow-body">
+          <div class="flow-title">AI 비서 → 특허청 Agent 제출 및 심사</div>
+          <div class="flow-desc">AI 비서가 특허청 Agent에 출원서를 제출합니다. 특허청 Agent가 신규성·진보성·기재 요건을 자동 심사하고, 1~2시간 내에 등록 또는 거절 여부를 결정하여 AI 비서에 회신합니다.</div>
+        </div>
+      </div>
+      <div class="flow-step" data-n="9">
+        <div class="flow-body">
+          <div class="flow-title">출원인 최종 승인 (고팡)</div>
+          <div class="flow-desc">AI 비서가 고팡을 통해 출원인에게 심사 결과를 보고합니다. 출원인이 최종 검토하고 승인합니다. 필요시 출원인은 고팡을 통해 특허청 Agent와 직접 소통할 수도 있습니다. 모든 과정은 해시 체인 기반 감사 로그로 기록되어 법적 책임소재가 명확합니다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3: 반복 개선 사이클 -->
+  <section>
+    <div class="badge">ITERATIVE REFINEMENT</div>
+    <h2>조력-방해 Agent 반복 피드백</h2>
+    <p class="lead">AI 비서가 호출한 변리사 Agent(A)가 명세서를 작성하면, 심사관 Agent(B)가 거절 사유를 구조화된 지적 사항으로 생성합니다. A가 지적을 반영하여 명세서를 갱신하고, B가 재검토하는 사이클이 수렴할 때까지 반복됩니다. 이 과정에서 Vault 데이터가 추가로 필요하면, 외부 Agent가 AI 비서에게 요청하고 AI 비서가 선별하여 제공합니다.</p>
+
+    <div class="loop-box">
+      <div class="loop-inner">
+        <div class="loop-agent">
+          <div class="loop-agent-id a">MODULE A — 변리사 Agent</div>
+          <div class="loop-agent-desc">
+            출원인의 이익을 극대화하는 방향으로 명세서를 작성합니다.
+            추가 자료가 필요하면 AI 비서에게 요청하고, AI 비서가 Private Data Vault에서 연구 기록, 실험 데이터, 개발 이력을 인출하여 선별 제공합니다.
+          </div>
+        </div>
+        <div class="loop-arrow">
+          <span>→</span>
+          지적 사항
+          <span>←</span>
+          보정 명세서
+        </div>
+        <div class="loop-agent">
+          <div class="loop-agent-id b">MODULE B — 심사관 Agent</div>
+          <div class="loop-agent-desc">
+            특허 등록 거절의 관점에서 명세서를 검토합니다.
+            신규성 흠결, 진보성 흠결, 기재 불비, 발명의 단일성 위반 등을 구조화된 형식(쟁점 식별자, 심각도, 근거)으로 지적합니다.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>수렴 판단 모듈이 코사인 유사도 기반으로 결과물 변동 점수(Δ<sub>R</sub>)와 신규 지적 점수(Δ<sub>C</sub>)를 매 라운드 측정합니다. 연속 4라운드(특허 도메인 W=4) 동안 변동이 3% 이하(θ<sub>R</sub>=0.03), 신규 지적이 5% 이하(θ<sub>C</sub>=0.05)이면 수렴으로 판정합니다.</p>
+
+    <p>수렴 후, 중재 LLM(MODULE C, 심판관 역할)이 쟁점별 순차 합의를 수행합니다. 청구항 범위, 신규성 판단, 진보성 판단, 명세서 기재 요건을 각각 독립 쟁점으로 분해하여 합의를 도출합니다.</p>
+
+    <h3>명세서 → 도면 → 청구항 순차 도출</h3>
+    <div class="formula">
+      ① 명세서 확정 (A-B 반복 수렴 + C 중재 합의)<br>
+      ② 도면 자동 생성 (확정된 명세서의 구성요소·흐름 기반, 도면 부호 자동 매핑)<br>
+      ③ 청구항 작성 (명세서 + 도면에 기반한 독립항·종속항 체계적 구성)
+    </div>
+  </section>
+
+  <!-- S4: OpenHash 시각 증명 -->
+  <section>
+    <div class="badge">OPENHASH TIMESTAMP PROOF</div>
+    <h2>출원 시각의 위변조 불가능한 증명</h2>
+    <p class="lead">특허 출원에서 가장 중요한 요소 중 하나는 '누가 먼저 출원했는가'입니다. OpenHash는 출원서의 해시값과 정확한 타임스탬프를 계층적 DHT 네트워크에 기록하여, 출원 시각을 위변조 불가능하게 특정합니다.</p>
+
+    <h3>기록 메커니즘</h3>
+    <div class="formula">
+      H = SHA-256(출원서 전체)<br>
+      H′ = SHA-256(H ∥ T) → 계층적 DHT 네트워크에 분산 저장<br>
+      <br>
+      ※ 원본 출원서는 출원인의 Private Data Vault에 암호화 저장<br>
+      ※ DHT에는 이중 해시값(32바이트)만 존재 → 출원 내용 유출 불가
+    </div>
+
+    <p>이 기록은 다음을 증명합니다: 해당 출원서가 기록 시점(T)에 존재했다는 사실, 기록 시점 이후 출원서가 변경되지 않았다는 사실, 출원서의 내용이 출원인에 의해 생성되었다는 사실.</p>
+
+    <div class="highlight-box">
+      <h4>글로벌 규모의 적용: 선출원주의의 혁신</h4>
+      <p>OpenHash 네트워크는 대한민국에 국한되지 않습니다. 글로벌 계층(Layer 5)에 분산 저장된 해시값은 전 세계 어디서든 검증 가능합니다.</p>
+      <p>이는 다음과 같은 효용을 제공합니다:</p>
+      <p><strong>① 국제 선출원 시각 증명</strong> — PCT(특허협력조약) 출원 시, OpenHash 기록이 출원 시각의 독립적 증거로 기능합니다. 각국 특허청의 접수 시각에 의존하지 않고, 발명의 존재 시각을 기술적으로 증명합니다.</p>
+      <p><strong>② 선발명 분쟁 해결</strong> — 복수의 출원인이 유사한 발명을 주장할 때, OpenHash 타임스탬프가 객관적 선후 관계를 증명합니다. 합의 메커니즘 없이 O(1)로 검증되므로, 분쟁 해결 비용이 대폭 절감됩니다.</p>
+      <p><strong>③ 영업비밀의 존재 시점 증명</strong> — 출원 전 단계에서도, 아이디어나 연구 기록의 해시값을 사전 등록하여 '해당 시점에 해당 지식이 존재했음'을 증명할 수 있습니다. 이는 기업의 영업비밀 보호와 기술 탈취 분쟁에서 결정적 증거가 됩니다.</p>
+    </div>
+
+    <h3>종래 방식과의 비교</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>비교 항목</th><th>종래 방식</th><th>OpenHash 방식</th></tr></thead>
+        <tbody>
+          <tr><td>시각 증명 주체</td><td class="r">특허청 접수 시스템 (단일 장애점)</td><td class="g">분산 DHT 네트워크 (단일 장애점 없음)</td></tr>
+          <tr><td>위변조 가능성</td><td class="r">시스템 관리자에 의한 조작 가능</td><td class="g">SHA-256 역상 저항성에 의해 불가능</td></tr>
+          <tr><td>국제 검증</td><td class="r">각국 특허청 간 별도 확인 필요</td><td class="g">글로벌 DHT에서 즉시 검증 가능</td></tr>
+          <tr><td>출원 전 보호</td><td class="r">출원 전에는 시각 증명 불가</td><td class="g">연구 기록 해시를 사전 등록하여 보호</td></tr>
+          <tr><td>검증 비용</td><td class="r">국제 분쟁 시 수천만 원</td><td class="g">해시 연산 비용만 (실질적 무료)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S5: 기대 효과 -->
+  <section>
+    <div class="badge">EXPECTED IMPACT</div>
+    <h2>기대 효과</h2>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>기존</th><th>Agent Web</th></tr></thead>
+        <tbody>
+          <tr><td>명세서 작성 시간</td><td>수일 ~ 수주</td><td class="g">30분 ~ 1시간</td></tr>
+          <tr><td>심사 기간</td><td>12 ~ 18개월</td><td class="g">1 ~ 2시간</td></tr>
+          <tr><td>비용</td><td>수백만 원</td><td class="g">수만 원</td></tr>
+          <tr><td>출원 시각 증명</td><td>특허청 접수 시각</td><td class="g">OpenHash 글로벌 타임스탬프</td></tr>
+          <tr><td>국제 출원</td><td>각국 별도 절차</td><td class="g">단일 OpenHash 기록으로 글로벌 증명</td></tr>
+          <tr><td>품질 보증</td><td>변리사 개인 역량 의존</td><td class="g">조력-방해 반복 검증 + 정량적 수렴</td></tr>
+          <tr><td>감사 추적</td><td>서면 기록</td><td class="g">해시 체인 기반 불변 감사 로그</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>

@@ -1,191 +1,1439 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenHash - 블록체인을 넘어서는 신뢰 인프라</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/home.css">
-    <script src="js/header.js"></script>
-</head>
-<body>
-    <!-- Hero -->
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>OpenHash - 미리보기</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"><style>
+/* ============================================
+   OpenHash 홈 페이지
+   한국 정부 웹사이트 디자인 가이드 + Material Design 3
+   - 색상: 네이비 (#1a3a6e) 단일 톤, 최소 강조색
+   - 타이포: Noto Sans KR, 명확한 계층
+   - 여백: 섹션 간 충분한 간격
+   - 카드: 그림자 최소, border 활용
+   - 60-30-10 컬러 규칙
+   ============================================ */
+
+
+/* --- CSS Custom Properties --- */
+:root {
+    --color-navy: #1a3a6e;
+    --color-gold: #d4a017;
+    --color-text: #212529;
+    --color-text-secondary: #343a40;
+    --color-text-muted: #495057;
+    --color-text-light: #6c757d;
+    --color-bg-alt: #f8f9fa;
+    --color-bg-highlight: #f0f4ff;
+    --color-border: #dee2e6;
+    --color-border-dark: #ced4da;
+    --color-footer-bg: #1f2937;
+    --spacing-section: 3.5rem;
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 6px;
+    --font-size-sm: 0.82rem;
+    --font-size-base: 0.9rem;
+    --font-size-md: 0.95rem;
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #212529;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    background: #fff;
+}
+a { text-decoration: none; color: inherit; }
+
+/* --- Hero (Header Only) --- */
+.hero {
+    background: var(--color-navy);
+    padding: 2.5rem 0;
+    text-align: center;
+    border-bottom: 3px solid var(--color-gold);
+}
+.hero-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+}
+.hero-title .highlight {
+    color: var(--color-gold);
+}
+
+/* --- Intro (도입부) --- */
+.intro {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.intro-text {
+    max-width: 760px;
+    margin: 0 auto;
+}
+.intro-text p {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: #343a40;
+    margin-bottom: 1rem;
+    text-align: justify;
+    word-break: keep-all;
+}
+.intro-text p:last-child {
+    margin-bottom: 0;
+}
+.intro-text strong {
+    color: var(--color-navy);
+    font-weight: 600;
+}
+
+/* --- Section Common --- */
+.section {
+    padding: 3.5rem 0;
+}
+.section.alt {
+    background: #f8f9fa;
+}
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section-header {
+    margin-bottom: 2rem;
+}
+.section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #212529;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--color-navy);
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+.section-title .highlight {
+    color: var(--color-navy);
+}
+.section-lead {
+    font-size: 0.95rem;
+    color: #495057;
+    line-height: 1.8;
+    word-break: keep-all;
+    margin-top: 0.5rem;
+}
+.sub-section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    margin: 2.5rem 0 1.25rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--color-navy);
+}
+
+/* --- OpenHash Features --- */
+.oh-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.oh-feature {
+    font-size: 0.92rem;
+    color: #343a40;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    position: relative;
+    line-height: 1.6;
+}
+.oh-feature::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-navy);
+    font-weight: 600;
+}
+
+/* --- Card Grid 2x2 --- */
+.card-grid-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+/* --- Card Grid 3 (1x3) --- */
+.card-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+/* --- Section Conclusion --- */
+.section-conclusion {
+    margin-top: 2rem;
+    padding: 1.25rem 1.5rem;
+    background: #f0f4ff;
+    border-left: 3px solid var(--color-navy);
+    border-radius: 2px;
+}
+.section-conclusion p {
+    font-size: 0.9rem;
+    color: #343a40;
+    line-height: 1.8;
+    word-break: keep-all;
+    margin: 0 0 0.5rem;
+}
+.section-conclusion p:last-child {
+    margin-bottom: 0;
+}
+.section-conclusion ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+.section-conclusion ul li {
+    font-size: 0.86rem;
+    color: #343a40;
+    padding: 0.5rem 0.75rem;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    text-align: center;
+}
+.section-conclusion h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    margin-bottom: 0.75rem;
+}
+
+/* --- Gopang Section --- */
+.section-subtitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
+    word-break: keep-all;
+}
+.foundation-desc {
+    font-size: 0.9rem;
+    color: #495057;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+    word-break: keep-all;
+}
+.gopang-impact {
+    margin-top: 2.5rem;
+}
+.gopang-closing {
+    font-weight: 500;
+}
+.gopang-status {
+    font-size: 0.84rem;
+    color: #6c757d;
+    font-style: italic;
+}
+/* --- Card Grid 3col --- */
+.card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1.4rem 1.6rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+.card:hover {
+    border-color: var(--color-navy);
+    background: #fafbff;
+}
+.card.active {
+    border-color: var(--color-navy);
+    border-width: 2px;
+    background: #f0f4ff;
+    padding: calc(1.4rem - 1px) calc(1.6rem - 1px);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+}
+.card-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: var(--color-navy);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+.card-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+.card h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #212529;
+}
+.card.active h4 {
+    color: var(--color-navy);
+}
+
+/* Card Body */
+/* Card Sub Label */
+.card-sub {
+    font-size: 0.95rem;
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    font-style: italic;
+}
+
+/* Card Label */
+.card-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-navy);
+    margin-bottom: 0.3rem;
+}
+.card-desc {
+    font-size: 1rem;
+    color: #495057;
+    line-height: 1.7;
+    word-break: keep-all;
+}
+.card-summary {
+    list-style: none;
+    padding: 0;
+}
+.card-summary li {
+    font-size: 1rem;
+    color: #495057;
+    line-height: 1.7;
+    padding: 0.15rem 0 0.15rem 0.9rem;
+    position: relative;
+}
+.card-summary li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--color-navy);
+    font-weight: 700;
+}
+
+/* --- Detail Panel (Slide Out) --- */
+.detail-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+    opacity: 0;
+    margin-top: 0;
+}
+.detail-panel.open {
+    max-height: 800px;
+    opacity: 1;
+    margin-top: 1.25rem;
+}
+.detail-content {
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-left: 3px solid var(--color-navy);
+    border-radius: 2px;
+    padding: 1.5rem 1.75rem;
+    position: relative;
+}
+.detail-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #dee2e6;
+    background: #f8f9fa;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.detail-close:hover {
+    background: #e9ecef;
+}
+.detail-close svg {
+    width: 12px;
+    height: 12px;
+    stroke: #6c757d;
+}
+.detail-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.detail-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-navy);
+}
+.detail-body {
+    font-size: 0.86rem;
+    color: #495057;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+.detail-body h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #343a40;
+    margin: 1rem 0 0.3rem;
+}
+.detail-body h4:first-child {
+    margin-top: 0;
+}
+.detail-body p {
+    margin-bottom: 0.4rem;
+}
+.detail-body strong {
+    color: #212529;
+}
+.detail-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.4rem 0;
+}
+.detail-body ul li {
+    padding: 0.2rem 0 0.2rem 1.1rem;
+    position: relative;
+    line-height: 1.7;
+}
+.detail-body ul li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: #6c757d;
+}
+
+
+
+/* --- Footer --- */
+.footer {
+    background: #1f2937;
+    color: rgba(255,255,255,0.55);
+    padding: 1.5rem 0;
+    text-align: center;
+    font-size: 0.8rem;
+    border-top: 3px solid var(--color-navy);
+}
+.footer a {
+    color: rgba(255,255,255,0.75);
+    transition: color 0.2s;
+}
+.footer a:hover {
+    color: #fff;
+}
+.footer-patent {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+}
+.footer-patent strong {
+    color: rgba(255,255,255,0.6);
+}
+
+/* --- AI Infra Card --- */
+.ai-infra-card {
+    background: #f0f4ff;
+    border: 1px solid #c5d4f0;
+    border-left: 4px solid #1a3a6e;
+    border-radius: 4px;
+    padding: 1.5rem 1.75rem;
+    margin-top: 1.25rem;
+}
+.ai-infra-card p {
+    font-size: 0.9rem;
+    color: #343a40;
+    line-height: 1.9;
+    word-break: keep-all;
+    margin: 0;
+}
+.ai-infra-card strong {
+    color: var(--color-navy);
+}
+
+/* --- Architecture Flow --- */
+.arch-flow {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+.arch-flow-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+.arch-flow-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+.arch-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background: #f8f9fa;
+    min-width: 110px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+}
+.arch-node:hover {
+    border-color: var(--color-navy);
+    background: #f0f4ff;
+}
+.arch-node-icon {
+    font-size: 1.2rem;
+}
+.arch-node-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #212529;
+}
+.arch-node-sub {
+    font-size: 0.68rem;
+    color: #6c757d;
+}
+.arch-node-oh { border-left: 3px solid var(--color-navy); }
+.arch-node-vault { border-left: 3px solid #2d6a4f; }
+.arch-node-evidence { border-left: 3px solid #e76f51; }
+.arch-node-llm { border-left: 3px solid #d4a017; }
+.arch-node-human { border-left: 3px solid #7b2cbf; }
+.arch-arrow {
+    font-size: 1.1rem;
+    color: #adb5bd;
+    font-weight: 700;
+    padding: 0 0.15rem;
+}
+
+/* --- Glossary --- */
+.glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+.glossary-item {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s;
+}
+.glossary-item:hover {
+    border-color: var(--color-navy);
+}
+.glossary-item h4 {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    margin-bottom: 0.4rem;
+}
+.glossary-item p {
+    font-size: 0.82rem;
+    color: #495057;
+    line-height: 1.7;
+    word-break: keep-all;
+    margin: 0;
+}
+
+
+/* --- Accessibility Focus Styles --- */
+.card:focus-visible,
+.nav-menu a:focus-visible,
+.detail-close:focus-visible,
+.glossary-item:focus-visible,
+.arch-node:focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 2px;
+}
+a:focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 2px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .hero { padding: 2rem 0; }
+    .hero-title { font-size: 1.4rem; }
+    .intro { padding: 2rem 0 1.5rem; }
+    .section { padding: 2.5rem 0; }
+    .section-title { font-size: 1.15rem; }
+    .card-grid-2x2 { grid-template-columns: 1fr; }
+    .card-grid-3 { grid-template-columns: 1fr; }
+    .section-conclusion ul { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 0 1.25rem; }
+    .arch-flow-diagram { flex-direction: column; gap: 0.5rem; }
+    .arch-arrow { transform: rotate(90deg); }
+    .glossary-grid { grid-template-columns: 1fr; }
+}
+.nav{background:#1f2937;padding:.6rem 0;position:sticky;top:0;z-index:100}.nav-inner{max-width:960px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center}.logo{font-size:1.1rem;font-weight:700;color:white;text-decoration:none}.logo span{color:#d4a017}.nav-menu{display:flex;gap:.15rem;list-style:none}.nav-menu a{color:rgba(255,255,255,.6);padding:.4rem .6rem;border-radius:4px;font-size:.78rem;font-weight:500;text-decoration:none;transition:all .2s;white-space:nowrap}.nav-menu a:hover{color:white;background:rgba(255,255,255,.08)}.nav-menu a.active{color:white;background:#1a3a6e}</style></head><body><nav class="nav"><div class="nav-inner"><a href="/" class="logo">◆ Open<span>Hash</span></a><ul class="nav-menu"><li><a href="/" class="active">홈</a></li><li><a href="/gopang/">고팡</a></li><li><a href="/principle/">원리</a></li><li><a href="/decentralization/">탈중앙화</a></li><li><a href="/agent-web/">새로운 웹</a></li><li><a href="/currency/">화폐</a></li><li><a href="/practical/">실용</a></li><li><a href="/technology/">기술</a></li><li><a href="/simulation/">시뮬레이션</a></li><li><a href="/tests/">테스트</a></li></ul></div></nav>
+    <!-- ====== Header ====== -->
     <section class="hero">
         <div class="container">
-            <h1 class="hero-title">블록체인을 넘어서는 <span class="highlight">신뢰 인프라</span></h1>
-            <p class="hero-desc">작업증명 없이, 지분증명 없이. 기존 통신 인프라의 물리적 계층을 활용하여 에너지 효율적이고 실용적인 데이터 무결성을 실현합니다.</p>
-            <div class="hero-buttons">
-                <a href="/principle/" class="btn btn-primary">기술 원리 보기</a>
-                <a href="/simulation/" class="btn btn-outline">시뮬레이션 체험</a>
+            <h1 class="hero-title">AI와 <span class="highlight">OpenHash</span></h1>
+        </div>
+    </section>
+
+    <!-- ====== 도입부 ====== -->
+    <section class="section intro" id="intro">
+        <div class="container">
+            <div class="intro-text">
+                <p>AI는 주어진 데이터로부터 새로운 데이터를 도출합니다. 머잖은 장래에, 진료 AI는 환자의 증상으로부터 신뢰할만한 진단을 하고, 판결 AI는 주어진 증거를 기반으로 공정한 판결을 할 것입니다.</p>
+                <p>AI의 놀라운 능력에 모두 환호하지만, 정작 중요한 사실을 간과합니다. 그것은 <strong>입력 데이터의 신뢰성</strong>입니다. 만약, 환자가 제출한 증상에 거짓이 섞이면, 그 진단은 오진일 수밖에 없고, 일부 증거가 위조되면, 그 판결은 어떤 흉기보다 위험합니다.</p>
+                <p>2026년 현재, 데이터의 진실성 혹은 신뢰성을 보장할 방안은 크게 둘입니다. 첫째는 <strong>국가의 법과 제도</strong>입니다. 국가가 그 신뢰성을 보장하는 주민등록증이나 지폐를 위변조하면, 국가의 물리력에 의해 처벌받습니다. 둘째는 <strong>블록체인으로 대표되는 분산 원장 기술</strong>입니다. 블록체인은 국가의 물리력 없이 데이터의 참(True)을 보장하는 엄청난 혁신입니다.</p>
+                <p>그러나, 지난 20여년 간 어떤 국가도 블록체인 혹은 유사 기술들을 산업 전체에 적용하거나, 대규모로 활용한 예가 없습니다. 이들 기술은 제각기 <strong>극복할 수 없는 한계</strong>가 뚜렷하기 때문입니다.</p>
+                <p>OpenHash는 단순한 분산 원장을 넘어, <strong>다중 AI 간 자율 협업 시스템의 핵심 인프라</strong>로 작동합니다. 각 AI가 의존하는 데이터의 출처와 무결성을 암호학적으로 보장함으로써, 조력 AI와 방해 AI 간의 공정한 논쟁과 합의를 가능하게 합니다. 이를 통해, 데이터의 신뢰성 위에서 다중 대규모 언어 모델(LLM)이 경쟁과 협력을 반복하며 <strong>최적의 의사결정</strong>을 도출합니다.</p>
             </div>
         </div>
     </section>
 
-    <!-- Problem -->
-    <section class="section" id="problem">
+    <!-- ====== 섹션 1: 블록체인 등의 한계 ====== -->
+    <section class="section" id="limits">
         <div class="container">
             <div class="section-header">
-                <span class="section-badge">Problem</span>
-                <h2 class="section-title">기존 블록체인의 <span class="highlight">한계</span></h2>
-                <p class="section-desc">비트코인과 이더리움은 혁신적이었지만, 근본적인 문제들을 안고 있습니다. <strong>카드를 클릭</strong>하여 자세히 알아보세요.</p>
+                <h2 class="section-title">블록체인 등의 <span class="highlight">한계</span></h2>
             </div>
-            <div class="card-grid" id="problem-cards">
-                <div class="card" data-type="energy">
-                    <div class="card-icon">⚡</div>
-                    <h4>막대한 에너지 소비</h4>
-                    <p>121 TWh/년, 일부 국가 전체 소비량</p>
+            <div class="card-grid-2x2" id="limit-cards">
+                <div class="card" role="button" tabindex="0" data-type="pow">
+                    <div class="card-header">
+                        <span class="card-num">1</span>
+                        <h4>블록체인 (PoW, 작업증명)</h4>
+                    </div>
+                    <ul class="card-summary">
+                        <li><strong>에너지 비효율성:</strong> 합의를 위한 경쟁적 계산(채굴)으로 인해, 단일 비트코인 거래 한 건에 가구의 평균 2주치 전력이 소비됩니다.</li>
+                        <li><strong>확장성 부재:</strong> 모든 노드가 모든 거래를 검증·저장하는 구조상, 네트워크가 커질수록 병목 현상이 심화되어 낮은 TPS(초당 처리량)를 벗어나기 어렵습니다.</li>
+                    </ul>
                 </div>
-                <div class="card" data-type="speed">
-                    <div class="card-icon">⏱️</div>
-                    <h4>느린 처리 속도</h4>
-                    <p>10분 ~ 12초, 실시간 처리 불가</p>
+                <div class="card" role="button" tabindex="0" data-type="pos">
+                    <div class="card-header">
+                        <span class="card-num">2</span>
+                        <h4>이더리움 (PoS, 지분증명)</h4>
+                    </div>
+                    <ul class="card-summary">
+                        <li><strong>확률적 최종성:</strong> 수백 개의 블록이 체인에 추가되어도, 포크 가능성이 완전히 사라지지 않아 거래 확정에 수십 분 이상의 지연이 발생할 수 있습니다.</li>
+                        <li><strong>중앙화 압력:</strong> 자본이 많은 대형 스테이커(예: 거래소)가 네트워크 통제권을 집중시켜, 탈중앙화라는 핵심 가치가 훼손될 수 있습니다.</li>
+                    </ul>
                 </div>
-                <div class="card" data-type="centralization">
-                    <div class="card-icon">👥</div>
-                    <h4>권력 집중</h4>
-                    <p>채굴풀/대형 지분자에게 집중</p>
+                <div class="card" role="button" tabindex="0" data-type="hashgraph">
+                    <div class="card-header">
+                        <span class="card-num">3</span>
+                        <h4>Hashgraph</h4>
+                    </div>
+                    <ul class="card-summary">
+                        <li><strong>알고리즘적 신뢰 의존:</strong> 비잔틴 장애 허용(BFT) 1/3 규칙은 수학적 한계로, 공모 노드가 이를 초과하면 신뢰 체계 자체가 붕괴합니다.</li>
+                        <li><strong>폐쇄적 생태계:</strong> 상용 특허 기술이므로 오픈소스 커뮤니티의 자발적 참여와 검증을 통한 보안성 향상 및 혁신이 제한적입니다.</li>
+                    </ul>
                 </div>
-                <div class="card" data-type="incentive">
-                    <div class="card-icon">🔄</div>
-                    <h4>동기화 부담</h4>
-                    <p>500GB+ 전체 이력 복제 필요</p>
+                <div class="card" role="button" tabindex="0" data-type="dag">
+                    <div class="card-header">
+                        <span class="card-num">4</span>
+                        <h4>DAG (Directed Acyclic Graph)</h4>
+                    </div>
+                    <ul class="card-summary">
+                        <li><strong>보안성-성능 트레이드오프:</strong> 병렬 처리 구조는 속도를 높이지만, 트랜잭션 승인 깊이와 최종성 보장 사이의 균형을 잡기 어려워 이중 지불 공격에 취약할 수 있습니다.</li>
+                        <li><strong>거버넌스 구조 부재:</strong> 대부분 기술적 검증에 초점을 맞춰, 공공기관 연동, 법적 효력 부여, 다기관 감사 추적 등 실제 사회 시스템 통합에 필요한 제도적 장치가 결여되어 있습니다.</li>
+                    </ul>
                 </div>
             </div>
-            <div class="detail-panel" id="problem-panel">
-                <div class="detail-content" id="problem-content"></div>
+            <div class="detail-panel" id="limit-panel" role="region" aria-label="블록체인 한계 상세 설명">
+                <div class="detail-content" id="limit-content"></div>
             </div>
         </div>
     </section>
 
-    <!-- Value -->
-    <section class="section alt" id="value">
+    <!-- ====== 섹션 2: 기존 기술의 현실적 적용 한계 ====== -->
+    <section class="section alt" id="reality">
         <div class="container">
             <div class="section-header">
-                <span class="section-badge">Value</span>
-                <h2 class="section-title">OpenHash의 <span class="highlight">미래 가치</span></h2>
-                <p class="section-desc">AI 시대, 데이터 진실성을 보장하는 유일한 기술. <strong>카드를 클릭</strong>하여 자세히 알아보세요.</p>
+                <h2 class="section-title">기존 기술의 <span class="highlight">현실적 적용 한계</span></h2>
             </div>
-            <div class="card-grid" id="value-cards">
-                <div class="card" data-type="economic">
-                    <div class="card-icon">💰</div>
-                    <h4>경제적 효용</h4>
-                    <p>AI가 데이터 진위를 판단할 유일한 해법</p>
+            <div class="card-grid-3" id="reality-cards">
+                <div class="card" role="button" tabindex="0" data-type="energy">
+                    <div class="card-header">
+                        <span class="card-num">1</span>
+                        <h4>에너지 및 인프라 요구량 추정 (PoW 블록체인 기준)</h4>
+                    </div>
+                    <ul class="card-summary">
+                        <li><strong>에너지 소비:</strong> 비트코인 네트워크의 연간 전력 소비량(약 150 TWh)은 대한민국 전체 연간 전력 소비량(약 500 TWh)의 약 30%에 해당합니다. 이를 한국의 원전(한 기당 약 1GW 용량)으로 대체한다면, 약 19기의 원자력 발전소를 가동하여 전력을 공급해야 합니다.</li>
+                        <li><strong>계산 자원:</strong> 현재 비트코인 네트워크의 전체 컴퓨팅 파워는 세계 최고 성능의 슈퍼컴퓨터의 수십억 배에 달합니다. 한국 전국에 적용 시, 단일 슈퍼컴퓨터가 아닌 전국에 분산된 수만 대 이상의 고성능 전용 연산 장치(ASIC)가 지속적으로 가동되어야 합니다.</li>
+                        <li><strong>통신 부하:</strong> 모든 노드가 모든 거래를 검증하는 구조상, 전국의 모든 거래(일일 약 1억 건)를 실시간으로 전파·검증하려면 기존 통신망을 훨씬 초과하는 초고용량 위성 통신망과 백본 인프라가 필수적입니다.</li>
+                    </ul>
                 </div>
-                <div class="card" data-type="worth">
-                    <div class="card-icon">🏆</div>
-                    <h4>기술의 가치</h4>
-                    <p>AI 모델 추정 수백~수천 조원</p>
+                <div class="card" role="button" tabindex="0" data-type="sovereignty">
+                    <div class="card-header">
+                        <span class="card-num">2</span>
+                        <h4>주권 이양의 문제 (PoS, Hashgraph)</h4>
+                    </div>
+                    <ul class="card-summary">
+                        <li><strong>이더리움(PoS):</strong> 검증 권한이 지분(스테이킹)에 비례합니다. 한국의 주요 금융 거래가 이더리움에서 처리된다면, 그 검증 권한은 한국 국민·정부가 아닌, 많은 지분을 보유한 글로벌 암호화폐 거래소나 대형 투자자에게 집중됩니다. 이는 통화 주권 및 금융 거버넌스의 실질적 이양과 같습니다.</li>
+                        <li><strong>Hashgraph:</strong> 핵심 알고리즘이 특허로 보호된 폐쇄적 상용 기술입니다. 한국의 사회 기반 시스템을 이 위에 구축하는 것은 해당 미국 기업(Swirlds)의 기술 라이선스 정책과 법적 관할에 국가 운명을 의존하는 것이며, 이는 기술 주권의 포기를 의미합니다.</li>
+                    </ul>
                 </div>
-                <div class="card" data-type="rebirth">
-                    <div class="card-icon">🇰🇷</div>
-                    <h4>재조산하</h4>
-                    <p>한국이 유일하게 보유한 원천 기술</p>
-                </div>
-                <div class="card" data-type="fairness">
-                    <div class="card-icon">⚖️</div>
-                    <h4>공정한 사회</h4>
-                    <p>기본 소득 사회의 기술적 토대</p>
+                <div class="card" role="button" tabindex="0" data-type="dag-impossible">
+                    <div class="card-header">
+                        <span class="card-num">3</span>
+                        <h4>DAG 적용 불가 이유</h4>
+                    </div>
+                    <ul class="card-summary">
+                        <li><strong>제도적 신뢰 부재:</strong> DAG는 기술적 검증(예: Tangle의 승인 모델)에 의존하지만, 공공기관(국세청, 법원, 감사원)의 공식적 서명과 권한 부여, 법적 효력을 담보하는 구조가 근본적으로 결여되어 있습니다.</li>
+                        <li><strong>거버넌스와 감사 추적의 한계:</strong> 분산 병렬 구조는 효율성을 높이지만, 모든 거래의 명확한 최종 상태와 불변의 순차적 감사 추적 로그를 생성하기 어렵습니다. 이는 한국과 같은 법치 국가에서 요구하는 회계적 정합성, 사법적 증거력, 세무 조사의 근본 요건을 충족시키지 못합니다.</li>
+                        <li><strong>크로스-샤드 거래 취약성:</strong> 사용자 지적대로 DAG는 복잡한 다자간 또는 상이한 샤드 간 거래를 조율하는 메커니즘이 취약하여, 한국의 복잡한 산업 구조와 글로벌 무역에 필요한 정교한 결제·정산을 처리하기에 부적합합니다.</li>
+                    </ul>
                 </div>
             </div>
-            <div class="detail-panel" id="value-panel">
+            <div class="detail-panel" id="reality-panel" role="region" aria-label="현실적 적용 한계 상세 설명">
+                <div class="detail-content" id="reality-content"></div>
+            </div>
+            <div class="section-conclusion">
+                <p>결론적으로, 기존 블록체인 기술은 한국 규모의 경제·사회 시스템을 수용하기에는 에너지, 주권, 제도적 통합성 측면에서 현실적으로 적용이 불가능하거나, 국가적 위험을 수반합니다. <strong>OpenHash 기술의 계층적 신뢰 모델</strong>은 이 기술들의 태생적 &amp; 근본적 한계를 극복하고, 기존 행정·통신 인프라를 활용한 혁신적 방안입니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== 섹션 3: OpenHash ====== -->
+    <section class="section alt" id="openhash">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title"><span class="highlight">OpenHash</span></h2>
+                <p class="section-lead">OpenHash는 세계 최초이자, 세계 유일의 글로벌 분산 원장 기술입니다. 단순한 분산 원장을 넘어, <strong>다중 AI 자율 협업 시스템에 신뢰 데이터 인프라를 제공</strong>합니다.</p>
+            </div>
+            <div class="card-grid-3" id="oh-feature-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-num">1</span>
+                        <h4>글로벌 확장성</h4>
+                    </div>
+                    <p class="card-desc">세계 80억 인구가 동시에 이용할 수 있습니다.</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-num">2</span>
+                        <h4>사생활 보호</h4>
+                    </div>
+                    <p class="card-desc">시스템 설계 구조 상, 모든 사적(Private) 또는 개인(Personal) 정보는 해당 정보의 소유자가 저장하므로, 사생활 침해 우려가 없습니다.</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-num">3</span>
+                        <h4>오픈소스</h4>
+                    </div>
+                    <p class="card-desc">오픈소스 모델로 누구나 자유로이 수정·배포할 수 있습니다.</p>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">핵심 기술 요소</h3>
+            <div class="card-grid-2x2" id="tech-cards">
+                <div class="card" role="button" tabindex="0" data-type="sharding">
+                    <div class="card-header">
+                        <span class="card-num">1</span>
+                        <h4>행정구역 기반 계층적 샤딩</h4>
+                    </div>
+                    <p class="card-desc">데이터를 읍면동(L1), 시군구(L2), 광역시도(L3), 국가(L4) 등 기존 행정구역 계층에 맞춰 자동 분할(샤딩)합니다. 이를 통해 통계적 거래 지역성을 활용하여 대부분의 거래를 로컬에서 처리하고, 크로스-샤드 거래 비율과 통신 오버헤드를 최소화합니다.</p>
+                </div>
+                <div class="card" role="button" tabindex="0" data-type="common-layer">
+                    <div class="card-header">
+                        <span class="card-num">2</span>
+                        <h4>최하위 공통 계층 노드 처리 원칙</h4>
+                    </div>
+                    <p class="card-desc">두 거래 당사자가 속한 행정구역의 최하위 공통 상위 계층 노드가 거래를 검증 및 처리합니다. 예를 들어, 다른 읍면동이지만 같은 시군구라면 해당 시군구(L2) 노드가 처리함으로써 복잡한 2단계 커밋 프로토콜 없이 효율적인 크로스-샤드 처리가 가능합니다.</p>
+                </div>
+                <div class="card" role="button" tabindex="0" data-type="hash-chain">
+                    <div class="card-header">
+                        <span class="card-num">3</span>
+                        <h4>계층적 해시 체인 연동 무결성 검증</h4>
+                    </div>
+                    <p class="card-desc">각 계층 노드는 자신이 관할하는 데이터의 머클 루트 해시를 생성하고, 이 해시를 상위 계층 노드에 주기적으로 전파하여 기록합니다. 이를 통해 하위 계층 데이터의 무결성을 상위 계층에서 검증 가능한 계층적 감시 구조를 형성합니다.</p>
+                </div>
+                <div class="card" role="button" tabindex="0" data-type="multi-sig">
+                    <div class="card-header">
+                        <span class="card-num">4</span>
+                        <h4>다중 서명 기반 데이터 위변조 방지</h4>
+                    </div>
+                    <p class="card-desc">모든 데이터 레코드(예: 전자세금계산서)에는 거래 당사자 쌍방의 서명과 해당 거래를 처리한 노드의 서명이 필수적으로 첨부됩니다. 데이터가 갱신될 때는 새 노드 서명으로 이전 서명을 무효화하여, 단독 또는 양자 공모에 의한 위변조를 구조적으로 방지합니다.</p>
+                </div>
+            </div>
+            <div class="detail-panel" id="tech-panel" role="region" aria-label="핵심 기술 요소 상세 설명">
+                <div class="detail-content" id="tech-content"></div>
+            </div>
+
+            <!-- AI 협업 인프라 연계 -->
+            <h3 class="sub-section-title">AI 협업을 위한 신뢰 데이터 인프라</h3>
+            <div class="ai-infra-card">
+                <p>OpenHash 기반 <strong>Private Data Vault</strong>에 저장된 모든 개인·기관 기록은 SHA-256 이중 재해싱과 계층적 분산 저장을 통해 무결성이 검증됩니다. 이를 바탕으로 <strong>조력 AI</strong>와 <strong>방해 AI</strong>는 증거 기반 논쟁을 수행하며, <strong>합의 도출 엔진</strong>이 쟁점별 순차 합의를 통해 최적의 의사결정을 도출합니다.</p>
+            </div>
+
+            <!-- 시스템 아키텍처 흐름도 -->
+            <div class="arch-flow">
+                <div class="arch-flow-title">시스템 아키텍처 흐름</div>
+                <div class="arch-flow-diagram" role="img" aria-label="시스템 아키텍처 흐름: OpenHash에서 Private Data Vault, 증거 인출 엔진, 다중 LLM 협업, 인간 승인으로 이어지는 구조">
+                    <div class="arch-node arch-node-oh">
+                        <span class="arch-node-icon" aria-hidden="true">◆</span>
+                        <span class="arch-node-label">OpenHash</span>
+                        <span class="arch-node-sub">계층적 해시 분산</span>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-node arch-node-vault">
+                        <span class="arch-node-icon" aria-hidden="true">🔒</span>
+                        <span class="arch-node-label">Private Data Vault</span>
+                        <span class="arch-node-sub">무결성 보장 데이터</span>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-node arch-node-evidence">
+                        <span class="arch-node-icon" aria-hidden="true">🔍</span>
+                        <span class="arch-node-label">증거 인출 엔진</span>
+                        <span class="arch-node-sub">무결성 검증 태그 첨부</span>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-node arch-node-llm">
+                        <span class="arch-node-icon" aria-hidden="true">🤖</span>
+                        <span class="arch-node-label">다중 LLM 협업</span>
+                        <span class="arch-node-sub">조력 / 방해 / 중재</span>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-node arch-node-human">
+                        <span class="arch-node-icon" aria-hidden="true">👤</span>
+                        <span class="arch-node-label">인간 승인</span>
+                        <span class="arch-node-sub">최종 결정권 귀속</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== 섹션 4: OpenHash의 효용 ====== -->
+    <section class="section" id="value">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">OpenHash의 <span class="highlight">효용</span></h2>
+                <h3 class="section-subtitle">고팡(Gopang) 시스템: 다중 LLM 자율 협업 기반 국가 운영 플랫폼</h3>
+                <p class="section-lead">고팡 시스템은 OpenHash 위에 구축된 <strong>다중 LLM 자율 협업 시스템</strong>입니다. 각 분야(사법, 행정, 의료 등)에서 <strong>조력 AI</strong>(사용자 대리)와 <strong>방해 AI</strong>(공익 또는 규제 대리)가 대립·협업하며, <strong>중재 AI</strong>가 합의를 도출하고 <strong>인간이 최종 승인</strong>하는 구조로 운영됩니다.</p>
+            </div>
+
+            <div class="gopang-foundation">
+                <h3 class="sub-section-title">🌐 OpenHash 기반 불변의 기록 체계</h3>
+                <p class="foundation-desc">고팡 시스템은 OpenHash 확률적 계층 분산 기술을 핵심으로 하여, 모든 대화·거래·문서를 읍면동 → 시군구 → 광역시도 → 국가 계층에 암호학적으로 분산 저장합니다. 이 <strong>Private Data Vault</strong>의 무결성 보장 데이터를 기반으로, <strong>증거 인출 엔진</strong>이 신뢰할 수 있는 증거를 인출하고, 조력·방해·중재·승인의 4단계 AI 역할 구조가 각 분야에서 최적의 의사결정을 도출합니다.</p>
+                <div class="card-grid-3" id="foundation-cards">
+                    <div class="card">
+                        <div class="card-header"><h4>위변조 불가능성</h4></div>
+                        <p class="card-desc">SHA-256 이중 재해싱 + BLS 서명 검증으로, 기록 생성 이후 단 한 글자도 변경할 수 없습니다.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h4>실시간 검증</h4></div>
+                        <p class="card-desc">평균 4ms 내에 데이터 무결성 검증 완료 (블록체인 대비 10만 배 이상 빠름).</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h4>에너지 효율</h4></div>
+                        <p class="card-desc">기존 블록체인 대비 98.5% 에너지 절감 – 국가 규모로 확장 가능한 지속 가능성.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">국가 시스템 자동화 영역</h3>
+            <div class="card-grid-2x2" id="value-cards">
+                <!-- 1. 사법 -->
+                <div class="card" role="button" tabindex="0" data-type="justice">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">⚖️</span>
+                        <h4>1. 사법 시스템의 완전 자동화</h4>
+                    </div>
+                    <p class="card-label">"소송 제기부터 판결까지 AI가 실시간 진행"</p>
+                    <ul class="card-summary">
+                        <li>AI 법률 에이전트가 LLM 기반으로 민·형사사건 자동 분석, 판례 10만 건 이상 학습하여 법리 적용.</li>
+                        <li>OpenHash 기록이 법정 증거로 즉시 채택 – 사실 관계 확인에 소요 시간 99% 단축.</li>
+                        <li>초고속 분쟁 해결: 간이 민사 소송은 수 초 내 AI 중재로 종료, 가족·소액 분쟁은 대면 법정 없이 해결.</li>
+                    </ul>
+                </div>
+                <!-- 2. 행정 -->
+                <div class="card" role="button" tabindex="0" data-type="admin">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">🏛️</span>
+                        <h4>2. 행정 업무의 무인 운영</h4>
+                    </div>
+                    <p class="card-label">"국세청, 특허청, 병무청 등 모든 행정처리가 실시간 AI 처리"</p>
+                    <ul class="card-summary">
+                        <li>국세 자동 신고·징수: 개인·기업의 모든 거래가 EGCT(전자정부화폐)로 실시간 기록, AI가 자동으로 세액 계산 및 징수.</li>
+                        <li>특허·상표 출원 즉시 처리: AI가 기존 특허 DB와 비교, 24시간 내 심사 보고서 생성.</li>
+                        <li>의료 행정 자동화: 환자 기록 OpenHash 저장 + AI 진단 결과 연동, 보건 당국 실시간 감시 체계.</li>
+                    </ul>
+                </div>
+                <!-- 3. 지방자치 -->
+                <div class="card" role="button" tabindex="0" data-type="local">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">🏙️</span>
+                        <h4>3. 지방자치의 실시간 민주주의</h4>
+                    </div>
+                    <p class="card-label">"도청·시청·구청이 AI 협업으로 운영, 주민 참여 정책 실시간 반영"</p>
+                    <ul class="card-summary">
+                        <li>Layer AI 시스템: 읍면동 AI → 시군구 AI → 광역시도 AI가 계층별 데이터 집계·정책 시뮬레이션 수행.</li>
+                        <li>주민 제안 실시간 투표: 모든 시민이 고팡 앱에서 정책 제안, AI가 타당성 분석 후 읍면동 단위 투표 진행.</li>
+                        <li>예산 집행 자동 감시: 모든 지자체 예산 사용 내역이 EGCT로 기록, AI가 비정상 거래 실시간 감지.</li>
+                    </ul>
+                </div>
+                <!-- 4. 의료 -->
+                <div class="card" role="button" tabindex="0" data-type="medical">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">🏥</span>
+                        <h4>4. 의료 시스템의 초개인화 진료</h4>
+                    </div>
+                    <p class="card-label">"환자마다 10명의 전문 AI 의사가 24시간 협진"</p>
+                    <ul class="card-summary">
+                        <li>다중 AI 진단 시스템: 내과·영상의학·병리·약물 AI 등이 OpenHash 기반 환자 기록 공유, 실시간 협의체 구성.</li>
+                        <li>초고속 처방·수술 계획: 질환 식별부터 치료 계획 수립까지 5분 이내, 수술 로봇과 AI 시뮬레이션 연동.</li>
+                        <li>예방 의학 강화: 개인 생활 습관·거래 내역을 AI가 분석, 질병 발병 위험 사전 경고.</li>
+                    </ul>
+                </div>
+                <!-- 5. 교육 -->
+                <div class="card" role="button" tabindex="0" data-type="education">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">🎓</span>
+                        <h4>5. 교육 시스템의 노벨상급 맞춤 교사</h4>
+                    </div>
+                    <p class="card-label">"학생마다 10명의 세계적 수준 AI 튜터가 전 과목 개인 지도"</p>
+                    <ul class="card-summary">
+                        <li>개인 학습 에이전트: 학생의 관심사·수준·진도에 맞춰 수학·과학·문학·예체능 AI 튜터 자동 배정.</li>
+                        <li>실시간 피드백: 과제 수행 즉시 AI 평가, 취약점 분석 및 맞춤 보충 자료 제공.</li>
+                        <li>교육 격차 해소: 지역·소득 수준 관계없이 모든 학생에게 동일 수준의 최고 교육 제공.</li>
+                    </ul>
+                </div>
+                <!-- 6. 산업 -->
+                <div class="card" role="button" tabindex="0" data-type="industry">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">🏭</span>
+                        <h4>6. 산업 전반의 AI 통합 관리</h4>
+                    </div>
+                    <p class="card-label">"1차~3차 산업 모든 생산·유통·소비가 EGCT와 AI로 실시간 최적화"</p>
+                    <ul class="card-summary">
+                        <li>스마트 농업·공장: IoT 센서 데이터를 OpenHash 저장, AI가 생산량·품질·유통 경로 실시간 조정.</li>
+                        <li>유통·물류 자동화: 모든 상품 이동이 EGCT 결제와 연동, AI가 최단·최저비용 경로 실시간 할당.</li>
+                        <li>소비자 맞춤 경제: 개인 소비 패턴을 AI가 분석, 맞춤형 상품 추천 및 자동 재주문.</li>
+                    </ul>
+                </div>
+                <!-- 7. EGCT -->
+                <div class="card" role="button" tabindex="0" data-type="egct">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">💰</span>
+                        <h4>7. 디지털 화폐 EGCT: 국가 경제의 혈류</h4>
+                    </div>
+                    <p class="card-label">"모든 경제 활동이 토큰(T)으로 기록, 실시간 경제 통계 생성"</p>
+                    <ul class="card-summary">
+                        <li>1T = 1,000원 고정 화폐: 모든 거래를 오픈해시 기반 디지털 화폐 EGCT로 처리, 탈중앙화 원장으로 투명성 확보.</li>
+                        <li>실시간 경제 지표: NICE/KSIC 분류로 산업별·지역별 거래량 자동 집계, 정책 효과 즉시 측정.</li>
+                        <li>긴급 재정 지원 자동화: 재난·경기 침체 시 AI가 소득·지출 패턴 분석, 대상자 선정 및 지원금 자동 지급.</li>
+                    </ul>
+                </div>
+                <!-- 8. 프라이버시 -->
+                <div class="card" role="button" tabindex="0" data-type="privacy">
+                    <div class="card-header">
+                        <span class="card-icon" aria-hidden="true">🛡️</span>
+                        <h4>8. 프라이버시와 보안의 균형</h4>
+                    </div>
+                    <p class="card-label">"개인 데이터는 Private Data Vault에 안전하게, 공공 이익을 위한 활용만 투명하게"</p>
+                    <ul class="card-summary">
+                        <li>개인 정보는 읍면동 AI만 직접 처리, 상위 계층에는 해시 값만 전달.</li>
+                        <li>법률 준수 AI가 GDPR, 개인정보보호법 등 실시간 검증.</li>
+                        <li>시민 참여 감시: 모든 AI 의사결정 과정을 SHAP 분석으로 설명 가능하게 공개.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="detail-panel" id="value-panel" role="region" aria-label="국가 시스템 자동화 상세 설명">
                 <div class="detail-content" id="value-content"></div>
             </div>
+
+            <div class="section-conclusion gopang-impact">
+                <h4>📈 고팡 시스템이 가져올 국가적 변화</h4>
+                <ul>
+                    <li>행정 처리 시간 <strong>99% 단축</strong></li>
+                    <li>법원 소송 기간 <strong>90% 감소</strong></li>
+                    <li>의료 과실 오류 <strong>70% 감소</strong></li>
+                    <li>교육 격차 <strong>80% 해소</strong></li>
+                    <li>범죄 예방율 <strong>60% 향상</strong></li>
+                    <li>경제 비효율 손실 <strong>50% 절감</strong></li>
+                </ul>
+                <p class="gopang-closing">고팡은 단순한 플랫폼이 아닙니다. OpenHash로 무결성을 보장받은 기록 위에, 조력·방해·중재·승인의 4단계 역할 분화된 AI가 협업하여 국가 시스템 전체를 실시간으로 구동하는 첫 번째 <strong>"디지털 국가 운영체제"</strong>입니다.</p>
+                <p class="gopang-closing">국가의 모든 것을 기록하고, 모든 것을 연결하며, 모든 것을 자동화합니다.</p>
+                <p class="gopang-closing gopang-status">고팡 시스템은 2026년 현재 프로토타입 운영 중이며, OpenHash 특허 기술(출원번호 포함)을 기반으로 한 완전한 위변조 방지 구조를 갖추고 있습니다.</p>
+            </div>
         </div>
     </section>
 
-    <!-- Verification -->
-    <section class="section" id="verification">
+    <!-- ====== 경제효과 분석 섹션 (동적 로딩) ====== -->
+    <div id="economic-section"></div>
+
+    <!-- ====== 용어집 섹션 ====== -->
+    <section class="section alt" id="glossary">
         <div class="container">
             <div class="section-header">
-                <span class="section-badge">Verification</span>
-                <h2 class="section-title">5단계 <span class="highlight">거래 검증</span></h2>
-                <p class="section-desc">모든 거래는 5단계 파이프라인을 통과합니다. <strong>단계를 클릭</strong>하여 자세히 알아보세요.</p>
+                <h2 class="section-title">핵심 <span class="highlight">용어집</span></h2>
+                <p class="section-lead">OpenHash와 다중 LLM 자율 협업 시스템의 핵심 개념</p>
             </div>
-            <div class="verify-pipeline" id="verify-cards">
-                <div class="verify-step" data-type="balance">
-                    <div class="verify-num">1</div>
-                    <div class="verify-content"><h4>잔액 확인</h4><p>발신자 잔액 ≥ 거래 금액</p></div>
+            <div class="glossary-grid" role="list">
+                <div class="glossary-item" role="listitem">
+                    <h4>Private Data Vault</h4>
+                    <p>각 개인·기관의 일상 및 업무 기록을 저장하고, SHA-256 이중 재해싱과 계층적 해시 분산을 통해 무결성이 보장된 데이터 저장소.</p>
                 </div>
-                <div class="verify-arrow">→</div>
-                <div class="verify-step" data-type="identity">
-                    <div class="verify-num">2</div>
-                    <div class="verify-content"><h4>신원 확인</h4><p>본인 인증 및 계층 등록</p></div>
+                <div class="glossary-item" role="listitem">
+                    <h4>증거 인출 엔진</h4>
+                    <p>조력 AI가 Private Data Vault에서 신뢰할 수 있는 증거를 체계적으로 탐색·인출하고, 무결성 검증 태그를 첨부하는 모듈.</p>
                 </div>
-                <div class="verify-arrow">→</div>
-                <div class="verify-step" data-type="limit">
-                    <div class="verify-num">3</div>
-                    <div class="verify-content"><h4>한도 확인</h4><p>단일/일일 거래 한도</p></div>
+                <div class="glossary-item" role="listitem">
+                    <h4>합의 도출 엔진</h4>
+                    <p>중재 AI의 핵심 엔진. 쟁점 분해, 쟁점별 순차 합의, 효용 함수 기반 양보 추적, 합의 품질 평가를 수행.</p>
                 </div>
-                <div class="verify-arrow">→</div>
-                <div class="verify-step" data-type="anomaly">
-                    <div class="verify-num">4</div>
-                    <div class="verify-content"><h4>이상 탐지</h4><p>AI 앙상블 (99.4%)</p></div>
+                <div class="glossary-item" role="listitem">
+                    <h4>조력 AI (LLM-A)</h4>
+                    <p>사용자(출원인, 환자, 납세자 등)의 이익을 극대화하기 위해 지식과 기능을 총동원하는 대규모 언어 모델.</p>
                 </div>
-                <div class="verify-arrow">→</div>
-                <div class="verify-step" data-type="compliance">
-                    <div class="verify-num">5</div>
-                    <div class="verify-content"><h4>규정 준수</h4><p>AML/CFT 검증</p></div>
+                <div class="glossary-item" role="listitem">
+                    <h4>방해 AI (LLM-B)</h4>
+                    <p>사회/국가 이익 또는 대립 요소의 관점에서 조력 AI의 결과물을 검토·반박하여 품질 향상을 유도하는 대규모 언어 모델.</p>
                 </div>
-            </div>
-            <div class="detail-panel" id="verify-panel">
-                <div class="detail-content" id="verify-content"></div>
-            </div>
-            <p class="verify-footer">평균 처리 시간: <strong>100ms</strong> | 부정거래 탐지율: <strong>99.4%</strong></p>
-        </div>
-    </section>
-
-    <!-- Performance -->
-    <section class="section alt" id="performance">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Performance</span>
-                <h2 class="section-title">압도적인 <span class="highlight">성능</span></h2>
-                <p class="section-desc">블록체인의 근본적 한계를 해결한 혁신. <strong>카드를 클릭</strong>하여 기술 원리를 확인하세요.</p>
-            </div>
-            <div class="perf-grid" id="perf-cards">
-                <div class="perf-card" data-type="energy">
-                    <h4>⚡ 에너지 효율</h4>
-                    <p>Bitcoin 대비 <strong style="color:#0d6832;">98.5% 절감</strong></p>
-                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width:100%;"></div></div>
-                    <p style="font-size:11px;color:#6c757d;">Bitcoin: 121 TWh/년</p>
-                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width:1.5%;"></div></div>
-                    <p style="font-size:11px;color:#6c757d;">OpenHash: ~1.8 TWh/년</p>
+                <div class="glossary-item" role="listitem">
+                    <h4>중재 AI (LLM-C)</h4>
+                    <p>조력 AI와 방해 AI의 논쟁을 종합·평가하고, 쟁점별 합의를 도출하는 대규모 언어 모델.</p>
                 </div>
-                <div class="perf-card" data-type="speed">
-                    <h4>🚀 검증 속도</h4>
-                    <p>Bitcoin 대비 <strong style="color:#0d6832;">150,000배 빠름</strong></p>
-                    <div class="perf-bar"><div class="perf-bar-fill bitcoin" style="width:100%;"></div></div>
-                    <p style="font-size:11px;color:#6c757d;">Bitcoin: 600,000ms (10분)</p>
-                    <div class="perf-bar"><div class="perf-bar-fill openhash" style="width:0.1%;"></div></div>
-                    <p style="font-size:11px;color:#6c757d;">OpenHash: 4ms</p>
+                <div class="glossary-item" role="listitem">
+                    <h4>승인 모듈 (MODULE-D)</h4>
+                    <p>인간이 주도하고 LLM이 보조하는 최종 검증 단계. 최종 결정권과 법적 책임이 인간에게 귀속.</p>
                 </div>
-                <div class="perf-card" data-type="bandwidth">
-                    <h4>📡 대역폭 효율</h4>
-                    <p>머클 루트만 전송 <strong style="color:#0d6832;">90% 절감</strong></p>
-                    <p style="font-size:11px;color:#6c757d;margin-top:1rem;">거래당 전송량: ~128 bytes</p>
-                    <p style="font-size:11px;color:#6c757d;">기존 트래픽에 실질적 부하 없음</p>
+                <div class="glossary-item" role="listitem">
+                    <h4>합의 품질 종합 점수 (CQS)</h4>
+                    <p>양측 수용도(BAS), 양보 대칭성 지수(CSI), 쟁점 해소율(IRR)의 가중 합으로 산출되는 합의의 질적 평가 점수.</p>
                 </div>
-                <div class="perf-card" data-type="infra">
-                    <h4>🏗️ 인프라 비용</h4>
-                    <p>기존 이동통신 네트워크 활용</p>
-                    <p style="font-size:11px;color:#6c757d;margin-top:1rem;">인프라 투자: <strong style="color:#0d6832;">100% 절감</strong></p>
-                    <p style="font-size:11px;color:#6c757d;">유지보수: <strong style="color:#0d6832;">80-90% 절감</strong></p>
-                </div>
-            </div>
-            <div class="detail-panel" id="perf-panel">
-                <div class="detail-content" id="perf-content"></div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ====== Footer ====== -->
     <footer class="footer">
         <div class="container">
-            <p>© 2026 OpenHash. 블록체인을 넘어서는 신뢰 인프라. | <a href="/principle/">기술 원리</a> | <a href="/technology/">기술 문서</a></p>
+            <p>© 2026 OpenHash. AI 시대의 데이터 신뢰 인프라. | <a href="/principle/">기술 원리</a> | <a href="/technology/">기술 문서</a></p>
+            <p class="footer-patent">관련 특허 출원: <strong>다중 대규모 언어 모델 간 자율 협업 기반 의사결정 지원 시스템 및 그 운영 방법</strong></p>
         </div>
     </footer>
+<script>
+/**
+ * OpenHash 홈 페이지 - Card Slide Panel Interactions
+ * v2: 이벤트 위임, 키보드 접근성, type 검증, 스크롤 최적화
+ */
 
-    <script src="js/home.js"></script>
-</body>
-</html>
+/* ============================================
+   섹션 1: 블록체인 등의 한계 - 상세 데이터
+   ============================================ */
+const limitData = {
+    pow: {
+        title: '블록체인 (PoW, 작업증명)',
+        content: `
+            <h4>에너지 비효율성</h4>
+            <p>합의를 위한 경쟁적 계산(채굴)으로 인해, <strong>단일 비트코인 거래 한 건에 가구의 평균 2주치 전력</strong>이 소비됩니다.</p>
+            <h4>확장성 부재</h4>
+            <p>모든 노드가 모든 거래를 검증·저장하는 구조상, 네트워크가 커질수록 병목 현상이 심화되어 낮은 TPS(초당 처리량)를 벗어나기 어렵습니다.</p>`
+    },
+    pos: {
+        title: '이더리움 (PoS, 지분증명)',
+        content: `
+            <h4>확률적 최종성</h4>
+            <p>수백 개의 블록이 체인에 추가되어도, 포크 가능성이 완전히 사라지지 않아 <strong>거래 확정에 수십 분 이상의 지연</strong>이 발생할 수 있습니다.</p>
+            <h4>중앙화 압력</h4>
+            <p>자본이 많은 대형 스테이커(예: 거래소)가 네트워크 통제권을 집중시켜, <strong>탈중앙화라는 핵심 가치</strong>가 훼손될 수 있습니다.</p>`
+    },
+    hashgraph: {
+        title: 'Hashgraph',
+        content: `
+            <h4>알고리즘적 신뢰 의존</h4>
+            <p>비잔틴 장애 허용(BFT) 1/3 규칙은 수학적 한계로, <strong>공모 노드가 이를 초과하면 신뢰 체계 자체가 붕괴</strong>합니다.</p>
+            <h4>폐쇄적 생태계</h4>
+            <p>상용 특허 기술이므로 오픈소스 커뮤니티의 자발적 참여와 검증을 통한 보안성 향상 및 혁신이 제한적입니다.</p>`
+    },
+    dag: {
+        title: 'DAG (Directed Acyclic Graph)',
+        content: `
+            <h4>보안성-성능 트레이드오프</h4>
+            <p>병렬 처리 구조는 속도를 높이지만, 트랜잭션 승인 깊이와 최종성 보장 사이의 균형을 잡기 어려워 <strong>이중 지불 공격에 취약</strong>할 수 있습니다.</p>
+            <h4>거버넌스 구조 부재</h4>
+            <p>대부분 기술적 검증에 초점을 맞춰, 공공기관 연동, 법적 효력 부여, 다기관 감사 추적 등 <strong>실제 사회 시스템 통합에 필요한 제도적 장치</strong>가 결여되어 있습니다.</p>`
+    }
+};
+
+/* ============================================
+   섹션 2: 기존 기술의 현실적 적용 한계 - 상세 데이터
+   ============================================ */
+const realityData = {
+    energy: {
+        title: '에너지 및 인프라 요구량 추정 (PoW 블록체인 기준)',
+        content: `
+            <h4>에너지 소비</h4>
+            <p>비트코인 네트워크의 연간 전력 소비량(약 150 TWh)은 대한민국 전체 연간 전력 소비량(약 500 TWh)의 약 30%에 해당합니다. 이를 한국의 원전(한 기당 약 1GW 용량)으로 대체한다면, <strong>약 19기의 원자력 발전소</strong>를 가동하여 전력을 공급해야 합니다.</p>
+            <h4>계산 자원</h4>
+            <p>현재 비트코인 네트워크의 전체 컴퓨팅 파워는 세계 최고 성능의 슈퍼컴퓨터의 수십억 배에 달합니다. 한국 전국에 적용 시, 단일 슈퍼컴퓨터가 아닌 전국에 분산된 <strong>수만 대 이상의 고성능 전용 연산 장치(ASIC)</strong>가 지속적으로 가동되어야 합니다.</p>
+            <h4>통신 부하</h4>
+            <p>모든 노드가 모든 거래를 검증하는 구조상, 전국의 모든 거래(일일 약 1억 건)를 실시간으로 전파·검증하려면 기존 통신망을 훨씬 초과하는 <strong>초고용량 위성 통신망과 백본 인프라</strong>가 필수적입니다.</p>`
+    },
+    sovereignty: {
+        title: '주권 이양의 문제 (PoS, Hashgraph)',
+        content: `
+            <h4>이더리움(PoS)</h4>
+            <p>검증 권한이 지분(스테이킹)에 비례합니다. 한국의 주요 금융 거래가 이더리움에서 처리된다면, 그 검증 권한은 한국 국민·정부가 아닌, 많은 지분을 보유한 글로벌 암호화폐 거래소나 대형 투자자에게 집중됩니다. 이는 <strong>통화 주권 및 금융 거버넌스의 실질적 이양</strong>과 같습니다.</p>
+            <h4>Hashgraph</h4>
+            <p>핵심 알고리즘이 특허로 보호된 폐쇄적 상용 기술입니다. 한국의 사회 기반 시스템을 이 위에 구축하는 것은 해당 미국 기업(Swirlds)의 기술 라이선스 정책과 법적 관할에 국가 운명을 의존하는 것이며, 이는 <strong>기술 주권의 포기</strong>를 의미합니다.</p>`
+    },
+    'dag-impossible': {
+        title: 'DAG 적용 불가 이유',
+        content: `
+            <h4>제도적 신뢰 부재</h4>
+            <p>DAG는 기술적 검증(예: Tangle의 승인 모델)에 의존하지만, 공공기관(국세청, 법원, 감사원)의 공식적 서명과 권한 부여, <strong>법적 효력을 담보하는 구조가 근본적으로 결여</strong>되어 있습니다.</p>
+            <h4>거버넌스와 감사 추적의 한계</h4>
+            <p>분산 병렬 구조는 효율성을 높이지만, 모든 거래의 명확한 최종 상태와 불변의 순차적 감사 추적 로그를 생성하기 어렵습니다. 이는 한국과 같은 법치 국가에서 요구하는 <strong>회계적 정합성, 사법적 증거력, 세무 조사의 근본 요건</strong>을 충족시키지 못합니다.</p>
+            <h4>크로스-샤드 거래 취약성</h4>
+            <p>DAG는 복잡한 다자간 또는 상이한 샤드 간 거래를 조율하는 메커니즘이 취약하여, 한국의 복잡한 산업 구조와 글로벌 무역에 필요한 <strong>정교한 결제·정산을 처리하기에 부적합</strong>합니다.</p>`
+    }
+};
+
+/* ============================================
+   섹션 3: 핵심 기술 요소 - 상세 데이터
+   ============================================ */
+const techData = {
+    sharding: {
+        title: '행정구역 기반 계층적 샤딩',
+        content: `
+            <p>데이터를 읍면동(L1), 시군구(L2), 광역시도(L3), 국가(L4) 등 기존 행정구역 계층에 맞춰 자동 분할(샤딩)합니다.</p>
+            <h4>핵심 원리</h4>
+            <p>통계적으로 거래의 상당 부분이 지리적으로 인접한 당사자 간에 발생합니다. 이 실증적 특성을 활용하여 대부분의 거래를 <strong>로컬에서 처리</strong>하고, 크로스-샤드 거래 비율과 통신 오버헤드를 최소화합니다.</p>
+            <h4>기존 샤딩 기술과의 차별점</h4>
+            <p>기존 블록체인 샤딩(Elastico, OmniLedger, RapidChain)은 <strong>무작위 샤드 할당</strong>으로 크로스-샤드 거래 시 복잡한 2단계 커밋 프로토콜이 필요합니다. OpenHash는 자연스러운 지역성 기반 샤딩으로 이 문제를 근본적으로 해결합니다.</p>`
+    },
+    'common-layer': {
+        title: '최하위 공통 계층 노드 처리 원칙',
+        content: `
+            <p>두 거래 당사자가 속한 행정구역의 <strong>최하위 공통 상위 계층 노드</strong>가 거래를 검증 및 처리합니다.</p>
+            <h4>처리 예시</h4>
+            <ul>
+                <li>동일 읍면동 내 거래: 해당 읍면동(L1) 노드가 직접 처리</li>
+                <li>다른 읍면동, 같은 시군구: 해당 시군구(L2) 노드가 처리</li>
+                <li>다른 시군구, 같은 광역시도: 해당 광역시도(L3) 노드가 처리</li>
+                <li>다른 광역시도: 국가(L4) 노드가 처리</li>
+            </ul>
+            <h4>효과</h4>
+            <p>복잡한 2단계 커밋 프로토콜 없이 효율적인 크로스-샤드 처리가 가능합니다. 행정 체계와 1:1 대응하므로 거버넌스가 자연스럽게 확립됩니다.</p>`
+    },
+    'hash-chain': {
+        title: '계층적 해시 체인 연동 무결성 검증',
+        content: `
+            <p>각 계층 노드는 자신이 관할하는 데이터의 <strong>머클 루트 해시</strong>를 생성하고, 이 해시를 상위 계층 노드에 주기적으로 전파하여 기록합니다.</p>
+            <h4>계층적 감시 구조</h4>
+            <p>하위 계층 데이터의 무결성을 상위 계층에서 검증할 수 있는 구조를 형성합니다. 어떤 하위 노드가 데이터를 위변조하면, 상위 계층의 머클 루트와 불일치가 발생하여 즉시 탐지됩니다.</p>
+            <h4>비잔틴 1/3 한계 극복</h4>
+            <p>기존 블록체인은 1/3 이상의 비잔틴 노드 시 신뢰성이 붕괴되지만, OpenHash의 계층적 감시 구조에서는 <strong>단일 노드의 위변조도 탐지</strong>할 수 있습니다.</p>`
+    },
+    'multi-sig': {
+        title: '다중 서명 기반 데이터 위변조 방지',
+        content: `
+            <p>모든 데이터 레코드(예: 전자세금계산서)에는 <strong>거래 당사자 쌍방의 서명</strong>과 해당 거래를 처리한 <strong>노드의 서명</strong>이 필수적으로 첨부됩니다.</p>
+            <h4>서명 갱신 메커니즘</h4>
+            <p>데이터가 갱신될 때는 새 노드 서명으로 이전 서명을 무효화합니다. 이를 통해 단독 또는 양자 공모에 의한 위변조를 구조적으로 방지합니다.</p>
+            <h4>3중 서명의 의미</h4>
+            <ul>
+                <li>발신자 서명: 거래 의사의 진정성 보장</li>
+                <li>수신자 서명: 거래 수락의 진정성 보장</li>
+                <li>노드 서명: 검증 완료 및 기록 시점 확인</li>
+            </ul>`
+    }
+};
+
+/* ============================================
+   섹션 4: 고팡(Gopang) 시스템 - 상세 데이터
+   ============================================ */
+const gopangData = {
+    justice: {
+        title: '1. 사법 시스템의 완전 자동화',
+        content: `
+            <p><em>"소송 제기부터 판결까지 다중 AI 자율 협업으로 진행"</em></p>
+            <h4>조력 AI: 원고/피고측 법률 대리인</h4>
+            <p>LLM 기반으로 민·형사사건 자동 분석, 판례 10만 건 이상 학습. 증거 인출 엔진이 Private Data Vault에서 관련 기록을 인출하여 주장의 사실적 근거로 활용.</p>
+            <h4>방해 AI: 상대방 법률 대리인</h4>
+            <p>상대측 관점에서 주장의 허점을 공격하고, 동일한 Vault 기록을 참조하여 반박 증거를 제시. 의도적 이해관계 대립을 통해 품질 보증.</p>
+            <h4>중재 AI → 인간 승인</h4>
+            <p>합의 도출 엔진이 쟁점별 순차 합의를 수행하고, 인간 법률 전문가가 최종 판결을 승인. OpenHash 기록의 법정 증거 채택으로 사실 관계 확인 시간 <strong>99% 단축</strong>.</p>`
+    },
+    admin: {
+        title: '2. 행정 업무의 무인 운영',
+        content: `
+            <p><em>"국세청, 특허청, 병무청 등 모든 행정처리가 다중 AI 협업으로 처리"</em></p>
+            <h4>국세 행정: 조력(세무사) vs 방해(국세청 조사관)</h4>
+            <p>조력 AI가 적법 범위 내 최적 절세 전략을 수립하고, 방해 AI가 과소 신고·부당 공제를 탐색. Private Data Vault의 매출·매입 전표가 증거로 활용.</p>
+            <h4>특허·상표 출원: 조력(변리사) vs 방해(심사관)</h4>
+            <p>조력 AI가 출원서를 작성하고, 방해 AI가 신규성·진보성 흠결을 탐색. 합의 도출 엔진이 적정 청구항 범위를 도출하여 <strong>24시간 내 심사 보고서 생성</strong>.</p>
+            <h4>의료 행정 자동화</h4>
+            <p>환자 기록 Private Data Vault 저장 + AI 진단 결과 연동, 보건 당국 실시간 감시 체계.</p>`
+    },
+    local: {
+        title: '3. 지방자치의 실시간 민주주의',
+        content: `
+            <p><em>"도청·시청·구청이 AI 협업으로 운영, 주민 참여 정책 실시간 반영"</em></p>
+            <h4>Layer AI 시스템</h4>
+            <p>읍면동 AI → 시군구 AI → 광역시도 AI가 계층별 데이터 집계·정책 시뮬레이션 수행.</p>
+            <h4>주민 제안 실시간 투표</h4>
+            <p>모든 시민이 고팡 앱에서 정책 제안, AI가 타당성 분석 후 읍면동 단위 투표 진행.</p>
+            <h4>예산 집행 자동 감시</h4>
+            <p>모든 지자체 예산 사용 내역이 EGCT로 기록, AI가 비정상 거래 <strong>실시간 감지</strong>.</p>`
+    },
+    medical: {
+        title: '4. 의료 시스템의 초개인화 진료',
+        content: `
+            <p><em>"환자마다 조력·방해·중재 AI가 최적 치료 방침을 도출"</em></p>
+            <h4>조력 AI: 주치의(환자 대리)</h4>
+            <p>환자의 Private Data Vault에서 출생부터 현재까지의 생애 의료 기록, 생체 데이터, 생활 습관을 인출. 가용한 모든 의료 자원을 총동원한 <strong>치료 극대화</strong> 계획 수립.</p>
+            <h4>방해 AI: 건강보험 심사 에이전트</h4>
+            <p>건강보험 재정 관점에서 비용 적정성을 심사하고, 동등한 임상 효과의 <strong>비용 효율적 대안</strong>(제네릭 의약품 대체, 외래 전환 등)을 제시.</p>
+            <h4>중재 AI → 인간 의료진 승인</h4>
+            <p>합의 도출 엔진이 치료 효과와 비용 효율의 <strong>최적 균형점</strong>을 판정. 합의 불발 시 환자 안전을 위해 치료 극대화 측 제안이 기본값으로 채택. 최종 치료 방침은 인간 의료진이 승인.</p>`
+    },
+    education: {
+        title: '5. 교육 시스템의 노벨상급 맞춤 교사',
+        content: `
+            <p><em>"학생마다 조력·방해 AI가 최적 학습 경로를 설계"</em></p>
+            <h4>조력 AI: 학습 설계사(학습자 대리)</h4>
+            <p>Private Data Vault에서 학습 이력, 성적, 적성 검사, 학습 스타일, 관심 분야를 인출. 개인 맞춤형 학습 경로 설계, 학습 일정 수립, 장기 진로 계획을 수립.</p>
+            <h4>방해 AI: 학습 장애 시뮬레이터</h4>
+            <p>학습 계획의 비현실성, 학습 부하 과중, 동기 저하 요인, 잠재적 실패 시나리오를 식별. 과도한 학습과 과소한 도전 모두를 견제.</p>
+            <h4>중재 AI: 교육 효과 평가관</h4>
+            <p>학습 목표, 학습 경로, 학습 일정, 평가 방법 각각을 독립 쟁점으로 분해하여 순차적 합의 도출. 교육 격차 <strong>80% 해소</strong> 기대.</p>`
+    },
+    industry: {
+        title: '6. 산업 전반의 AI 통합 관리',
+        content: `
+            <p><em>"1차~3차 산업 모든 생산·유통·소비가 EGCT와 AI로 실시간 최적화"</em></p>
+            <h4>스마트 농업·공장</h4>
+            <p>IoT 센서 데이터를 OpenHash 저장, AI가 생산량·품질·유통 경로 실시간 조정.</p>
+            <h4>유통·물류 자동화</h4>
+            <p>모든 상품 이동이 EGCT 결제와 연동, AI가 최단·최저비용 경로 실시간 할당.</p>
+            <h4>소비자 맞춤 경제</h4>
+            <p>개인 소비 패턴을 AI가 분석, 맞춤형 상품 추천 및 자동 재주문.</p>`
+    },
+    egct: {
+        title: '7. 디지털 화폐 EGCT: 국가 경제의 혈류',
+        content: `
+            <p><em>"모든 경제 활동이 토큰(T)으로 기록, 실시간 경제 통계 생성"</em></p>
+            <h4>1T = 1,000원 고정 화폐</h4>
+            <p>모든 거래가 블록체인 기반 EGCT로 처리, 탈중앙화 원장으로 투명성 확보.</p>
+            <h4>실시간 경제 지표</h4>
+            <p>NICE/KSIC 분류로 산업별·지역별 거래량 자동 집계, 정책 효과 즉시 측정.</p>
+            <h4>긴급 재정 지원 자동화</h4>
+            <p>재난·경기 침체 시 AI가 소득·지출 패턴 분석, 대상자 선정 및 지원금 <strong>자동 지급</strong>.</p>`
+    },
+    privacy: {
+        title: '8. 프라이버시와 보안의 균형',
+        content: `
+            <p><em>"Private Data Vault에 안전하게, 역할 기반 접근 제어와 규정 준수 엔진으로 보호"</em></p>
+            <h4>Private Data Vault 보안 메커니즘</h4>
+            <p>AES-256-GCM 암호화, 역할 기반 접근 제어(RBAC), 사용자 동의 기반 데이터 공유, 데이터 소멸 정책 적용. 개인 정보는 읍면동 AI만 직접 처리, 상위 계층에는 <strong>해시 값만</strong> 전달.</p>
+            <h4>규정 준수 엔진</h4>
+            <p>개인정보보호법, GDPR, HIPAA 등 적용 가능한 규정을 <strong>실시간 자동 검증</strong>.</p>
+            <h4>투명성과 설명 가능성</h4>
+            <p>의사결정 감사 모듈이 모든 AI 논쟁 과정과 판단 근거를 <strong>해시 체인 기반 불변 로그</strong>로 기록. SHAP 분석으로 설명 가능하게 공개.</p>`
+    }
+};
+
+/* ============================================
+   Panel Interaction Engine (이벤트 위임 + 키보드 접근성)
+   ============================================ */
+function setupPanel(containerSelector, panelId, contentId, dataObj) {
+    const container = document.querySelector(containerSelector);
+    const panel = document.getElementById(panelId);
+    const content = document.getElementById(contentId);
+    if (!container || !panel || !content) return;
+
+    let activeCard = null;
+
+    function handleCardActivation(card) {
+        const type = card.dataset.type;
+        if (!type) return;
+
+        if (activeCard === card) {
+            panel.classList.remove('open');
+            card.classList.remove('active');
+            card.setAttribute('aria-expanded', 'false');
+            activeCard = null;
+            return;
+        }
+
+        if (activeCard) {
+            activeCard.classList.remove('active');
+            activeCard.setAttribute('aria-expanded', 'false');
+        }
+        card.classList.add('active');
+        card.setAttribute('aria-expanded', 'true');
+        activeCard = card;
+
+        const data = dataObj[type];
+        if (!data) return;
+
+        content.innerHTML =
+            '<button class="detail-close" aria-label="닫기">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+            '</button>' +
+            '<div class="detail-header">' +
+                '<h3>' + data.title + '</h3>' +
+            '</div>' +
+            '<div class="detail-body">' +
+                data.content +
+            '</div>';
+
+        panel.classList.add('open');
+
+        setTimeout(function() {
+            var rect = panel.getBoundingClientRect();
+            var viewH = window.innerHeight;
+            if (rect.top < 0 || rect.bottom > viewH) {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 120);
+    }
+
+    // 이벤트 위임: 컨테이너에서 클릭/키보드 이벤트 처리
+    container.addEventListener('click', function(e) {
+        var card = e.target.closest('.card[data-type]');
+        if (card) handleCardActivation(card);
+    });
+
+    container.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            var card = e.target.closest('.card[data-type]');
+            if (card) {
+                e.preventDefault();
+                handleCardActivation(card);
+            }
+        }
+    });
+
+    // detail-close 이벤트 위임
+    panel.addEventListener('click', function(e) {
+        if (e.target.closest('.detail-close')) {
+            panel.classList.remove('open');
+            if (activeCard) {
+                activeCard.classList.remove('active');
+                activeCard.setAttribute('aria-expanded', 'false');
+                activeCard.focus();
+                activeCard = null;
+            }
+        }
+    });
+}
+
+/* ============================================
+   Initialize
+   ============================================ */
+document.addEventListener('DOMContentLoaded', function() {
+    setupPanel('#limit-cards', 'limit-panel', 'limit-content', limitData);
+    setupPanel('#reality-cards', 'reality-panel', 'reality-content', realityData);
+    setupPanel('#tech-cards', 'tech-panel', 'tech-content', techData);
+    setupPanel('#value-cards', 'value-panel', 'value-content', gopangData);
+
+    // 카드에 aria-expanded 초기값 설정
+    document.querySelectorAll('.card[data-type]').forEach(function(card) {
+        card.setAttribute('aria-expanded', 'false');
+    });
+
+    // 네비게이션 스크롤 연동 (IntersectionObserver)
+    var glossaryLink = document.querySelector('.nav-menu a[href="#glossary"]');
+    var glossarySection = document.getElementById('glossary');
+    if (glossaryLink && glossarySection) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    glossaryLink.classList.add('active');
+                } else {
+                    glossaryLink.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.2 });
+        observer.observe(glossarySection);
+    }
+
+    // 경제효과 섹션 동적 로딩 (fetch + innerHTML)
+    var econContainer = document.getElementById('economic-section');
+    var econLink = document.querySelector('.nav-menu a[href="#economic-impact"]');
+    var econLoaded = false;
+
+    function loadEconomicSection() {
+        if (econLoaded || !econContainer) return;
+        econLoaded = true;
+        fetch('economic-analysis.html')
+            .then(function(res) { return res.text(); })
+            .then(function(html) {
+                econContainer.innerHTML = html;
+                // 삽입된 <script> 태그 실행
+                econContainer.querySelectorAll('script').forEach(function(oldScript) {
+                    var newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+                // 경제효과 nav 스크롤 스파이
+                var econSection = document.getElementById('economic-impact');
+                if (econLink && econSection) {
+                    var econObserver = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            if (entry.isIntersecting) {
+                                econLink.classList.add('active');
+                            } else {
+                                econLink.classList.remove('active');
+                            }
+                        });
+                    }, { threshold: 0.15 });
+                    econObserver.observe(econSection);
+                }
+            })
+            .catch(function(err) {
+                console.warn('경제효과 섹션 로딩 실패:', err);
+            });
+    }
+
+    // lazy load: nav 클릭 시 또는 스크롤이 근처에 도달 시 로드
+    if (econLink) {
+        econLink.addEventListener('click', function(e) {
+            if (!econLoaded) {
+                e.preventDefault();
+                loadEconomicSection();
+                setTimeout(function() {
+                    var target = document.getElementById('economic-impact');
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }
+        });
+    }
+
+    // IntersectionObserver로 스크롤 시 자동 로드
+    if (econContainer && 'IntersectionObserver' in window) {
+        var lazyObserver = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                loadEconomicSection();
+                lazyObserver.disconnect();
+            }
+        }, { rootMargin: '200px' });
+        lazyObserver.observe(econContainer);
+    }
+});
+
+</script><script src="/js/nav.js"></script></body></html>

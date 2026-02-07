@@ -114,7 +114,7 @@
         .test-name { width: 100%; order: 2; }
     }
     </style>
-    <script src="/js/header.js"></script>
+    
     <link rel="stylesheet" href="/css/hero.css">
 </head>
 <body>
@@ -267,5 +267,5 @@
     async function runAllCategoryTests() { for (const test of categoryTests) { await runSingleTest(test.id); await new Promise(r => setTimeout(r, 300)); } }
     document.addEventListener('DOMContentLoaded', () => { renderTests(); document.getElementById('runAllCategoryTests').addEventListener('click', runAllCategoryTests); });
     </script>
-</body>
+<script src="/js/nav.js"></script></body>
 </html>

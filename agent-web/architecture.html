@@ -1,0 +1,277 @@
+<!-- architecture.html — Agent Web 핵심 아키텍처 기술 보고서 (lazy-loaded fragment) -->
+<style>
+/* ── Architecture Report — Gov/MD3 Style ── */
+.arch{max-width:860px;margin:0 auto;padding:0 20px;font-family:'Noto Sans KR',sans-serif;color:#e8e8e8;line-height:1.8}
+
+/* 섹션 */
+.arch section{padding:48px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.arch section:last-child{border-bottom:none}
+
+/* 타이포그래피 */
+.arch h2{font-size:1.35rem;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-.01em}
+.arch h3{font-size:1.12rem;font-weight:600;color:#e8e8e8;margin:32px 0 8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08)}
+.arch h3:first-child{margin-top:0}
+.arch p{font-size:.92rem;color:#ccd0d4;margin:0 0 16px}
+.arch .lead{font-size:.96rem;color:#d5d9dd;margin-bottom:28px}
+
+/* 뱃지 */
+.arch .badge{display:inline-block;font-size:.8rem;font-weight:600;letter-spacing:.06em;color:#90caf9;margin-bottom:12px}
+
+/* 테이블 */
+.arch .tbl-wrap{overflow-x:auto;margin:16px 0 24px}
+.arch table{width:100%;border-collapse:collapse;font-size:.88rem}
+.arch table th{background:rgba(255,255,255,.05);color:#dde0e4;font-weight:600;text-align:left;padding:10px 14px;border-bottom:2px solid rgba(255,255,255,.1)}
+.arch table td{padding:10px 14px;color:#c0c4c8;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+.arch table tr:last-child td{border-bottom:none}
+.arch .g{color:#81c784}
+.arch .r{color:#e57373}
+
+/* 4역할 그리드 */
+.arch .roles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 24px}
+.arch .role{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:16px 14px}
+.arch .role-id{font-size:.82rem;font-weight:700;color:#90caf9;margin-bottom:4px}
+.arch .role[data-r="B"] .role-id{color:#e57373}
+.arch .role[data-r="C"] .role-id{color:#ce93d8}
+.arch .role[data-r="D"] .role-id{color:#81c784}
+.arch .role-name{font-size:.92rem;font-weight:600;color:#e8e8e8;margin-bottom:4px}
+.arch .role-desc{font-size:.85rem;color:#b8bcc0;line-height:1.6}
+@media(max-width:640px){.arch .roles{grid-template-columns:repeat(2,1fr)}}
+
+/* 단계 리스트 */
+.arch ol.steps{counter-reset:st;list-style:none;padding:0;margin:16px 0 24px}
+.arch ol.steps li{counter-increment:st;padding:10px 0 10px 36px;position:relative;font-size:.9rem;color:#c0c4c8;border-bottom:1px solid rgba(255,255,255,.04)}
+.arch ol.steps li:last-child{border-bottom:none}
+.arch ol.steps li::before{content:counter(st);position:absolute;left:0;top:10px;width:24px;height:24px;border-radius:4px;background:rgba(255,255,255,.06);color:#e8e8e8;font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.arch ol.steps li strong{color:#e8e8e8}
+
+/* Vault 계층 바 */
+.arch .vault-bar{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:.88rem;color:#ccd0d4}
+.arch .vault-bar .bar{height:6px;border-radius:3px;background:rgba(144,202,249,.25)}
+.arch .vault-bar .pct{font-size:.84rem;color:#b8bcc0;min-width:40px;text-align:right}
+
+/* 도메인 탭 */
+.arch .tabs{display:flex;gap:4px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:20px;overflow-x:auto}
+.arch .tab{font-size:.88rem;font-weight:500;padding:8px 16px;color:#b0b4b8;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s}
+.arch .tab:hover{color:#dde0e4}
+.arch .tab.on{color:#90caf9;border-bottom-color:#90caf9}
+.arch .panel{display:none;font-size:.9rem;color:#ccd0d4;line-height:1.75}
+.arch .panel.on{display:block}
+.arch .panel strong{color:#e8e8e8}
+.arch .panel .mapping{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+.arch .panel .mapping div{background:rgba(255,255,255,.03);border-radius:4px;padding:10px 12px;font-size:.88rem;line-height:1.6}
+.arch .panel .mapping div b{display:block;color:#dde0e4;margin-bottom:2px}
+@media(max-width:640px){.arch .panel .mapping{grid-template-columns:1fr}}
+
+/* 수식 */
+.arch .formula{background:rgba(255,255,255,.03);border-left:3px solid rgba(144,202,249,.3);padding:10px 16px;margin:12px 0 20px;font-size:.9rem;color:#d5d9dd;font-family:'Courier New',monospace;overflow-x:auto}
+</style>
+
+<div class="arch">
+
+  <!-- S1: 4역할 아키텍처 -->
+  <section>
+    <div class="badge">SECTION 01 — CORE ARCHITECTURE</div>
+    <h2>다중 LLM 4역할 자율 협업 구조</h2>
+    <p class="lead">단일 LLM의 환각·편향·논리적 오류를 구조적으로 상쇄하기 위해, 의도적 이해관계 대립에 기반한 4단계 고정 역할 분화를 채택합니다. 각 모듈에는 상이한 효용 함수(utility function)가 부여되어 프롬프트 수준이 아닌 알고리즘적 역할 분화를 실현합니다.</p>
+
+    <div class="roles">
+      <div class="role" data-r="A">
+        <div class="role-id">MODULE A</div>
+        <div class="role-name">조력 LLM</div>
+        <div class="role-desc">사용자 이익 극대화. 증거 인출 엔진을 통해 Private Data Vault에서 무결성 검증된 데이터를 인출하여 논리적 근거로 활용.</div>
+      </div>
+      <div class="role" data-r="B">
+        <div class="role-id">MODULE B</div>
+        <div class="role-name">방해 LLM</div>
+        <div class="role-desc">대립 이익 극대화. 결과물의 오류·미비점·논리적 허점을 구조화된 지적 사항으로 생성.</div>
+      </div>
+      <div class="role" data-r="C">
+        <div class="role-id">MODULE C</div>
+        <div class="role-name">중재 LLM</div>
+        <div class="role-desc">합의 도출 엔진에 의한 쟁점 분해, 순차 합의, 양보 대칭성 감시, 합의 품질 평가.</div>
+      </div>
+      <div class="role" data-r="D">
+        <div class="role-id">MODULE D</div>
+        <div class="role-name">승인 모듈</div>
+        <div class="role-desc">인간 주도 + LLM 보조. 최종 결정권은 인간에게 귀속되며 법적 책임소재가 명확.</div>
+      </div>
+    </div>
+
+    <p>A는 특정 개인 또는 기관의 이익을, B는 사회·국가 또는 대립 요소의 이익을 대변합니다. C와 D가 양측을 중재·조정하며, 이 구조는 현실 세계의 이해관계 대립 상황을 모사(simulation)하여 단일 관점의 편향을 상쇄합니다.</p>
+  </section>
+
+  <!-- S2: 수렴 및 합의 메커니즘 -->
+  <section>
+    <div class="badge">SECTION 02 — CONVERGENCE &amp; CONSENSUS</div>
+    <h2>정량적 수렴 판단 및 합의 도출</h2>
+    <p class="lead">A와 B 간의 반복적 논쟁의 종결 시점을 코사인 유사도 기반 알고리즘이 객관적으로 결정합니다. 수렴 후에는 합의 도출 엔진이 쟁점별 순차 합의를 수행하여 단순 소진이 아닌 실질적 합의를 보장합니다.</p>
+
+    <h3>수렴 판단 알고리즘</h3>
+    <ol class="steps">
+      <li><strong>결과물 변동 점수(Δ<sub>R</sub>)</strong> — 연속 라운드의 결과물을 벡터 임베딩 후 코사인 유사도를 측정합니다. Δ<sub>R</sub> = 1 − cos(R<sub>i</sub>, R<sub>i-1</sub>)으로, 0에 가까울수록 변동 없음을 의미합니다.</li>
+      <li><strong>신규 지적 점수(Δ<sub>C</sub>)</strong> — B의 지적 사항을 이전 누적 집합과 비교하여, 최대 유사도가 θ<sub>n</sub>(0.85) 미만인 지적만 신규로 분류합니다.</li>
+      <li><strong>수렴 판정</strong> — 연속 W(기본 3)개 라운드에서 Avg(Δ<sub>R</sub>) ≤ θ<sub>R</sub> 이고 Avg(Δ<sub>C</sub>) ≤ θ<sub>C</sub>이면 수렴 상태로 판정합니다.</li>
+    </ol>
+
+    <h3>합의 도출 엔진</h3>
+    <ol class="steps">
+      <li><strong>쟁점 분해</strong> — 논쟁 대상을 독립적으로 합의 가능한 개별 쟁점(issue) 단위로 분해합니다.</li>
+      <li><strong>쟁점별 순차 합의</strong> — 각 쟁점에 대해 A·B가 집중 논쟁하고, 합의된 쟁점은 고정(lock)하여 재론을 방지합니다.</li>
+      <li><strong>양보 추적</strong> — 각 라운드에서 효용 함수 값 변화량을 양보율로 추적하고, 양보 대칭성이 임계값 미만이면 추가 논증을 요구합니다.</li>
+      <li><strong>합의 품질 평가</strong> — 양측 수용도(BAS), 양보 대칭성(CSI), 쟁점 해소율(IRR)의 가중 합으로 합의 품질 종합 점수(CQS)를 산출합니다.</li>
+    </ol>
+    <div class="formula">CQS = w₁ · BAS + w₂ · CSI + w₃ · IRR</div>
+
+    <h3>도메인별 하이퍼파라미터</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>도메인</th><th>θ<sub>R</sub></th><th>θ<sub>C</sub></th><th>W</th><th>설정 근거</th></tr></thead>
+        <tbody>
+          <tr><td>특허 출원</td><td>0.03</td><td>0.05</td><td>4</td><td>청구항 미세 변경이 권리 범위에 직결 — 엄격 기준</td></tr>
+          <tr><td>의료·건강</td><td>0.07</td><td>0.15</td><td>5</td><td>오진 위험 최소화 — 충분한 논쟁 허용</td></tr>
+          <tr><td>민형사 소송</td><td>0.05</td><td>0.10</td><td>3</td><td>사실관계·법률해석 쟁점 분리 — 기본값</td></tr>
+          <tr><td>국세 행정</td><td>0.05</td><td>0.10</td><td>3</td><td>명문 규정 즉시 합의, 해석 쟁점만 논쟁</td></tr>
+          <tr><td>교육</td><td>0.05</td><td>0.10</td><td>3</td><td>학습자 이행률 참조, 실현 가능성 중시</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S3: Private Data Vault -->
+  <section>
+    <div class="badge">SECTION 03 — PRIVATE DATA VAULT</div>
+    <h2>계층적 해시 분산 기반 데이터 금고</h2>
+    <p class="lead">AI가 데이터의 진위를 판단하려면 데이터 자체의 무결성이 보장되어야 합니다. Private Data Vault는 원본 데이터의 이중 해시값(H′ = SHA-256(SHA-256(D) ∥ T))만을 계층적 DHT 네트워크에 분산 저장하여, 합의 메커니즘 없이 O(1) 무결성 검증을 실현합니다.</p>
+
+    <h3>5단계 계층적 분산 구조</h3>
+    <div style="margin:16px 0 24px">
+      <div class="vault-bar"><span style="min-width:80px">읍면동</span><div class="bar" style="width:80%;flex-shrink:0"></div><span class="pct">80%</span></div>
+      <div class="vault-bar"><span style="min-width:80px">시군구</span><div class="bar" style="width:15%;flex-shrink:0"></div><span class="pct">15%</span></div>
+      <div class="vault-bar"><span style="min-width:80px">광역시도</span><div class="bar" style="width:8%;min-width:24px;flex-shrink:0"></div><span class="pct">4%</span></div>
+      <div class="vault-bar"><span style="min-width:80px">국가</span><div class="bar" style="width:5%;min-width:16px;flex-shrink:0"></div><span class="pct">0.9%</span></div>
+      <div class="vault-bar"><span style="min-width:80px">글로벌</span><div class="bar" style="width:3%;min-width:10px;flex-shrink:0"></div><span class="pct">0.1%</span></div>
+    </div>
+    <p>상위 계층에 저장된 머클 트리(Merkle Tree) 루트 해시로 하위 계층 전체의 일괄 무결성 검증이 가능합니다(O(log n)).</p>
+
+    <h3>종래 블록체인 대비 기술적 우위</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>비교 항목</th><th>종래 블록체인</th><th>Private Data Vault</th></tr></thead>
+        <tbody>
+          <tr><td>합의 메커니즘</td><td class="r">PoW/PoS 필수 — 높은 에너지·지연</td><td class="g">불필요 — SHA-256 일방향성으로 보장</td></tr>
+          <tr><td>분산 저장 범위</td><td class="r">전체 트랜잭션 복제</td><td class="g">이중 해시값(32B)만 선별 저장</td></tr>
+          <tr><td>검증 복잡도</td><td class="r">체인 순회 필요</td><td class="g">O(1) 개별 / O(log n) 일괄 검증</td></tr>
+          <tr><td>삭제권(GDPR)</td><td class="r">불변성으로 삭제 곤란</td><td class="g">원본 삭제 + 해시 무효화</td></tr>
+          <tr><td>데이터 주권</td><td class="r">다수 노드에 분산</td><td class="g">원본은 사용자 관할 단일 위치 잔류</td></tr>
+          <tr><td>확장성</td><td class="r">노드 증가 시 합의 비용 증가</td><td class="g">노드 수 무관, 해시 연산만으로 검증</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>보안 체계</h3>
+    <p>저장 암호화(AES-256-GCM), 역할 기반 접근 제어(RBAC: A=읽기, B=사용자 허용 범위, C=최소 필요), 개인정보보호법·GDPR·HIPAA 준수 규정 준수 엔진, 보존 기간 경과 시 자동 삭제 정책을 적용합니다.</p>
+  </section>
+
+  <!-- S4: 도메인 적용 -->
+  <section>
+    <div class="badge">SECTION 04 — DOMAIN APPLICATIONS</div>
+    <h2>도메인별 역할 매핑 및 적용</h2>
+    <p class="lead">역할 정의 매핑 테이블과 도메인별 프롬프트 템플릿을 통해 동일한 시스템 아키텍처가 다양한 전문 영역에 범용 적용됩니다.</p>
+
+    <div class="tabs" id="archTabs">
+      <div class="tab on" data-d="patent">특허 출원</div>
+      <div class="tab" data-d="law">민형사 소송</div>
+      <div class="tab" data-d="tax">국세 행정</div>
+      <div class="tab" data-d="med">의료·건강</div>
+      <div class="tab" data-d="edu">교육</div>
+    </div>
+
+    <div class="panel on" data-d="patent">
+      <p>A(변리사)가 작성한 출원서를 B(심사관)가 거절 사유로 공격하고, 수렴 후 C(심판관)가 등록 여부를 판단합니다. 청구항 범위 설정, 신규성·진보성 판단, 명세서 기재 요건을 각각 독립 쟁점으로 분해하여 순차 합의합니다. 기존 수십 시간·수백만 원의 과정을 1~2시간·수만 원으로 단축합니다.</p>
+      <div class="mapping">
+        <div><b>A · 변리사(출원인 대리)</b>특허 등록 요건을 충족하는 최고 품질의 출원서 작성</div>
+        <div><b>B · 특허 심사관</b>신규성, 진보성, 기재 요건의 흠결 탐색</div>
+        <div><b>C · 특허 심판관</b>등록 여부 및 적정 청구항 범위 판단</div>
+        <div><b>D · 인간 변리사/발명자</b>최종 승인 및 출원 결정</div>
+      </div>
+    </div>
+
+    <div class="panel" data-d="law">
+      <p>A(원고측)와 B(피고측)가 소장·답변서·준비서면을 교환하며 논쟁합니다. 증거 인출 엔진이 Private Data Vault에서 무결성 검증 태그가 첨부된 증거를 인출하여 위변조 불가능한 증거 기반 소송을 지원합니다. 사실관계 쟁점과 법률해석 쟁점을 분리하여 합의합니다.</p>
+      <div class="mapping">
+        <div><b>A · 원고측 법률 대리인</b>원고 승소를 위한 최선의 주장 구성</div>
+        <div><b>B · 피고측 법률 대리인</b>원고 주장의 허점 공격 및 피고 방어</div>
+        <div><b>C · 1심 판사</b>법리와 증거에 기반한 공정한 판결</div>
+        <div><b>D · 인간 법률 전문가</b>판결의 적정성 최종 검증</div>
+      </div>
+    </div>
+
+    <div class="panel" data-d="tax">
+      <p>A(세무사)가 최적 절세 전략을 수립하면, B(국세청 조사관)가 동일한 Vault 기록을 참조하여 과소 신고·부당 공제를 탐색합니다. 세법 명문 규정 쟁점은 즉시 합의하고, 해석의 여지가 있는 쟁점만 논쟁합니다.</p>
+      <div class="mapping">
+        <div><b>A · 세무사(납세자 대리)</b>적법한 범위 내 최적 절세 전략</div>
+        <div><b>B · 국세청 조사관</b>과소 신고, 부당 공제, 탈세 탐색</div>
+        <div><b>C · 국세 심판관</b>세법에 기반한 공정한 조정</div>
+        <div><b>D · 인간 세무 전문가</b>조정 결과의 최종 승인</div>
+      </div>
+    </div>
+
+    <div class="panel" data-d="med">
+      <p>A(주치의)는 가용 자원을 총동원한 포괄적 치료 계획을, B(건강보험 심사 에이전트)는 비용 효율적 대안을 제시합니다. 중재 시 치료 효과 종합 점수(CTES)로 정량 평가하며, 합의 불발 시 환자 안전을 우선하여 A의 치료 극대화 제안을 기본값으로 채택합니다.</p>
+      <div class="formula">CTES = w₁·(1-SS) + w₂·VSII + w₃·TAR + w₄·MCEI</div>
+      <div class="mapping">
+        <div><b>A · 주치의(환자 대리)</b>모든 의료 자원 총동원, 최적 치유 달성</div>
+        <div><b>B · 건강보험 심사 에이전트</b>의학적 적정성 유지하며 비용 최소화</div>
+        <div><b>C · 의료 경제성 평가관</b>치료 효과와 비용 효율의 최적 균형점 판정</div>
+        <div><b>D · 인간 의료진</b>최종 치료 방침 승인 및 환자 안전 확인</div>
+      </div>
+    </div>
+
+    <div class="panel" data-d="edu">
+      <p>A(학습 설계사)가 학습자의 이력·적성·취향에 기반한 학습 계획을, B(학습 장애 시뮬레이터)가 비현실성·학습 부하 과중·동기 저하 요인을 지적합니다. 학습 목표, 경로, 일정, 평가 방법을 각각 독립 쟁점으로 분해하여 순차 합의합니다.</p>
+      <div class="mapping">
+        <div><b>A · 학습 설계사(학습자 대리)</b>최적 학습 경로 설계 및 일정 수립</div>
+        <div><b>B · 학습 장애 시뮬레이터</b>비현실성, 부하 과중, 실패 시나리오 식별</div>
+        <div><b>C · 교육 효과 평가관</b>실현 가능성과 기대 효과의 객관적 판정</div>
+        <div><b>D · 인간 교육 전문가</b>학습 계획의 최종 승인</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5: 시스템 최적화 -->
+  <section>
+    <div class="badge">SECTION 05 — OPTIMIZATION &amp; AUDIT</div>
+    <h2>계산 효율화 및 의사결정 감사</h2>
+    <p class="lead">다중 LLM의 반복적 상호작용에 따른 계산 비용을 40~60% 절감하면서 품질을 유지합니다. 모든 의사결정 과정은 해시 체인 기반 불변 로그로 기록됩니다.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:160px">메커니즘</th><th>내용</th></tr></thead>
+        <tbody>
+          <tr><td><strong>병렬 처리</strong></td><td>복수 인스턴스(예: 3개)를 병렬 운영 후, 병합 모듈이 품질 점수(자기 확신도 0.3 + 맥락 일관성 0.4 + 완전성 0.3)로 평가. 코사인 유사도 기반 직접 선택(≥0.9) / 장점 융합(0.6~0.9) / 최적 선택(&lt;0.6) 결정.</td></tr>
+          <tr><td><strong>적응적 모델 선택</strong></td><td>초기 라운드(1~3)는 경량 모델(≤70B), 수렴 근접 시 고성능 모델(≥400B)로 전환하여 정밀도가 필요한 시점에만 고비용 리소스를 투입.</td></tr>
+          <tr><td><strong>시맨틱 캐시</strong></td><td>이전 라운드 응답을 벡터 임베딩으로 저장. 유사 입력 감지 시 재활용하여 중복 연산 방지.</td></tr>
+          <tr><td><strong>의사결정 감사 로그</strong></td><td>각 로그 항목의 해시가 이전 항목의 해시와 결합하여 해시 체인 형성. AI 권고, 쟁점별 양보 이력, 합의 품질 점수, 인간 검토 과정, 최종 결정 및 사유를 기록하여 책임소재 규명의 근거 제공.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>시스템 상태 전이</h3>
+    <div class="formula">INIT → GENERATING → CRITIQUING ⇄ RESPONDING → CONVERGENCE_CHECK → MEDIATING → APPROVING → COMPLETED<br>※ 각하(REJECTED) 시: 해당 쟁점만 MEDIATING 재개 또는 GENERATING 전체 재시작</div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var w=document.getElementById('archTabs');
+  if(!w)return;
+  w.addEventListener('click',function(e){
+    var t=e.target.closest('.tab');
+    if(!t)return;
+    var d=t.dataset.d;
+    w.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('on',x.dataset.d===d)});
+    document.querySelectorAll('.arch .panel').forEach(function(p){p.classList.toggle('on',p.dataset.d===d)});
+  });
+})();
+</script>
