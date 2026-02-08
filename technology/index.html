@@ -1,151 +1,220 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>기술 문서 - OpenHash</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
-    <style>
-    .tech-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: var(--space-5);
-    }
-    .tech-card {
-        display: block;
-        padding: var(--space-6);
-        background: var(--white);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius-lg);
-        text-decoration: none;
-        color: inherit;
-        transition: border-color var(--transition);
-    }
-    .tech-card:hover {
-        border-color: var(--gray-300);
-    }
-    .tech-icon {
-        font-size: 28px;
-        margin-bottom: var(--space-4);
-    }
-    .tech-card h3 {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: var(--space-2);
-        color: var(--gray-900);
-    }
-    .tech-card p {
-        font-size: 13px;
-        color: var(--gray-600);
-        margin-bottom: var(--space-4);
-        line-height: 1.6;
-    }
-    .tech-modules {
-        display: inline-block;
-        font-size: 11px;
-        color: var(--primary);
-        background: var(--gray-100);
-        padding: var(--space-1) var(--space-2);
-        border-radius: 2px;
-        font-family: var(--font-mono);
-    }
-    
-        .hero {
-            text-align: center;
-            padding: 1.5rem 0 1.25rem !important;
-        }
-        .hero-title {
-            font-size: 1.75rem !important;
-        }
-    </style>
-    
-    <link rel="stylesheet" href="/css/hero.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenHash 기술</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+
+/* 탭 네비게이션 */
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+
+/* Hero 섹션 */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* 컨텐츠 */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+.card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+.card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+}
+.card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+</style>
+<script src="/js/nav.js" defer></script>
 </head>
 <body>
 
-    <section class="hero">
-        <div class="container">
-            <h1 class="hero-title" style="font-size: 28px;">기술 문서</h1>
-            <p class="hero-desc" style="font-size: 15px; margin-bottom: 0;">OpenHash 특허 기반 핵심 기술 상세 문서</p>
-        </div>
-    </section>
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1 class="hero-title">OpenHash 기술</h1>
+        <p class="hero-sub">사회적 자율 주행부터 탈중앙화 인프라까지, OpenHash의 핵심 기술을 탐구합니다</p>
+    </div>
+</section>
 
-    <section class="section">
-        <div class="container">
-            <div class="tech-grid">
-                <a href="/technology/hierarchy.html" class="tech-card">
-                    <div class="tech-icon">🏛️</div>
-                    <h3>5단계 계층 구조</h3>
-                    <p>글로벌-국가-광역시도-시군구-읍면동 계층 기반 데이터 무결성 검증</p>
-                    <span class="tech-modules">모듈 100-130</span>
-                </a>
+<!-- 탭 네비게이션 -->
+<div class="tab-section">
+    <div class="tab-nav">
+        <a href="/technology/principle/" class="tab-link">원리</a>
+        <a href="/technology/practical/" class="tab-link">실용</a>
+        <a href="/technology/" class="tab-link active">기술</a>
+        <a href="/technology/simulation/" class="tab-link">시뮬레이션</a>
+        <a href="/technology/tests/" class="tab-link">테스트</a>
+        <a href="/technology/decentralization/" class="tab-link">탈중앙화</a>
+    </div>
+</div>
 
-                <a href="/technology/verification.html" class="tech-card">
-                    <div class="tech-icon">✅</div>
-                    <h3>검증 시스템</h3>
-                    <p>하향식 검증, 상향식 감시, 잔액 불변성, 5단계 거래 검증 파이프라인</p>
-                    <span class="tech-modules">모듈 310, 320, 350, 360</span>
-                </a>
-
-                <a href="/technology/consensus.html" class="tech-card">
-                    <div class="tech-icon">🤝</div>
-                    <h3>LPBFT 합의</h3>
-                    <p>경량 PBFT - 평상시 경량 검증, 비상시에만 합의 프로토콜 발동</p>
-                    <span class="tech-modules">모듈 340</span>
-                </a>
-
-                <a href="/technology/layer-select.html" class="tech-card">
-                    <div class="tech-icon">🎲</div>
-                    <h3>확률적 계층 선택</h3>
-                    <p>SHA-256 이중 해싱 기반 확률 분포에 따른 기록 계층 자동 선택</p>
-                    <span class="tech-modules">모듈 300</span>
-                </a>
-
-                <a href="/technology/ssi.html" class="tech-card">
-                    <div class="tech-icon">🪪</div>
-                    <h3>SSI 인증</h3>
-                    <p>자기주권 신원 - 중앙 기관 없이 5요소 기반 탈중앙화 신원 증명</p>
-                    <span class="tech-modules">모듈 850</span>
-                </a>
-
-                <a href="/technology/currency.html" class="tech-card">
-                    <div class="tech-icon">💰</div>
-                    <h3>디지털 화폐</h3>
-                    <p>민간 경쟁형 디지털 화폐 발행, AI 검증, FPGA 가속, 자율 금융</p>
-                    <span class="tech-modules">모듈 1000-1940</span>
-                </a>
-
-                <a href="/technology/vault.html" class="tech-card">
-                    <div class="tech-icon">🗄️</div>
-                    <h3>Vault 서비스</h3>
-                    <p>금융/의료/교육/행정/교통/일반 6서랍 자동 분류 데이터 관리</p>
-                    <span class="tech-modules">모듈 800-810</span>
-                </a>
-
-                <a href="/technology/hashchain.html" class="tech-card">
-                    <div class="tech-icon">🔗</div>
-                    <h3>해시 체인</h3>
-                    <p>Git 병합 방식의 분산 해시 체인, 머클 트리 동기화</p>
-                    <span class="tech-modules">모듈 330</span>
-                </a>
+<!-- 컨텐츠 -->
+<section class="section">
+    <div class="container">
+        <h2 class="sec-title">OpenHash 기술 개요</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>원리</h3>
+                <p>OpenHash의 기본 철학과 작동 원리, 다중 에이전트 협업 메커니즘을 이해합니다.</p>
+            </div>
+            <div class="card">
+                <h3>실용</h3>
+                <p>실제 적용 사례와 사용 방법, 일상과 업무에서의 활용 방안을 살펴봅니다.</p>
+            </div>
+            <div class="card">
+                <h3>기술</h3>
+                <p>3계층 AI 아키텍처, 스마트 도로 인프라, 경쟁-협력 메커니즘 등 핵심 기술을 상세히 설명합니다.</p>
+            </div>
+            <div class="card">
+                <h3>시뮬레이션</h3>
+                <p>가상 환경에서의 실험 결과와 성능 평가, 최적화 방안을 확인합니다.</p>
+            </div>
+            <div class="card">
+                <h3>테스트</h3>
+                <p>다양한 시나리오에서의 테스트 결과와 검증 데이터를 제공합니다.</p>
+            </div>
+            <div class="card">
+                <h3>탈중앙화</h3>
+                <p>계층적 해시 분산 기술과 데이터 무결성 보장 메커니즘을 탐구합니다.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <a href="/" class="logo"><span class="logo-icon">◈</span> OpenHash</a>
-                <div class="footer-links">
-                    <a href="/">홈</a>
-                    <a href="/simulation/">시뮬레이션</a>
-                    <a href="/tests/">테스트 센터</a>
-                </div>
-            </div>
-            <p>© 2026 OpenHash. 차세대 분산 데이터 무결성 검증 시스템</p>
-        </div>
-    </footer>
-<script src="/js/nav.js"></script></body>
+<script>
+// 현재 경로에 따라 활성 탭 설정
+const currentPath = window.location.pathname;
+const tabLinks = document.querySelectorAll('.tab-link');
+tabLinks.forEach(link => {
+    const linkPath = link.getAttribute('href');
+    if (currentPath === linkPath || currentPath === linkPath.replace('/technology/', '/technology/index.html')) {
+        link.classList.add('active');
+    } else {
+        link.classList.remove('active');
+    }
+});
+</script>
+</body>
 </html>
