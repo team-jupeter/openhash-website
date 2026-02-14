@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시장 거래 자동화 시스템 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+
+/* 고팡 배너 */
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+
+/* 탭 네비게이션 */
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+
+/* 상단 메인 메뉴 스타일 */
+.main-header {
+    background: var(--navy-dark);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.logo:hover {
+    color: var(--gold-light);
+}
+
+.main-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+.nav-link.active {
+    color: var(--gold);
+    background: rgba(212,160,23,0.1);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .main-nav {
+        justify-content: center;
+    }
+
+    .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Hero 섹션 */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* 컨텐츠 */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+
+/* 채팅 인터페이스 */
+.chat-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin: 2.5rem 0;
+}
+.chat-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+}
+.status-indicator.active { background: #4caf50; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.message {
+    max-width: 85%;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    position: relative;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    word-break: keep-all;
+}
+.message-left {
+    align-self: flex-start;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent-blue);
+    margin-right: auto;
+}
+.message-right {
+    align-self: flex-end;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    margin-left: auto;
+}
+.message-system {
+    align-self: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    max-width: 95%;
+    text-align: center;
+    font-style: italic;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+}
+.message-critical {
+    border-left: 4px solid var(--accent-red) !important;
+    background: #fff5f5 !important;
+}
+.message-warning {
+    border-left: 4px solid var(--accent-orange) !important;
+    background: #fff8e1 !important;
+}
+.message-success {
+    border-left: 4px solid var(--accent-green) !important;
+    background: #f1f8e9 !important;
+}
+
+.message-sender {
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+    display: block;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed var(--border-light);
+}
+
+.message-content {
+    line-height: 1.7;
+    display: block;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    white-space: pre-line;
+}
+
+.message-content-long {
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-caption);
+    text-align: right;
+    margin-top: 0.5rem;
+    padding-top: 0.3rem;
+    border-top: 1px dotted var(--border-light);
+}
+
+/* 통계 카드 */
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+}
+
+/* 역할 카드 - 세로 나열 */
+.role-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+.role-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+.role-card.role-market { border-left: 4px solid var(--accent-green); }
+.role-card.role-region { border-left: 4px solid var(--accent-blue); }
+.role-card.role-product { border-left: 4px solid var(--accent-purple); }
+.role-card.role-consumer { border-left: 4px solid var(--accent-red); }
+.role-card.role-assistant { border-left: 4px solid var(--accent-orange); }
+.role-card.role-logistics { border-left: 4px solid var(--accent-green); }
+.role-header {
+    margin-bottom: 1rem;
+}
+.role-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+.role-human {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.role-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* 비교 테이블 */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+}
+.data-table th, .data-table td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    word-break: keep-all;
+}
+.data-table thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border-bottom: none;
+}
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-messages { height: 400px; padding: 1rem; }
+    .message { max-width: 95%; }
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .message-content {
+        word-break: break-word;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- 상단 메인 메뉴 -->
+<div id="main-nav-placeholder"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">FPGA 가속 · 하이브리드 신뢰 시스템 · 7.3M TPS</div>
+        <h1 class="hero-title">시장 거래 <span class="gold">자동화</span> 시스템</h1>
+    </div>
+</section>
+
+<!-- 탭 네비게이션 -->
+<div class="tab-section">
+    <div class="tab-nav">
+        <a href="/automation/market/" class="tab-link active">시장</a>
+        <a href="/automation/ecommerce/" class="tab-link">전자상거래</a>
+        <a href="/automation/fintech/" class="tab-link">핀테크</a>
+        <a href="/automation/trade/" class="tab-link">국제무역</a>
+        <a href="/automation/logistics/" class="tab-link">물류</a>
+        <a href="/automation/consumer/" class="tab-link">소비자보호</a>
+        <a href="/automation/distribution/" class="tab-link">유통</a>
+    </div>
+</div>
+
+<!-- 고팡 배너 -->
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡</strong> — OpenHash+FPGA 기반의 시장 거래 자동화 시스템을 직접 경험해 보세요</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 시장 거래의 역할 전환 섹션 -->
+<section class="section" id="role-transition">
+    <div class="container">
+        <h2 class="sec-title">시장 거래의 역할 전환</h2>
+        <p class="sec-lead">
+            OpenHash FPGA 기반 시장 자동화 시스템은 기존의 수동적·분산된 전자상거래를 능동적·통합적·초개인화 거래 플랫폼으로 전환합니다. 
+            5,000개 이상의 AI 에이전트(시장 Agent, 지역 Agent, 상품 Agent, 소비자 보호 Agent, AI 비서)가 협력하여 
+            소비자의 요구를 실시간으로 분석하고, 최적의 상품을 공정한 가격에 추천하며, 충동구매를 방지하고, 
+            FPGA 하드웨어 가속으로 1-10ms 내에 결제와 검증을 완료합니다. 
+            이를 통해 거래 시간은 99.9% 단축(2~3일 → 3분), 거래 비용은 90% 이상 절감, 전력 소모는 GPU 대비 88.6% 절감합니다.
+        </p>
+    </div>
+</section>
+
+<!-- 시스템 구성 요소 섹션 -->
+<section class="section surface" id="system-components">
+    <div class="container">
+        <h2 class="sec-title">시스템 구성 요소</h2>
+        <p class="sec-lead">
+            OpenHash FPGA 기반 시장 자동화 시스템은 5,000개 이상의 AI 인스턴스로 구성된 계층적·분산적 에이전트 네트워크입니다.
+        </p>
+
+        <div style="margin: 2rem 0;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        1. 시장 Agent (1개 인스턴스)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        소비자의 수요를 분석하고, 적합한 지역 Agent와 상품 Agent를 동적으로 조합합니다. 
+                        예: 서울 동작구 거주 소비자의 노트북 구매 요청 → 서울 지역 Agent + 전자제품 Agent 호출.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        2. 지역 Agent (3,600개 인스턴스 · 계층 구조)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        읍면동(Layer1), 시군구(Layer2), 광역시도(Layer3), 국가(Layer4)에 대응. 
+                        각 지역의 시장 DB를 생성·관리하며, 관할 내 거래의 70%(Layer1)~2%(Layer4)를 처리. 
+                        실시간 가격 수집, 공급망 분석, 지역 특화 추천 제공.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        3. 상품 Agent (1,000+ 인스턴스 · 수평 네트워크)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        한국 상품 분류표 대·중·소분류에 대응. 모든 상품 Agent는 지식과 경험을 공유하며, 
+                        필요 시 다른 상품 Agent(예: 소프트웨어 Agent)를 호출하여 자문 및 추가 분석 의뢰 가능.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-red); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        4. 소비자 보호 Agent (100개 인스턴스 · 부하 분산)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        소비자 분쟁, 공정거래 위반 사례 대규모 DB 공유. 
+                        시장 Agent의 추천이 통상적 기준을 벗어날 경우 재검토 제안. 
+                        충동구매 위험도 분석(구매의도·체류시간·반복패턴) 및 쿨링오프 권고.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-orange); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        5. AI 비서 (인구 수만큼 생성)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        각 사용자에게 할당. 사용자의 요구를 분석해 적절한 외부 전문 기관 Agent(시장 Agent, 행정안전부 Agent 등)를 호출. 
+                        사용자의 PDV(Private Data Vault)를 관리하고, 거래 내역·개인정보를 암호화 저장.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        6. FPGA 하드웨어 가속 시스템
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        Xilinx Versal ACAP VCK190 기반. 8개 병렬 SHA-256 해시 프로세서, 동적 리소스 할당, 
+                        계층형 신뢰도 계산 유닛 탑재. 7.3M TPS(단순 해시 기준), 전력 18.2W(GPU 대비 88.6% 절감).
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: var(--gold-light);">
+                    Global Openhash Market Network
+                </div>
+                <div style="font-size: 0.9rem; line-height: 1.8;">
+                    모든 거래 내역은 이중 해시체인으로 위변조가 원천 차단되며, 개인 데이터는 사용자 단말(PDV)에만 AES-256 암호화 저장됩니다. 
+                    중앙 서버는 해시값만 보관하여 GDPR, HIPAA, 차분 프라이버시(ε≤0.5)를 준수합니다. 
+                    Layer 1~5 노드는 Openhash Network의 서버 역할을 수행하며, 글로벌 규제 자동 준수 시스템이 10개국 법규를 실시간 모니터링합니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 2: 채팅 시뮬레이션 -->
+<section class="section surface" id="chat-simulation">
+    <div class="container">
+        <h2 class="sec-title">실시간 시장 거래 채팅 시뮬레이션</h2>
+        <p class="sec-lead">소비자의 AI 비서가 시장 Agent를 호출하고, 시장 Agent는 지역 Agent와 상품 Agent를 조합합니다. 소비자 보호 Agent의 독립적 위험도 분석, FPGA 원자적 트랜잭션, 이중 해시체인 검증을 거쳐 거래가 완전 자동화됩니다.</p>
+
+        <!-- 채팅 인터페이스 -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div>시장 거래 자동화 채팅</div>
+                <div class="chat-status">
+                    <div class="status-indicator active"></div>
+                    <span>FPGA 실시간 처리 중 (1-10ms 지연)</span>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- 단계 1: 상품 검색 및 추천 -->
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김철수
+                    </div>
+                    <div class="message-content">
+                        개발용 고성능 노트북을 찾고 있어. 14인치에 RTX 4050 이상 탑재된 모델 중에서 가격 대비 성능이 좋은 제품 추천해 줘.
+                    </div>
+                    <div class="message-time">10:15:22</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        네, 시장 Agent를 호출하겠습니다. 귀하의 Private Data Vault(PDV)에 저장된 개발 환경 설정 이력과 과거 구매 패턴을 익명으로, 시장 Agent에게 전달합니다. <br>
+                        <br>
+                        - 주로 Python/JavaScript 개발, 가상머신 활용 → 32GB RAM 이상 권장<br>
+                        - 그래픽 작업 빈도: 주 2-3회 → RTX 4050/4060 적합<br>
+                        - 예산 범위: 150-200만원 (과거 노트북 구매 이력 기준)
+                    </div>
+                    <div class="message-time">10:15:35</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        시장 Agent
+                    </div>
+                    <div class="message-content">
+                        안녕하세요. 귀하가 구매하려는 물품의 종류를 분석한 결과, 귀하의 주소지 광역시도를 관할하는 Openhash Layer 3의 서울 지역 Agent와 전자제품 Agent가 귀하의 수요에 적합한 상품을 추천할 것입니다. 혹시, 서울 지역 에이전트의 추천이 마음에 들지 않는다면, Openhash Layer 4 국가 Agent를 호출하십시오.
+                    </div>
+                    <div class="message-time">10:15:42</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        지역 Agent
+                    </div>
+                    <div class="message-content">
+                        안녕하세요. 서울 지역 Agent입니다. 전자제품 Agent와 함께, 현재 시장 가격을 FPGA 분산 모니터링 시스템으로 실시간 분석 중입니다.<br>
+                        5개 주요 쇼핑몰의 가격 데이터를 수집하여 최적 조건을 찾고 있습니다.
+                    </div>
+                    <div class="message-time">10:15:50</div>
+                </div>
+
+                <div class="message message-system">
+                    [FPGA 시장 분석 Agent: 8개 병렬 SHA-256 해시 프로세서로 다중 쇼핑몰 가격 비교 중]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        FPGA 시장 분석 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>[실시간 가격 분석 결과]</strong><br>
+                        <br>
+                        대상 모델: LG 그램 프로 16Z90SP, ASUS 젠북 14 OLED, 삼성 갤럭시북4 프로 360<br>
+                        <br>
+                        ✅ <strong>최적 조건 발견 (공정가격 보장 시스템 검증 완료)</strong><br>
+                        - ASUS 젠북 14 OLED (RTX 4050, 32GB, 1TB): 1,790,000원<br>
+                        - 5개 쇼핑몰 평균가: 1,945,000원 (Z-score: -2.8, 이상가격 범위 이탈)<br>
+                        - 30일 최저가 대비 11.3% 저렴<br>
+                        - 재고: 7대 (실시간 확인)<br>
+                        <br>
+                        해당 가격은 공정가격 보장 시스템의 투명성 지수 94%를 획득했습니다.
+                    </div>
+                    <div class="message-time">10:16:02</div>
+                </div>
+
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김철수
+                    </div>
+                    <div class="message-content">
+                        좋아, ASUS 젠북으로 바로 구매할게. 결제 진행해 줘.
+                    </div>
+                    <div class="message-time">10:16:28</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        네, 구매 전에 소비자 보호 Agent를 호출하겠습니다.
+                    </div>
+                    <div class="message-time">10:16:32</div>
+                </div>
+
+                <div class="message message-right message-critical">
+                    <div class="message-sender">
+                        소비자 보호 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>[충동구매 위험도 분석 결과 - 주의 요망]</strong><br>
+                        <br>
+                        ✅ 구매 의도 분석 (40%): 최근 10개 검색어 중 7개가 노트북/전자기기 → 구매 의도 명확<br>
+                        ⚠️ 체류시간 모니터링 (30%): 해당 상품 페이지 체류시간 47초 (평균 2분 30초) → 충분한 비교 검토 부족<br>
+                        ⚠️ 반복 패턴 분석 (30%): 과거 3개월 간 100만원 이상 전자기기 구매 3회 → 과소비 패턴 감지<br>
+                        <br>
+                        <strong>최종 위험도: 0.74 (기준 0.70 초과)</strong><br>
+                        <br>
+                        귀하의 소비 패턴을 고려할 때 이번 구매는 충동구매 가능성이 높습니다.<br>
+                        쿨링오프 24시간을 권장합니다. 그래도 진행하시겠습니까?
+                    </div>
+                    <div class="message-time">10:16:55</div>
+                </div>
+
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김철수
+                    </div>
+                    <div class="message-content">
+                        괜찮아, 업무용으로 꼭 필요해. 쿨링오프 없이 진행해 줘.
+                    </div>
+                    <div class="message-time">10:17:12</div>
+                </div>
+
+                <div class="message message-system">
+                    [소비자 보호 Agent: 사용자 구매 의사 재확인 완료. AI 비서에게 쿨링오프 우회 기록을 PDV에 저장할 것을 요청]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        결제를 진행합니다. 귀하의 PDV에서 결제 정보를 인출합니다.<br>
+                        <br>
+                        - 결제 수단: OpenHash 디지털 화폐 (UniversalCoin)<br>
+                        - 환전 수수료: 0% (FPGA 글로벌 결제 네트워크 적용)<br>
+                        - 결제 금액: 1,790,000 UC<br>
+                        - 실시간 환율: 1 UC = 1,000원 (법정화폐 연동 고정)<br>
+                        <br>
+                        판매자 Agent와 상호 검증을 시작합니다.
+                    </div>
+                    <div class="message-time">10:17:30</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        판매자 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>[판매자 측 검증]</strong><br>
+                        <br>
+                        - 상품 ID: ASUS-Z14-4050-32GB<br>
+                        - 현재 재고: 7대 → 구매 가능<br>
+                        - 판매자 신뢰도 점수: 94.2% (납기 준수율 98.7%, 품질 평가 4.8/5.0)<br>
+                        - 공인된 판매자 인증: Openhash Market Network 등록 완료<br>
+                        <br>
+                        거래 조건에 이상 없음. 소비자 측 검증 요청.
+                    </div>
+                    <div class="message-time">10:17:41</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        <strong>[소비자 측 검증]</strong><br>
+                        <br>
+                        - 결제 능력 확인: PDV 계정 잔액 5,240,000 UC (충분)<br>
+                        - 신원 정보 해시: 7a3f8c...2b1e (Openhash Network 검증 완료)<br>
+                        - 과거 분쟁 이력: 없음 (신뢰도 점수 91.5점)<br>
+                        <br>
+                        양방향 검증 모두 성공했습니다. FPGA 원자적 트랜잭션을 실행합니다.
+                    </div>
+                    <div class="message-time">10:17:52</div>
+                </div>
+
+                <div class="message message-system">
+                    [FPGA 동적 리소스 할당: 결제 트랜잭션에 Layer 3(광역시도) 계층 할당 - 2-5ms 완결성 보장]
+                </div>
+
+                <div class="message message-right message-success">
+                    <div class="message-sender">
+                        FPGA 결제 시스템
+                    </div>
+                    <div class="message-content">
+                        <strong>[원자적 트랜잭션 완료]</strong><br>
+                        <br>
+                        1단계: 소비자 자산 잠금 (1,790,000 UC) - 에스크로 계약 생성<br>
+                        2단계: 암호학적 증명 생성 - SHA-256 해시: 8f3a2c...9d4e<br>
+                        3단계: 머클 트리 검증 - 계층 간 합의 완료<br>
+                        4단계: 타임락 발행 (900초) - 판매자 지급 준비<br>
+                        5단계: 완결 - 판매자 계정으로 자산 이체 완료<br>
+                        <br>
+                        <strong>소요 시간: 3.2ms</strong> (FPGA 가속 적용)<br>
+                        전력 소모: 18.2W (GPU 대비 88.6% 절감)
+                    </div>
+                    <div class="message-time">10:17:55</div>
+                </div>
+
+                <div class="message message-system">
+                    [거래 이력 위변조 방지 시스템 활성화 - 이중 해시체인 생성]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        Openhash 거래 검증 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>[거래별 고유 해시 생성]</strong><br>
+                        <br>
+                        소비자측 거래 해시:<br>
+                        SHA-256(김철수 + ASUS-Z14-4050-32GB + 1,790,000 + 2026-02-11T10:17:55 + 판매자해시)<br>
+                        = <span style="font-family: monospace;">c47a8f2b...3e91d6</span><br>
+                        <br>
+                        판매자측 거래 해시:<br>
+                        SHA-256(전자랜드 + ASUS-Z14-4050-32GB + 1,790,000 + 2026-02-11T10:17:55 + 구매자해시)<br>
+                        = <span style="font-family: monospace;">b29e74c1...5a83f2</span><br>
+                        <br>
+                        <strong>상호 의존성 검증 완료</strong> - 일방적 조작 불가능<br>
+                        개인 데이터 주권 기반 분산 저장: 소비자 단말 + 판매자 단말에 각각 저장
+                    </div>
+                    <div class="message-time">10:18:03</div>
+                </div>
+
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김철수
+                    </div>
+                    <div class="message-content">
+                        배송은 언제쯤 도착할까? 서울 서초구인데 빠른 배송 가능해?
+                    </div>
+                    <div class="message-time">10:18:20</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        물류 Agent를 호출하겠습니다.
+                    </div>
+                    <div class="message-time">10:18:25</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        물류 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>[실시간 물류 최적화 분석]</strong><br>
+                        <br>
+                        - 판매자 위치: 용산 전자랜드 (서울 용산구)<br>
+                        - 배송지: 서울 서초구 반포동<br>
+                        - 최적 경로: 강변북로 → 동작대교 → 올림픽대로 (교통 혼잡도 23%, 원활)<br>
+                        - 예상 배송 시간: <strong>2시간 35분</strong> (유전 알고리즘 기반 VRP 최적화 적용)<br>
+                        - 배송비: 무료 (3만원 이상 구매)<br>
+                        <br>
+                        금일 14:00까지 배송 완료 예정입니다.<br>
+                        실시간 위치 추적 링크를 귀하의 PDV에 저장했습니다.
+                    </div>
+                    <div class="message-time">10:18:40</div>
+                </div>
+
+                <div class="message message-system">
+                    [Openhash Market Network에 거래 기록 (Layer 3)]
+                </div>
+
+                <div class="message message-right message-success">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        <strong>[거래 최종 완료]</strong><br>
+                        <br>
+                        ✅ <strong>처리 요약</strong><br>
+                        - 상품: ASUS 젠북 14 OLED (RTX 4050, 32GB, 1TB)<br>
+                        - 결제 금액: 1,790,000원 (시장 평균 대비 155,000원 절약)<br>
+                        - 처리 시간: 총 3분 18초 (기존 2-3일 대비 99.9% 단축)<br>
+                        - 참여 AI 에이전트: 시장 분석 Agent, 소비자 보호 Agent, 판매자 Agent, FPGA 결제 시스템, 물류 최적화 Agent, 거래 검증 Agent<br>
+                        - 사람 개입: 0회 (완전 자동화)<br>
+                        <br>
+                        ✅ <strong>소비자 보호 조치</strong><br>
+                        - 충동구매 위험도 분석: 0.74 (쿨링오프 권고, 사용자 우회 진행)<br>
+                        - 공정가격 보장: 투명성 지수 94%<br>
+                        - 거래 이력 위변조 방지: 이중 해시체인 적용 완료<br>
+                        <br>
+                        ✅ <strong>데이터 보호</strong><br>
+                        - 모든 거래 내역은 귀하의 PDV에 암호화 저장 (AES-256)<br>
+                        - Openhash Market Network에 익명 해시 기록 완료<br>
+                        - GDPR, HIPAA 준수 (차분 프라이버시 ε≤0.5 적용)<br>
+                        <br>
+                        즐거운 쇼핑 되세요!
+                    </div>
+                    <div class="message-time">10:18:55</div>
+                </div>
+
+                <div class="message message-system">
+                    [판매자 평판 업데이트] 신뢰도 점수 +0.3 (누적 94.5) | [소비자 평판 업데이트] 신뢰도 점수 +0.2 (누적 91.7)
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 3: 참여자 역할 -->
+<section class="section" id="roles">
+    <div class="container">
+        <h2 class="sec-title">협업 구조: 상호 독립적 AI 에이전트 시스템</h2>
+        <p class="sec-lead">5,000개 이상의 상호 독립적 AI 에이전트들이 사람 간 소통 및 업무 처리를 90% 이상 대행합니다. 시장 Agent의 동적 조합, 지역 Agent의 계층적 시장 관리, 상품 Agent의 수평적 지식 공유, 소비자 보호 Agent의 독립적 검증, AI 비서의 개인화 중개를 통해 완전 자동화된 시장 거래를 실현합니다.</p>
+
+        <div class="role-grid">
+            <div class="role-card role-market">
+                <div class="role-header">
+                    <div class="role-name">시장 Agent</div>
+                    <div class="role-human">(에이전트 조정자)</div>
+                </div>
+                <div class="role-desc">소비자의 수요에 부합하는 재화와 서비스를 선정할 지역 Agent와 상품 Agent를 동적으로 조합합니다. 예: 서울 동작구 거주 소비자의 노트북 구매 요청 → 서울 지역 Agent + 전자제품 Agent 호출. 전체 시장 거래의 오케스트레이터 역할을 수행합니다.</div>
+            </div>
+            <div class="role-card role-region">
+                <div class="role-header">
+                    <div class="role-name">지역 Agent</div>
+                    <div class="role-human">(계층적 시장 DB 관리자)</div>
+                </div>
+                <div class="role-desc">3,600개 인스턴스, 읍면동(L1)~국가(L4) 계층 구조. 관할 지역 내 시장 DB 생성·관리, 실시간 가격 수집, 공급망 분석, 지역 특화 추천. 계층별 거래 처리 비중: L1 70%, L2 20%, L3 8%, L4 2%.</div>
+            </div>
+            <div class="role-card role-product">
+                <div class="role-header">
+                    <div class="role-name">상품 Agent</div>
+                    <div class="role-human">(전문 상품 지식 네트워크)</div>
+                </div>
+                <div class="role-desc">1,000+ 인스턴스, 한국 상품 분류표 대·중·소분류 대응. 수평적 네트워크로 지식과 경험을 공유하며, 필요 시 타 상품 Agent(예: 소프트웨어 Agent)를 호출하여 자문 및 추가 분석 의뢰 가능.</div>
+            </div>
+            <div class="role-card role-consumer">
+                <div class="role-header">
+                    <div class="role-name">소비자 보호 Agent</div>
+                    <div class="role-human">(독립적 거래 검증자)</div>
+                </div>
+                <div class="role-desc">100개 인스턴스(부하 분산). 소비자 분쟁·공정거래 위반 DB 공유. 충동구매 위험도 분석(구매의도 40% + 체류시간 30% + 반복패턴 30%), 쿨링오프 권고, 시장 Agent의 추천이 통상 기준을 벗어날 경우 재검토 제안. 1차 안전장치.</div>
+            </div>
+            <div class="role-card role-assistant">
+                <div class="role-header">
+                    <div class="role-name">AI 비서</div>
+                    <div class="role-human">(개인 데이터 관리자)</div>
+                </div>
+                <div class="role-desc">인구 수만큼 생성. 사용자의 요구를 분석해 적절한 외부 전문 기관 Agent(시장 Agent, 행정안전부 Agent 등)를 호출. 사용자의 PDV(Private Data Vault)를 관리하며, 모든 데이터는 AES-256 암호화 저장, 해시만 Openhash Network에 기록.</div>
+            </div>
+            <div class="role-card role-logistics">
+                <div class="role-header">
+                    <div class="role-name">물류 Agent</div>
+                    <div class="role-human">(공급망 최적화)</div>
+                </div>
+                <div class="role-desc">FPGA 기반 실시간 경로 최적화(유전 알고리즘, VRP). 교통 정보, 날씨, 배송 우선순위를 통합 분석하여 최단 시간 경로 산출. 물류비 35% 절감, 배송 시간 50% 단축.</div>
+            </div>
+        </div>
+
+        <div class="note" style="background:#f0f7ff;border-left:4px solid var(--accent-blue);padding:1rem;margin:2rem 0;border-radius:0 var(--radius-md) var(--radius-md) 0;">
+            <strong>시스템 핵심 장점:</strong><br>
+            1. 시장 Agent의 동적 조합으로 지역·상품 특화 최적 추천<br>
+            2. 지역 Agent의 계층적 DB 관리로 확장성 및 신뢰성 확보<br>
+            3. 상품 Agent 간 수평적 지식 공유로 정확한 상품 정보 제공<br>
+            4. 소비자 보호 Agent의 독립적 검증으로 공정거래 및 소비자 권익 강화<br>
+            5. FPGA 하드웨어 가속으로 1-10ms 초저지연 결제 및 검증<br>
+            6. 개인 데이터 주권(PDV) 기반 분산 저장으로 프라이버시 완전 보호<br>
+            7. 기존 대비 거래 시간 99.9% 단축, 비용 90% 이상 절감
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 4: 비교 분석 -->
+<section class="section surface" id="comparison">
+    <div class="container">
+        <h2 class="sec-title">전통적 방식 vs AI 자동화 방식 비교</h2>
+        <p class="sec-lead">FPGA 가속, 하이브리드 분산 신뢰 시스템, 다중 AI 에이전트 협업을 통해 시장 거래 프로세스가 근본적으로 변화했습니다. 소비자 보호 Agent의 독립적 검증과 실시간 FPGA 결제가 핵심 차별점입니다.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>비교 항목</th>
+                    <th>전통적 전자상거래</th>
+                    <th>AI 자동화 시스템</th>
+                    <th>개선 효과</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>상품 탐색·비교</td>
+                    <td>소비자 직접 검색, 다중 탭 비교 (평균 2-3시간)</td>
+                    <td class="highlight">AI 비서 + 시장 Agent 실시간 최적 추천 (3초)</td>
+                    <td class="highlight">99.9% 시간 단축</td>
+                </tr>
+                <tr>
+                    <td>가격 분석</td>
+                    <td>개별 쇼핑몰 방문, 가격비교 사이트 의존</td>
+                    <td class="highlight">FPGA 8개 병렬 해시 프로세서, 5개 쇼핑몰 동시 분석 (10ms)</td>
+                    <td class="highlight">100배 이상 성능</td>
+                </tr>
+                <tr>
+                    <td>결제 처리</td>
+                    <td>카드사 승인 3-10초, 해외 결제 수일</td>
+                    <td class="highlight">FPGA 원자적 트랜잭션 3.2ms, 글로벌 1-10ms</td>
+                    <td class="highlight">1,000배 단축</td>
+                </tr>
+                <tr>
+                    <td>거래 비용</td>
+                    <td>결제 수수료 2-5%, 국제송금 7-15%</td>
+                    <td class="highlight">0% (UniversalCoin), 환전 수수료 없음</td>
+                    <td class="highlight">90-100% 절감</td>
+                </tr>
+                <tr>
+                    <td>소비자 보호</td>
+                    <td>사후 환불·분쟁 중심, 충동구매 조장</td>
+                    <td class="highlight">사전 충동구매 위험도 분석, 쿨링오프 권고, 공정가격 실시간 보장</td>
+                    <td class="highlight">예방적 소비자 보호</td>
+                </tr>
+                <tr>
+                    <td>거래 검증</td>
+                    <td>중앙 서버 단일 기록, 위변조 가능</td>
+                    <td class="highlight">이중 해시체인, 소비자-판매자 상호 참조, 위변조 원천 차단</td>
+                    <td class="highlight">무결성 100% 보장</td>
+                </tr>
+                <tr>
+                    <td>개인정보 보호</td>
+                    <td>중앙 집중 저장, 해킹 위험</td>
+                    <td class="highlight">PDV 개인 단말 암호화 저장, 해시만 네트워크 기록</td>
+                    <td class="highlight">데이터 주권 완전 보장</td>
+                </tr>
+                <tr>
+                    <td>물류 배송</td>
+                    <td>평균 2-3일, 추적 불투명</td>
+                    <td class="highlight">실시간 최적 경로, 2-5시간, 1시간 단위 예측</td>
+                    <td class="highlight">50% 시간 단축, 35% 비용 절감</td>
+                </tr>
+                <tr>
+                    <td>에너지 효율</td>
+                    <td>GPU 서버 160.3W, 고전력</td>
+                    <td class="highlight">FPGA 18.2W, 88.6% 전력 절감</td>
+                    <td class="highlight">친환경, 저탄소</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 섹션 5: 통계 카드 -->
+<section class="section" id="statistics">
+    <div class="container">
+        <h2 class="sec-title">검증된 성능 지표</h2>
+        <p class="sec-lead">AWS EC2 c7i-flex.large 환경에서 측정된 실제 성능 데이터입니다.</p>
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-value speed">7.3M</div>
+                <div class="stat-label">TPS (초당 트랜잭션)</div>
+                <div style="font-size:0.75rem; color:var(--text-caption); margin-top:0.3rem;">토스 대비 146배</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value time">88.6%</div>
+                <div class="stat-label">전력 절감</div>
+                <div style="font-size:0.75rem; color:var(--text-caption); margin-top:0.3rem;">18.2W vs GPU 160.3W</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value cost">99.9%</div>
+                <div class="stat-label">거래 시간 단축</div>
+                <div style="font-size:0.75rem; color:var(--text-caption); margin-top:0.3rem;">2~3일 → 3분</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value success">94%</div>
+                <div class="stat-label">가격 투명성 지수</div>
+                <div style="font-size:0.75rem; color:var(--text-caption); margin-top:0.3rem;">공정가격 보장</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 현재 경로에 따라 활성 탭 설정 (시뮬레이션)
+    const currentPath = window.location.pathname;
+    const tabLinks = document.querySelectorAll('.tab-link');
+    tabLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (currentPath.includes('market')) {
+            if (linkPath.includes('market')) link.classList.add('active');
+            else link.classList.remove('active');
+        }
+    });
+
+    // 채팅창 자동 스크롤
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = 0;
+    }
+});
+</script>
+<script src="/js/nav.js"></script>
+</body>
+</html>

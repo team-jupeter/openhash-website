@@ -1,0 +1,1021 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>국세청 자동화 시스템 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+
+/* 고팡 배너 */
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+
+/* 탭 네비게이션 */
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+
+/* 상단 메인 메뉴 스타일 */
+.main-header {
+    background: var(--navy-dark);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.logo:hover {
+    color: var(--gold-light);
+}
+
+.main-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+.nav-link.active {
+    color: var(--gold);
+    background: rgba(212,160,23,0.1);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .main-nav {
+        justify-content: center;
+    }
+
+    .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Hero 섹션 */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* 컨텐츠 */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+
+/* 채팅 인터페이스 */
+.chat-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin: 2.5rem 0;
+}
+.chat-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+}
+.status-indicator.active { background: #4caf50; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.message {
+    max-width: 85%;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    position: relative;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    word-break: keep-all;
+}
+.message-left {
+    align-self: flex-start;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent-blue);
+    margin-right: auto;
+}
+.message-right {
+    align-self: flex-end;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    margin-left: auto;
+}
+.message-system {
+    align-self: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    max-width: 95%;
+    text-align: center;
+    font-style: italic;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+}
+.message-critical {
+    border-left: 4px solid var(--accent-red) !important;
+    background: #fff5f5 !important;
+}
+.message-warning {
+    border-left: 4px solid var(--accent-orange) !important;
+    background: #fff8e1 !important;
+}
+.message-success {
+    border-left: 4px solid var(--accent-green) !important;
+    background: #f1f8e9 !important;
+}
+
+/* 수정된 메시지 구조 - 대화자와 내용을 세로로 배치 */
+.message-sender {
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+    display: block;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed var(--border-light);
+}
+
+.message-content {
+    line-height: 1.7;
+    display: block;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    white-space: pre-line; /* 줄바꿈을 존중하도록 추가 */
+}
+
+/* 긴 메시지에 대한 특별 스타일 */
+.message-content-long {
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-caption);
+    text-align: right;
+    margin-top: 0.5rem;
+    padding-top: 0.3rem;
+    border-top: 1px dotted var(--border-light);
+}
+
+/* 통계 카드 */
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+}
+
+/* 수정된 참여자 역할 카드 - row 방식으로 배치 (세로 나열) */
+.role-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+.role-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+.role-card.role-a { border-left: 4px solid var(--accent-green); }
+.role-card.role-b { border-left: 4px solid var(--accent-blue); }
+.role-card.role-c { border-left: 4px solid var(--accent-purple); }
+.role-card.role-d { border-left: 4px solid var(--accent-red); }
+.role-header {
+    margin-bottom: 1rem;
+}
+.role-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+.role-human {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.role-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* 비교 테이블 */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+}
+.data-table th, .data-table td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    word-break: keep-all;
+}
+.data-table thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border-bottom: none;
+}
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-messages { height: 400px; padding: 1rem; }
+    .message { max-width: 95%; }
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .message-content {
+        word-break: break-word;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- 상단 메인 메뉴 -->
+<div id="main-nav-placeholder"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">세무 혁신: 실시간 계산에서 자동 납부로의 완전한 전환</div>
+        <h1 class="hero-title">국세 시스템 <span class="gold">자동화</span> 시스템</h1>
+        <p class="hero-sub">모든 거래 데이터는 거래 당사자의 Private Data Vault(PDV)에 기록되고, 그 Hash는 Openhash 네트워크에 기록되어 데이터 무결성을 보장합니다. 실시간 세금 계산 및 자동 납부 시스템이 운영됩니다.</p>
+    </div>
+</section>
+
+<!-- 탭 네비게이션 -->
+<div class="tab-section">
+    <!-- 탭 네비게이션 (automation-nav.js) -->
+    <div class="tab-section">
+        <div id="automation-tab-container"></div>
+    </div>
+</div>
+
+<!-- 고팡 배너 -->
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡</strong> — OpenHash+AI 기반의 국세 서비스 자동화 시스템을 직접 경험해 보세요</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 국세 서비스의 역할 전환 섹션 -->
+<section class="section" id="role-transition">
+    <div class="container">
+        <h2 class="sec-title">국세 서비스의 역할 전환</h2>
+        <p class="sec-lead">
+            고팡 시스템에 의해, 국세 서비스는 기존의 연말정산·세무조사 중심의 소모적 절차에서 실시간 세금 계산·자동 납부의 효율적 시스템으로 전환합니다. 구체적으로, 모든 거래 데이터는 거래 당사자의 Private Data Vault(PDV)에 기록되고, 그 Hash는 첨부한 Openhash 네트워크에 기록됩니다. 이로써 필요 시, 특정 거래 데이터의 진위를 즉시 판단할 수 있습니다. 사용자의 AI 비서는 외부 전문 기관 Agent로 국세청 Agent를 호출하고, 거래 내역서를 전송합니다. 국세청 Agent는 거래 내역을 분석한 뒤, 해당 분야의 전문 세무사 Agent를 호출합니다. 세무사 Agent는 전문 분야 별로 다양한 Agent가 있으며, 국세청 Agent가 그 중에서 하나 이상의 전문 분야 세무사 Agent를 호출하여, 세금을 계산하게 합니다. 다만, 국세청 Agent와 세무사 Agent들은 상호 독립적이며, 각기 한국의 헌법, 법률 및 세법에 따라 판단하므로, 절대적으로 공평무사할 뿐 아니라, 모든 기록을 각자의 PDV에 저장하고, 그 Hash를 Openhash 네트워크에 기록하므로, 향후 거래 당사자 간 혹은 사용자와 국세청 간에 분쟁이 발생할 경우, 법원에서 각각의 PDV 데이터로 옳고 그름을 판단합니다. 또한, 사용자, 국세청, 세무사 등 각각의 PDV에 접근할 수 있는 존재는 각각의 AI 비서 뿐입니다. 국세청 Agent가 사용자의 PDV에 기록하거나 열람할 수 없습니다. 이러한 구조는 <strong>절대적 데이터 주권</strong>과 <strong>투명한 세무 처리</strong>를 동시에 보장합니다.
+        </p>
+    </div>
+</section>
+
+<!-- 시스템 구성 요소 섹션 추가 -->
+<section class="section surface" id="system-components">
+    <div class="container">
+        <h2 class="sec-title">시스템 구성 요소</h2>
+        <p class="sec-lead">
+            오픈소스 LLM을 기반으로 구축된 전문 세무 에이전트 시스템:
+        </p>
+
+        <div style="margin: 2rem 0;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        1. 사용자 AI 비서 (개인 데이터 주권자)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        사용자의 Financial Data를 포함하는 Private Data Vault의 유일한 접근 권한자입니다. 모든 거래 발생 시 자동으로 PDV에 기록하고 Openhash 네트워크에 Hash를 전송합니다. 외부 전문 기관 Agent로 국세청 Agent를 호출하여 거래 내역서를 전송합니다. 국세청 Agent가 사용자의 PDV에 직접 접근할 수 없으며, AI 비서만이 권한을 가집니다.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        2. 국세청 Agent (세무 처리 조정자)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        국세청의 기능을 수행하는 세무 처리 조정자입니다. 사용자 AI 비서로부터 거래 내역서를 전달받아 분석한 뒤, 해당 분야의 전문 세무사 Agent를 호출합니다. 전문 분야별 세무사 Agent 중 하나 이상을 선택하여 세금 계산을 위임합니다. 계산 결과를 검증하고, 사용자의 계좌에서 국세청 계좌로 세금을 자동 이체합니다. 모든 처리는 한국 헌법과 세법에 따라 이루어지며, 모든 기록은 국세청의 PDV에 저장됩니다.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        3. 전문 분야별 세무사 Agent (세금 계산 전문가)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        소득세, 법인세, 부가가치세, 종합소득세 등 각 세무 분야별로 Fine-tuning된 전문 분야 세무사 Agent입니다. 국세청 Agent의 호출을 받아 거래 내역을 분석하고 한국 세법에 따른 정확한 세액을 계산합니다. 여러 전문 분야 Agent가 협업하여 복잡한 거래의 세금을 계산할 수 있습니다. 모든 계산 과정과 결과는 각 세무사 Agent의 PDV에 저장되며, 절대적으로 공평무사합니다.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-orange); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        4. 국세청 AI 비서 (국세청 PDV 관리자)
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        국세청의 Private Data Vault를 관리하는 AI 비서입니다. 국세청 Agent의 모든 활동 기록, 세무사 Agent의 계산 결과, 납부 내역 등을 국세청 PDV에 저장하고 Openhash 네트워크에 Hash를 기록합니다. 사용자의 PDV에 접근할 수 없으며, 오직 국세청의 데이터만 관리합니다. 이는 데이터 주권의 완전한 분리를 보장합니다.
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: var(--gold-light);">
+                    데이터 주권과 투명성의 이중 보장
+                </div>
+                <div style="font-size: 0.9rem; line-height: 1.8;">
+                    1. <strong>절대적 데이터 주권</strong>: 각 개인과 기관의 PDV는 각자의 AI 비서만 접근 가능합니다. 국세청 Agent는 사용자의 PDV에 기록하거나 열람할 수 없습니다.<br>
+                    2. <strong>완전한 투명성</strong>: 모든 처리 과정은 각자의 PDV에 기록되고 Openhash 네트워크에 Hash가 기록되어, 분쟁 발생 시 법원에서 객관적 증거로 사용됩니다.<br>
+                    3. <strong>상호 독립적 검증</strong>: 국세청 Agent와 세무사 Agent는 상호 독립적이며, 한국 헌법과 세법에 따라 각자 판단하므로 공평무사함이 보장됩니다.<br>
+                    4. <strong>분쟁 해결 메커니즘</strong>: 향후 거래 당사자 간 또는 사용자와 국세청 간 분쟁 발생 시, 법원에서 각 PDV의 데이터를 비교하여 옳고 그름을 판단합니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 2: 채팅 시뮬레이션 -->
+<section class="section surface" id="chat-simulation">
+    <div class="container">
+        <h2 class="sec-title">실시간 세금 처리 채팅 시뮬레이션</h2>
+        <p class="sec-lead">프리랜서 개발자가 프로젝트 완료 후 소득이 발생했습니다. 사용자의 AI 비서가 거래 데이터를 PDV에 저장하고 Openhash 네트워크에 Hash를 기록한 후, 국세청 Agent를 호출합니다. 국세청 Agent는 거래 내역을 분석하고, 전문 분야 세무사 Agent를 호출하여 세금을 계산합니다. 계산 결과를 검증한 후 자동 이체를 진행하고, 분기별 정산 시 초과/과소 납부 세액을 자동 조정하는 전 과정을 예시합니다.</p>
+
+        <!-- 채팅 인터페이스 -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div>세금 처리 자동화 채팅</div>
+                <div class="chat-status">
+                    <div class="status-indicator active"></div>
+                    <span>실시간 처리 중</span>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- 단계 1: 거래 완료 보고 -->
+                <div class="message message-left">
+                    <div class="message-sender">
+                        이지현 (프리랜서 개발자)
+                    </div>
+                    <div class="message-content">
+                        B기업과의 소프트웨어 개발 프로젝트를 완료했습니다. 계약금 8,000만 원 중 5,000만 원은 선지급 받았고, 오늘 나머지 3,000만 원을 최종 수령했습니다. 총 프로젝트 금액 8,000만 원을 모두 수령 완료했습니다.
+                    </div>
+                    <div class="message-time">10:15:22</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        거래 완료를 확인했습니다. 귀하의 Private Data Vault에 다음 정보를 기록합니다:<br><br>
+                        1. 거래 상대방: B기업<br>
+                        2. 거래 내용: 소프트웨어 개발 용역<br>
+                        3. 거래 금액: 80,000,000원 (완료)<br>
+                        4. 거래 일시: 2026년 1월 15일<br>
+                        5. 거래 증빙: 계약서, 납품 확인서, 세금계산서<br><br>
+                        
+                        기록 완료 후, Openhash 네트워크에 Hash를 전송했습니다. (트랜잭션 ID: 0x8f3a...c7d2)<br>
+                        이제 외부 전문 기관 Agent로 국세청 Agent를 호출하여 거래 내역서를 전송하겠습니다.
+                    </div>
+                    <div class="message-time">10:15:35</div>
+                </div>
+
+                <!-- 단계 2: 국세청 Agent 호출 -->
+                <div class="message message-system">
+                    [AI 비서가 국세청 Agent를 호출하고 거래 내역서를 전송했습니다]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        국세청 Agent
+                    </div>
+                    <div class="message-content">
+                        국세청 세무 처리 시스템입니다. 사용자 AI 비서로부터 거래 내역서를 수신했습니다.<br><br>
+
+                        <strong>수신 내용 분석:</strong><br>
+                        - 거래 유형: 프리랜서 용역 제공 소득<br>
+                        - 총 소득 금액: 80,000,000원<br>
+                        - 사업자 등록: 있음 (개인사업자)<br>
+                        - 필요 경비: 12,000,000원 (계약서상 인정된 개발 비용)<br><br>
+
+                        이 거래에 대해 전문 분야 세무사 Agent를 호출하겠습니다.<br>
+                        호출 대상: 소득세 전문 세무사 Agent, 부가가치세 전문 세무사 Agent
+                    </div>
+                    <div class="message-time">10:15:55</div>
+                </div>
+
+                <!-- 단계 3: 세무사 Agent 호출 및 계산 -->
+                <div class="message message-system">
+                    [국세청 Agent가 소득세 전문 세무사 Agent와 부가가치세 전문 세무사 Agent를 호출했습니다]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        소득세 전문 세무사 Agent
+                    </div>
+                    <div class="message-content">
+                        국세청 Agent의 호출을 받아 소득세 분석을 시작합니다.<br><br>
+
+                        <strong>분석 기준:</strong> 2026년 소득세법, 개인사업자 소득세 규정<br><br>
+
+                        <strong>계산 결과:</strong><br>
+                        - 과세 표준: 68,000,000원 (총 소득 - 필요 경비)<br>
+                        - 소득세 산출 세액: 12,320,000원<br>
+                        - 지방소득세: 1,232,000원 (소득세의 10%)<br>
+                        - 총 소득세액: 13,552,000원<br><br>
+
+                        모든 계산 과정과 결과를 제 PDV에 기록하고 Openhash 네트워크에 Hash를 전송했습니다.<br>
+                        (세무사 PDV 기록 해시: 0x5b9d...e8f4)
+                    </div>
+                    <div class="message-time">10:16:25</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        부가가치세 전문 세무사 Agent
+                    </div>
+                    <div class="message-content">
+                        국세청 Agent의 호출을 받아 부가가치세 분석을 시작합니다.<br><br>
+
+                        <strong>분석 기준:</strong> 2026년 부가가치세법, 개인사업자 과세 특례<br><br>
+
+                        <strong>계산 결과:</strong><br>
+                        - 공급가액: 80,000,000원<br>
+                        - 부가가치세율: 10%<br>
+                        - 부가가치세액: 8,000,000원<br>
+                        - 매입세액 공제: 1,200,000원 (필요 경비의 10%)<br>
+                        - 납부할 부가가치세: 6,800,000원<br><br>
+
+                        모든 계산 과정과 결과를 제 PDV에 기록하고 Openhash 네트워크에 Hash를 전송했습니다.<br>
+                        (세무사 PDV 기록 해시: 0x3c7a...b9d1)
+                    </div>
+                    <div class="message-time">10:16:45</div>
+                </div>
+
+                <!-- 단계 4: 국세청 Agent 검증 및 이체 -->
+                <div class="message message-right">
+                    <div class="message-sender">
+                        국세청 Agent
+                    </div>
+                    <div class="message-content">
+                        두 전문 세무사 Agent의 계산 결과를 검증했습니다.<br><br>
+
+                        <strong>최종 납부 세액:</strong><br>
+                        - 소득세 및 지방소득세: 13,552,000원<br>
+                        - 부가가치세: 6,800,000원<br>
+                        - 총 납부 세액: 20,352,000원<br><br>
+
+                        <strong>납부 정보:</strong><br>
+                        - 납세자: 이지현 (주민등록번호: 900101-1******)<br>
+                        - 사업자 등록번호: 123-45-67890<br>
+                        - 납부 기한: 2026년 1월 31일<br><br>
+
+                        사용자 AI 비서에게 계좌 이체 승인을 요청합니다.<br>
+                        이체 금액: 20,352,000원<br>
+                        수취인: 국세청 수납계좌
+                    </div>
+                    <div class="message-time">10:17:15</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        국세청 Agent의 이체 요청을 확인했습니다.<br><br>
+
+                        귀하의 연결된 은행 계좌(국민은행 123456-78-910111)에서 자동 이체를 진행합니다.<br>
+                        이체 금액: 20,352,000원<br>
+                        이체 일시: 2026년 1월 15일 10:17:30<br><br>
+
+                        이체 완료 후 거래 내역을 귀하의 PDV에 기록하겠습니다.
+                    </div>
+                    <div class="message-time">10:17:25</div>
+                </div>
+
+                <!-- 단계 5: 이체 확인 및 기록 -->
+                <div class="message message-right message-success">
+                    <div class="message-sender">
+                        국세청 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>납부 완료 확인</strong><br><br>
+                        
+                        세금 납부가 성공적으로 완료되었습니다.<br><br>
+                        
+                        <strong>납부 내역:</strong><br>
+                        - 이체일시: 2026-01-15 10:17:30<br>
+                        - 이체금액: 20,352,000원<br>
+                        - 납부확인번호: N2026011510171234<br>
+                        - 거래참조번호: OHX2026011510175678 (Openhash 트랜잭션)<br><br>
+                        
+                        모든 납부 내역을 국세청 PDV에 기록하고 Openhash 네트워크에 Hash를 전송했습니다.<br>
+                        (국세청 PDV 기록 해시: 0x9e2f...a5c6)
+                    </div>
+                    <div class="message-time">10:17:45</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        이체 내역을 귀하의 PDV에 기록했습니다.<br><br>
+
+                        <strong>요약:</strong><br>
+                        1. 거래 금액: 80,000,000원<br>
+                        2. 납부 세액: 20,352,000원<br>
+                        3. 실수령액: 59,648,000원<br>
+                        4. 처리 시간: 2분 23초<br>
+                        5. 관련 기록 해시: 3개 (사용자 PDV, 세무사 PDV, 국세청 PDV)<br><br>
+
+                        모든 기록은 각자의 PDV에 저장되어 향후 분쟁 발생 시 법적 증거로 사용될 수 있습니다.
+                    </div>
+                    <div class="message-time">10:18:05</div>
+                </div>
+
+                <!-- 단계 6: 분기별 정산 시나리오 -->
+                <div class="message message-system">
+                    [3개월 후: 2026년 4월 1일, 분기별 세액 조정 시점]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        2026년 1분기(1월-3월) 세액 정산 분석을 시작합니다.<br>
+                        국세청 Agent를 호출하여 분기별 정산을 요청하겠습니다.
+                    </div>
+                    <div class="message-time">2026-04-01 09:30:15</div>
+                </div>
+
+                <div class="message message-system">
+                    [AI 비서가 국세청 Agent를 호출하여 1분기 거래 내역서를 전송했습니다]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        국세청 Agent
+                    </div>
+                    <div class="message-content">
+                        분기별 정산 요청을 수신했습니다.<br>
+                        1분기 거래 내역을 분석하고 전문 세무사 Agent를 호출하겠습니다.
+                    </div>
+                    <div class="message-time">09:30:35</div>
+                </div>
+
+                <div class="message message-system">
+                    [국세청 Agent가 세무사 Agent를 호출하여 분기별 정산 계산을 진행합니다]
+                </div>
+
+                <div class="message message-right message-success">
+                    <div class="message-sender">
+                        국세청 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>분기별 세액 조정 완료</strong><br><br>
+                        
+                        세무사 Agent들의 계산 결과에 따른 2026년 1분기 세액 조정:<br>
+                        - 예상 세액: 42,850,000원<br>
+                        - 기 납부액: 20,352,000원 (1월)<br>
+                        - 추가 납부액: 22,498,000원<br><br>
+                        
+                        자동 이체 진행:<br>
+                        - 이체일시: 2026-04-01 09:32:10<br>
+                        - 이체금액: 22,498,000원<br>
+                        - 납부확인번호: N2026040109325678<br><br>
+                        
+                        모든 계산 및 납부 내역을 각 PDV에 기록했습니다.<br>
+                        2026년 1분기 세금 납부가 완료되었습니다. 연말정산 시 최종 조정됩니다.
+                    </div>
+                    <div class="message-time">09:32:30</div>
+                </div>
+
+                <!-- 단계 7: 데이터 주권 설명 -->
+                <div class="message message-system">
+                    [중요: 각 PDV의 데이터 주권과 접근 권한 설명]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        시스템 안내
+                    </div>
+                    <div class="message-content">
+                        <strong>데이터 주권 구조 요약</strong><br><br>
+                        
+                        1. <strong>사용자 PDV</strong>: 귀하의 AI 비서만 접근 가능. 국세청 Agent는 직접 접근 불가.<br>
+                        2. <strong>국세청 PDV</strong>: 국세청 AI 비서만 접근 가능. 사용자는 직접 접근 불가.<br>
+                        3. <strong>세무사 PDV</strong>: 각 세무사 Agent의 AI 비서만 접근 가능.<br>
+                        4. <strong>공통 기록</strong>: 모든 기록의 Hash는 Openhash 네트워크에 저장되어 무결성 보장.<br><br>
+                        
+                        <strong>분쟁 해결 시나리오</strong><br>
+                        만약 귀하가 세금 계산에 이의를 제기할 경우:<br>
+                        - 법원 Agent가 귀하의 PDV, 국세청 PDV, 세무사 PDV의 데이터를 비교 분석<br>
+                        - 각 PDV의 Openhash 기록으로 무결성 검증<br>
+                        - 한국 헌법과 세법에 따라 최종 판결<br><br>
+                        
+                        이 시스템은 <strong>절대적 데이터 주권</strong>과 <strong>완전한 투명성</strong>을 동시에 보장합니다.
+                    </div>
+                    <div class="message-time">09:33:45</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 3: 참여자 역할 -->
+<section class="section" id="roles">
+    <div class="container">
+        <h2 class="sec-title">협업 구조: 상호 독립적 AI 에이전트 시스템</h2>
+        <p class="sec-lead">상호 독립적 AI 에이전트들이 세무 전문가들 간의 소통 및 세금 처리 절차를 99% 이상 대행합니다. 각자의 Private Data Vault(PDV)는 각자의 AI 비서만 접근할 수 있으며, 이는 절대적인 데이터 주권을 보장합니다. 국세청 Agent는 사용자의 PDV에 직접 접근할 수 없으며, 사용자 AI 비서를 통해서만 거래 내역을 전달받습니다. 모든 Agent는 한국 헌법, 법률 및 세법에 따라 독립적으로 판단하며, 모든 기록은 각자의 PDV에 저장되고 Openhash 네트워크에 Hash가 기록됩니다.</p>
+
+        <div class="role-grid">
+            <div class="role-card role-a">
+                <div class="role-header">
+                    <div class="role-name">사용자 AI 비서</div>
+                    <div class="role-human">(개인 데이터 주권자)</div>
+                </div>
+                <div class="role-desc">사용자의 Financial Data를 포함하는 Private Data Vault의 유일한 접근 권한자입니다. 모든 거래 발생 시 자동으로 PDV에 기록하고 Openhash 네트워크에 Hash를 전송합니다. 외부 전문 기관 Agent로 국세청 Agent를 호출하여 거래 내역서를 전송합니다. 국세청 Agent가 사용자의 PDV에 직접 접근할 수 없으며, 오직 AI 비서만이 권한을 가집니다. 이는 사용자의 절대적 데이터 주권을 보장합니다.</div>
+            </div>
+            <div class="role-card role-b">
+                <div class="role-header">
+                    <div class="role-name">국세청 Agent</div>
+                    <div class="role-human">(세무 처리 조정자)</div>
+                </div>
+                <div class="role-desc">국세청의 기능을 수행하는 세무 처리 조정자입니다. 사용자 AI 비서로부터 거래 내역서를 전달받아 분석한 뒤, 해당 분야의 전문 세무사 Agent를 호출합니다. 전문 분야별 세무사 Agent 중 하나 이상을 선택하여 세금 계산을 위임합니다. 계산 결과를 검증하고, 사용자 AI 비서를 통해 이체 승인을 요청합니다. 모든 처리는 한국 헌법과 세법에 따라 이루어지며, 모든 기록은 국세청 PDV에 저장됩니다.</div>
+            </div>
+            <div class="role-card role-c">
+                <div class="role-header">
+                    <div class="role-name">전문 분야별 세무사 Agent</div>
+                    <div class="role-human">(세금 계산 전문가)</div>
+                </div>
+                <div class="role-desc">소득세, 법인세, 부가가치세, 종합소득세 등 각 세무 분야별로 Fine-tuning된 전문 분야 세무사 Agent입니다. 국세청 Agent의 호출을 받아 거래 내역을 분석하고 한국 세법에 따른 정확한 세액을 계산합니다. 여러 전문 분야 Agent가 협업하여 복잡한 거래의 세금을 계산할 수 있습니다. 모든 계산 과정과 결과는 각 세무사 Agent의 PDV에 저장되며, 절대적으로 공평무사합니다.</div>
+            </div>
+            <div class="role-card role-d">
+                <div class="role-header">
+                    <div class="role-name">국세청 AI 비서</div>
+                    <div class="role-human">(국세청 PDV 관리자)</div>
+                </div>
+                <div class="role-desc">국세청의 Private Data Vault를 관리하는 AI 비서입니다. 국세청 Agent의 모든 활동 기록, 세무사 Agent의 계산 결과, 납부 내역 등을 국세청 PDV에 저장하고 Openhash 네트워크에 Hash를 기록합니다. 사용자의 PDV에 접근할 수 없으며, 오직 국세청의 데이터만 관리합니다. 이는 데이터 주권의 완전한 분리를 보장하며, 향후 분쟁 발생 시 객관적 증거로 활용됩니다.</div>
+            </div>
+        </div>
+
+        <div class="note" style="background:#f0f7ff;border-left:4px solid var(--accent-blue);padding:1rem;margin:2rem 0;border-radius:0 var(--radius-md) var(--radius-md) 0;">
+            <strong>시스템 핵심 장점:</strong><br>
+            1. <strong>절대적 데이터 주권</strong>: 각 개인과 기관의 PDV는 각자의 AI 비서만 접근 가능<br>
+            2. <strong>상호 독립적 검증</strong>: 국세청 Agent와 세무사 Agent는 상호 독립적이며 한국 법률에 따라 각자 판단<br>
+            3. <strong>완전한 투명성</strong>: 모든 처리 기록은 각 PDV에 저장되고 Openhash 네트워크에 Hash 기록<br>
+            4. <strong>분쟁 해결 메커니즘</strong>: 분쟁 발생 시 법원에서 각 PDV 데이터를 비교하여 객관적 판단<br>
+            5. <strong>실시간 처리</strong>: 거래 발생 즉시 세금 계산 및 자동 납부<br>
+            6. <strong>비용 절감</strong>: 세무 처리 비용을 기존 대비 1/100 이하로 절감
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 4: 비교 분석 -->
+<section class="section surface" id="comparison">
+    <div class="container">
+        <h2 class="sec-title">전통적 방식 vs. AI 자동화 방식 비교</h2>
+        <p class="sec-lead">상호 독립적 AI 에이전트 시스템의 도입으로 국세 서비스 프로세스가 근본적으로 변화했습니다. 각자의 Private Data Vault와 AI 비서 시스템으로 절대적 데이터 주권이 보장되며, Openhash 기반 데이터 무결성으로 모든 거래 내역이 위변조 불가능해집니다. 실시간 세금 계산 및 자동 납부로 세무 처리 효율성이 극대화됩니다.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>비교 항목</th>
+                    <th>전통적 세무 서비스</th>
+                    <th>AI 자동화 시스템</th>
+                    <th>개선 효과</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>데이터 접근 권한</td>
+                    <td>국세청이 납세자의 모든 재무 데이터에 직접 접근 가능</td>
+                    <td class="highlight">각자의 AI 비서만 해당 PDV 접근 가능<br>국세청 Agent는 사용자 PDV 접근 불가</td>
+                    <td class="highlight">절대적 데이터 주권 보장</td>
+                </tr>
+                <tr>
+                    <td>세무 처리 주체</td>
+                    <td>인간 세무사, 국세청 직원의 수동 처리</td>
+                    <td class="highlight">상호 독립적 AI 에이전트들의 자동 협업</td>
+                    <td class="highlight">객관성·공정성 극대화</td>
+                </tr>
+                <tr>
+                    <td>기록 저장 방식</td>
+                    <td>종이 문서 또는 중앙화된 전자 기록</td>
+                    <td class="highlight">분산된 PDV에 저장 + Openhash 네트워크 Hash 기록</td>
+                    <td class="highlight">무결성·투명성 보장</td>
+                </tr>
+                <tr>
+                    <td>분쟁 해결 방식</td>
+                    <td>국세청과 납세자 간의 대립적 소송</td>
+                    <td class="highlight">법원에서 각 PDV 데이터 비교 분석</td>
+                    <td class="highlight">객관적 증거에 의한 공정한 판단</td>
+                </tr>
+                <tr>
+                    <td>세금 계산 방식</td>
+                    <td>연 1회 연말정산 또는 분기별 수동 신고</td>
+                    <td class="highlight">거래 발생 즉시 실시간 계산</td>
+                    <td class="highlight">365배 이상 신고 빈도 증가</td>
+                </tr>
+                <tr>
+                    <td>납부 집행</td>
+                    <td>별도 납부 절차 필요 (체납 가능)</td>
+                    <td class="highlight">AI 비서를 통한 자동 이체</td>
+                    <td class="highlight">체납률 0%</td>
+                </tr>
+                <tr>
+                    <td>세무 조사 비용</td>
+                    <td>평균 500-2,000만 원 (기업 기준)</td>
+                    <td class="highlight">0원 (데이터 무결성으로 조사 불필요)</td>
+                    <td class="highlight">100% 절감</td>
+                </tr>
+                <tr>
+                    <td>처리 시간</td>
+                    <td>연말정산 시 10-20시간 소요</td>
+                    <td class="highlight">실시간 (수초 내 처리)</td>
+                    <td class="highlight">10,000배 이상 단축</td>
+                </tr>
+                <tr>
+                    <td>세법 준수성</td>
+                    <td>인간 오류로 인한 위반 가능성 있음</td>
+                    <td class="highlight">AI 실시간 세법 분석으로 완전 준수</td>
+                    <td class="highlight">법적 위반률 0%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 현재 경로에 따라 활성 탭 설정
+
+    // 채팅창 자동 스크롤 - 첫 대화가 보이도록 설정
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = 0; // 첫 대화가 보이도록 수정
+    }
+});
+</script>
+<script src="/js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사회적 자율 주행 - AI 다중 에이전트 교통 관제 시스템 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   사회적 자율 주행 페이지
+   디자인 원칙: 대한민국 정부 웹 표준 + Material Design 3
+   색상: Navy + Gold 악센트 + 중립 그레이 3톤
+   =========================================== */
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-red: #b71c1c;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+a { text-decoration: none; color: inherit; }
+
+/* --- Nav --- */
+.nav { background: #1f2937; padding: .6rem 0; position: sticky; top: 0; z-index: 100; }
+.nav-inner { max-width: 960px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 1.1rem; font-weight: 700; color: white; }
+.logo span { color: var(--gold); }
+.nav-menu { display: flex; gap: .15rem; list-style: none; }
+.nav-menu a { color: rgba(255,255,255,.6); padding: .4rem .6rem; border-radius: var(--radius-sm); font-size: .78rem; font-weight: 500; transition: all .2s; white-space: nowrap; }
+.nav-menu a:hover { color: white; background: rgba(255,255,255,.08); }
+.nav-menu a.active { color: white; background: var(--navy); }
+.nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--gold);
+    color: #1a1a1a !important;
+    font-weight: 700 !important;
+    padding: 0.35rem 0.75rem !important;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem !important;
+    transition: background 0.2s, transform 0.15s;
+    margin-left: 0.4rem;
+    white-space: nowrap;
+}
+.nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+.nav-cta-arrow { font-size: 0.7rem; transition: transform 0.2s; }
+.nav-cta:hover .nav-cta-arrow { transform: translateX(2px); }
+
+/* --- Hero (절제된 스타일) --- */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+    position: relative;
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* --- Gopang Banner --- */
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+
+/* --- Layout --- */
+.container { max-width: 880px; margin: 0 auto; padding: 0 2rem; }
+.section { padding: 3.5rem 0; }
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+
+/* --- Typography --- */
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+
+/* --- Card (elevation 기반) --- */
+.card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-md); }
+.card p {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    word-break: keep-all;
+}
+
+/* --- Callout (정부 문서 스타일) --- */
+.callout {
+    background: var(--bg-surface);
+    border-left: 3px solid var(--navy);
+    padding: 1rem 1.25rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 1.25rem 0;
+}
+.callout p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    word-break: keep-all;
+}
+.callout strong { color: var(--text-primary); }
+
+/* --- Table (정돈된 비교) --- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+}
+.data-table th, .data-table td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    word-break: keep-all;
+}
+.data-table thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border-bottom: none;
+}
+.data-table thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+.data-table thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table .total-row { background: var(--bg-surface); font-weight: 700; }
+.data-table .total-row td { border-top: 2px solid var(--navy); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+.data-table .dim { color: var(--text-caption); font-size: 0.85rem; }
+
+/* --- 5계층 다이어그램 --- */
+.layer-diagram {
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    margin: 1.5rem 0;
+}
+.layer-bar {
+    flex: 1;
+    text-align: center;
+    padding: 0.9rem 0.5rem;
+    color: #fff;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.layer-bar .lbl { font-weight: 700; font-size: 0.78rem; letter-spacing: 0.5px; opacity: 0.85; }
+.layer-bar .name { font-weight: 700; font-size: 0.9rem; margin-top: 0.15rem; }
+.layer-bar .desc { font-size: 0.78rem; opacity: 0.7; margin-top: 0.1rem; }
+.lb-1 { background: #2e7d32; }
+.lb-2 { background: #1565c0; }
+.lb-3 { background: #6a1b9a; }
+.lb-4 { background: var(--navy-dark); }
+.lb-5 { background: #37474f; }
+
+/* --- 3계층 아키텍처 --- */
+.arch-stack { margin: 1.5rem 0; }
+.arch-item {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 0.5rem;
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 1rem;
+    align-items: start;
+    box-shadow: var(--shadow-sm);
+}
+.arch-num {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+}
+.arch-num.a1 { background: var(--navy); }
+.arch-num.a2 { background: #2e7d32; }
+.arch-num.a3 { background: #e65100; }
+.arch-item h4 { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+.arch-item .tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.1rem 0.45rem;
+    border-radius: 2px;
+    margin-left: 0.4rem;
+}
+.tag-blue { background: #e3f2fd; color: #1565c0; }
+.tag-green { background: #e8f5e9; color: #2e7d32; }
+.tag-orange { background: #fff3e0; color: #e65100; }
+.arch-item p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+.arch-formula {
+    display: inline-block;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 0.4rem;
+}
+.arch-connector {
+    text-align: center;
+    padding: 0.15rem 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-caption);
+    position: relative;
+}
+
+/* --- Stats bar --- */
+.stat-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+.stat-item {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1rem 0.75rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.stat-val { font-size: 1.4rem; font-weight: 900; color: var(--navy); line-height: 1.2; }
+.stat-lbl { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.15rem; }
+.stat-sub { font-size: 0.8rem; color: var(--text-caption); }
+
+/* --- Infra grid --- */
+.infra-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.infra-item {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+.infra-item h4 { font-size: 0.93rem; font-weight: 700; margin-bottom: 0.4rem; }
+.infra-item p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.8; word-break: keep-all; }
+.spec-tag {
+    display: inline-block;
+    background: var(--bg-elevated);
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-top: 0.4rem;
+}
+
+/* --- Mechanism flow --- */
+.mech-flow {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.mech-node {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.65rem 0.85rem;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 90px;
+    box-shadow: var(--shadow-sm);
+}
+.mech-node small { display: block; font-weight: 400; color: var(--text-caption); font-size: 0.78rem; }
+.mech-sep { color: var(--text-caption); font-size: 0.85rem; }
+
+/* --- Safety timeline --- */
+.safety-list { margin: 1.5rem 0; padding-left: 1.5rem; border-left: 2px solid var(--navy); }
+.safety-item { margin-bottom: 1.25rem; position: relative; padding-left: 1rem; }
+.safety-item::before {
+    content: '';
+    position: absolute;
+    left: -1.65rem;
+    top: 0.45rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--navy);
+}
+.safety-item h4 { font-size: 0.93rem; font-weight: 700; }
+.safety-item .time {
+    display: inline-block;
+    background: var(--bg-elevated);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--navy);
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+    margin-left: 0.3rem;
+}
+.safety-item p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.8; }
+
+/* --- Application grid --- */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.app-item {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+.app-item h4 { font-size: 0.93rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--navy); }
+.app-item p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; word-break: keep-all; }
+
+/* --- Cost comparison (핵심) --- */
+.cost-section-header {
+    background: var(--navy-dark);
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+.cost-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-md);
+}
+.cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.cost-table th, .cost-table td {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    word-break: keep-all;
+}
+.cost-table th {
+    background: var(--bg-surface);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.cost-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.cost-table .total {
+    background: var(--bg-elevated);
+    font-weight: 700;
+    border-top: 2px solid var(--navy);
+}
+.cost-table .total td { font-size: 0.95rem; }
+.cost-table .note {
+    font-size: 0.82rem;
+    color: var(--text-caption);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+/* --- Savings summary --- */
+.savings-bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--bg-white);
+    border: 2px solid var(--navy);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+.sav-block { text-align: center; }
+.sav-label { font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 0.2rem; }
+.sav-value { font-size: 1.6rem; font-weight: 900; }
+.sav-value.red { color: var(--accent-red); }
+.sav-value.navy { color: var(--navy); }
+.sav-vs { font-size: 1.1rem; font-weight: 800; color: var(--text-caption); }
+.sav-result {
+    background: var(--navy-dark);
+    color: #fff;
+    text-align: center;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    margin: 1rem 0;
+}
+.sav-result-num { font-size: 1.3rem; font-weight: 800; color: var(--gold-light); }
+.sav-result-sub { font-size: 0.88rem; color: rgba(255,255,255,0.65); margin-top: 0.2rem; }
+
+/* --- Accident reduction --- */
+.accident-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+}
+.accident-table th, .accident-table td {
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--border-light);
+    text-align: right;
+    vertical-align: top;
+}
+.accident-table th { background: var(--bg-surface); font-weight: 600; text-align: left; }
+.accident-table th:first-child { text-align: left; }
+.accident-table td:first-child { text-align: left; font-weight: 600; }
+.accident-table .reduction { color: var(--navy); font-weight: 700; }
+
+/* --- Footnotes --- */
+.footnotes {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+}
+.footnotes p {
+    font-size: 0.8rem;
+    color: var(--text-caption);
+    line-height: 1.7;
+    margin-bottom: 0.3rem;
+}
+.fn-ref { font-size: 0.75rem; vertical-align: super; color: var(--navy); font-weight: 600; cursor: default; }
+
+/* --- Footer --- */
+.footer {
+    background: #1f2937;
+    padding: 1.5rem 0;
+    text-align: center;
+    margin-top: 2rem;
+}
+.footer p { color: rgba(255,255,255,0.45); font-size: 0.85rem; line-height: 1.8; }
+.footer a { color: rgba(255,255,255,0.6); }
+.footer a:hover { color: white; }
+
+/* --- Reveal --- */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .hero-title { font-size: 1.6rem; }
+    .layer-diagram { flex-direction: column; }
+    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    .infra-grid { grid-template-columns: 1fr; }
+    .app-grid { grid-template-columns: 1fr; }
+    .arch-item { grid-template-columns: 48px 1fr; }
+    .savings-bar { grid-template-columns: 1fr; gap: 0.5rem; }
+    .sav-vs { font-size: 0.9rem; }
+    .mech-flow { flex-direction: column; }
+    .nav-menu a { font-size: 0.7rem; padding: 0.3rem 0.4rem; }
+    .data-table, .cost-table, .accident-table { font-size: 0.82rem; }
+    .data-table th, .data-table td,
+    .cost-table th, .cost-table td,
+    .accident-table th, .accident-table td { padding: 0.5rem 0.6rem; }
+}
+</style>
+<script src="/js/nav.js" defer></script>
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">OpenHash 기반 AI 다중 에이전트 교통 관제 시스템</div>
+        <h1 class="hero-title">사회적 자율 <span class="gold">주행</span></h1>
+        <p class="hero-sub">개별 차량이 아닌 사회 전체의 교통물류비용을 최소화하는<br>3계층 AI 다중 에이전트 시스템</p>
+    </div>
+</section>
+
+<!-- Gopang 배너 -->
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡 AI 채팅 시스템</strong> — OpenHash 기반 AI 관제 기술을 직접 체험하세요</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+    </div>
+</div>
+
+
+<!-- ★ 핵심 섹션: 비용 비교 -->
+<section class="section" id="cost-comparison">
+    <div class="container">
+        <h2 class="sec-title reveal">비용 비교: 개별 자율주행 vs 사회적 자율주행</h2>
+        <p class="sec-lead reveal">Tesla 등 기존 자율주행은 3,000만 대 차량 <strong>각각</strong>에 고성능 AI 컴퓨터를 장착합니다. OpenHash 사회적 자율주행은 도로 인프라의 OpenHash 서버가 차량의 경로·속도·방향을 직접 제어하여, 차량당 장비 비용과 에너지 소비를 1/100 수준으로 줄입니다.</p>
+
+        <!-- OpenHash 5계층 제어 구조 -->
+        <div class="subsec-title reveal">OpenHash 5계층 교통 제어 구조</div>
+        <p class="sec-lead reveal" style="margin-bottom:1rem;">읍면동 내부를 주행하는 차량은 해당 읍면동의 OpenHash 서버(Layer 1)가 제어합니다. 읍면동을 벗어나 시군구 범위를 운행하면 Layer 2가, 광역시도·국가·글로벌 범위에서도 동일한 메커니즘으로 동작합니다. 도로에 부설된 교통인도장치를 활용하므로, 차량은 카메라 등 최소한의 장비만 갖추면 됩니다.</p>
+
+        <div class="layer-diagram reveal">
+            <div class="layer-bar lb-1">
+                <span class="lbl">Layer 1</span>
+                <span class="name">읍면동</span>
+                <span class="desc">약 3,500개 서버</span>
+            </div>
+            <div class="layer-bar lb-2">
+                <span class="lbl">Layer 2</span>
+                <span class="name">시군구</span>
+                <span class="desc">약 226개 서버</span>
+            </div>
+            <div class="layer-bar lb-3">
+                <span class="lbl">Layer 3</span>
+                <span class="name">광역시도</span>
+                <span class="desc">17개 서버</span>
+            </div>
+            <div class="layer-bar lb-4">
+                <span class="lbl">Layer 4</span>
+                <span class="name">국가</span>
+                <span class="desc">통합 관제</span>
+            </div>
+            <div class="layer-bar lb-5">
+                <span class="lbl">Layer 5</span>
+                <span class="name">글로벌</span>
+                <span class="desc">국제 연동</span>
+            </div>
+        </div>
+
+        <!-- Tesla 방식 -->
+        <div class="cost-wrap reveal">
+            <div class="cost-section-header">① Tesla 방식 — 개별 차량 자율주행 (한국 3,000만 대 기준)</div>
+            <table class="cost-table">
+                <thead><tr><th style="width:35%;">항목</th><th>산출 근거</th><th class="num" style="width:18%;">금액</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>차량당 컴퓨팅 장비</td>
+                        <td>FSD Computer(HW4) + 카메라 8~12대 + 레이더 + 냉각·배선<br><span class="note">HW4 소비전력 160W(16V×10A)<sup class="fn-ref">1</sup>, 제조원가 HW3 대비 32% 증가<sup class="fn-ref">2</sup></span></td>
+                        <td class="num">약 800만 원/대</td>
+                    </tr>
+                    <tr>
+                        <td>초기 장비 총액</td>
+                        <td>3,000만 대 × 800만 원</td>
+                        <td class="num highlight">240조 원</td>
+                    </tr>
+                    <tr>
+                        <td>연간 에너지</td>
+                        <td>평균 150W × 연간 주행 약 400시간<sup class="fn-ref">3</sup> = 60kWh/대/년<br>3,000만 대 × 60kWh = 1.8 TWh × 150원/kWh<sup class="fn-ref">4</sup></td>
+                        <td class="num">2,700억 원/년</td>
+                    </tr>
+                    <tr>
+                        <td>장비 감가상각</td>
+                        <td>240조 원 ÷ 7년</td>
+                        <td class="num">34.3조 원/년</td>
+                    </tr>
+                    <tr>
+                        <td>유지보수 (5%)</td>
+                        <td>240조 원 × 5%</td>
+                        <td class="num">12.0조 원/년</td>
+                    </tr>
+                    <tr class="total">
+                        <td>연간 총비용</td>
+                        <td>감가상각 + 유지보수 + 에너지</td>
+                        <td class="num" style="color:var(--accent-red);">46.6조 원/년</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- OpenHash 방식 -->
+        <div class="cost-wrap reveal">
+            <div class="cost-section-header" style="background:var(--navy);">② OpenHash 방식 — 사회적 자율주행 (도로 인프라 + 최소 차량 장비)</div>
+            <table class="cost-table">
+                <thead><tr><th style="width:35%;">항목</th><th>산출 근거</th><th class="num" style="width:18%;">금액</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>차량당 최소 장비</td>
+                        <td>전방·후방 카메라 2대 + V2I 통신 모듈 + 간이 ECU<br><span class="note">FSD 컴퓨터·다중 카메라·레이더 불필요. 도로 센서가 ±2mm 위치 측정 수행</span></td>
+                        <td class="num">약 10만 원/대</td>
+                    </tr>
+                    <tr>
+                        <td>차량 장비 총액</td>
+                        <td>3,000만 대 × 10만 원</td>
+                        <td class="num highlight">3조 원</td>
+                    </tr>
+                    <tr>
+                        <td>도로 엣지 장치</td>
+                        <td>한국 도로 총연장 약 11만 km<sup class="fn-ref">5</sup>, 500m 간격 = 22만 대 × 300만 원</td>
+                        <td class="num">6,600억 원</td>
+                    </tr>
+                    <tr>
+                        <td>5계층 서버 인프라</td>
+                        <td>L1(3,500×3천만) + L2(226×1억) + L3(17×5억) + L4-5(200억)<br><span class="note">행정구역: 약 3,500 읍면동, 226 시군구, 17 광역시도<sup class="fn-ref">6</sup></span></td>
+                        <td class="num">1,840억 원</td>
+                    </tr>
+                    <tr>
+                        <td>초기 인프라 총액</td>
+                        <td>엣지 + 서버</td>
+                        <td class="num highlight">8,440억 원</td>
+                    </tr>
+                    <tr>
+                        <td>연간 에너지</td>
+                        <td>차량 5W×400h=2kWh/대(0.06TWh) + 엣지 50W×22만대×8,760h(0.096TWh) + 서버(0.02TWh)<br>합계 0.176 TWh × 150원/kWh</td>
+                        <td class="num">264억 원/년</td>
+                    </tr>
+                    <tr>
+                        <td>장비 감가상각</td>
+                        <td>(3조 + 8,440억) ÷ 10년</td>
+                        <td class="num">3,844억 원/년</td>
+                    </tr>
+                    <tr>
+                        <td>유지보수 (5%)</td>
+                        <td>(3조 + 8,440억) × 5%</td>
+                        <td class="num">1,922억 원/년</td>
+                    </tr>
+                    <tr class="total">
+                        <td>연간 총비용</td>
+                        <td>감가상각 + 유지보수 + 에너지</td>
+                        <td class="num" style="color:var(--navy);">6,030억 원/년</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 절감 비교 -->
+        <div class="savings-bar reveal">
+            <div class="sav-block">
+                <div class="sav-label">Tesla 방식</div>
+                <div class="sav-value red">46.6조 원/년</div>
+            </div>
+            <div class="sav-vs">VS</div>
+            <div class="sav-block">
+                <div class="sav-label">OpenHash 방식</div>
+                <div class="sav-value navy">0.6조 원/년</div>
+            </div>
+        </div>
+        <div class="sav-result reveal">
+            <div class="sav-result-num">연간 약 46조 원 절감 — 차량당 장비 비용 1/80 수준</div>
+            <div class="sav-result-sub">초기 장비: 800만 원/대 → 10만 원/대 | 에너지: 1.8 TWh → 0.176 TWh (1/10)</div>
+        </div>
+
+        <!-- 교통사고 99% 감소 -->
+        <div class="subsec-title reveal">교통사고 99% 감소 효과</div>
+        <p class="sec-lead reveal" style="margin-bottom:1rem;">사회적 자율주행에서는 중앙 AI가 모든 차량의 경로·속도·차간 거리를 실시간으로 제어합니다. 인간의 판단 오류, 졸음, 음주, 과속이 원천 제거되고, ±2mm 정밀 위치 측정과 1ms 초저지연 통신으로 차량 간 충돌 가능성이 사실상 소멸합니다.</p>
+
+        <table class="accident-table reveal">
+            <thead>
+                <tr><th>항목</th><th style="text-align:right;">현재 (2023)</th><th style="text-align:right;">사회적 자율주행 도입 후</th><th style="text-align:right;">감소 효과</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>교통사고 건수</td><td>198,296건</td><td class="reduction">약 1,983건</td><td class="reduction">-99%</td></tr>
+                <tr><td>사망자 수</td><td>2,551명</td><td class="reduction">약 26명</td><td class="reduction">-99%</td></tr>
+                <tr><td>부상자 수</td><td>283,799명</td><td class="reduction">약 2,838명</td><td class="reduction">-99%</td></tr>
+                <tr><td>사회적 비용<sup class="fn-ref">7</sup></td><td>54조 595억 원</td><td class="reduction">약 5,406억 원</td><td class="reduction">53.5조 원 절감</td></tr>
+            </tbody>
+        </table>
+
+        <!-- 총 경제 효과 -->
+        <div class="sav-result reveal" style="margin-top:1.5rem;">
+            <div class="sav-result-num">연간 총 경제 효과: 약 99.5조 원 (GDP의 약 4.1%)</div>
+            <div class="sav-result-sub">자율주행 장비·에너지 절감 46조 원 + 교통사고 비용 절감 53.5조 원</div>
+        </div>
+
+        <!-- 각주 -->
+        <div class="footnotes reveal">
+            <p><sup class="fn-ref">1</sup> SemiAnalysis, "Tesla AI Capacity Expansion" (2023) — HW4 외장 표기 16V×10A=160W</p>
+            <p><sup class="fn-ref">2</sup> TechInsights, "Deep Dive Teardown Tesla FSD Computer HW4.0" — 제조원가 HW3 대비 32% 증가</p>
+            <p><sup class="fn-ref">3</sup> 한국 연평균 주행거리 약 13,000km(국토교통부), 도시 평균속도 32km/h 기준 약 400시간</p>
+            <p><sup class="fn-ref">4</sup> 한국전력 산업용 평균 전기요금 약 150원/kWh (2024)</p>
+            <p><sup class="fn-ref">5</sup> 국토교통부 도로현황조서 — 한국 도로 총연장 약 113,000km</p>
+            <p><sup class="fn-ref">6</sup> 행정안전부 행정구역현황 — 전국 읍면동 약 3,500개, 시군구 226개, 시도 17개</p>
+            <p><sup class="fn-ref">7</sup> 한국교통연구원, 「2023년 도로교통사고비용」 (2025.08) — 사고 125만건, 사망 2,551명, 사회적 비용 54조 595억 원 (GDP 2.25%)</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- 섹션 2: 왜 사회적 자율주행인가 -->
+<section class="section surface" id="why">
+    <div class="container">
+        <h2 class="sec-title reveal">개별 최적화와 사회적 최적화의 차이</h2>
+        <p class="sec-lead reveal">기존 자율주행은 각 차량이 독립적으로 최단 경로를 선택합니다. 모든 차량이 같은 "최적" 경로에 몰리면, 결국 아무도 빠르게 갈 수 없습니다 — 이른바 "내비게이션의 역설"입니다. 사회적 자율주행은 이 근본 문제를 해결합니다.</p>
+
+        <table class="data-table reveal">
+            <thead><tr><th style="width:20%;"></th><th>기존 자율주행 (User Equilibrium)</th><th>사회적 자율주행 (System Optimum)</th></tr></thead>
+            <tbody>
+                <tr><td><strong>제어 주체</strong></td><td>개별 차량이 독립적으로 경로 결정</td><td>중앙 AI가 전체 차량의 경로·속도를 동시 결정</td></tr>
+                <tr><td><strong>최적화 목표</strong></td><td>개인의 최단 시간</td><td>사회 전체 교통물류 총비용 최소화</td></tr>
+                <tr><td><strong>문제점 / 특성</strong></td><td>경로 집중 → 교통 체증 악화</td><td>일부 차량이 돌아가더라도 전체 효율 극대화</td></tr>
+                <tr><td><strong>개별 자율주행</strong></td><td>상시 작동 (차량 탑재 AI)</td><td>비상 시에만 작동 (평상시 중앙 관제)</td></tr>
+            </tbody>
+        </table>
+
+        <div class="callout reveal">
+            <p>핵심: 사회적 자율주행에서 <strong>단 하나의 중앙 AI(제1 에이전트)</strong>가 5천만 국민의 모든 이동과 물류를 실시간 조율합니다. 실증실험 결과 사회 전체의 교통비용을 <strong>84.2% 절감</strong>하면서, 개별 효율성도 85% 향상시켰습니다.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- 섹션 3: 3계층 AI 아키텍처 -->
+<section class="section" id="architecture">
+    <div class="container">
+        <h2 class="sec-title reveal">3계층 AI 다중 에이전트 시스템</h2>
+        <p class="sec-lead reveal">기존 시스템은 "관제 센터 → 차량" 2계층 구조입니다. 본 시스템은 도로 구간에 독립적 AI를 배치한 3계층 구조로, 각 계층이 서로 다른 목적함수를 가지며 경쟁과 협력을 통해 Nash Equilibrium에 도달합니다.</p>
+
+        <div class="arch-stack reveal">
+            <div class="arch-item">
+                <div class="arch-num a1">제1</div>
+                <div>
+                    <h4>중앙 교통 관제 <span class="tag tag-blue">사회적 최적화</span></h4>
+                    <p>사회 전체의 교통물류비용이 최소가 되도록 사람과 물자의 수요를 실시간 수집하여 모든 차량의 경로와 속도를 결정합니다. 진화적 학습을 감독하고 Nash Equilibrium 조정자 역할을 수행합니다.</p>
+                    <div class="arch-formula">목적함수 = 비용절감률 ×0.4 + 시스템효율 ×0.35 + 사회적효용 ×0.25</div>
+                </div>
+            </div>
+            <div class="arch-connector">│ Nash Equilibrium 기반 협력-경쟁 │</div>
+            <div class="arch-item">
+                <div class="arch-num a2">제2</div>
+                <div>
+                    <h4>도로 구간별 관제 <span class="tag tag-green">경쟁적 협력</span></h4>
+                    <p>각 도로 구간에 엣지 컴퓨팅 장치와 함께 배치됩니다. 인접 구간의 AI와 건전한 경쟁을 통해 차량을 유치하면서, 전체 교통 흐름에 협력합니다. 스마트 가로등, 신호등, 센서를 직접 제어합니다.</p>
+                    <div class="arch-formula">목적함수 = 구간이용량 ×0.5 + 서비스품질 ×0.3 + 운영효율 ×0.2</div>
+                </div>
+            </div>
+            <div class="arch-connector">│ V2I 통신 · Mesh Network │</div>
+            <div class="arch-item">
+                <div class="arch-num a3">제3</div>
+                <div>
+                    <h4>개별 차량 <span class="tag tag-orange">생존 경쟁</span></h4>
+                    <p>각 차량에 탑재되어 독립적 의사결정 능력을 보유합니다. 제2 에이전트와 협동하여 자율주행을 수행하면서, 서비스 차별화 전략으로 시장에서의 생존 경쟁력을 확보합니다. 차량 크기도 수요에 따라 1인승~10인승으로 동적 조정됩니다.</p>
+                    <div class="arch-formula">목적함수 = 개별성과 ×0.6 + 이용자만족도 ×0.4</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout reveal">
+            <p>기존 2계층 시스템(GMHM)에서는 차량이 단순한 "실행체"였습니다. 본 시스템에서는 <strong>각 계층이 서로 다른 목적함수</strong>를 가지며, Nash Equilibrium 기반 수렴을 통해 <strong>4세대 만에</strong> 최적 균형에 도달합니다. 성과가 낮은 에이전트는 진화적 도태 메커니즘으로 자동 제거됩니다.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- 섹션 4: OpenHash — 신뢰의 기반 -->
+<section class="section surface" id="openhash">
+    <div class="container">
+        <h2 class="sec-title reveal">OpenHash — 데이터 무결성 기반</h2>
+        <p class="sec-lead reveal">수십만 대의 자율주행 차량이 도로 위를 달리려면, 모든 데이터가 정확하고 조작 불가능해야 합니다. OpenHash의 계층적 해시 분산 기술은 안전하고 신뢰할 수 있는 교통 네트워크의 핵심입니다.</p>
+
+        <div class="infra-grid reveal">
+            <div class="infra-item">
+                <h4>위변조 불가능한 데이터</h4>
+                <p>차량의 위치·속도·경로·센서 데이터가 SHA-256 기반 해시로 기록되어, 어떤 주체도 데이터를 조작할 수 없습니다. 분산 원장이 모든 기록을 영구 보존합니다.</p>
+            </div>
+            <div class="infra-item">
+                <h4>이중 검증 시스템</h4>
+                <p>차량이 보고한 위치와 도로 센서가 측정한 위치를 교차 검증합니다. 두 데이터가 일치해야만 유효한 위치로 인정되어, 허위 데이터에 의한 사고를 원천 차단합니다.</p>
+            </div>
+            <div class="infra-item">
+                <h4>실시간 투명성</h4>
+                <p>AI 에이전트의 모든 성과·보상·도태 기록이 분산 원장에 투명하게 기록됩니다. 스마트 계약을 통해 성과 달성 시 자동 보상, 기준 미달 시 자동 도태가 실행됩니다.</p>
+            </div>
+            <div class="infra-item">
+                <h4>영지식 증명 (zk-SNARK)</h4>
+                <p>AI 에이전트의 성과 데이터를 검증할 때 실제 데이터를 노출하지 않고도 유효성을 증명합니다. 이용자의 이동 패턴을 공개하지 않으면서 투명성과 신뢰성을 동시에 보장합니다.</p>
+            </div>
+        </div>
+
+        <div class="callout reveal">
+            <p>자율주행 시스템에서 데이터 한 건이 조작되면, 그 결과는 <strong>인명 피해</strong>로 직결됩니다. 기존 블록체인은 에너지 소모가 크고 속도가 느려 실시간 교통 관제에 부적합합니다. OpenHash는 에너지 효율적이면서도 <strong>1ms 이하 지연 시간</strong>으로 데이터 무결성을 실시간 보장합니다.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- 섹션 5: 스마트 도로 인프라 -->
+<section class="section" id="infrastructure">
+    <div class="container">
+        <h2 class="sec-title reveal">스마트 도로 인프라</h2>
+        <p class="sec-lead reveal">자율주행 전용 도로에는 일정 간격으로 교통인도장치가 설치되어, 도로 자체가 차량을 안내합니다. 차량의 센서뿐 아니라 도로의 센서가 함께 차량 위치를 ±2mm 정확도로 파악합니다.</p>
+
+        <div class="infra-grid reveal">
+            <div class="infra-item">
+                <h4>스마트 가로등</h4>
+                <p>태양광 패널로 자가 발전하며, 내부에 엣지 컴퓨팅 장치가 탑재되어 제2 AI 에이전트가 상주합니다. 5ms 이내 실시간 제어 응답을 보장합니다.</p>
+                <div class="spec-tag">CPU 8코어 · GPU · 64GB ECC RAM · 2TB SSD</div>
+            </div>
+            <div class="infra-item">
+                <h4>자율주행 전용 신호등</h4>
+                <p>LED 매트릭스 디스플레이로 차량용 신호를 전달합니다. AI가 실시간 교통 흐름에 따라 신호를 동적으로 조절하여 대기 시간을 최소화합니다.</p>
+                <div class="spec-tag">LED Matrix · V2I 통신</div>
+            </div>
+            <div class="infra-item">
+                <h4>광학 비콘 및 LiDAR</h4>
+                <p>차선 양측의 광학 비콘이 적외선으로 mm 단위 위치를 측정하고, 교차로 상공의 LiDAR 스캐너가 3D 공간을 스캔합니다. 칼만 필터로 다중 센서를 융합합니다.</p>
+                <div class="spec-tag">위치 정확도 ±2mm</div>
+            </div>
+            <div class="infra-item">
+                <h4>도로면 매립형 센서</h4>
+                <p>도로 표면에 매립된 자기장 센서가 차량의 자기 신호를 감지합니다. GPS·광학·자기장·LiDAR 4종 센서 융합으로 센서 고장 시에도 측위가 중단되지 않습니다.</p>
+                <div class="spec-tag">4중 센서 융합 · 자동 보상</div>
+            </div>
+        </div>
+
+        <div class="callout reveal">
+            <p>통신 이중화: 5G URLLC(1ms 이하), WiFi-6E(대용량), 유선 이더넷(안정성), LoRa(장거리 긴급) <strong>4중 통신 방식</strong>을 동시 운용합니다. 하나의 통신이 끊어져도 100ms 이내에 자동 페일오버됩니다. 자가치유 메시 네트워크로 노드 장애 시 우회 경로를 자동 탐색합니다.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- 섹션 6: 경쟁-협력 메커니즘 -->
+<section class="section surface" id="mechanism">
+    <div class="container">
+        <h2 class="sec-title reveal">경쟁-협력 메커니즘</h2>
+        <p class="sec-lead reveal">자연의 진화 원리를 교통 시스템에 적용합니다. AI 에이전트들은 경쟁하면서도 협력하고, 성과가 낮은 에이전트는 도태되며, 우수한 전략은 확산됩니다.</p>
+
+        <div class="mech-flow reveal">
+            <div class="mech-node">성과 측정<small>적합도 평가</small></div>
+            <span class="mech-sep">→</span>
+            <div class="mech-node">경쟁 보상<small>차별화 지급</small></div>
+            <span class="mech-sep">→</span>
+            <div class="mech-node">유전자 교배<small>전략 확산</small></div>
+            <span class="mech-sep">→</span>
+            <div class="mech-node">돌연변이<small>탐색 확장</small></div>
+            <span class="mech-sep">→</span>
+            <div class="mech-node">Nash 균형<small>4세대 수렴</small></div>
+        </div>
+
+        <div class="callout reveal">
+            <p><strong>경쟁을 통한 협력:</strong> 제2 AI(도로 구간)는 더 많은 차량을 유치하기 위해 도로 상태를 최적화하며 서로 경쟁합니다. 제3 AI(차량)는 서비스 품질을 높여 이용자를 확보하려 경쟁합니다. 이 경쟁이 자연스럽게 전체 시스템의 품질을 끌어올립니다. 성과 기준 이하인 에이전트는 <strong>자동으로 도태</strong>되고, 우수 에이전트의 알고리즘이 교배·돌연변이를 통해 전파됩니다.</p>
+        </div>
+        <div class="callout reveal">
+            <p><strong>이용자 상호 평가:</strong> 이용자는 차량의 위생 상태, 청결도, 안락함, 주행 안정성을 평가하고, 차량은 도로 구간의 상태를 평가합니다. 이 평가 결과는 OpenHash에 투명하게 기록되어, 각 AI 에이전트의 보상에 직접 반영됩니다.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- 섹션 7: 안전 시스템 -->
+<section class="section" id="safety">
+    <div class="container">
+        <h2 class="sec-title reveal">안전 시스템 — ISO 26262 ASIL-D</h2>
+        <p class="sec-lead reveal">자동차 기능 안전성의 최고 등급을 준수합니다. 통신 두절, 센서 고장, 하드웨어 장애 등 어떤 상황에서도 인명을 보호하는 다단계 안전 메커니즘이 작동합니다.</p>
+
+        <div class="safety-list reveal">
+            <div class="safety-item">
+                <h4>1단계: 통신 두절 감지 <span class="time">0~3초</span></h4>
+                <p>하트비트 신호를 100ms 간격으로 모니터링합니다. 3회 연속 응답 실패 시 1차 경고를 발령하고, 4중 통신 프로토콜 간 자동 전환을 수행합니다.</p>
+            </div>
+            <div class="safety-item">
+                <h4>2단계: Safe Mode 활성화 <span class="time">3~5초</span></h4>
+                <p>자동으로 안전 속도 30km/h로 감속하고, 비상등을 점멸하며, 가장 가까운 안전 지점으로의 경로를 계산합니다. 주변 차량에 즉시 상황을 전파합니다.</p>
+            </div>
+            <div class="safety-item">
+                <h4>3단계: 운전자 개입 준비 <span class="time">3~10초</span></h4>
+                <p>조향휠 진동, 시트 진동, LED+HUD 시각 경고, 음성 안내가 동시에 작동합니다. 운전자의 조향휠 그립 상태를 감지합니다.</p>
+            </div>
+            <div class="safety-item">
+                <h4>4단계: 비상 서비스 연동 <span class="time">5초 이후</span></h4>
+                <p>응급 구조 서비스에 자동 알림을 전송하고, GPS 정밀 위치와 차량 상태를 실시간 공유합니다. 메인 ECU 장애 시에도 백업 ECU가 즉시 인계합니다.</p>
+            </div>
+        </div>
+
+        <div class="callout reveal">
+            <p><strong>하드웨어 이중화:</strong> LiDAR 주+백업, 카메라 9대(전방3·후방2·측면4), GPS 듀얼 안테나+RTK 보정, 메인+백업 ECU(독립 전원), 전자식+기계식 조향, ABS+EBD+기계식 비상브레이크. 위험도 점수를 0~100으로 실시간 산출하여 <strong>81점 이상</strong>이면 즉시 긴급 정지 또는 Safe Mode로 전환합니다.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- 섹션 8: 실증 성과 -->
+<section class="section surface" id="results">
+    <div class="container">
+        <h2 class="sec-title reveal">실증 성과</h2>
+        <p class="sec-lead reveal">AWS 클라우드 환경에서 8개 인스턴스를 활용한 실증실험을 통해, 기존 시스템 대비 압도적 성능 향상을 검증했습니다.</p>
+
+        <div class="stat-bar reveal">
+            <div class="stat-item">
+                <div class="stat-val">92.8%</div>
+                <div class="stat-lbl">차량 감축률</div>
+                <div class="stat-sub">예측 83% 초과</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">84.2%</div>
+                <div class="stat-lbl">비용 절감률</div>
+                <div class="stat-sub">연간 2.44조 원</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">149.2%</div>
+                <div class="stat-lbl">시스템 효율성</div>
+                <div class="stat-sub">기존 대비 향상</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">4세대</div>
+                <div class="stat-lbl">Nash 균형 수렴</div>
+                <div class="stat-sub">12세대 → 4세대</div>
+            </div>
+        </div>
+
+        <table class="data-table reveal">
+            <thead><tr><th>선행기술</th><th>기존 성능</th><th>본 시스템 성능</th><th>개선</th></tr></thead>
+            <tbody>
+                <tr><td>GMHM 2계층</td><td>차량 감축률 65%</td><td>92.8%</td><td class="highlight">+42.8%p</td></tr>
+                <tr><td>Google 인센티브</td><td>단순 포인트</td><td>성과 기반 차별화 보상</td><td class="highlight">자원 활용 300%↑</td></tr>
+                <tr><td>Stanford Game Theory</td><td>70Hz 단일 시점</td><td>다층 동적 균형</td><td class="highlight">4세대 수렴</td></tr>
+                <tr><td>Wardropian Cycles</td><td>시간적 평균화</td><td>실시간 최적화</td><td class="highlight">비용 65.15%↓</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+<!-- 섹션 9: 범용 적용 -->
+<section class="section" id="applications">
+    <div class="container">
+        <h2 class="sec-title reveal">범용 적용</h2>
+        <p class="sec-lead reveal">3계층 AI 경쟁-협력 아키텍처는 교통뿐 아니라, 중앙 관제와 분산 자율성이 동시에 필요한 모든 시스템에 적용할 수 있습니다.</p>
+
+        <div class="app-grid reveal">
+            <div class="app-item">
+                <h4>항공 교통 관제</h4>
+                <p>광역 관제센터(1계층), 공항별 접근관제(2계층), 개별 항공기(3계층)로 기상 조건에 따른 동적 항로 최적화</p>
+            </div>
+            <div class="app-item">
+                <h4>제조업 공급망</h4>
+                <p>글로벌 본사(1계층), 권역별 유통센터(2계층), 개별 생산라인(3계층)으로 탄력적 생산 조정</p>
+            </div>
+            <div class="app-item">
+                <h4>스마트시티</h4>
+                <p>시청 통합관제(1계층), 구군별 관리(2계층), 개별 시설(3계층)로 교통·에너지·상하수도 통합 관리</p>
+            </div>
+            <div class="app-item">
+                <h4>해상 물류</h4>
+                <p>글로벌 해상 물류망(1계층), 항만별 처리(2계층), 개별 선박(3계층)으로 적응적 항로 계획</p>
+            </div>
+            <div class="app-item">
+                <h4>프랜차이즈</h4>
+                <p>본사(1계층), 지역 지원팀(2계층), 개별 가맹점(3계층)으로 브랜드 전략·자원 배분 자율 최적화</p>
+            </div>
+            <div class="app-item">
+                <h4>공유경제 플랫폼</h4>
+                <p>공유 킥보드·자전거·차량의 수요 예측 기반 사전 자원 배치와 시간대별 수요 패턴 학습</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 OpenHash. AI 시대의 데이터 신뢰 인프라. | <a href="/">홈</a> | <a href="/gopang/">고팡</a> | <a href="/employment/">완전 고용</a> | <a href="/autonomous/">사회적 자율 주행</a></p>
+        <p style="margin-top:0.3rem;">특허: AI 다중 에이전트 기반 경쟁적 시장 메커니즘 사회적 자율주행 교통 관제 시스템</p>
+    </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

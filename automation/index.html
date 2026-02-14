@@ -1,326 +1,1383 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenHash 자동화 예시</title>
+<title>완전 고용 - AI 기본소득 사회 시스템 | OpenHash</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
+/* ============================================
+   완전 고용 페이지
+   OpenHash 디자인 시스템 계승 (고팡 페이지 동일)
+   ============================================ */
+
 :root {
-    --navy: #1a3a6e;
-    --navy-dark: #0f2647;
-    --navy-light: #2a5298;
-    --gold: #d4a017;
-    --gold-light: #e8b828;
-    --text-primary: #1a1a1a;
-    --text-secondary: #3d3d3d;
-    --text-tertiary: #6b6b6b;
-    --text-caption: #8a8a8a;
-    --bg-white: #ffffff;
-    --bg-surface: #f7f8fa;
-    --bg-elevated: #eef0f4;
-    --border: #d8dce3;
-    --border-light: #e8ecf1;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
-    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--text-primary);
-    line-height: 1.8;
-    -webkit-font-smoothing: antialiased;
-    background: var(--bg-white);
-    overflow-x: hidden;
-    font-size: 15px;
+    --color-navy: #1a3a6e;
+    --color-navy-dark: #0f2647;
+    --color-navy-light: #2a5298;
+    --color-gold: #d4a017;
+    --color-gold-light: #f0c850;
+    --color-text: #212529;
+    --color-text-secondary: #343a40;
+    --color-text-muted: #495057;
+    --color-text-light: #6c757d;
+    --color-bg: #ffffff;
+    --color-bg-alt: #f8f9fa;
+    --color-bg-highlight: #f0f4ff;
+    --color-border: #dee2e6;
+    --color-border-dark: #ced4da;
+    --color-assist: #2d6a4f;
+    --color-challenge: #c44536;
+    --color-mediate: #7b2cbf;
+    --color-approve: #1a3a6e;
+    --color-vault: #0a7e8c;
+    --color-employment: #1565c0;
+    --color-welfare: #2e7d32;
+    --color-growth: #e65100;
 }
 
-/* 고팡 배너 */
-.gopang-banner {
-    background: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0.6rem 0;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--color-text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    background: #fff;
+    overflow-x: hidden;
 }
-.gopang-banner-inner {
-    max-width: 880px;
+a { text-decoration: none; color: inherit; }
+
+/* --- Nav (inherited) --- */
+.nav { background: #1f2937; padding: .6rem 0; position: sticky; top: 0; z-index: 100; }
+.nav-inner { max-width: 960px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 1.1rem; font-weight: 700; color: white; text-decoration: none; }
+.logo span { color: #d4a017; }
+.nav-menu { display: flex; gap: .15rem; list-style: none; }
+.nav-menu a { color: rgba(255,255,255,.6); padding: .4rem .6rem; border-radius: 4px; font-size: .78rem; font-weight: 500; text-decoration: none; transition: all .2s; white-space: nowrap; }
+.nav-menu a:hover { color: white; background: rgba(255,255,255,.08); }
+.nav-menu a.active { color: white; background: #1a3a6e; }
+
+/* --- Hero --- */
+.hero {
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 30%, #1a3a6e 60%, #2a5298 100%);
+    padding: 4.5rem 0 4rem;
+    text-align: center;
+    border-bottom: 3px solid var(--color-gold);
+    position: relative;
+    overflow: hidden;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 25% 40%, rgba(21,101,192,0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 75% 60%, rgba(212,160,23,0.08) 0%, transparent 50%);
+    animation: heroShimmer 12s ease-in-out infinite alternate;
+}
+@keyframes heroShimmer {
+    0% { transform: translateX(-5%) translateY(-2%); }
+    100% { transform: translateX(5%) translateY(2%); }
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-badge {
+    display: inline-block;
+    background: rgba(212,160,23,0.15);
+    border: 1px solid rgba(212,160,23,0.3);
+    color: var(--color-gold-light);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.5px;
+    animation: fadeSlideDown 0.8s ease-out;
+}
+.hero-title {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.75rem;
+    animation: fadeSlideDown 0.8s ease-out 0.1s both;
+}
+.hero-title .gold { color: var(--color-gold); }
+.hero-subtitle {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.75);
+    font-weight: 400;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 0 2rem;
+    line-height: 1.8;
+    word-break: keep-all;
+    animation: fadeSlideDown 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Container & Section --- */
+.container { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
+.section { padding: 4rem 0; }
+.section.alt { background: var(--color-bg-alt); }
+.section-header { margin-bottom: 2.5rem; }
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-text);
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--color-navy);
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+.section-title .hl { color: var(--color-navy); }
+.section-lead {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.9;
+    word-break: keep-all;
+    margin-top: 0.5rem;
+    max-width: 760px;
+}
+.sub-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    margin: 3rem 0 1.5rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--color-navy);
+}
+
+/* --- Scroll Reveal --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================
+   Before / After 비교 (사회주의 vs AI 계획경제)
+   ============================================ */
+.paradigm-shift {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 0;
+    align-items: stretch;
+    margin: 2rem 0;
+}
+.paradigm-box {
+    padding: 1.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+.paradigm-box.before {
+    background: #fff5f5;
+    border-color: #e8c4c4;
+}
+.paradigm-box.after {
+    background: #f0f7ff;
+    border-color: #b3cce6;
+}
+.paradigm-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.75rem;
+}
+.before .paradigm-label { color: #9b4d4d; }
+.after .paradigm-label { color: var(--color-navy); }
+.paradigm-box h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+}
+.paradigm-box p {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    word-break: keep-all;
+}
+.paradigm-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.6rem;
+    color: var(--color-navy);
+    font-weight: 900;
+}
+
+/* ============================================
+   3-Layer Architecture Diagram
+   ============================================ */
+.arch-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.arch-layer {
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.arch-layer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+.arch-layer-badge {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    color: white;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+}
+.arch-layer.layer1 { background: #f0f7ff; border-color: #b3cce6; }
+.arch-layer.layer1 .arch-layer-badge { background: var(--color-navy); }
+.arch-layer.layer2 { background: #fdf6e3; border-color: #e6d5a8; }
+.arch-layer.layer2 .arch-layer-badge { background: var(--color-gold); }
+.arch-layer.layer3 { background: #f0fdf4; border-color: #b3e6c4; }
+.arch-layer.layer3 .arch-layer-badge { background: var(--color-assist); }
+.arch-layer h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+.arch-layer p {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    word-break: keep-all;
+}
+.arch-agents {
+    display: flex;
     gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
 }
-.gopang-banner-text {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
-.gopang-banner-link {
+.arch-agent-chip {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    background: var(--navy);
-    color: #fff;
-    font-size: 0.82rem;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.92rem;
     font-weight: 600;
-    padding: 0.3rem 0.8rem;
-    border-radius: var(--radius-sm);
-    transition: background 0.2s, transform 0.15s;
-    white-space: nowrap;
-}
-.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
-.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
-.gopang-banner-link:hover span { transform: translateX(2px); }
-
-/* 탭 네비게이션 */
-.tab-section {
-    background: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 0;
-}
-.tab-nav {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    gap: 0.2rem;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-.tab-link {
-    padding: 0.6rem 1.2rem;
-    color: var(--text-tertiary);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    transition: all 0.2s;
-    border-bottom: 3px solid transparent;
-}
-.tab-link:hover {
-    color: var(--navy);
-    background: var(--bg-elevated);
-}
-.tab-link.active {
-    color: var(--navy);
-    border-bottom: 3px solid var(--navy);
-    background: var(--bg-white);
+    border: 1px solid var(--color-border);
+    background: white;
 }
 
-/* Hero 섹션 */
-.hero {
-    background: var(--navy-dark);
-    padding: 3.5rem 0 3rem;
+/* ============================================
+   4-Agent 카드 (능력분석/GDP최적화/복지/정책)
+   ============================================ */
+.agents-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.agent-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: #fff;
     text-align: center;
-    border-bottom: 3px solid var(--gold);
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
 }
-.hero-title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #fff;
+.agent-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+.agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+}
+.agent-card.analysis::before { background: var(--color-employment); }
+.agent-card.gdp::before { background: var(--color-growth); }
+.agent-card.welfare::before { background: var(--color-welfare); }
+.agent-card.policy::before { background: var(--color-mediate); }
+.agent-card:hover.analysis { border-color: var(--color-employment); }
+.agent-card:hover.gdp { border-color: var(--color-growth); }
+.agent-card:hover.welfare { border-color: var(--color-welfare); }
+.agent-card:hover.policy { border-color: var(--color-mediate); }
+
+.agent-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+}
+.agent-card.analysis .agent-icon { background: #e3f2fd; }
+.agent-card.gdp .agent-icon { background: #fff3e0; }
+.agent-card.welfare .agent-icon { background: #e8f5e9; }
+.agent-card.policy .agent-icon { background: #f3e5f5; }
+
+.agent-card h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+.agent-card.analysis h4 { color: var(--color-employment); }
+.agent-card.gdp h4 { color: var(--color-growth); }
+.agent-card.welfare h4 { color: var(--color-welfare); }
+.agent-card.policy h4 { color: var(--color-mediate); }
+
+.agent-card p {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    word-break: keep-all;
+}
+
+/* ============================================
+   Lifecycle Diagram (출생 → 학습 → 직업 → 성과)
+   ============================================ */
+.lifecycle-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 2.5rem 0;
+    padding: 2rem 0;
+    flex-wrap: wrap;
+}
+.lifecycle-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 1rem;
+    border-radius: 8px;
+    min-width: 110px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.lifecycle-node:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+.lifecycle-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+.lifecycle-node.birth .lifecycle-icon { background: #fce4ec; }
+.lifecycle-node.learn .lifecycle-icon { background: #e3f2fd; }
+.lifecycle-node.work .lifecycle-icon { background: #e8f5e9; }
+.lifecycle-node.result .lifecycle-icon { background: #fff3e0; }
+.lifecycle-node.vault .lifecycle-icon { background: #e0f7fa; }
+.lifecycle-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+.lifecycle-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    line-height: 1.4;
+}
+
+.lifecycle-arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 0.15rem;
+    min-width: 36px;
+}
+.lifecycle-arrow-line {
+    height: 2px;
+    width: 100%;
+    background: var(--color-navy);
+    position: relative;
+    animation: arrowPulse 2s ease-in-out infinite;
+}
+.lifecycle-arrow-line::after {
+    content: '▶';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.5rem;
+    color: var(--color-navy);
+}
+@keyframes arrowPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* ============================================
+   GDP 테이블
+   ============================================ */
+.gdp-table-wrapper {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+}
+.gdp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+.gdp-table thead {
+    background: var(--color-navy);
+    color: white;
+}
+.gdp-table th {
+    padding: 0.7rem 0.6rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+.gdp-table td {
+    padding: 0.6rem;
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+}
+.gdp-table tbody tr:nth-child(even) { background: var(--color-bg-alt); }
+.gdp-table tbody tr:hover { background: var(--color-bg-highlight); }
+.gdp-table .highlight-row { background: #f0f7ff !important; font-weight: 600; }
+.gdp-table .shock-row { background: #fff5f5 !important; }
+.gdp-table .note-cell { font-size: 0.9rem; color: var(--color-text-light); text-align: left; }
+
+/* ============================================
+   수치 하이라이트 카드
+   ============================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.stat-card {
+    padding: 1.5rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+    background: white;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--color-navy);
+    margin-bottom: 0.25rem;
+}
+.stat-card.gold .stat-value { color: var(--color-gold); }
+.stat-card.green .stat-value { color: var(--color-welfare); }
+.stat-card.orange .stat-value { color: var(--color-growth); }
+.stat-label {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+.stat-sub {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   Process Steps (6단계 프로세스)
+   ============================================ */
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.process-step {
+    padding: 1.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: white;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.process-step:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+.step-number {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--color-navy);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.process-step h4 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-top: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+.process-step .step-time {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-navy);
     margin-bottom: 0.5rem;
 }
-.hero-title .gold { color: var(--gold); }
-.hero-sub {
+.process-step p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    word-break: keep-all;
+}
+
+/* ============================================
+   Case Study Box
+   ============================================ */
+.case-box {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-navy);
+    border-radius: 0 6px 6px 0;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+.case-box h4 {
     font-size: 0.95rem;
-    color: rgba(255,255,255,0.6);
-    max-width: 620px;
-    margin: 0 auto;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.75rem;
+}
+.case-box p {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    word-break: keep-all;
+    margin-bottom: 0.5rem;
+}
+.case-box .case-result {
+    display: inline-block;
+    background: var(--color-bg-highlight);
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--color-navy);
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   Patent Box / Info Box
+   ============================================ */
+.patent-box {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-navy);
+    border-radius: 0 6px 6px 0;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+.patent-box h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.75rem;
+}
+.patent-box p {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
     line-height: 1.8;
     word-break: keep-all;
 }
 
-/* 컨텐츠 */
-.container {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 2rem;
+.info-callout {
+    background: #fdf6e3;
+    border: 1px solid #e6d5a8;
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin: 2rem 0;
 }
-.section {
-    padding: 3.5rem 0;
+.info-callout p {
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    word-break: keep-all;
 }
-.sec-title {
-    font-size: 1.25rem;
+.info-callout strong { color: var(--color-text); }
+
+/* ============================================
+   누적 효과 Summary Box
+   ============================================ */
+.summary-box {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+    border: 1px solid #b3cce6;
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0;
+}
+.summary-box h4 {
+    font-size: 1.05rem;
     font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--navy);
-    display: inline-block;
+    color: var(--color-navy);
+    margin-bottom: 1rem;
 }
-.grid {
+.summary-items {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
 }
-.card {
-    background: var(--bg-white);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s, box-shadow 0.2s;
+.summary-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+.summary-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--color-navy);
+    margin-top: 0.5rem;
+    flex-shrink: 0;
 }
-.card h3 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 0.5rem;
-}
-.card p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+.summary-item p {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
     line-height: 1.7;
+    word-break: keep-all;
 }
-.feature-list {
-    margin-top: 1rem;
-    padding-left: 1.2rem;
+.summary-item strong { color: var(--color-text); }
+
+/* ============================================
+   한계 및 로드맵
+   ============================================ */
+.roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
 }
-.feature-list li {
-    font-size: 0.85rem;
-    color: var(--text-tertiary);
-    margin-bottom: 0.3rem;
+.roadmap-card {
+    padding: 1.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: white;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.roadmap-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+.roadmap-year {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+    background: var(--color-navy);
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    margin-bottom: 0.75rem;
+}
+.roadmap-card h4 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.4rem;
+}
+.roadmap-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    word-break: keep-all;
+}
+
+/* ============================================
+   CTA & Footer (고팡 동일)
+   ============================================ */
+.cta-section {
+    background: linear-gradient(135deg, var(--color-navy-dark) 0%, var(--color-navy) 100%);
+    padding: 3.5rem 0;
+    text-align: center;
+    border-top: 3px solid var(--color-gold);
+}
+.cta-section h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+.cta-section p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    word-break: keep-all;
+}
+.cta-btn {
+    display: inline-block;
+    background: var(--color-gold);
+    color: var(--color-navy-dark);
+    padding: 0.7rem 1.6rem;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background 0.2s, transform 0.2s;
+}
+.cta-btn:hover {
+    background: var(--color-gold-light);
+    transform: translateY(-2px);
+}
+
+.footer {
+    background: #1f2937;
+    padding: 1.5rem 0;
+    text-align: center;
+}
+.footer p {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+.footer a { color: rgba(255,255,255,0.6); transition: color 0.2s; }
+.footer a:hover { color: white; }
+.footer-patent {
+    margin-top: 0.4rem;
+    font-size: 0.9rem !important;
+    color: rgba(255,255,255,0.3) !important;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .paradigm-shift { grid-template-columns: 1fr; gap: 0.5rem; }
+    .paradigm-arrow { transform: rotate(90deg); padding: 0.5rem 0; }
+    .agents-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .process-steps { grid-template-columns: 1fr; }
+    .lifecycle-flow { flex-direction: column; }
+    .lifecycle-arrow { transform: rotate(90deg); min-height: 30px; min-width: auto; }
+    .roadmap-grid { grid-template-columns: 1fr; }
+    .summary-items { grid-template-columns: 1fr; }
+    .hero-title { font-size: 1.8rem; }
+    .nav-menu { flex-wrap: wrap; gap: 0.1rem; }
+    .nav-menu a { font-size: 0.7rem; padding: 0.3rem 0.4rem; }
 }
 </style>
-<script src="/js/nav.js" defer></script>
 </head>
 <body>
 
-<!-- 고팡 배너 -->
-<div class="gopang-banner">
-    <div class="gopang-banner-inner">
-        <span class="gopang-banner-text"><strong>고팡 AI 채팅 시스템</strong> — OpenHash 기반 AI 관제 기술을 직접 체험하세요</span>
-        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+<!-- Nav -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="/" class="logo">◆ Open<span>Hash</span></a>
+        <ul class="nav-menu">
+            <li><a href="/">홈</a></li>
+            <li><a href="/principle/">원리</a></li>
+            <li><a href="/decentralization/">탈중앙화</a></li>
+            <li><a href="/agent-web/">새로운 웹</a></li>
+            <li><a href="/currency/">화폐</a></li>
+            <li><a href="/practical/">실용</a></li>
+            <li><a href="/technology/">기술</a></li>
+            <li><a href="/gopang/">고팡</a></li>
+            <li><a href="/employment/" class="active">완전 고용</a></li>
+        </ul>
     </div>
-</div>
+</nav>
 
 <!-- Hero -->
 <section class="hero">
-    <div class="container">
-        <h1 class="hero-title">정부 서비스 <span class="gold">자동화</span> 예시</h1>
-        <p class="hero-sub">OpenHash 기반 AI 다중 에이전트 시스템을 활용한 정부 서비스 자동화 사례를 살펴보세요</p>
+    <div class="container hero-content">
+        <div class="hero-badge">OpenHash + AI 기반 국가 완전고용 시스템</div>
+        <h1 class="hero-title">완전 <span class="gold">고용</span></h1>
     </div>
 </section>
 
-<!-- 탭 네비게이션 -->
-<div class="tab-section">
-    <div class="tab-nav">
-        <a href="/automation/patent/" class="tab-link active">특허청</a>
-        <a href="/automation/tax/" class="tab-link">국세청</a>
-        <a href="/automation/court/" class="tab-link">법원</a>
-        <a href="/automation/parliament/" class="tab-link">의회</a>
-        <a href="/automation/province/" class="tab-link">도청</a>
-        <a href="/automation/city/" class="tab-link">시청</a>
-        <a href="/automation/town/" class="tab-link">읍면동사무소</a>
-    </div>
-</div>
-
-<!-- 컨텐츠 -->
-<section class="section">
+<!-- 섹션 1: 핵심 개념 — 왜 완전 고용인가 -->
+<section class="section" id="concept">
     <div class="container">
-        <h2 class="sec-title">정부 서비스 자동화 개요</h2>
-        <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 2rem;">
-            OpenHash의 3계층 AI 다중 에이전트 시스템은 기존에 수주에서 수년이 걸리던 정부 서비스 처리 과정을 수시간 내로 단축합니다.
-            인간-AI 협업 구조를 통해 법적 책임소재를 명확히 하면서도 처리 효율을 극대화합니다.
-        </p>
-        
-        <div class="grid">
-            <div class="card">
-                <h3>특허청 자동화</h3>
-                <p>수년이 걸리던 특허 출원-심사-등록 과정을 수시간 내 완료</p>
-                <ul class="feature-list">
-                    <li>출원인 AI 비서 ↔ 변리사 Agent 협업</li>
-                    <li>자동 특허명세서 생성 및 검증</li>
-                    <li>실시간 심사 및 보정</li>
-                    <li>비용: 80-90% 절감</li>
-                </ul>
+        <div class="section-header reveal">
+            <h2 class="section-title">왜 <span class="hl">완전 고용</span>인가</h2>
+            <p class="section-lead">AI와 로보틱스 기술의 급속한 발전으로 2026년 현재의 직종 중 상당수가 사라지고, 대규모 실직이 예견됩니다. 그러나 AI는 대량 실직의 원인인 동시에, 시장의 수요와 공급을 예측하고, 개개인의 적성과 능력에 맞는 업무를 할당하며, 성과를 실시간으로 평가할 수 있는 <strong>두뇌 자원</strong>이기도 합니다.</p>
+        </div>
+
+        <!-- Before / After -->
+        <div class="paradigm-shift reveal">
+            <div class="paradigm-box before">
+                <div class="paradigm-label">과거 사회주의 계획경제</div>
+                <h4>관료(사람)의 두뇌</h4>
+                <p>관료의 두뇌로 개개인의 적성과 능력을 평가하고, 수요와 공급을 제어하기 위한 방대한 데이터를 처리할 수 없었습니다. 정보 비대칭, 인센티브 왜곡, 관료제의 비효율로 인해 <strong>완전 고용 시스템은 실패</strong>했습니다.</p>
             </div>
-            <div class="card">
-                <h3>국세청 자동화</h3>
-                <p>세무 신고·심사·조정 과정을 실시간 처리</p>
-                <ul class="feature-list">
-                    <li>납세자 AI 대리인 ↔ 국세청 Agent 협업</li>
-                    <li>실시간 세무 계산 및 검증</li>
-                    <li>자동 조정 및 합의 도출</li>
-                    <li>탈세 방지 및 공정성 향상</li>
-                </ul>
+            <div class="paradigm-arrow">→</div>
+            <div class="paradigm-box after">
+                <div class="paradigm-label">AI 기본소득 사회</div>
+                <h4>AI의 두뇌 + OpenHash 데이터 무결성</h4>
+                <p>OpenHash 기술이 제공하는 <strong>위변조 불가능한 데이터</strong>와 AI 기술의 두뇌 자원을 결합하면, 모든 인구에게 각자의 능력과 적성에 부합하는 업무를 할당하고, 실시간으로 조정하며, 사회 총생산이 최대가 되도록 제어할 수 있습니다.</p>
             </div>
-            <div class="card">
-                <h3>법원 자동화</h3>
-                <p>소송 절차를 월/년 단위에서 시간 단위로 단축</p>
-                <ul class="feature-list">
-                    <li>원고/피고 AI 대리인 ↔ 판사 Agent 협업</li>
-                    <li>실시간 증거 분석 및 논쟁</li>
-                    <li>판례 기반 예측 판결</li>
-                    <li>사법 접근성 극대화</li>
-                </ul>
+        </div>
+
+        <div class="info-callout reveal">
+            <p>장기적으로, <strong>단 한 명의 관리자(AI)</strong>가 5천만 한국 국민 각각의 일일(daily) 업무를 할당하고, 매일 성과를 측정하여, 지속적으로 개인별 업무 내용을 조정하는 완전한 <strong>"AI 기본소득 사회"</strong>를 구현할 수 있습니다. 이러한 완전 고용 시스템이 성공적으로 정착하면, 한국 GDP를 2026년 대비 <strong>2배 이상</strong> 높일 수 있습니다. 그 이유는 무엇보다 <strong>불로소득이 원천 차단</strong>되기 때문입니다.</p>
+        </div>
+
+        <div class="info-callout reveal">
+            <p>OpenHash + AI 기본소득 사회는 전 국민 완전 고용뿐 아니라, <strong>주거, 식사, 의료, 교통, 통신, 교육</strong> 등 기초 생활을 보장하고, <strong>주 4일 근무, 연간 6개월 휴무, 매 3년마다 안식년(1년 휴가)</strong>을 보장합니다. 다만 누구도 불로소득할 수 없고, <strong>경제 범죄는 100% 차단</strong>되며, 기타 범죄는 <strong>90% 이상 제거</strong>됩니다.</p>
+        </div>
+
+        <div class="info-callout reveal">
+            <p>AI가 잘하는 일은 AI에게 맡기고, 사람은 사람이 잘할 수 있는 일에 집중합니다. 가령, 의사·판사·공무원 등의 일부 업무를 AI가 훨씬 잘할 수 있다면, AI에게 맡기는 것이 타당합니다. 반면, <strong>요트 제작, 수제화, 조리</strong> 등은 AI나 로보틱스 기술의 활용 수준이 제한적이므로, 보다 많은 노동력을 투입할 수 있습니다. 결과적으로, 단순 반복적 지식 노동과 육체 노동을 자동화하고, 수작업 노동을 늘리므로, <strong>사회 총생산이 현저히 증가</strong>합니다. 바로 이 점이 AI 기본소득 사회의 물적 토대입니다.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 2: Private Data Vault — 평생 기록 -->
+<section class="section alt" id="vault">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">Private Data <span class="hl">Vault</span> — 평생 기록</h2>
+            <p class="section-lead">고팡 시스템은 개인의 출생 시점부터 일상과 업무를 24시간 기록합니다. 이 기록은 OpenHash 기술에 의해 <strong>위변조될 수 없으며</strong>, 유치원부터 대학원까지의 학습 과정, 직업, 업무 내용, 성과 등을 포함합니다. 따라서 개개인의 Private Data Vault는 적성과 능력을 평가하는 데 충분한 데이터를 제공합니다.</p>
+        </div>
+
+        <!-- Lifecycle Diagram -->
+        <div class="lifecycle-flow reveal">
+            <div class="lifecycle-node birth">
+                <div class="lifecycle-icon">👶</div>
+                <div class="lifecycle-label">출생</div>
+                <div class="lifecycle-desc">기록 시작</div>
             </div>
-            <div class="card">
-                <h3>의회 자동화</h3>
-                <p>입법·심의·표결 과정의 효율성 향상</p>
-                <ul class="feature-list">
-                    <li>의원 AI 보좌관 ↔ 상임위원회 Agent</li>
-                    <li>법률안 자동 분석 및 충돌 검사</li>
-                    <li>이해관계자 의견 실시간 수렴</li>
-                    <li>투명하고 효율적인 입법 과정</li>
-                </ul>
+            <div class="lifecycle-arrow"><div class="lifecycle-arrow-line"></div></div>
+            <div class="lifecycle-node learn">
+                <div class="lifecycle-icon">📚</div>
+                <div class="lifecycle-label">학습 과정</div>
+                <div class="lifecycle-desc">유치원~대학원</div>
             </div>
-            <div class="card">
-                <h3>도청 자동화</h3>
-                <p>광역 행정 서비스 통합 관리</p>
-                <ul class="feature-list">
-                    <li>시민 AI 비서 ↔ 도청 Agent 협업</li>
-                    <li>교통, 환경, 경제 정책 통합 최적화</li>
-                    <li>실시간 모니터링 및 대응</li>
-                    <li>행정 효율성 극대화</li>
-                </ul>
+            <div class="lifecycle-arrow"><div class="lifecycle-arrow-line"></div></div>
+            <div class="lifecycle-node work">
+                <div class="lifecycle-icon">💼</div>
+                <div class="lifecycle-label">직업·업무</div>
+                <div class="lifecycle-desc">업무 내용·성과</div>
             </div>
-            <div class="card">
-                <h3>시청 자동화</h3>
-                <p>기초 자치단체 서비스 일괄 처리</p>
-                <ul class="feature-list">
-                    <li>주민 AI 비서 ↔ 시청 Agent 협업</li>
-                    <li>민원, 허가, 복지 서비스 통합</li>
-                    <li>실시간 민원 처리 및 피드백</li>
-                    <li>행정 서비스 품질 향상</li>
-                </ul>
+            <div class="lifecycle-arrow"><div class="lifecycle-arrow-line"></div></div>
+            <div class="lifecycle-node result">
+                <div class="lifecycle-icon">📊</div>
+                <div class="lifecycle-label">능력·적성 평가</div>
+                <div class="lifecycle-desc">5차원 벡터 분석</div>
             </div>
-            <div class="card">
-                <h3>읍면동사무소 자동화</h3>
-                <p>최일선 행정 서비스 완전 자동화</p>
-                <ul class="feature-list">
-                    <li>주민 AI 비서 ↔ 읍면동 Agent 협업</li>
-                    <li>출생·사망·이사·증명서 발급 자동화</li>
-                    <li>24시간 연중무휴 서비스 제공</li>
-                    <li>행정 서비스 접근성 극대화</li>
-                </ul>
+            <div class="lifecycle-arrow"><div class="lifecycle-arrow-line"></div></div>
+            <div class="lifecycle-node vault">
+                <div class="lifecycle-icon">🔐</div>
+                <div class="lifecycle-label">Data Vault</div>
+                <div class="lifecycle-desc">위변조 불가</div>
+            </div>
+        </div>
+
+        <div class="patent-box reveal">
+            <h4>개인별 능력-적성 5차원 벡터</h4>
+            <p>Private Data Vault에 축적된 데이터를 바탕으로, AI는 개인의 특성을 5차원 벡터 공간에서 정량화합니다.</p>
+            <p style="margin-top:0.75rem"><strong>창의적 사고력(C)</strong> · <strong>논리적 사고력(L)</strong> · <strong>대인관계 능력(I)</strong> · <strong>기계적 적성(M)</strong> · <strong>언어능력(V)</strong></p>
+            <p style="margin-top:0.5rem">개인정보는 차분 프라이버시(ε=0.098, δ=10⁻⁵) 기술로 수학적으로 보호되며, 동형 암호화 및 연합 학습을 통해 원본 데이터 노출 없이 분석이 수행됩니다.</p>
+        </div>
+
+        <div class="info-callout reveal">
+            <p>Private Data Vault는 <strong>오직 해당 정보의 생산자이자 소유자만</strong> 접근할 수 있으며, 국가조차 법원의 승인 없이 접근할 수 없습니다. 가령, 여권이나 주민등록증, 등본·초본·인감증명도 오직 본인만이 보관하며, 행정부·외교부 등 국가 기관이 보관하지 않습니다. 이러한 마법 같은 일이 가능한 이유는 <strong>OpenHash 기술의 특징</strong>에 기인합니다.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 3: 다중 Agent 시스템 -->
+<section class="section" id="agents">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">다중 Agent <span class="hl">시스템</span></h2>
+            <p class="section-lead">4개의 전문 AI Agent가 각각 다른 목표를 추구하면서 경쟁하고, Nash 균형 이론에 기반하여 최적의 타협안을 0.02초 내에 도출합니다.</p>
+        </div>
+
+        <div class="agents-grid reveal">
+            <div class="agent-card analysis">
+                <div class="agent-icon">🔍</div>
+                <h4>능력-적성 분석 Agent</h4>
+                <p>개인의 5차원 능력 벡터를 분석하고 최적 역할을 제안하는 최상위 통제 Agent</p>
+            </div>
+            <div class="agent-card gdp">
+                <div class="agent-icon">📈</div>
+                <h4>GDP 최적화 Agent</h4>
+                <p>국가의 지리적 위치, 자원, 국제 경제 지형을 고려하여 총생산을 최대화하는 배치 도출</p>
+            </div>
+            <div class="agent-card welfare">
+                <div class="agent-icon">🤝</div>
+                <h4>복지 우선 Agent</h4>
+                <p>개인의 만족도, 삶의 질, 일과 삶의 균형을 최우선으로 하는 역할 배치 제안</p>
+            </div>
+            <div class="agent-card policy">
+                <div class="agent-icon">⚖️</div>
+                <h4>정책 Agent (중재)</h4>
+                <p>3개 Agent 간 상충을 Nash 균형으로 조정하고 실현 가능한 타협안을 도출하는 중재자</p>
+            </div>
+        </div>
+
+        <h3 class="sub-title reveal">3층 아키텍처</h3>
+
+        <div class="arch-layers reveal">
+            <div class="arch-layer layer1">
+                <div class="arch-layer-badge">제1층 — 개인 분석층</div>
+                <h4>데이터 수집 및 능력-적성 분석</h4>
+                <p>개인별 능력-적성 분석 모듈, 차분 프라이버시 처리부, 3개 전문 Agent가 병렬로 동작하여 개인별 특성과 국가 특성을 종합 분석합니다.</p>
+                <div class="arch-agents">
+                    <div class="arch-agent-chip">🔍 능력-적성 분석</div>
+                    <div class="arch-agent-chip">📈 GDP 최적화</div>
+                    <div class="arch-agent-chip">🤝 복지 우선</div>
+                    <div class="arch-agent-chip">🔒 차분 프라이버시</div>
+                </div>
+            </div>
+            <div class="arch-layer layer2">
+                <div class="arch-layer-badge">제2층 — 의사결정층</div>
+                <h4>Nash 균형 계산 + 민주적 투표</h4>
+                <p>정책 Agent가 중재를 수행하여 Agent 간 갈등을 조정하고, zk-SNARKs 영지식증명 기반 67ms 투표 시스템으로 복지-성장 균형점을 민주적으로 결정합니다.</p>
+                <div class="arch-agents">
+                    <div class="arch-agent-chip">⚖️ 정책 Agent</div>
+                    <div class="arch-agent-chip">🗳️ zk-SNARKs 투표</div>
+                    <div class="arch-agent-chip">📐 Nash 균형 계산</div>
+                </div>
+            </div>
+            <div class="arch-layer layer3">
+                <div class="arch-layer-badge">제3층 — 실행층</div>
+                <h4>개인별 역할 배치 + 완전고용 모니터링</h4>
+                <p>연간 8,760시간의 정밀한 역할 배치를 수행하고, 92.4% 매칭 정확도로 완전고용 상태를 달성 및 유지합니다.</p>
+                <div class="arch-agents">
+                    <div class="arch-agent-chip">📋 스케줄링 모듈</div>
+                    <div class="arch-agent-chip">📡 실시간 모니터링</div>
+                    <div class="arch-agent-chip">📊 성과 추적</div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- 섹션 4: AI 최적 매칭과 민주적 의사결정 -->
+<section class="section alt" id="matching">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">AI 최적 매칭과 <span class="hl">민주적 결정</span></h2>
+            <p class="section-lead">AI가 총생산 최적화를 위해 도출한 개인별 역할 배치가 개인의 복지나 선호도와 상충할 때, 시민 투표를 통해 복지-성장 균형점을 민주적으로 결정합니다.</p>
+        </div>
+
+        <h3 class="sub-title reveal">6단계 하이브리드 프로세스</h3>
+
+        <div class="process-steps reveal">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h4>능력-적성 분석</h4>
+                <div class="step-time">⚡ 0.015초</div>
+                <p>차분 프라이버시를 적용하여 개인별 특성을 5차원 벡터로 정량화</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h4>AI 최적화 + 중재</h4>
+                <div class="step-time">⚡ 0.020초</div>
+                <p>3개 Agent가 경쟁적으로 최적화, 정책 Agent가 Nash 균형 기반 중재</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h4>시민 검토</h4>
+                <div class="step-time">🕐 24~72시간</div>
+                <p>AI 최적화 방안과 개인 복지 간 상충관계를 시민이 분석·토론</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h4>민주적 투표</h4>
+                <div class="step-time">⚡ 67ms</div>
+                <p>zk-SNARKs 영지식증명 기반 익명 투표로 복지-성장 균형점 결정</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">5</div>
+                <h4>역할 배치 실행</h4>
+                <div class="step-time">⚡ 1분</div>
+                <p>개인별 스케줄링 모듈이 연간 8,760시간의 정밀 배치 수행</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">6</div>
+                <h4>완전고용 모니터링</h4>
+                <div class="step-time">🔄 지속적</div>
+                <p>98.9% 고용률 지속 추적, 수급 불균형 0.5초 내 자동 대응</p>
+            </div>
+        </div>
+
+        <h3 class="sub-title reveal">실시예: 제주 서귀포시 개인별 매칭</h3>
+
+        <div class="case-box reveal">
+            <h4>김○○ (29세, 창의적 사고력 상위 10%)</h4>
+            <p>AI 최초 제안: 데이터 분석가 (총생산 최적화) → 개인 선호: 예술/디자인 → 민주적 정책 반영: 관광콘텐츠 디자이너</p>
+            <p><strong>최종 배치:</strong> IT 단지 내 관광 VR/AR 콘텐츠 기획자 | 주 5일 × 6시간, 연봉 6,200만원 + 기본소득 1,200만원</p>
+            <div class="case-result">매칭 정확도 89.2%</div>
+        </div>
+
+        <div class="case-box reveal" style="border-left-color: var(--color-welfare);">
+            <h4>이○○ (35세, 논리적 사고력 상위 5%)</h4>
+            <p>AI 제안과 개인 선호 일치: 엔지니어링</p>
+            <p><strong>최종 배치:</strong> IT 단지 스마트팩토리 설계 엔지니어 | 주 5일 × 6시간, 연봉 7,500만원 + 기본소득 1,200만원</p>
+            <div class="case-result">매칭 정확도 94.7%</div>
+        </div>
+
+        <div class="case-box reveal" style="border-left-color: var(--color-gold);">
+            <h4>박○○ (42세, 대인관계 능력 상위 8%)</h4>
+            <p>AI 최초 제안: 관광가이드 → 개인 선호: 교육업 → 민주적 정책 반영: IT 교육 강사</p>
+            <p><strong>최종 배치:</strong> IT 단지 디지털 기술 교육 전문가 | 주 5일 × 6시간, 연봉 5,800만원 + 기본소득 1,200만원</p>
+            <div class="case-result">매칭 정확도 85.6%</div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 5: 완전고용 달성 성과 -->
+<section class="section" id="results">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">완전고용 <span class="hl">달성 성과</span></h2>
+            <p class="section-lead">제주 서귀포시 시뮬레이션(경제활동인구 8.45만명)에서 6개월 만에 고용률 91.2%에서 98.9%를 달성하고, 평균 소득 62% 증가와 근로자 만족도 33% 향상을 동시에 실현했습니다.</p>
+        </div>
+
+        <div class="stats-grid reveal">
+            <div class="stat-card">
+                <div class="stat-value">98.9%</div>
+                <div class="stat-label">고용률 달성</div>
+                <div class="stat-sub">91.2% → 98.9% (6개월)</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="stat-value">62%↑</div>
+                <div class="stat-label">평균 소득 증가</div>
+                <div class="stat-sub">4,200만 → 6,800만원</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-value">89점</div>
+                <div class="stat-label">근로자 만족도</div>
+                <div class="stat-sub">67점 → 89점 (33%↑)</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-value">+3.2%</div>
+                <div class="stat-label">지역 GDP 성장</div>
+                <div class="stat-sub">복지와 성장 동시 달성</div>
+            </div>
+        </div>
+
+        <h3 class="sub-title reveal">완전고용 달성 메커니즘</h3>
+
+        <div class="patent-box reveal">
+            <h4>일자리 나누기 + 신산업 창출</h4>
+            <p><strong>근무시간 단축:</strong> 8시간 → 6시간 (25% 단축)으로 필요 인력 33% 증가</p>
+            <p style="margin-top:0.5rem"><strong>신산업 창출:</strong> IT 특화 단지로 1,500개 고부가가치 일자리 생성</p>
+            <p style="margin-top:0.5rem"><strong>개인별 최적화:</strong> 92.4% 매칭 정확도로 생산성 향상과 만족도 증대 동시 달성</p>
+            <p style="margin-top:0.5rem"><strong>기본소득 지원:</strong> 소득 불안정성 해소로 창업 및 재교육 활성화</p>
+        </div>
+
+        <h3 class="sub-title reveal">외부충격 대응 — 시스템 복원력</h3>
+
+        <div class="case-box reveal" style="border-left-color: var(--color-challenge);">
+            <h4>시나리오: 글로벌 팬데믹으로 관광업 70% 급감</h4>
+            <p>외부충격 감지: <strong>0.5초</strong> | 긴급 Agent 협상: <strong>0.02초</strong> 수렴 | 민주적 투표: <strong>67ms</strong> 처리</p>
+            <p style="margin-top:0.75rem">1.26만 명을 온라인 콘텐츠 제작(0.4만), 원격 고객서비스(0.3만), 배달·물류(0.35만), 재교육(0.21만)으로 재배치</p>
+            <p style="margin-top:0.75rem"><strong>결과:</strong> 팬데믹 3개월 후 97.8% → 6개월 후 99.2% (완전고용 수준 회복)</p>
+            <div class="case-result">시스템 복원력 77.5~90.0점</div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 6: GDP 상승 효과 정량 분석 -->
+<section class="section alt" id="gdp-analysis">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">한국 적용 시 <span class="hl">GDP 상승 효과</span></h2>
+            <p class="section-lead">본 시스템이 한국에 성공적으로 적용될 경우, 노동 생산성 향상, 완전고용 달성, 의사결정 효율화, 시스템 복원력 강화를 통해 10년간 약 490조 원의 GDP 추가 성장이 예상됩니다.</p>
+        </div>
+
+        <h3 class="sub-title reveal">핵심 효과 경로</h3>
+
+        <div class="stats-grid reveal">
+            <div class="stat-card">
+                <div class="stat-value">+1.2%p</div>
+                <div class="stat-label">노동 생산성</div>
+                <div class="stat-sub">연평균 증가율</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="stat-value">98.9%</div>
+                <div class="stat-label">고용률 목표</div>
+                <div class="stat-sub">91.2% → 98.9%</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-value">+2.2%p</div>
+                <div class="stat-label">GDP 성장률 추가</div>
+                <div class="stat-sub">서귀포시 시뮬레이션 기준</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-value">-15%</div>
+                <div class="stat-label">충격 하락폭 완화</div>
+                <div class="stat-sub">-30% → -15%</div>
+            </div>
+        </div>
+
+        <h3 class="sub-title reveal">10년간 GDP 상승 효과 추정</h3>
+
+        <div class="gdp-table-wrapper reveal">
+            <table class="gdp-table">
+                <thead>
+                    <tr>
+                        <th>연도</th>
+                        <th>적용 단계</th>
+                        <th>기존 전망</th>
+                        <th>시스템 효과</th>
+                        <th>조정 후 성장률</th>
+                        <th>GDP (조 원)</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2026</td>
+                        <td>시범 적용</td>
+                        <td>2.3%</td>
+                        <td>+0.5%p</td>
+                        <td>2.8%</td>
+                        <td>2,450</td>
+                        <td class="note-cell">제주/세종 등</td>
+                    </tr>
+                    <tr>
+                        <td>2027</td>
+                        <td>부분 확대</td>
+                        <td>2.4%</td>
+                        <td>+1.0%p</td>
+                        <td>3.4%</td>
+                        <td>2,530</td>
+                        <td class="note-cell">경제자유구역</td>
+                    </tr>
+                    <tr>
+                        <td>2028</td>
+                        <td>광역시 적용</td>
+                        <td>2.5%</td>
+                        <td>+1.8%p</td>
+                        <td>4.3%</td>
+                        <td>2,640</td>
+                        <td class="note-cell">8개 광역시</td>
+                    </tr>
+                    <tr>
+                        <td>2029</td>
+                        <td>전국 적용</td>
+                        <td>2.6%</td>
+                        <td>+2.2%p</td>
+                        <td>4.8%</td>
+                        <td>2,770</td>
+                        <td class="note-cell">고용률 95%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td>2030</td>
+                        <td>완전 적용</td>
+                        <td>2.7%</td>
+                        <td>+2.4%p</td>
+                        <td>5.1%</td>
+                        <td>2,910</td>
+                        <td class="note-cell">고용률 98%↑</td>
+                    </tr>
+                    <tr>
+                        <td>2031</td>
+                        <td>정착 단계</td>
+                        <td>2.7%</td>
+                        <td>+2.4%p</td>
+                        <td>5.1%</td>
+                        <td>3,060</td>
+                        <td class="note-cell">생산성 향상 지속</td>
+                    </tr>
+                    <tr class="shock-row">
+                        <td>2032</td>
+                        <td>외부충격(가상)</td>
+                        <td>-3.0%</td>
+                        <td>+1.5%p</td>
+                        <td>-1.5%</td>
+                        <td>3,010</td>
+                        <td class="note-cell">복원력 발휘</td>
+                    </tr>
+                    <tr>
+                        <td>2033</td>
+                        <td>회복 단계</td>
+                        <td>3.0%</td>
+                        <td>+2.2%p</td>
+                        <td>5.2%</td>
+                        <td>3,170</td>
+                        <td class="note-cell">빠른 회복</td>
+                    </tr>
+                    <tr>
+                        <td>2034</td>
+                        <td>성숙 단계</td>
+                        <td>2.8%</td>
+                        <td>+2.0%p</td>
+                        <td>4.8%</td>
+                        <td>3,320</td>
+                        <td class="note-cell">시스템 최적화</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td>2035</td>
+                        <td>안정화</td>
+                        <td>2.7%</td>
+                        <td>+1.8%p</td>
+                        <td>4.5%</td>
+                        <td>3,470</td>
+                        <td class="note-cell">지속적 효과</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary-box reveal">
+            <h4>10년간 총 누적 효과</h4>
+            <div class="summary-items">
+                <div class="summary-item">
+                    <div class="summary-dot"></div>
+                    <p><strong>2035년 GDP:</strong> 약 3,470조 원 (미적용 시 2,980조 원 대비 <strong>490조 원 증가</strong>)</p>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-dot"></div>
+                    <p><strong>누적 증가율:</strong> 시스템 적용 41.6% vs 미적용 21.7% → <strong>19.9%p 추가 성과</strong></p>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-dot"></div>
+                    <p><strong>고용 효과:</strong> 실업률 2.8% → 1.1%, 약 <strong>48만 명 추가 고용</strong> 창출</p>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-dot"></div>
+                    <p><strong>생산성:</strong> 시간당 노동생산성 연평균 +1.2%p → 총 <strong>14.4% 향상</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 7: 적용 로드맵 -->
+<section class="section" id="roadmap">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">적용 <span class="hl">로드맵</span></h2>
+            <p class="section-lead">단계적 적용과 지속적 모니터링을 통해 시스템을 최적화하고, 디지털 인프라 및 데이터 프라이버시 보호 체계를 선행적으로 강화합니다.</p>
+        </div>
+
+        <div class="roadmap-grid reveal">
+            <div class="roadmap-card">
+                <div class="roadmap-year">2026</div>
+                <h4>시범 적용</h4>
+                <p>제주, 세종, 부산 등 스마트시티에서 시범 적용. 6개월 구축, 3개월 안정화. 경제활동인구 대상 능력-적성 분석 시작.</p>
+            </div>
+            <div class="roadmap-card">
+                <div class="roadmap-year">2028</div>
+                <h4>광역시 확대</h4>
+                <p>8개 광역시 및 경제자유구역으로 확대 적용. 노동법·사회보장제도 연계 개선. 고용률 95% 달성 목표.</p>
+            </div>
+            <div class="roadmap-card">
+                <div class="roadmap-year">2030</div>
+                <h4>전국 완전 적용</h4>
+                <p>경제활동인구 약 2,800만 명 대상 전국적 적용 완료. 고용률 98.9% 이상 완전고용 달성 및 유지.</p>
+            </div>
+        </div>
+
+        <h3 class="sub-title reveal">한계점 및 과제</h3>
+
+        <div class="patent-box reveal">
+            <h4>기술적·사회적 과제</h4>
+            <p><strong>기술적 구현:</strong> 시스템의 실제 구현 정확도가 시뮬레이션 대비 낮을 수 있으며, 대규모 확장 시 성능 검증이 필요합니다.</p>
+            <p style="margin-top:0.5rem"><strong>사회적 수용:</strong> 민주적 투표 참여율과 AI 의사결정에 대한 사회적 합의가 전제되어야 합니다.</p>
+            <p style="margin-top:0.5rem"><strong>초기 투자:</strong> 시스템 구축 및 운영 비용이 GDP 증가 효과를 일부 상쇄할 수 있으나, 중장기적으로 투자 회수가 기대됩니다.</p>
+            <p style="margin-top:0.5rem"><strong>국제 환경:</strong> 글로벌 경제 충격, 무역 변화 등 외부 요인에 대한 지속적 모니터링이 필요합니다.</p>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 8: 특허 기반 -->
+<section class="section alt" id="patent-info">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">기술 <span class="hl">기반</span></h2>
+        </div>
+
+        <div class="patent-box reveal">
+            <h4>특허 출원</h4>
+            <p><strong>발명의 명칭:</strong> 개인별 능력-적성 최적 매칭을 통한 국가 총생산 최대화 및 복지-성장 균형점 도출을 위한 다중 Agent 시스템 및 방법</p>
+            <p style="margin-top:0.5rem"><strong>핵심 기술:</strong> 3개 전문 Agent 경쟁-협상 시스템, Nash 균형 기반 중재, zk-SNARKs 영지식증명 민주적 투표(67ms), 개인별 능력-적성 5차원 벡터 분석, 차분 프라이버시 기반 개인정보 보호, 연간 8,760시간 정밀 스케줄링, 92.4% 매칭 정확도</p>
+            <p style="margin-top:0.5rem"><strong>적용 분야:</strong> 국가 단위 경제정책, 스마트시티, 지역 개발, OECD 국가 고용정책 모델</p>
+        </div>
+
+        <div class="patent-box reveal" style="border-left-color: var(--color-gold);">
+            <h4>OpenHash 기술 연계</h4>
+            <p>완전 고용 시스템의 Private Data Vault는 <strong>OpenHash 계층적 해시 분산 기술</strong> 위에 구축됩니다. 행정구역 기반 계층적 샤딩, 다중 서명 기반 위변조 방지, 해시 체인 기반 감사 로그가 개인의 출생부터 현재까지의 모든 데이터에 대한 <strong>무결성과 진실성</strong>을 보장합니다.</p>
+        </div>
+
+        <div class="patent-box reveal" style="border-left-color: var(--color-assist);">
+            <h4>성능 검증 (시뮬레이션)</h4>
+            <p><strong>처리 속도:</strong> Nash 균형 0.02초 수렴 | <strong>투표 처리:</strong> 67ms 영지식증명 | <strong>확장성:</strong> 100만 명(0.08초), 500만 명(0.35초), 1,000만 명(1.2초) | <strong>메모리 효율:</strong> 89% | <strong>매칭 정확도:</strong> 92.4% | <strong>시스템 복원력:</strong> 77.5~90.0점</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container">
+        <h2>AI가 만드는 완전 고용 시대</h2>
+        <p>OpenHash의 위변조 불가능한 데이터 위에 AI가 5천만 국민 각자의 능력과 적성에 맞는 업무를 배치하고, 매일 성과를 측정하여 사회 총생산을 극대화하는 <strong>"AI 기본소득 사회"</strong>의 시작입니다.</p>
+        <a href="/gopang/" class="cta-btn">고팡(Gopang) 알아보기 →</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 OpenHash. AI 시대의 데이터 신뢰 인프라. | <a href="/principle/">기술 원리</a> | <a href="/technology/">기술 문서</a> | <a href="/gopang/">고팡</a> | <a href="/employment/">완전 고용</a></p>
+        <p class="footer-patent">관련 특허 출원: <strong>개인별 능력-적성 최적 매칭을 통한 국가 총생산 최대화 및 복지-성장 균형점 도출을 위한 다중 Agent 시스템 및 방법</strong></p>
+    </div>
+</footer>
+
 <script>
-// 현재 경로에 따라 활성 탭 설정
-const currentPath = window.location.pathname;
-const tabLinks = document.querySelectorAll('.tab-link');
-tabLinks.forEach(link => {
-    const linkPath = link.getAttribute('href');
-    if (currentPath.includes(linkPath.replace('/automation/', ''))) {
-        link.classList.add('active');
+/* ============================================
+   Scroll Reveal (IntersectionObserver)
+   ============================================ */
+document.addEventListener('DOMContentLoaded', function() {
+    var reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function(el) { observer.observe(el); });
     } else {
-        link.classList.remove('active');
+        reveals.forEach(function(el) { el.classList.add('visible'); });
     }
 });
 </script>

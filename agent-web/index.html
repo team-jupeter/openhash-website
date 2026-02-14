@@ -5,13 +5,384 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>새로운 웹 - OpenHash 기반 Agent Web</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="style.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           OpenHash Agent Web – 메인 인덱스 디자인 시스템 적용
+           한국 정부 웹사이트 디자인 가이드 + Material Design 3
+           - 네이비(#1a3a6e) / 골드(#d4a017) 포인트
+           - Noto Sans KR, 명확한 계층, 충분한 여백
+           - 카드, 패널, 헤더 스타일 일원화
+           ============================================ */
+        :root {
+            --color-navy: #1a3a6e;
+            --color-gold: #d4a017;
+            --color-text: #212529;
+            --color-text-secondary: #343a40;
+            --color-text-muted: #495057;
+            --color-text-light: #6c757d;
+            --color-bg-alt: #f8f9fa;
+            --color-bg-highlight: #f0f4ff;
+            --color-border: #dee2e6;
+            --color-border-dark: #ced4da;
+            --color-footer-bg: #1f2937;
+            --spacing-section: 3.5rem;
+            --radius-sm: 2px;
+            --radius-md: 4px;
+            --radius-lg: 6px;
+            --font-display: 1.3rem;
+            --font-title: 1.0rem;
+            --font-body: 0.93rem;
+            --font-label: 0.88rem;
+            --font-caption: 0.84rem;
+            --font-footer: 0.8rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            background: #fff;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ---------- Hero (메인 인덱스 스타일) ---------- */
+        .hero {
+            background: var(--color-navy);
+            padding: 2.5rem 0;
+            text-align: center;
+            border-bottom: 3px solid var(--color-gold);
+        }
+        .hero-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .hero-desc {
+            max-width: 760px;
+            margin: 1rem auto 0;
+            font-size: var(--font-body);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.9;
+            word-break: keep-all;
+        }
+
+        /* ---------- 컨테이너 & 섹션 공통 ---------- */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            padding: var(--spacing-section) 0;
+        }
+        .section.alt {
+            background: var(--color-bg-alt);
+        }
+        .section.dark {
+            background: #1e2a3a;  /* 기술 보고서 영역 – 네이비 계열 */
+            color: #e5e7eb;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+        .section-badge {
+            display: inline-block;
+            font-size: var(--font-caption);
+            font-weight: 600;
+            color: var(--color-navy);
+            background: #e9ecf3;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        .section-title {
+            font-size: var(--font-display);
+            font-weight: 700;
+            color: var(--color-text);
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid var(--color-navy);
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .section-title .highlight {
+            color: var(--color-navy);
+        }
+        .section-desc {
+            font-size: var(--font-body);
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            word-break: keep-all;
+            margin-top: 0.5rem;
+        }
+
+        /* ---------- 카드 그리드 (메인 인덱스 체계) ---------- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .card-grid.three-col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        @media (max-width: 768px) {
+            .card-grid, .card-grid.three-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ---------- 카드 스타일 (메인 인덱스와 동일) ---------- */
+        .card {
+            background: #fff;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 1.4rem 1.6rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .card:hover {
+            border-color: var(--color-navy);
+            background: #fafbff;
+        }
+        .card.active {
+            border-color: var(--color-navy);
+            border-width: 2px;
+            background: var(--color-bg-highlight);
+            padding: calc(1.4rem - 1px) calc(1.6rem - 1px);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
+        }
+        .card-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .card h4 {
+            font-size: var(--font-title);
+            font-weight: 700;
+            color: var(--color-text);
+            margin: 0;
+            line-height: 1.4;
+        }
+        .card.active h4 {
+            color: var(--color-navy);
+        }
+        .card p, .card-desc {
+            font-size: var(--font-body);
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            word-break: keep-all;
+            margin: 0;
+        }
+
+        /* ---------- 상세 패널 (메인 인덱스 디자인) ---------- */
+        .detail-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+            opacity: 0;
+            margin-top: 0;
+        }
+        .detail-panel.open {
+            max-height: 800px;
+            opacity: 1;
+            margin-top: 1.25rem;
+        }
+        .detail-content {
+            background: #fff;
+            border: 1px solid var(--color-border-dark);
+            border-left: 3px solid var(--color-navy);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem 1.75rem;
+            position: relative;
+            font-size: var(--font-body);
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            word-break: keep-all;
+        }
+        .detail-content h3 {
+            font-size: var(--font-title);
+            font-weight: 700;
+            color: var(--color-navy);
+            margin-bottom: 0.75rem;
+        }
+        .detail-content h4 {
+            font-size: var(--font-label);
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            margin: 1rem 0 0.3rem;
+        }
+        .detail-content p {
+            margin-bottom: 0.4rem;
+        }
+        .detail-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.4rem 0;
+        }
+        .detail-content ul li {
+            padding: 0.2rem 0 0.2rem 1.1rem;
+            position: relative;
+            line-height: 1.7;
+        }
+        .detail-content ul li::before {
+            content: '–';
+            position: absolute;
+            left: 0;
+            color: var(--color-text-light);
+        }
+
+        /* ---------- 시나리오 스텝퍼 (신규 디자인) ---------- */
+        .scenario-stepper {
+            margin-top: 2.5rem;
+            background: #fff;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 1.8rem 2rem;
+        }
+        .scenario-stepper-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .scenario-stepper-header h4 {
+            font-size: var(--font-title);
+            font-weight: 700;
+            color: var(--color-navy);
+        }
+        .scenario-stepper-header span {
+            font-size: var(--font-caption);
+            color: var(--color-text-light);
+        }
+        .stepper-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .stepper-item {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+        }
+        .stepper-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--color-navy);
+            color: white;
+            font-size: var(--font-title);
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.6rem;
+        }
+        .stepper-label {
+            font-size: var(--font-label);
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 0.2rem;
+        }
+        .stepper-desc {
+            font-size: var(--font-caption);
+            color: var(--color-text-light);
+            line-height: 1.5;
+        }
+        .stepper-arrow {
+            font-size: 1.2rem;
+            color: var(--color-border-dark);
+            font-weight: 300;
+        }
+        @media (max-width: 768px) {
+            .stepper-flow {
+                flex-direction: column;
+            }
+            .stepper-arrow {
+                transform: rotate(90deg);
+                margin: 0.2rem 0;
+            }
+        }
+
+        /* ---------- 기술 보고서 탭 (기존 구조 유지, 디자인 통일) ---------- */
+        #reportTabs {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            padding: 6px;
+            display: inline-flex;
+            gap: 4px;
+            margin-bottom: 28px;
+        }
+        .report-tab {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 24px;
+            color: #bbb;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            transition: color 0.2s, background 0.2s;
+        }
+        .report-tab:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+        }
+        .report-tab.on {
+            color: #fff;
+            background: var(--color-navy);
+        }
+
+        /* ---------- 다크 섹션 내 컨테이너 텍스트 ---------- */
+        .section.dark .section-title,
+        .section.dark .highlight {
+            color: #fff;
+            border-bottom-color: var(--color-gold);
+        }
+        .section.dark .section-desc {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* ---------- 반응형 ---------- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.25rem;
+            }
+            .hero-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Hero -->
+<div id="main-nav-placeholder"></div>
+    <!-- Hero: 메인 인덱스 스타일로 전면 교체 (내용 원본 유지) -->
     <section class="hero">
         <div class="container">
             <h1 class="hero-title">새로운 웹: Agent Web</h1>
@@ -19,7 +390,7 @@
         </div>
     </section>
 
-    <!-- Section 1: 패러다임 전환 -->
+    <!-- Section 1: 패러다임 전환 (카드 구조 디자인 시스템에 맞게 조정) -->
     <section class="section" id="paradigm">
         <div class="container">
             <div class="section-header">
@@ -29,24 +400,32 @@
             </div>
             <div class="card-grid" id="paradigm-cards">
                 <div class="card" data-type="web1">
-                    <div class="card-icon">📄</div>
-                    <h4>Web 1.0</h4>
-                    <p>읽기 전용 웹, 정적 콘텐츠</p>
+                    <div class="card-header">
+                        <span class="card-icon">📄</span>
+                        <h4>Web 1.0</h4>
+                    </div>
+                    <p class="card-desc">읽기 전용 웹, 정적 콘텐츠</p>
                 </div>
                 <div class="card" data-type="web2">
-                    <div class="card-icon">👥</div>
-                    <h4>Web 2.0</h4>
-                    <p>소셜 웹, 사용자 생성 콘텐츠</p>
+                    <div class="card-header">
+                        <span class="card-icon">👥</span>
+                        <h4>Web 2.0</h4>
+                    </div>
+                    <p class="card-desc">소셜 웹, 사용자 생성 콘텐츠</p>
                 </div>
                 <div class="card" data-type="web3">
-                    <div class="card-icon">🔗</div>
-                    <h4>Web 3.0</h4>
-                    <p>블록체인 기반 탈중앙화 웹</p>
+                    <div class="card-header">
+                        <span class="card-icon">🔗</span>
+                        <h4>Web 3.0</h4>
+                    </div>
+                    <p class="card-desc">블록체인 기반 탈중앙화 웹</p>
                 </div>
                 <div class="card" data-type="agentweb">
-                    <div class="card-icon">🤖</div>
-                    <h4>Agent Web</h4>
-                    <p>AI 에이전트 중심의 새로운 웹</p>
+                    <div class="card-header">
+                        <span class="card-icon">🤖</span>
+                        <h4>Agent Web</h4>
+                    </div>
+                    <p class="card-desc">AI 에이전트 중심의 새로운 웹</p>
                 </div>
             </div>
             <div class="detail-panel" id="paradigm-panel">
@@ -65,26 +444,32 @@
             </div>
             <div class="card-grid three-col" id="agent-cards">
                 <div class="card" data-type="personal">
-                    <div class="card-icon">🧑‍💼</div>
-                    <h4>개인 AI 에이전트</h4>
-                    <p>사용자의 비서 역할, 데이터 금고 관리</p>
+                    <div class="card-header">
+                        <span class="card-icon">🧑‍💼</span>
+                        <h4>개인 AI 에이전트</h4>
+                    </div>
+                    <p class="card-desc">사용자의 비서 역할, 데이터 금고 관리</p>
                 </div>
                 <div class="card" data-type="institutional">
-                    <div class="card-icon">🏛️</div>
-                    <h4>기관 AI 에이전트</h4>
-                    <p>정부/기업의 자동화된 서비스 처리</p>
+                    <div class="card-header">
+                        <span class="card-icon">🏛️</span>
+                        <h4>기관 AI 에이전트</h4>
+                    </div>
+                    <p class="card-desc">정부/기업의 자동화된 서비스 처리</p>
                 </div>
                 <div class="card" data-type="interaction">
-                    <div class="card-icon">🔄</div>
-                    <h4>에이전트 간 상호작용</h4>
-                    <p>AI-to-AI 통신과 데이터 교환</p>
+                    <div class="card-header">
+                        <span class="card-icon">🔄</span>
+                        <h4>에이전트 간 상호작용</h4>
+                    </div>
+                    <p class="card-desc">AI-to-AI 통신과 데이터 교환</p>
                 </div>
             </div>
             <div class="detail-panel" id="agent-panel">
                 <div class="detail-content" id="agent-content"></div>
             </div>
 
-            <!-- 시나리오 스텝퍼 -->
+            <!-- 시나리오 스텝퍼 (디자인 시스템 적용) -->
             <div class="scenario-stepper">
                 <div class="scenario-stepper-header">
                     <h4>💡 부가세 신고 시나리오</h4>
@@ -135,24 +520,32 @@
             </div>
             <div class="card-grid" id="trust-cards">
                 <div class="card" data-type="problem">
-                    <div class="card-icon">❓</div>
-                    <h4>AI 시대의 문제</h4>
-                    <p>AI가 위조 문서를 어떻게 구별할 것인가?</p>
+                    <div class="card-header">
+                        <span class="card-icon">❓</span>
+                        <h4>AI 시대의 문제</h4>
+                    </div>
+                    <p class="card-desc">AI가 위조 문서를 어떻게 구별할 것인가?</p>
                 </div>
                 <div class="card" data-type="solution">
-                    <div class="card-icon">✅</div>
-                    <h4>OpenHash 해법</h4>
-                    <p>해시 체인으로 데이터 진실성 기술적 증명</p>
+                    <div class="card-header">
+                        <span class="card-icon">✅</span>
+                        <h4>OpenHash 해법</h4>
+                    </div>
+                    <p class="card-desc">해시 체인으로 데이터 진실성 기술적 증명</p>
                 </div>
                 <div class="card" data-type="vault">
-                    <div class="card-icon">🔐</div>
-                    <h4>데이터 금고 (Vault)</h4>
-                    <p>개인/기관의 검증된 데이터 저장소</p>
+                    <div class="card-header">
+                        <span class="card-icon">🔐</span>
+                        <h4>데이터 금고 (Vault)</h4>
+                    </div>
+                    <p class="card-desc">개인/기관의 검증된 데이터 저장소</p>
                 </div>
                 <div class="card" data-type="certificate">
-                    <div class="card-icon">📜</div>
-                    <h4>디지털 증명서</h4>
-                    <p>위변조 불가능한 각종 증명 문서</p>
+                    <div class="card-header">
+                        <span class="card-icon">📜</span>
+                        <h4>디지털 증명서</h4>
+                    </div>
+                    <p class="card-desc">위변조 불가능한 각종 증명 문서</p>
                 </div>
             </div>
             <div class="detail-panel" id="trust-panel">
@@ -161,27 +554,30 @@
         </div>
     </section>
 
-    <!-- Section 4: 기술 보고서 (3탭) -->
+    <!-- Section 4: 기술 보고서 (3탭) - 다크 테마, 디자인 통일 -->
     <section class="section dark" id="reports">
         <div class="container">
-            <div id="reportTabs" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px;display:inline-flex;gap:4px;margin-bottom:28px">
+            <div class="section-header">
+                <span class="section-badge" style="background:#2a3a55; color:#d4e1ff;">Technical Report</span>
+                <h2 class="section-title">OpenHash <span class="highlight">적용 시나리오</span></h2>
+                <p class="section-desc">실제 기관에서의 Agent Web 구현 — 탭을 클릭하여 상세 보고서 확인</p>
+            </div>
+            <div id="reportTabs">
                 <div class="report-tab on" data-tab="architecture">핵심 아키텍처</div>
                 <div class="report-tab" data-tab="patent">특허청 시나리오</div>
                 <div class="report-tab" data-tab="tax">국세청 시나리오</div>
             </div>
             <div id="report-container">
-                <div style="text-align:center;padding:60px 0;color:#666;font-size:.9rem;">보고서 로딩 중...</div>
+                <div style="text-align:center;padding:60px 0;color:#aaa;font-size:.9rem;">보고서 로딩 중...</div>
             </div>
         </div>
     </section>
 
-    <style>
-    #reportTabs .report-tab{font-size:1rem;font-weight:600;padding:10px 24px;color:#bbb;cursor:pointer;border-radius:6px;white-space:nowrap;transition:color .2s,background .2s}
-    #reportTabs .report-tab:hover{color:#fff;background:rgba(255,255,255,.06)}
-    #reportTabs .report-tab.on{color:#fff;background:rgba(144,202,249,.18)}
-    </style>
+    <!-- 스크립트: 원본 유지 (네비게이션은 nav.js가 자동 삽입, 별도 nav HTML 추가하지 않음) -->
+    <script src="/script.js"></script>
+    <script src="/js/nav.js"></script>
 
-    <!-- Report tabs lazy loader -->
+    <!-- 기존 보고서 탭 스크립트 (원본 그대로 유지, 디자인만 적용) -->
     <script>
     (function(){
       var tabs=document.getElementById('reportTabs');
@@ -203,7 +599,7 @@
           runScripts();
           return;
         }
-        container.innerHTML='<div style="text-align:center;padding:60px 0;color:#666;font-size:.9rem;">보고서 로딩 중...</div>';
+        container.innerHTML='<div style="text-align:center;padding:60px 0;color:#aaa;font-size:.9rem;">보고서 로딩 중...</div>';
         fetch(fileMap[name])
           .then(function(r){return r.text();})
           .then(function(html){
@@ -214,7 +610,7 @@
             }
           })
           .catch(function(){
-            container.innerHTML='<p style="color:#f87171;text-align:center;">보고서를 불러오지 못했습니다.</p>';
+            container.innerHTML='<p style="color:#f87171;text-align:center;">보고서를 불러오지 못했습니다. ('+fileMap[name]+')</p>';
           });
       }
 
@@ -231,7 +627,6 @@
         if(t) loadTab(t.dataset.tab);
       });
 
-      /* 스크롤 시 기본 탭 로드 */
       var loaded=false;
       var observer=new IntersectionObserver(function(entries){
         if(entries[0].isIntersecting&&!loaded){
@@ -243,7 +638,5 @@
       observer.observe(container);
     })();
     </script>
-
-    <script src="script.js"></script>
-<script src="/js/nav.js"></script></body>
+</body>
 </html>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>OpenHash - 미리보기</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"><style>
 /* ============================================
    OpenHash 홈 페이지
@@ -600,9 +599,7 @@ a:focus-visible {
     .arch-arrow { transform: rotate(90deg); }
     .glossary-grid { grid-template-columns: 1fr; }
 }
-</style></head><body>
-<div id="main-nav-placeholder"></div>
-
+.nav{background:#1f2937;padding:.6rem 0;position:sticky;top:0;z-index:100}.nav-inner{max-width:960px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center}.logo{font-size:1.1rem;font-weight:700;color:white;text-decoration:none}.logo span{color:#d4a017}.nav-menu{display:flex;gap:.15rem;list-style:none}.nav-menu a{color:rgba(255,255,255,.6);padding:.4rem .6rem;border-radius:4px;font-size:.78rem;font-weight:500;text-decoration:none;transition:all .2s;white-space:nowrap}.nav-menu a:hover{color:white;background:rgba(255,255,255,.08)}.nav-menu a.active{color:white;background:#1a3a6e}</style></head><body><nav class="nav"><div class="nav-inner"><a href="/" class="logo">◆ Open<span>Hash</span></a><ul class="nav-menu"><li><a href="/" class="active">홈</a></li><li><a href="/gopang/">고팡</a></li><li><a href="/principle/">원리</a></li><li><a href="/decentralization/">탈중앙화</a></li><li><a href="/agent-web/">새로운 웹</a></li><li><a href="/currency/">화폐</a></li><li><a href="/practical/">실용</a></li><li><a href="/technology/">기술</a></li><li><a href="/simulation/">시뮬레이션</a></li><li><a href="/tests/">테스트</a></li></ul></div></nav>
     <!-- ====== Header ====== -->
     <section class="hero">
         <div class="container">

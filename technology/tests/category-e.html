@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E. 하향식 검증 테스트 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 15px; line-height: 1.6; color: #212529; background: #f8f9fa; margin: 0; }
+    .page-header { background: #1a3a6e; border-bottom: 3px solid #d4a017; }
+    .page-header .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .page-header .logo { color: #ffffff; font-size: 18px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .page-header .nav-menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+    .page-header .nav-menu a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 4px; }
+    .page-header .nav-menu a:hover, .page-header .nav-menu a.active { background: rgba(255,255,255,0.15); color: #ffffff; }
+    .title-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; padding: 24px 0; }
+    .title-section .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .breadcrumb { font-size: 13px; color: #6c757d; margin-bottom: 12px; }
+    .breadcrumb a { color: #1a3a6e; text-decoration: none; }
+    .page-title { font-size: 26px; font-weight: 700; color: #212529; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; }
+    .category-badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a3a6e; color: #ffffff; font-size: 16px; font-weight: 700; border-radius: 4px; }
+    .page-subtitle { font-size: 14px; color: #6c757d; margin: 0; }
+    .summary-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; }
+    .summary-table { max-width: 1200px; margin: 0 auto; display: flex; border-left: 1px solid #e5e8eb; }
+    .summary-cell { flex: 1; padding: 16px 24px; text-align: center; border-right: 1px solid #e5e8eb; }
+    .summary-label { font-size: 12px; color: #868e96; text-transform: uppercase; margin-bottom: 4px; }
+    .summary-value { font-size: 18px; font-weight: 600; color: #212529; }
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    .section { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 6px; margin-bottom: 24px; }
+    .section-header { padding: 20px 24px; border-bottom: 1px solid #e5e8eb; }
+    .section-title { font-size: 16px; font-weight: 600; color: #212529; margin: 0; }
+    .section-body { padding: 24px; }
+    .section-description { font-size: 14px; color: #6c757d; line-height: 1.7; margin: 0 0 24px 0; }
+    .verify-diagram { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; background: #f8f9fa; border-radius: 4px; margin: 16px 0; }
+    .verify-layer { padding: 10px 32px; border-radius: 4px; font-weight: 600; font-size: 13px; }
+    .verify-layer.l4 { background: #fff5f5; border: 1px solid #ffc9c9; color: #c92a2a; }
+    .verify-layer.l3 { background: #fff9db; border: 1px solid #ffec99; color: #e67700; }
+    .verify-layer.l2 { background: #d3f9d8; border: 1px solid #8ce99a; color: #2f9e44; }
+    .verify-layer.l1 { background: #e7f5ff; border: 1px solid #74c0fc; color: #1971c2; }
+    .verify-arrow { color: #868e96; font-size: 12px; }
+    .btn { display: inline-flex; align-items: center; font-family: inherit; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; }
+    .btn-primary { background: #1a3a6e; color: #ffffff; }
+    .btn-sm { font-size: 13px; padding: 4px 12px; }
+    .btn-run { background: #ffffff; color: #6c757d; border-color: #d0d7de; }
+    .test-list { display: flex; flex-direction: column; gap: 8px; }
+    .test-item { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .test-item.open { border-color: #d0d7de; }
+    .test-item-header { display: flex; align-items: center; padding: 16px 20px; cursor: pointer; gap: 16px; }
+    .test-item-header:hover { background: #f8f9fa; }
+    .test-item.open .test-item-header { border-bottom: 1px solid #e5e8eb; }
+    .test-id { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #1a3a6e; min-width: 48px; }
+    .test-name { flex: 1; font-size: 14px; font-weight: 500; color: #212529; }
+    .importance-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+    .importance-badge.critical { background: #fff5f5; color: #c92a2a; border: 1px solid #ffc9c9; }
+    .importance-badge.high { background: #fff9db; color: #e67700; border: 1px solid #ffec99; }
+    .importance-badge.medium { background: #e7f5ff; color: #1971c2; border: 1px solid #a5d8ff; }
+    .test-status { font-size: 13px; font-weight: 500; min-width: 70px; text-align: right; }
+    .test-status.pass { color: #0d6832; }
+    .test-status.fail { color: #c92a2a; }
+    .test-status.running { color: #1971c2; }
+    .toggle-icon { color: #868e96; font-size: 12px; transition: transform 0.2s; }
+    .test-item.open .toggle-icon { transform: rotate(180deg); }
+    .test-item-body { display: none; padding: 20px; }
+    .test-item.open .test-item-body { display: block; }
+    .test-field { margin-bottom: 20px; }
+    .test-field:last-child { margin-bottom: 0; }
+    .test-field-label { font-size: 12px; font-weight: 600; color: #6c757d; text-transform: uppercase; margin-bottom: 8px; }
+    .test-field-value { font-size: 14px; color: #212529; line-height: 1.6; }
+    .api-spec { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .api-row { display: flex; border-bottom: 1px solid #e5e8eb; }
+    .api-row:last-child { border-bottom: none; }
+    .api-label { width: 100px; padding: 12px 16px; background: #f1f3f5; font-size: 12px; font-weight: 500; color: #6c757d; border-right: 1px solid #e5e8eb; }
+    .api-value { flex: 1; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #212529; word-break: break-all; }
+    .code-block { position: relative; background: #f1f3f5; border: 1px solid #e5e8eb; border-radius: 4px; padding: 16px 70px 16px 16px; }
+    .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #212529; white-space: pre-wrap; word-break: break-all; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: #ffffff; border: 1px solid #e5e8eb; border-radius: 2px; padding: 4px 8px; font-size: 11px; color: #6c757d; cursor: pointer; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #e5e8eb; }
+    .data-table th { background: #f1f3f5; color: #6c757d; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; font-size: 12px; text-transform: uppercase; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .criteria-list { list-style: none; padding: 0; margin: 0; }
+    .criteria-list li { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 13px; }
+    .criteria-list li::before { content: '✓'; color: #0d6832; font-weight: 600; }
+    .criteria-list code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .result-container { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .result-placeholder { padding: 32px; text-align: center; color: #868e96; font-size: 13px; }
+    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .result-header.pass { background: #d3f9d8; }
+    .result-header.fail { background: #ffe3e3; }
+    .result-badge { font-size: 13px; font-weight: 600; }
+    .result-header.pass .result-badge { color: #0d6832; }
+    .result-header.fail .result-badge { color: #c92a2a; }
+    .result-time { font-size: 12px; color: #868e96; font-family: 'JetBrains Mono', monospace; }
+    .result-json { padding: 16px; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; max-height: 300px; overflow-y: auto; background: #ffffff; }
+    .result-error { padding: 16px; color: #c92a2a; font-size: 13px; }
+    .page-footer { background: #ffffff; border-top: 1px solid #e5e8eb; padding: 24px 0; margin-top: 32px; }
+    .page-footer .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; font-size: 13px; color: #868e96; }
+    .page-footer a { color: #1a3a6e; text-decoration: none; }
+    @media (max-width: 768px) { .summary-table { flex-direction: column; } .test-item-header { flex-wrap: wrap; } .test-name { width: 100%; order: 2; } }
+    </style>
+    
+    <link rel="stylesheet" href="/css/hero.css">
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+    <section class="title-section"><div class="container"><div class="breadcrumb"><a href="/tests/">테스트 센터</a> / E. 하향식 검증</div><h1 class="page-title"><span class="category-badge">E</span>하향식 검증 테스트</h1><p class="page-subtitle">모듈 310 - BLS 서명 + 머클 증명 (4개 테스트)</p></div></section>
+    <section class="summary-section"><div class="summary-table"><div class="summary-cell"><div class="summary-label">테스트 수</div><div class="summary-value">4개</div></div><div class="summary-cell"><div class="summary-label">관련 모듈</div><div class="summary-value">310</div></div><div class="summary-cell"><div class="summary-label">중요도</div><div class="summary-value">High</div></div><div class="summary-cell"><div class="summary-label">상태</div><div class="summary-value" id="categoryStatus">대기</div></div></div></section>
+    <main class="main-content">
+        <div class="section"><div class="section-header"><h2 class="section-title">개요</h2></div><div class="section-body">
+            <p class="section-description">하향식 검증(Top-Down Verification)은 상위 계층에서 하위 계층으로 거래의 유효성을 검증하는 방식입니다. BLS 집계 서명과 머클 증명을 사용합니다.</p>
+            <div class="verify-diagram">
+                <div class="verify-layer l4">L4 (국가)</div>
+                <div class="verify-arrow">↓ BLS 서명</div>
+                <div class="verify-layer l3">L3 (광역시도)</div>
+                <div class="verify-arrow">↓ 머클 증명</div>
+                <div class="verify-layer l2">L2 (시군구)</div>
+                <div class="verify-arrow">↓ 머클 증명</div>
+                <div class="verify-layer l1">L1 (읍면동)</div>
+            </div>
+            <div style="margin-top: 24px;"><button class="btn btn-primary" id="runAllCategoryTests">전체 테스트 실행 (E-01 ~ E-04)</button></div>
+        </div></div>
+        <div class="section"><div class="section-header"><h2 class="section-title">테스트 목록</h2></div><div class="section-body"><div class="test-list" id="testList"></div></div></div>
+    </main>
+    <footer class="page-footer"><div class="container">© 2026 OpenHash. <a href="/tests/">테스트 센터</a> | E. 하향식 검증 테스트 (4/64)</div></footer>
+    <script>
+    const OPENHASH_NODE = 'http://3.231.220.126';
+    const categoryTests = [
+        { id: 'E-01', name: '하향식 검증 L4→L3', purpose: 'Layer 4에서 Layer 3로의 하향식 검증', importance: 'high', description: 'BLS 집계 서명을 사용하여 상위 계층의 승인을 검증합니다.', endpoint: 'POST /verify/downstream', url: OPENHASH_NODE + ':5004/verify/downstream', curl: 'curl -X POST http://3.231.220.126:5004/verify/downstream \\\n  -H "Content-Type: application/json" \\\n  -d \'{"fromLayer":4,"toLayer":3,"txHash":"test-hash-123"}\'', fields: [{ field: 'verified', type: 'boolean', desc: '검증 성공 여부' }, { field: 'path', type: 'array', desc: '검증 경로' }], criteria: ['verified === true'], method: 'POST', body: { fromLayer: 4, toLayer: 3, txHash: 'test-hash-123' } },
+        { id: 'E-02', name: '하향식 검증 전체 (L4→L1)', purpose: 'Layer 4에서 Layer 1까지 전체 계층 하향식 검증', importance: 'critical', description: 'L4 → L3 → L2 → L1 경로를 따라 머클 증명이 검증됩니다.', endpoint: 'POST /verify/all', url: OPENHASH_NODE + ':5004/verify/all', curl: 'curl -X POST http://3.231.220.126:5004/verify/all \\\n  -H "Content-Type: application/json" \\\n  -d \'{"txHash":"test-hash-456"}\'', fields: [{ field: 'verified', type: 'boolean', desc: '전체 검증 성공' }, { field: 'path', type: 'array', desc: '검증 경로 (4개)' }], criteria: ['verified === true', 'path.length === 4'], method: 'POST', body: { txHash: 'test-hash-456' } },
+        { id: 'E-03', name: '잘못된 계층 검증', purpose: '잘못된 계층 조합에서 오류 처리 확인', importance: 'medium', description: '잘못된 계층 조합(예: L2 → L4)을 요청했을 때 오류를 반환합니다.', endpoint: 'POST /verify/downstream', url: OPENHASH_NODE + ':5004/verify/downstream', curl: 'curl -X POST http://3.231.220.126:5004/verify/downstream \\\n  -H "Content-Type: application/json" \\\n  -d \'{"fromLayer":2,"toLayer":4,"txHash":"test-hash"}\'', fields: [{ field: 'error', type: 'string', desc: '오류 메시지' }], criteria: ['error 또는 verified === false'], method: 'POST', body: { fromLayer: 2, toLayer: 4, txHash: 'test-hash' }, expectError: true },
+        { id: 'E-04', name: '검증 시간 측정', purpose: '하향식 검증 소요 시간 측정', importance: 'medium', description: '전체 하향식 검증(L4 → L1)의 소요 시간을 측정합니다. 50ms 이내 목표.', endpoint: 'POST /verify/all', url: OPENHASH_NODE + ':5004/verify/all', curl: 'time curl -X POST http://3.231.220.126:5004/verify/all ...', fields: [{ field: 'responseTime', type: 'number', desc: '검증 소요 시간 (ms)' }], criteria: ['responseTime < 100ms'], method: 'POST', body: { txHash: 'perf-test-' + Date.now() } }
+    ];
+    function createTestCard(test) { return `<div class="test-item" data-test="${test.id}"><div class="test-item-header" onclick="toggleTest('${test.id}')"><span class="test-id">${test.id}</span><span class="test-name">${test.name}</span><span class="importance-badge ${test.importance}">${test.importance}</span><span class="test-status" id="status-${test.id}">—</span><button class="btn btn-sm btn-run" onclick="event.stopPropagation(); runSingleTest('${test.id}')">실행</button><span class="toggle-icon">▼</span></div><div class="test-item-body"><div class="test-field"><div class="test-field-label">목적</div><div class="test-field-value">${test.purpose}</div></div><div class="test-field"><div class="test-field-label">설명</div><div class="test-field-value">${test.description}</div></div><div class="test-field"><div class="test-field-label">API 명세</div><div class="api-spec"><div class="api-row"><span class="api-label">엔드포인트</span><code class="api-value">${test.endpoint}</code></div><div class="api-row"><span class="api-label">URL</span><code class="api-value">${test.url}</code></div></div></div><div class="test-field"><div class="test-field-label">cURL 명령어</div><div class="code-block"><code>${test.curl}</code><button class="copy-btn" onclick="copyCode(this)">복사</button></div></div><div class="test-field"><div class="test-field-label">응답 필드</div><table class="data-table"><thead><tr><th>필드</th><th>타입</th><th>설명</th></tr></thead><tbody>${test.fields.map(f=>`<tr><td><code>${f.field}</code></td><td>${f.type}</td><td>${f.desc}</td></tr>`).join('')}</tbody></table></div><div class="test-field"><div class="test-field-label">판정 기준</div><ul class="criteria-list">${test.criteria.map(c=>`<li><code>${c}</code></li>`).join('')}</ul></div><div class="test-field"><div class="test-field-label">실행 결과</div><div class="result-container" id="result-${test.id}"><p class="result-placeholder">테스트를 실행하면 결과가 여기에 표시됩니다.</p></div></div></div></div>`; }
+    function renderTests() { document.getElementById('testList').innerHTML = categoryTests.map(createTestCard).join(''); document.querySelector('.test-item').classList.add('open'); }
+    function toggleTest(testId) { document.querySelector(`[data-test="${testId}"]`).classList.toggle('open'); }
+    function copyCode(btn) { navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => { btn.textContent = '복사됨!'; setTimeout(() => btn.textContent = '복사', 2000); }); }
+    async function runSingleTest(testId) {
+        const test = categoryTests.find(t => t.id === testId); if (!test) return;
+        updateTestStatus(testId, 'running');
+        try {
+            const startTime = Date.now();
+            const response = await fetch(test.url, { method: test.method || 'GET', headers: { 'Content-Type': 'application/json' }, body: test.body ? JSON.stringify(test.body) : null });
+            const result = await response.json();
+            result.responseTime = Date.now() - startTime;
+            const passed = validateTest(test, result);
+            displayResult(testId, result, result.responseTime, passed); updateTestStatus(testId, passed ? 'pass' : 'fail');
+        } catch (error) { displayError(testId, error); updateTestStatus(testId, 'fail'); }
+        updateCategoryStatus();
+    }
+    function validateTest(test, result) {
+        switch(test.id) {
+            case 'E-01': return result.verified === true;
+            case 'E-02': return result.verified === true && result.path && result.path.length === 4;
+            case 'E-03': return result.error || result.verified === false;
+            case 'E-04': return result.responseTime < 100;
+            default: return true;
+        }
+    }
+    function updateTestStatus(testId, status) { const el = document.getElementById(`status-${testId}`); if (el) { el.className = 'test-status ' + status; el.textContent = status === 'running' ? '실행중...' : status === 'pass' ? '✓ PASS' : status === 'fail' ? '✗ FAIL' : '—'; } }
+    function displayResult(testId, result, elapsed, passed) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header ${passed ? 'pass' : 'fail'}"><span class="result-badge">${passed ? '✓ PASS' : '✗ FAIL'}</span><span class="result-time">${elapsed}ms</span></div><pre class="result-json">${JSON.stringify(result, null, 2)}</pre>`; }
+    function displayError(testId, error) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header fail"><span class="result-badge">✗ FAIL</span></div><div class="result-error"><strong>Error:</strong> ${error.message}</div>`; }
+    function updateCategoryStatus() { let pass = 0, fail = 0; document.querySelectorAll('.test-status').forEach(el => { if (el.classList.contains('pass')) pass++; if (el.classList.contains('fail')) fail++; }); const statusEl = document.getElementById('categoryStatus'); if (statusEl && (pass + fail) > 0) { statusEl.textContent = fail === 0 && pass === categoryTests.length ? '✓ 완료' : `${pass}/${pass + fail}`; if (fail === 0 && pass === categoryTests.length) statusEl.style.color = '#0d6832'; } }
+    async function runAllCategoryTests() { for (const test of categoryTests) { await runSingleTest(test.id); await new Promise(r => setTimeout(r, 300)); } }
+    document.addEventListener('DOMContentLoaded', () => { renderTests(); document.getElementById('runAllCategoryTests').addEventListener('click', runAllCategoryTests); });
+    </script>
+<script src="/js/nav.js"></script></body>
+</html>

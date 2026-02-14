@@ -316,7 +316,6 @@
     </style>
 </head>
 <body>
-<div id="main-nav-placeholder"></div>
     <!-- Hero Section -->
     <!-- EGCT Hero -->
         
@@ -542,13 +541,6 @@
                 el.querySelectorAll('script').forEach(function(o){
                     var n=document.createElement('script');n.textContent=o.textContent;
                     o.parentNode.replaceChild(n,o);
-                });
-                doc.querySelectorAll('body > script').forEach(function(s){
-                    if(s.textContent.trim()){
-                        var n=document.createElement('script');
-                        n.textContent=s.textContent;
-                        el.appendChild(n);
-                    }
                 });
             }
             function load(id){

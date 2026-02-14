@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H. 거래 처리 테스트 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 15px; line-height: 1.6; color: #212529; background: #f8f9fa; margin: 0; }
+    .page-header { background: #1a3a6e; border-bottom: 3px solid #d4a017; }
+    .page-header .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .page-header .logo { color: #ffffff; font-size: 18px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .page-header .nav-menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+    .page-header .nav-menu a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 4px; }
+    .page-header .nav-menu a:hover, .page-header .nav-menu a.active { background: rgba(255,255,255,0.15); color: #ffffff; }
+    .title-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; padding: 24px 0; }
+    .title-section .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .breadcrumb { font-size: 13px; color: #6c757d; margin-bottom: 12px; }
+    .breadcrumb a { color: #1a3a6e; text-decoration: none; }
+    .page-title { font-size: 26px; font-weight: 700; color: #212529; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; }
+    .category-badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a3a6e; color: #ffffff; font-size: 16px; font-weight: 700; border-radius: 4px; }
+    .page-subtitle { font-size: 14px; color: #6c757d; margin: 0; }
+    .summary-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; }
+    .summary-table { max-width: 1200px; margin: 0 auto; display: flex; border-left: 1px solid #e5e8eb; }
+    .summary-cell { flex: 1; padding: 16px 24px; text-align: center; border-right: 1px solid #e5e8eb; }
+    .summary-label { font-size: 12px; color: #868e96; text-transform: uppercase; margin-bottom: 4px; }
+    .summary-value { font-size: 18px; font-weight: 600; color: #212529; }
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    .section { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 6px; margin-bottom: 24px; }
+    .section-header { padding: 20px 24px; border-bottom: 1px solid #e5e8eb; }
+    .section-title { font-size: 16px; font-weight: 600; color: #212529; margin: 0; }
+    .section-body { padding: 24px; }
+    .section-description { font-size: 14px; color: #6c757d; line-height: 1.7; margin: 0 0 24px 0; }
+    .tx-flow { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: #f8f9fa; border-radius: 4px; margin: 16px 0; flex-wrap: wrap; }
+    .tx-state { padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: 600; text-align: center; }
+    .tx-state.pending { background: #fff9db; color: #e67700; border: 1px solid #ffec99; }
+    .tx-state.confirmed { background: #e7f5ff; color: #1971c2; border: 1px solid #a5d8ff; }
+    .tx-state.finalized { background: #d3f9d8; color: #2f9e44; border: 1px solid #8ce99a; }
+    .tx-arrow { color: #868e96; font-size: 16px; }
+    .btn { display: inline-flex; align-items: center; font-family: inherit; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; }
+    .btn-primary { background: #1a3a6e; color: #ffffff; }
+    .btn-sm { font-size: 13px; padding: 4px 12px; }
+    .btn-run { background: #ffffff; color: #6c757d; border-color: #d0d7de; }
+    .test-list { display: flex; flex-direction: column; gap: 8px; }
+    .test-item { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .test-item.open { border-color: #d0d7de; }
+    .test-item-header { display: flex; align-items: center; padding: 16px 20px; cursor: pointer; gap: 16px; }
+    .test-item-header:hover { background: #f8f9fa; }
+    .test-item.open .test-item-header { border-bottom: 1px solid #e5e8eb; }
+    .test-id { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #1a3a6e; min-width: 48px; }
+    .test-name { flex: 1; font-size: 14px; font-weight: 500; color: #212529; }
+    .importance-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+    .importance-badge.critical { background: #fff5f5; color: #c92a2a; border: 1px solid #ffc9c9; }
+    .importance-badge.high { background: #fff9db; color: #e67700; border: 1px solid #ffec99; }
+    .importance-badge.medium { background: #e7f5ff; color: #1971c2; border: 1px solid #a5d8ff; }
+    .test-status { font-size: 13px; font-weight: 500; min-width: 70px; text-align: right; }
+    .test-status.pass { color: #0d6832; }
+    .test-status.fail { color: #c92a2a; }
+    .test-status.running { color: #1971c2; }
+    .toggle-icon { color: #868e96; font-size: 12px; transition: transform 0.2s; }
+    .test-item.open .toggle-icon { transform: rotate(180deg); }
+    .test-item-body { display: none; padding: 20px; }
+    .test-item.open .test-item-body { display: block; }
+    .test-field { margin-bottom: 20px; }
+    .test-field:last-child { margin-bottom: 0; }
+    .test-field-label { font-size: 12px; font-weight: 600; color: #6c757d; text-transform: uppercase; margin-bottom: 8px; }
+    .test-field-value { font-size: 14px; color: #212529; line-height: 1.6; }
+    .api-spec { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .api-row { display: flex; border-bottom: 1px solid #e5e8eb; }
+    .api-row:last-child { border-bottom: none; }
+    .api-label { width: 100px; padding: 12px 16px; background: #f1f3f5; font-size: 12px; font-weight: 500; color: #6c757d; border-right: 1px solid #e5e8eb; }
+    .api-value { flex: 1; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #212529; word-break: break-all; }
+    .code-block { position: relative; background: #f1f3f5; border: 1px solid #e5e8eb; border-radius: 4px; padding: 16px 70px 16px 16px; }
+    .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #212529; white-space: pre-wrap; word-break: break-all; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: #ffffff; border: 1px solid #e5e8eb; border-radius: 2px; padding: 4px 8px; font-size: 11px; color: #6c757d; cursor: pointer; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #e5e8eb; }
+    .data-table th { background: #f1f3f5; color: #6c757d; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; font-size: 12px; text-transform: uppercase; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .criteria-list { list-style: none; padding: 0; margin: 0; }
+    .criteria-list li { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 13px; }
+    .criteria-list li::before { content: '✓'; color: #0d6832; font-weight: 600; }
+    .criteria-list code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .result-container { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .result-placeholder { padding: 32px; text-align: center; color: #868e96; font-size: 13px; }
+    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .result-header.pass { background: #d3f9d8; }
+    .result-header.fail { background: #ffe3e3; }
+    .result-badge { font-size: 13px; font-weight: 600; }
+    .result-header.pass .result-badge { color: #0d6832; }
+    .result-header.fail .result-badge { color: #c92a2a; }
+    .result-time { font-size: 12px; color: #868e96; font-family: 'JetBrains Mono', monospace; }
+    .result-json { padding: 16px; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; max-height: 300px; overflow-y: auto; background: #ffffff; }
+    .result-error { padding: 16px; color: #c92a2a; font-size: 13px; }
+    .page-footer { background: #ffffff; border-top: 1px solid #e5e8eb; padding: 24px 0; margin-top: 32px; }
+    .page-footer .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; font-size: 13px; color: #868e96; }
+    .page-footer a { color: #1a3a6e; text-decoration: none; }
+    @media (max-width: 768px) { .summary-table { flex-direction: column; } .tx-flow { flex-direction: column; } .tx-arrow { transform: rotate(90deg); } .test-item-header { flex-wrap: wrap; } .test-name { width: 100%; order: 2; } }
+    </style>
+    
+    <link rel="stylesheet" href="/css/hero.css">
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+    <section class="title-section"><div class="container"><div class="breadcrumb"><a href="/tests/">테스트 센터</a> / H. 거래 처리</div><h1 class="page-title"><span class="category-badge">H</span>거래 처리 테스트</h1><p class="page-subtitle">거래 생성, 조회, 이력, 전파 (6개 테스트)</p></div></section>
+    <section class="summary-section"><div class="summary-table"><div class="summary-cell"><div class="summary-label">테스트 수</div><div class="summary-value">6개</div></div><div class="summary-cell"><div class="summary-label">관련 모듈</div><div class="summary-value">-</div></div><div class="summary-cell"><div class="summary-label">중요도</div><div class="summary-value">Critical</div></div><div class="summary-cell"><div class="summary-label">상태</div><div class="summary-value" id="categoryStatus">대기</div></div></div></section>
+    <main class="main-content">
+        <div class="section"><div class="section-header"><h2 class="section-title">개요</h2></div><div class="section-body">
+            <p class="section-description">거래 처리는 OpenHash의 핵심 기능입니다. 거래는 생성 → 검증 → 확정 → 전파의 단계를 거칩니다.</p>
+            <div class="tx-flow">
+                <div class="tx-state pending">Pending<br><small>대기</small></div>
+                <span class="tx-arrow">→</span>
+                <div class="tx-state confirmed">Confirmed<br><small>확정</small></div>
+                <span class="tx-arrow">→</span>
+                <div class="tx-state finalized">Finalized<br><small>완료</small></div>
+            </div>
+            <div style="margin-top: 24px;"><button class="btn btn-primary" id="runAllCategoryTests">전체 테스트 실행 (H-01 ~ H-06)</button></div>
+        </div></div>
+        <div class="section"><div class="section-header"><h2 class="section-title">테스트 목록</h2></div><div class="section-body"><div class="test-list" id="testList"></div></div></div>
+    </main>
+    <footer class="page-footer"><div class="container">© 2026 OpenHash. <a href="/tests/">테스트 센터</a> | H. 거래 처리 테스트 (6/64)</div></footer>
+    <script>
+    const OPENHASH_NODE = 'http://3.231.220.126';
+    const categoryTests = [
+        { id: 'H-01', name: '정상 거래 생성', purpose: '새로운 거래를 생성하고 txHash를 받음', importance: 'critical', description: '송신자에서 수신자로 금액을 전송하는 거래를 생성합니다.', endpoint: 'POST /transaction', url: OPENHASH_NODE + ':5004/transaction', curl: 'curl -X POST http://3.231.220.126:5004/transaction \\\n  -H "Content-Type: application/json" \\\n  -d \'{"from":"user_A","to":"user_B","amount":100}\'', fields: [{ field: 'txHash', type: 'string', desc: '거래 해시 (64자)' }, { field: 'status', type: 'string', desc: '거래 상태 (pending)' }], criteria: ['txHash가 존재', 'txHash.length === 64'], method: 'POST', body: { from: 'user_A', to: 'user_B', amount: 100 } },
+        { id: 'H-02', name: '거래 상태 조회', purpose: '특정 거래의 현재 상태 조회', importance: 'high', description: '거래 해시로 해당 거래의 현재 상태를 조회합니다.', endpoint: 'GET /transaction/:hash', url: OPENHASH_NODE + ':5004/transaction/test-hash-123', curl: 'curl http://3.231.220.126:5004/transaction/test-hash-123', fields: [{ field: 'txHash', type: 'string', desc: '거래 해시' }, { field: 'status', type: 'string', desc: '상태 (pending/confirmed/finalized)' }, { field: 'timestamp', type: 'number', desc: '생성 시간' }], criteria: ['status가 유효한 값'] },
+        { id: 'H-03', name: '거래 이력 조회', purpose: '특정 주소의 거래 이력 조회', importance: 'high', description: '특정 주소가 관련된 모든 거래 이력을 조회합니다.', endpoint: 'GET /transaction/history/:address', url: OPENHASH_NODE + ':5004/transaction/history/user_A', curl: 'curl http://3.231.220.126:5004/transaction/history/user_A', fields: [{ field: 'transactions', type: 'array', desc: '거래 목록' }, { field: 'count', type: 'number', desc: '총 거래 수' }], criteria: ['transactions가 배열'] },
+        { id: 'H-04', name: '거래 해시 검증', purpose: '거래 해시의 유효성 검증', importance: 'medium', description: '거래 데이터로부터 생성된 해시가 올바른지 검증합니다.', endpoint: 'GET /transaction/verify/:hash', url: OPENHASH_NODE + ':5004/transaction/verify/test-hash-123', curl: 'curl http://3.231.220.126:5004/transaction/verify/test-hash-123', fields: [{ field: 'valid', type: 'boolean', desc: '해시 유효성' }, { field: 'hashMatch', type: 'boolean', desc: '해시 일치 여부' }], criteria: ['hashMatch === true'] },
+        { id: 'H-05', name: '대량 거래 테스트', purpose: '10건의 거래를 연속으로 생성', importance: 'high', description: '성능 테스트를 위해 10건의 거래를 연속으로 생성합니다.', endpoint: 'POST /transaction (10회)', url: OPENHASH_NODE + ':5004/transaction', curl: 'for i in {1..10}; do curl -X POST ... done', fields: [{ field: 'processed', type: 'number', desc: '처리된 거래 수' }, { field: 'failed', type: 'number', desc: '실패한 거래 수' }], criteria: ['processed === 10'], method: 'POST', body: { from: 'user_A', to: 'user_B', amount: 10 }, repeatCount: 10 },
+        { id: 'H-06', name: '계층간 거래 전파', purpose: '거래가 상위 계층으로 전파되는지 확인', importance: 'high', description: 'Layer 1에서 생성된 거래가 Layer 2, 3, 4로 전파됩니다.', endpoint: 'GET /transaction/propagation/:hash', url: OPENHASH_NODE + ':5004/transaction/propagation/test-hash-123', curl: 'curl http://3.231.220.126:5004/transaction/propagation/test-hash-123', fields: [{ field: 'propagated', type: 'boolean', desc: '전파 완료 여부' }, { field: 'layers', type: 'array', desc: '전파된 계층 목록' }], criteria: ['propagated === true'] }
+    ];
+    function createTestCard(test) { return `<div class="test-item" data-test="${test.id}"><div class="test-item-header" onclick="toggleTest('${test.id}')"><span class="test-id">${test.id}</span><span class="test-name">${test.name}</span><span class="importance-badge ${test.importance}">${test.importance}</span><span class="test-status" id="status-${test.id}">—</span><button class="btn btn-sm btn-run" onclick="event.stopPropagation(); runSingleTest('${test.id}')">실행</button><span class="toggle-icon">▼</span></div><div class="test-item-body"><div class="test-field"><div class="test-field-label">목적</div><div class="test-field-value">${test.purpose}</div></div><div class="test-field"><div class="test-field-label">설명</div><div class="test-field-value">${test.description}</div></div><div class="test-field"><div class="test-field-label">API 명세</div><div class="api-spec"><div class="api-row"><span class="api-label">엔드포인트</span><code class="api-value">${test.endpoint}</code></div><div class="api-row"><span class="api-label">URL</span><code class="api-value">${test.url}</code></div></div></div><div class="test-field"><div class="test-field-label">cURL 명령어</div><div class="code-block"><code>${test.curl}</code><button class="copy-btn" onclick="copyCode(this)">복사</button></div></div><div class="test-field"><div class="test-field-label">응답 필드</div><table class="data-table"><thead><tr><th>필드</th><th>타입</th><th>설명</th></tr></thead><tbody>${test.fields.map(f=>`<tr><td><code>${f.field}</code></td><td>${f.type}</td><td>${f.desc}</td></tr>`).join('')}</tbody></table></div><div class="test-field"><div class="test-field-label">판정 기준</div><ul class="criteria-list">${test.criteria.map(c=>`<li><code>${c}</code></li>`).join('')}</ul></div><div class="test-field"><div class="test-field-label">실행 결과</div><div class="result-container" id="result-${test.id}"><p class="result-placeholder">테스트를 실행하면 결과가 여기에 표시됩니다.</p></div></div></div></div>`; }
+    function renderTests() { document.getElementById('testList').innerHTML = categoryTests.map(createTestCard).join(''); document.querySelector('.test-item').classList.add('open'); }
+    function toggleTest(testId) { document.querySelector(`[data-test="${testId}"]`).classList.toggle('open'); }
+    function copyCode(btn) { navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => { btn.textContent = '복사됨!'; setTimeout(() => btn.textContent = '복사', 2000); }); }
+    async function runSingleTest(testId) {
+        const test = categoryTests.find(t => t.id === testId); if (!test) return;
+        updateTestStatus(testId, 'running');
+        try {
+            const startTime = Date.now(); let result, passed;
+            if (test.repeatCount) {
+                let processed = 0, failed = 0;
+                for (let i = 0; i < test.repeatCount; i++) {
+                    try { await fetch(test.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({...test.body, amount: i + 1}) }); processed++; }
+                    catch { failed++; }
+                }
+                result = { processed, failed, total: test.repeatCount }; passed = processed === 10;
+            } else {
+                const response = await fetch(test.url, { method: test.method || 'GET', headers: { 'Content-Type': 'application/json' }, body: test.body ? JSON.stringify(test.body) : null });
+                result = await response.json(); passed = validateTest(test, result);
+            }
+            displayResult(testId, result, Date.now() - startTime, passed); updateTestStatus(testId, passed ? 'pass' : 'fail');
+        } catch (error) { displayError(testId, error); updateTestStatus(testId, 'fail'); }
+        updateCategoryStatus();
+    }
+    function validateTest(test, result) {
+        switch(test.id) {
+            case 'H-01': return result.txHash && result.txHash.length === 64;
+            case 'H-02': return ['pending', 'confirmed', 'finalized'].includes(result.status);
+            case 'H-03': return Array.isArray(result.transactions);
+            case 'H-04': return result.hashMatch === true;
+            case 'H-06': return result.propagated === true;
+            default: return true;
+        }
+    }
+    function updateTestStatus(testId, status) { const el = document.getElementById(`status-${testId}`); if (el) { el.className = 'test-status ' + status; el.textContent = status === 'running' ? '실행중...' : status === 'pass' ? '✓ PASS' : status === 'fail' ? '✗ FAIL' : '—'; } }
+    function displayResult(testId, result, elapsed, passed) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header ${passed ? 'pass' : 'fail'}"><span class="result-badge">${passed ? '✓ PASS' : '✗ FAIL'}</span><span class="result-time">${elapsed}ms</span></div><pre class="result-json">${JSON.stringify(result, null, 2)}</pre>`; }
+    function displayError(testId, error) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header fail"><span class="result-badge">✗ FAIL</span></div><div class="result-error"><strong>Error:</strong> ${error.message}</div>`; }
+    function updateCategoryStatus() { let pass = 0, fail = 0; document.querySelectorAll('.test-status').forEach(el => { if (el.classList.contains('pass')) pass++; if (el.classList.contains('fail')) fail++; }); const statusEl = document.getElementById('categoryStatus'); if (statusEl && (pass + fail) > 0) { statusEl.textContent = fail === 0 && pass === categoryTests.length ? '✓ 완료' : `${pass}/${pass + fail}`; if (fail === 0 && pass === categoryTests.length) statusEl.style.color = '#0d6832'; } }
+    async function runAllCategoryTests() { for (const test of categoryTests) { await runSingleTest(test.id); await new Promise(r => setTimeout(r, 300)); } }
+    document.addEventListener('DOMContentLoaded', () => { renderTests(); document.getElementById('runAllCategoryTests').addEventListener('click', runAllCategoryTests); });
+    </script>
+<script src="/js/nav.js"></script></body>
+</html>

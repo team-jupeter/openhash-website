@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPGA 금융 통합 기술 요약 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+.main-header {
+    background: var(--navy-dark);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.logo:hover {
+    color: var(--gold-light);
+}
+.main-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+.nav-link.active {
+    color: var(--gold);
+    background: rgba(212,160,23,0.1);
+}
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    .main-nav {
+        justify-content: center;
+    }
+    .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+}
+.data-table th, .data-table td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    word-break: keep-all;
+}
+.data-table thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border-bottom: none;
+}
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+}
+.role-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+.role-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+.role-card.role-fpga { border-left: 4px solid var(--accent-green); }
+.role-card.role-trust { border-left: 4px solid var(--accent-blue); }
+.role-card.role-ai { border-left: 4px solid var(--accent-purple); }
+.role-card.role-compliance { border-left: 4px solid var(--accent-red); }
+.role-card.role-quantum { border-left: 4px solid var(--accent-orange); }
+.role-header {
+    margin-bottom: 1rem;
+}
+.role-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+.role-human {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.role-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+</style>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-inner">
+        <a href="/" class="logo">◆ OpenHash</a>
+        <nav class="main-nav">
+            <a href="/" class="nav-link">홈</a>
+            <a href="/gopang" class="nav-link">고팡</a>
+            <a href="/full-employment" class="nav-link">완전 고용</a>
+            <a href="/autonomous" class="nav-link">자율 주행</a>
+            <a href="/technology" class="nav-link active">기술</a>
+            <a href="/automation" class="nav-link">자동화</a>
+            <a href="/new-web" class="nav-link">새로운 웹</a>
+            <a href="/currency" class="nav-link">화폐</a>
+            <a href="/gopang-ai" class="nav-link">고팡 AI 체험</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">특허 출원 · FPGA · 하이브리드 신뢰 시스템</div>
+        <h1 class="hero-title">FPGA 기반 금융 통합 <span class="gold">기술 요약</span></h1>
+    </div>
+</section>
+
+<div class="tab-section">
+    <div class="tab-nav">
+        <a href="/technology/fpga" class="tab-link active">FPGA 가속</a>
+        <a href="/technology/hybrid-trust" class="tab-link">하이브리드 신뢰</a>
+        <a href="/technology/ai" class="tab-link">AI 검증</a>
+        <a href="/technology/quantum" class="tab-link">양자 내성</a>
+        <a href="/technology/compliance" class="tab-link">규제 준수</a>
+    </div>
+</div>
+
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡 기술</strong> — FPGA·AI·하이브리드 신뢰 시스템의 혁신적 융합</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">기술 백서 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 1. FPGA 하드웨어 가속 시스템 -->
+<section class="section" id="fpga">
+    <div class="container">
+        <h2 class="sec-title">FPGA 하드웨어 가속 시스템</h2>
+        <p class="sec-lead">
+            Xilinx Versal ACAP VCK190 칩셋 기반, 동적 리소스 할당과 병렬 해시 처리로 금융 트랜잭션 성능을 혁신적으로 개선합니다.
+        </p>
+        <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+            <div style="font-weight: 700; margin-bottom: 0.8rem;">■ 적응형 가속 모듈 (112)</div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                - 899K 시스템 논리 셀, 확률적 계층 선택 알고리즘 254클록 사이클 완료<br>
+                - 8개 병렬 SHA-256 해시 프로세서 (115) → 7.3M TPS (AWS EC2 c7i-flex.large, 단순 해시 기준)<br>
+                - 계층형 신뢰도 계산 유닛 (113): 5차원 신뢰도 평가 엔진 + 100×100 공분산 행렬 처리 (마코위츠 최적화)
+            </div>
+        </div>
+        <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+            <div style="font-weight: 700; margin-bottom: 0.8rem;">■ 동적 리소스 할당 모듈 (114)</div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                - LUT/DSP/BRAM 사용량 실시간 모니터링, 10ms 주기 재할당<br>
+                - 사용률 >95% → 1.2배 증설, <60% → 0.8배 회수<br>
+                - 전력 소모: 18.2W (GPU 160.3W 대비 88.6% 절감)<br>
+                - AES-256 비트스트림 암호화, PUF 물리적 변조 탐지
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. 하이브리드 분산 신뢰 시스템 -->
+<section class="section surface" id="trust">
+    <div class="container">
+        <h2 class="sec-title">하이브리드 분산 신뢰 시스템</h2>
+        <p class="sec-lead">
+            오픈해시 기반 4계층 구조 + 전통적 DB·블록체인 호환성을 동시에 제공합니다.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div style="background: var(--bg-white); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+                <div style="font-weight: 700; color: var(--navy);">Layer 1 (읍면동)</div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-green);">3,551</div>
+                <div style="font-size: 0.85rem;">노드 · 지역 거래 70% 처리</div>
+            </div>
+            <div style="background: var(--bg-white); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+                <div style="font-weight: 700; color: var(--navy);">Layer 2 (시군구)</div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-blue);">226</div>
+                <div style="font-size: 0.85rem;">노드 · 광역 거래 20% 처리</div>
+            </div>
+            <div style="background: var(--bg-white); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+                <div style="font-weight: 700; color: var(--navy);">Layer 3 (광역시도)</div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-purple);">17</div>
+                <div style="font-size: 0.85rem;">노드 · 국가 거래 8% 처리</div>
+            </div>
+            <div style="background: var(--bg-white); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+                <div style="font-weight: 700; color: var(--navy);">Layer 4 (국가)</div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-red);">1</div>
+                <div style="font-size: 0.85rem;">노드 · 국제 거래 2% 처리</div>
+            </div>
+        </div>
+        <div style="background: var(--bg-white); border-left: 4px solid var(--accent-orange); padding: 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+            <div style="font-weight: 700; margin-bottom: 0.8rem;">■ 확률적 계층 선택 알고리즘</div>
+            <div style="font-size: 0.9rem;">
+                SHA-256(문서해시+타임스탬프+지역ID) → 상위 8바이트 mod 1000 → 0-999 균등분포 난수<br>
+                카이제곱 검증: χ² = 6.84 &lt; 7.815 → 편향 없음<br>
+                <strong>하이브리드 호환 모드:</strong> 오픈해시 우선, MySQL/PostgreSQL, 이더리움/비트코인 연동 가능
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. AI 기반 검증 시스템 -->
+<section class="section" id="ai">
+    <div class="container">
+        <h2 class="sec-title">AI 기반 완전 자율 검증 시스템</h2>
+        <p class="sec-lead">
+            경량화 DistilBERT 기반, 충동구매 방지·공정가격 보장·신용평가 통합 수행.
+        </p>
+        <div class="stat-cards" style="margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-value success">91.2%</div>
+                <div class="stat-label">AI 정확도 (실험실)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">80-85%</div>
+                <div class="stat-label">실운영 예상</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">10TB</div>
+                <div class="stat-label">학습 데이터</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">5M</div>
+                <div class="stat-label">거래 레코드</div>
+            </div>
+        </div>
+        <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 1.5rem;">
+            <div style="font-weight: 700;">DistilBERT 아키텍처</div>
+            <div>6개 Transformer 레이어, 768차원, 12 어텐션 헤드, 66M 파라미터 (BERT 대비 40% 경량)</div>
+            <div style="margin-top: 0.5rem;">INT8 양자화 → 추론 속도 2배, 배치 처리 32개, 추론 시간 50-200ms</div>
+        </div>
+        <div style="background: var(--bg-white); border-left: 4px solid var(--accent-red); padding: 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0;">
+            <div style="font-weight: 700;">멀티태스크 학습 엔진</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <div><strong>충동구매 방지</strong><br>구매의도 40% + 체류시간 30% + 반복패턴 30% → 위험도 산출, 쿨링오프 86400초</div>
+                <div><strong>공정가격 보장</strong><br>5개 쇼핑몰 동시 모니터링, LSTM 가격 분석, Z-score >2.5 이상가격 탐지</div>
+            </div>
+            <div style="margin-top: 1rem;"><strong>적대적 공격 방어:</strong> FGSM 90% 방어, PGD/C&W 탐지 및 무력화</div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. 글로벌 규제 자동 준수 시스템 -->
+<section class="section surface" id="compliance">
+    <div class="container">
+        <h2 class="sec-title">글로벌 규제 자동 준수 시스템</h2>
+        <p class="sec-lead">
+            주요 10개국 금융 규제 기관 RSS 실시간 모니터링, 5단계 긴급 대응 체계.
+        </p>
+        <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <span style="background: var(--navy); color: white; padding: 0.3rem 0.8rem; border-radius: var(--radius-sm);">SEC</span>
+                <span style="background: var(--navy); color: white; padding: 0.3rem 0.8rem; border-radius: var(--radius-sm);">EBA</span>
+                <span style="background: var(--navy); color: white; padding: 0.3rem 0.8rem; border-radius: var(--radius-sm);">FSA</span>
+                <span style="background: var(--navy); color: white; padding: 0.3rem 0.8rem; border-radius: var(--radius-sm);">MAS</span>
+                <span style="background: var(--navy); color: white; padding: 0.3rem 0.8rem; border-radius: var(--radius-sm);">FSC</span>
+            </div>
+            <div style="font-weight: 700; margin-bottom: 1rem;">5단계 긴급 대응 체계 (152)</div>
+            <div style="display: grid; grid-template-columns: repeat(5,1fr); gap: 0.8rem; font-size: 0.85rem;">
+                <div style="background: #ffebee; padding: 0.8rem; border-radius: var(--radius-sm);"><strong>Level1</strong><br>15분<br>서비스 중단, 자산 보호</div>
+                <div style="background: #fff3e0; padding: 0.8rem; border-radius: var(--radius-sm);"><strong>Level2</strong><br>1시간<br>KYC/AML 업데이트</div>
+                <div style="background: #fff8e1; padding: 0.8rem; border-radius: var(--radius-sm);"><strong>Level3</strong><br>6시간<br>세법 반영, 수수료 조정</div>
+                <div style="background: #e8f5e9; padding: 0.8rem; border-radius: var(--radius-sm);"><strong>Level4</strong><br>24시간<br>API 변경, 대규모 수정</div>
+                <div style="background: #e1f5fe; padding: 0.8rem; border-radius: var(--radius-sm);"><strong>Level5</strong><br>1주일<br>아키텍처 재설계</div>
+            </div>
+            <div style="margin-top: 1.5rem; font-size: 0.9rem;">
+                <strong>재해 복구:</strong> 4개 권역(북미·유럽·아태) 백업, 5단계 시나리오, 98% 복구 성공률
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. 양자 내성 전환 계획 -->
+<section class="section" id="quantum">
+    <div class="container">
+        <h2 class="sec-title">양자 내성 암호 전환 계획</h2>
+        <div style="background: linear-gradient(135deg, var(--navy-dark), var(--navy)); color: white; padding: 1.8rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div style="font-size: 1.1rem; font-weight: 700; color: var(--gold-light);">CRYSTALS-Dilithium + ECDSA 이중 서명</div>
+                <div style="background: rgba(255,255,255,0.2); padding: 0.4rem 1rem; border-radius: 20px;">2027-2029</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; text-align: center;">
+                <div><span style="font-size: 1.2rem; font-weight: 800;">2029-2030</span><br><span style="font-size: 0.85rem;">신규 거래 Dilithium 전환</span></div>
+                <div><span style="font-size: 1.2rem; font-weight: 800;">2030-2032</span><br><span style="font-size: 0.85rem;">점진적 전환, 처리량 10% 감소</span></div>
+                <div><span style="font-size: 1.2rem; font-weight: 800;">2032~</span><br><span style="font-size: 0.85rem;">완전 양자내성, 8% 성능 향상</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. 원자적 트랜잭션 및 이중 해시체인 -->
+<section class="section surface" id="atomic">
+    <div class="container">
+        <h2 class="sec-title">원자적 트랜잭션 & 이중 해시체인</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md);">
+                <div style="font-weight: 700; color: var(--accent-blue);">원자적 트랜잭션 5단계</div>
+                <ol style="margin-top: 1rem; line-height: 2;">
+                    <li>① 자산 잠금 (에스크로)</li>
+                    <li>② 암호학적 증명 (SHA-256)</li>
+                    <li>③ 머클 트리 검증</li>
+                    <li>④ 타임락 발행 (900초)</li>
+                    <li>⑤ 완결 / 롤백</li>
+                </ol>
+                <div style="margin-top: 1rem; font-size: 1.1rem; font-weight: 700; color: var(--accent-green);">3.2ms 완결</div>
+            </div>
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md);">
+                <div style="font-weight: 700; color: var(--accent-purple);">이중 해시체인 (162)</div>
+                <div style="margin-top: 1rem; font-family: monospace; background: #f5f5f5; padding: 0.8rem; border-radius: var(--radius-sm);">
+                    소비자 해시 = SHA-256(구매자ID + 상품ID + 금액 + 시간 + 판매자해시)<br>
+                    판매자 해시 = SHA-256(판매자ID + 상품ID + 금액 + 시간 + 구매자해시)
+                </div>
+                <div style="margin-top: 1rem;">상호 의존성 → 일방적 조작 불가, 개인 단말 분산 저장</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const tabLinks = document.querySelectorAll('.tab-link');
+    tabLinks.forEach(link => {
+        if (currentPath.includes('fpga')) {
+            if (link.getAttribute('href').includes('fpga')) link.classList.add('active');
+            else link.classList.remove('active');
+        }
+    });
+});
+</script>
+</body>
+</html>

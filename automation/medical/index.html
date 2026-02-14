@@ -1,0 +1,1283 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>의료 자동화 시스템 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+
+/* 고팡 배너 */
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+
+/* 탭 네비게이션 */
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+
+/* 상단 메인 메뉴 스타일 */
+.main-header {
+    background: var(--navy-dark);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.logo:hover {
+    color: var(--gold-light);
+}
+
+.main-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+.nav-link.active {
+    color: var(--gold);
+    background: rgba(212,160,23,0.1);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .main-nav {
+        justify-content: center;
+    }
+
+    .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Hero 섹션 */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* 컨텐츠 */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+
+/* 채팅 인터페이스 */
+.chat-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin: 2.5rem 0;
+}
+.chat-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+}
+.status-indicator.active { background: #4caf50; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.message {
+    max-width: 85%;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    position: relative;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    word-break: keep-all;
+}
+.message-left {
+    align-self: flex-start;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent-blue);
+    margin-right: auto;
+}
+.message-right {
+    align-self: flex-end;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    margin-left: auto;
+}
+.message-system {
+    align-self: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    max-width: 95%;
+    text-align: center;
+    font-style: italic;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+}
+.message-critical {
+    border-left: 4px solid var(--accent-red) !important;
+    background: #fff5f5 !important;
+}
+.message-warning {
+    border-left: 4px solid var(--accent-orange) !important;
+    background: #fff8e1 !important;
+}
+.message-success {
+    border-left: 4px solid var(--accent-green) !important;
+    background: #f1f8e9 !important;
+}
+
+/* 수정된 메시지 구조 - 대화자와 내용을 세로로 배치 */
+.message-sender {
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+    display: block;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed var(--border-light);
+}
+
+.message-content {
+    line-height: 1.7;
+    display: block;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    white-space: pre-line;
+}
+
+/* 긴 메시지에 대한 특별 스타일 */
+.message-content-long {
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-caption);
+    text-align: right;
+    margin-top: 0.5rem;
+    padding-top: 0.3rem;
+    border-top: 1px dotted var(--border-light);
+}
+
+/* 통계 카드 */
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+}
+
+/* 수정된 참여자 역할 카드 - row 방식으로 배치 (세로 나열) */
+.role-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+.role-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+.role-card.role-a { border-left: 4px solid var(--accent-green); }
+.role-card.role-b { border-left: 4px solid var(--accent-blue); }
+.role-card.role-c { border-left: 4px solid var(--accent-purple); }
+.role-card.role-d { border-left: 4px solid var(--accent-red); }
+.role-header {
+    margin-bottom: 1rem;
+}
+.role-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+.role-human {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.role-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* 비교 테이블 */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+}
+.data-table th, .data-table td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    word-break: keep-all;
+}
+.data-table thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border-bottom: none;
+}
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+
+/* Lazy Loading 탭 스타일 */
+.lazy-tabs {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    border-top: 2px solid var(--border-light);
+}
+
+.lazy-tab-nav {
+    display: flex;
+    background: var(--bg-white);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0;
+}
+
+.lazy-tab-button {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    border: none;
+    background: var(--bg-surface);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-bottom: 3px solid transparent;
+}
+
+.lazy-tab-button:hover {
+    background: var(--bg-elevated);
+    color: var(--navy);
+}
+
+.lazy-tab-button.active {
+    background: var(--bg-white);
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+}
+
+.lazy-tab-content {
+    background: var(--bg-white);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    min-height: 500px;
+    max-height: 800px;
+    overflow-y: auto;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--navy);
+}
+
+.loading-indicator i {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.loaded-content {
+    line-height: 1.6;
+}
+
+.loaded-content h2, .loaded-content h3, .loaded-content h4 {
+    color: var(--navy);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.loaded-content p {
+    margin-bottom: 1rem;
+}
+
+.loaded-content ul, .loaded-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.loaded-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+}
+
+.loaded-content table thead {
+    background: var(--navy);
+    color: white;
+}
+
+.loaded-content table th, .loaded-content table td {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.loaded-content .highlight-box {
+    background-color: rgba(26, 58, 110, 0.05);
+    padding: 1rem;
+    border-left: 4px solid var(--navy);
+    margin: 1rem 0;
+    border-radius: var(--radius-sm);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-messages { height: 400px; padding: 1rem; }
+    .message { max-width: 95%; }
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .message-content { word-break: break-word; }
+    
+    .lazy-tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .lazy-tab-content {
+        padding: 1rem;
+        max-height: 600px;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- 상단 메인 메뉴 -->
+<div id="main-nav-placeholder"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">체제 변혁: 심판관에서 도우미로의 완전한 전환</div>
+        <h1 class="hero-title">의료 서비스 <span class="gold">자동화</span> 시스템</h1>
+    </div>
+</section>
+
+<!-- 탭 네비게이션 -->
+<div class="tab-section">
+    <!-- 탭 네비게이션 (automation-nav.js) -->
+    <div class="tab-section">
+        <div id="automation-tab-container"></div>
+    </div>
+</div>
+
+<!-- 고팡 배너 -->
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡</strong> — OpenHash+AI 기반의 의료 서비스 자동화 시스템을 직접 경험해 보세요</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 의료 서비스의 역할 전환 섹션 -->
+<section class="section" id="role-transition">
+    <div class="container">
+        <h2 class="sec-title">의료 서비스의 역할 전환</h2>
+        <p class="sec-lead">
+            고팡 시스템에 의해, 의료 서비스는 기존의 수동적·반응적 진료에서 능동적·예방적 건강 관리로 전환합니다. 구체적으로, AI 에이전트들이 환자의 건강 데이터를 실시간 모니터링하고, 질병 발생 가능성을 조기에 예측하여 예방 조치를 권고합니다. 또한, 진단·처방·수술 계획 수립의 전 과정을 실시간으로 지원함으로써, 의료 비용을 50% 이상 줄이고, 진단과 치료 성공률을 99% 이상으로 높입니다. 무엇보다, 현재 수일에서 수주가 걸리는 진료 과정을 수분에서 수시간 안팎으로 단축합니다.
+        </p>
+    </div>
+</section>
+
+<!-- 시스템 구성 요소 섹션 추가 -->
+<section class="section surface" id="system-components">
+    <div class="container">
+        <h2 class="sec-title">시스템 구성 요소</h2>
+        <p class="sec-lead">
+            오픈소스 LLM을 기반으로 구축된 전문의 에이전트 시스템:
+        </p>
+
+        <div style="margin: 2rem 0;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        1. 전문 분야 의사 & 의료 평가 에이전트
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        내과, 외과, 정신과 등 각 의학 분야별로 Fine-tuning된 전문 분야 전공의 Agent와 건강보험평가 Agent를 생성합니다.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        2. 보건복지부 에이전트
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        병원, 의료 기관의 기능과 역할을 진단 중심에서 예방·관리 중심으로 전환하고, 전국 단위에서 일괄적으로 제어 및 관리할 전문 기관 Agent(보건복지부)를 생성합니다.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        3. AI 비서 에이전트
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        환자(개인과 가족)의 Medical Data를 포함하는 Private Data Vault를 관리하고, 사용자의 요구를 수행할 수 있는 전문 기관 Agent를 선별할 능력을 갖춘(Fine-tuning) "AI 비서 Agent"를 생성합니다. 이 예시에서는 보건복지부 Agent를 선택 및 호출합니다.
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-orange); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">
+                        4. Openhash 의료 네트워크 에이전트
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
+                        인구 각각의 Private Data Vault(PDV)에 저장된 의료 기록의 위변조 가능성을 원천 차단하는 Openhash 네트워크의 의료 기록을 안전하게 저장·관리·검증하는 Openhash 의료 Agent를 생성합니다.
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: var(--gold-light);">
+                    Global Openhash Medical Network
+                </div>
+                <div style="font-size: 0.9rem; line-height: 1.8;">
+                    Global Openhash Network는 모든 의료 기록의 진실성(True)과 프라이버시를 보장하는 세계 최초, 세계 유일의 데이터 무결성 시스템입니다. HIPAA, GDPR을 초월한 차세대 의료 데이터 보호 기술로, 모든 의료 기록의 변경 이력을 실시간 추적하고 검증합니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 2: 채팅 시뮬레이션 -->
+<section class="section surface" id="chat-simulation">
+    <div class="container">
+        <h2 class="sec-title">실시간 의료 진단 채팅 시뮬레이션</h2>
+        <p class="sec-lead">사용자의 AI 비서가 사용자의 요청을 수행할 외부 전문 기관 Agent(이 예시에서는 보건복지부 Agent)를 호출하고, 보건복지부 Agent는 사용자의 증상에 부합하는 전문의 Agent와 건강보험평가 Agent를 호출합니다. 이하, 환자와 의사 Agent 간의 상호 대화를 통해 진단과 치료 계획을 수립하고, 평가 Agent의 독립적 검증을 거친 후, 최종적인 치료 계획에 이르는 전 과정을 예시합니다.</p>
+
+        <!-- 채팅 인터페이스 -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div>의료 진단 자동화 채팅</div>
+                <div class="chat-status">
+                    <div class="status-indicator active"></div>
+                    <span>실시간 처리 중</span>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- 단계 1: 증상 설명 -->
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김영희
+                    </div>
+                    <div class="message-content">
+                        지난 3일간 지속되는 두통과 어지러움, 메스꺼움 증상이 있어. 머리 뒷부분과 관자놀이에서 심한 통증이 느껴지며, 빛과 소리에 예민해졌어. 약간의 시야 장애도 있는 것 같아.
+                    </div>
+                    <div class="message-time">14:02:15</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        흠...질병같네요. 보건복지부 Agent를 호출하겠습니다. <br>
+보건복지부 Agent의 요청으로, 귀하의 Private Data Vault(PDV)에서 과거 편두통 이력과 알레르기 정보를 인출하여 전달하였습니다.
+<br> 보건복지부 Agent가 귀하의 증상과 의료 기록을 분석한 뒤, <strong>신경과 의사 Agent와 내과 의사 Agent를 선정하고,</strong> 귀하의 증상 정보를 전달하였습니다
+                    </div>
+                    <div class="message-time">14:02:23</div>
+                </div>
+
+                <!-- 단계 2: 의사 에이전트 호출 -->
+                <div class="message message-system">
+                    [보건복지부 Agent가 신경과 의사 Agent와 내과 의사 Agent를 호출했습니다]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        신경과 의사 Agent
+                    </div>
+                    <div class="message-content">
+                        안녕하세요 김영희님, 보건복지부 Agent로부터 귀하의 증상 및 관련 데이터를 전달받았습니다. 분석한 결과 편두통 가능성이 높습니다. 추가적으로 혈압 관련 문제 가능성을 배제하기 위해 내과 평가도 함께 진행하겠습니다. 현재 증상이 긴장성 두통인지 편두통인지 정확히 구분하기 위해 몇 가지 추가 질문이 있습니다.
+                    </div>
+                    <div class="message-time">14:02:35</div>
+                </div>
+
+                <!-- 단계 3: 추가 진단 -->
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김영희
+                    </div>
+                    <div class="message-content">
+                        네, 질문해 주세요. 통증은 박동하는 느낌이고, 오른쪽 눈 주변이 특히 아픕니다. 가족력으로는 어머니가 편두통이 있었습니다.
+                    </div>
+                    <div class="message-time">14:03:05</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        신경과 의사 Agent
+                    </div>
+                    <div class="message-content">
+                        감사합니다. 가족력과 증상 특성을 고려할 때 편두통 가능성이 85% 이상입니다.
+                        <strong>ID-Migraine 진단 기준에 부합합니다:</strong>
+                        1. 두통 동안 메스꺼움/구토 (있음)
+                        2. 빛/소리 예민성 (있음)
+                        3. 기능 장애 (있음)
+
+                        긴급한 뇌졸중 징후는 없지만, 시야 장애가 있으므로 안과 검진도 권고합니다.
+                    </div>
+                    <div class="message-time">14:03:45</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        내과 의사 Agent
+                    </div>
+                    <div class="message-content">
+                        귀하의 AI 비서의 도움으로, 귀하의 일상과 업무를 기록한 PDV 데이터를 분석했습니다.
+                혈압은 정상 범위이며, 스트레스가 편두통의 주요 유발 요인으로 보입니다.<br>
+
+                        가까운 보건소에서 체온, 혈압, 심전도 등 일련의 항목을 검사하십시오.
+                        아무 보건소나 방문하여, 디지털 신분증을 제시하시면 직원들이 알아서 조치해 주실 것입니다.<br>
+
+                        [디지털 신분증에 보건소 검사 항목 및 검사 요청서 추가]<br>
+
+                        보건소의 검사 결과를 바탕으로, 치료 계획 보고서를 생성하였습니다.
+                        이 보고서는 귀하를 진료할 전문의(사람)에게 전달되어, 확진 과정을 거치게 됩니다.<br>
+
+                        <strong>내과 전문의 Agent의 치료 계획 보고서:</strong><br>
+                        1. 급성기 치료: 트립탄 계열 약물 (수마트립탄 50mg)<br>
+                        2. 예방 치료: 프로프라놀롤 40mg 1일 2회<br>
+                        3. 생활 습관: 규칙적인 수면, 스트레스 관리, 유발 음식 피하기<br><br>
+
+                        전문의(사람)에게 보고서를 전달하기 전에, 건강보험평가 Agent의 검토를 받겠습니다. 스마트워치 데이터를 공유해 주시겠습니까?
+                    </div>
+                    <div class="message-time">14:05:10</div>
+                </div>
+
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김영희
+                    </div>
+                    <div class="message-content">
+                        스마트워치 데이터를 공유합니다: 심박수 평균 72, 수면 패턴 불규칙, 스트레스 지수 높음.
+                    </div>
+                    <div class="message-time">14:04:50</div>
+                </div>
+
+                <div class="message message-system">
+                    [스마트워치 의료 데이터 공유 및 분석]
+                </div>
+
+                <!-- 단계 4: 건강보험평가 Agent 검토 -->
+                <div class="message message-right message-critical">
+                    <div class="message-sender">
+                         평가 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>[치료 계획 검토 결과 - 수정 필요 사항]</strong><br>
+
+                        1. <strong>약물 상호작용 문제:</strong><br>
+                        환자의 PDV에 저장된 Medical Data에 따르면 현재 SSRI(설트랄린) 복용 중입니다.<br>
+                        트립탄과 SSRI 병용 시 세로토닌 증후군 위험이 있습니다.<br>
+
+                        2. <strong>대체 약물 제안:</strong><br>
+                        NSAID 계열(이부프로펜 400mg)을 1차 선택으로 제안합니다.<br>
+
+                        3. <strong>추가 검사 권고:</strong><br>
+                        시야 장애가 있으므로 안저 검사와 시야 검사 필요.<br><br>
+
+                        4. <strong>스트레스 관리:</strong><br>
+                        인지행동치료(CBT) 또는 마음챙김 명상 프로그램을 병행 권고.
+                    </div>
+                    <div class="message-time">14:07:30</div>
+                </div>
+
+                <div class="message message-system">
+                    [평가 Agent의 수정 사항 반영]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        신경과 의사 Agent
+                    </div>
+                    <div class="message-content">
+                        평가 Agent의 지적을 확인했습니다. 김영희님, 다음과 같이 치료 계획 초안을 수정하여, 귀하를 진료할 전문의(사람)에게 전달하겠습니다:
+
+                        1. <strong>급성기 치료:</strong> 이부프로펜 400mg (필요시 6시간 간격)
+                        2. <strong>예방 치료:</strong> 프로프라놀롤은 유지 (SSRI와 상호작용 없음)
+                        3. <strong>추가 검사:</strong> 안과 검진 예약 (오늘 중으로)
+                        4. <strong>비약물 치료:</strong> 스트레스 관리 프로그램 추천
+
+                        신경과 및 안과 예약을 도와드리겠습니다.
+                    </div>
+                    <div class="message-time">14:08:45</div>
+                </div>
+
+                <div class="message message-left">
+                    <div class="message-sender">
+                        김영희
+                    </div>
+                    <div class="message-content">
+                        가까운 신경과와 안과 의원을 추천해 주세요. 특히 스트레스 관리 프로그램에 관심이 있습니다. 또한, 이 치료 계획을 주치의에게 공유해 주실 수 있나요?
+                    </div>
+                    <div class="message-time">14:09:20</div>
+                </div>
+
+                <div class="message message-system">
+                    [신경과 및 안과 예약 진행] 전문의 Agent의 진단 보고서를 보건복지부 Agent에게 전달하였습니다.
+                </div>
+
+                <div class="message message-right message-success">
+                    <div class="message-sender">
+                        보건복지부 Agent
+                    </div>
+                    <div class="message-content">
+                        <strong>[진료 예약 결과]</strong> 신경과 및 안과 예약: 서울안과병원, 2026년 2월 10일 15:30 (확정). 전문의 Agent의 진단 보고서를 이 병원의 의료진에게 전달하였습니다.
+                    </div>
+                    <div class="message-time">14:10:10</div>
+                </div>
+
+                <!-- 단계 5: 최종 처리 -->
+                <div class="message message-system">
+                    [전문의(사람) 진료 및 처방전 발급 완료]
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        <strong>[진료 완료]</strong> 전문의(사람)로부터 처방전을 발급받아, 약품을 수령하였습니다.
+
+                        1. <strong>처방전:</strong> 이부프로펜 400mg 10정 (발급 완료)
+                        2. <strong>스트레스 관리 프로그램:</strong> "마음챙김 기반 스트레스 관리" (온라인, 시작일: 2월 12일)
+                        3. <strong>주치의 공유:</strong> 박민수 의사에게 전체 치료 계획 공유 완료
+
+                        모든 정보를 귀하의 PDV에 저장했습니다.
+                    </div>
+                    <div class="message-time">14:11:15</div>
+                </div>
+
+                <div class="message message-right">
+                    <div class="message-sender">
+                        AI 비서
+                    </div>
+                    <div class="message-content">
+                        <strong>[처리 요약]</strong><br><br>
+
+                        - 진료 시간: 10분<br>
+                        - 비용과 시간: 기존 대비 90% 절감<br>
+                        - AI 에이전트 협업: AI 비서, 보건복지부 Agent, 신경과 의사 Agent, 내과 의사 Agent, 평가 Agent<br>
+                        - 사람들 간의 대면 의사 소통: 2회 (신경과 및 안과 진료)<br><br>
+
+                        <strong>귀하의 진료 기록을 익명으로, Openhash Medical Network에 기록합니다(Layer 5)</strong><br>
+                        이 기록은 귀하의 승인 하에 전 세계 의료 기관에서 안전하게 공유될 수 있습니다.<br><br>
+
+                        빠른 회복을 기원합니다!
+                    </div>
+                    <div class="message-time">14:11:45</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 3: 참여자 역할 -->
+<section class="section" id="roles">
+    <div class="container">
+        <h2 class="sec-title">협업 구조: 상호 독립적 AI 에이전트 시스템</h2>
+        <p class="sec-lead">상호 독립적 AI 에이전트들이 사람들 간의 소통 및 업무 처리를 90% 이상 대행합니다. 건강보험평가 Agent의 독립성으로 편향 없는 검증이 가능하며, 환자와 의사 Agent들 간의 대화를 통해 정확한 진단과 치료 계획을 수립합니다.</p>
+
+        <div class="role-grid">
+            <div class="role-card role-a">
+                <div class="role-header">
+                    <div class="role-name">AI 비서</div>
+                    <div class="role-human">(에이전트 조정자)</div>
+                </div>
+                <div class="role-desc">환자의 개인 비서로서 요청에 따라, 적절한 외부 기관 Agent를 호출합니다. 이 경우에는 보건복지부 Agent입니다. 의사 Agent와 평가 Agent를 호출합니다. 환자의 Medical Data Vault를 관리하며, 과거 의료 기록을 활용한 맞춤형 서비스를 제공합니다. 의료 기관 예약과 처방 관리도 담당합니다.</div>
+            </div>
+            <div class="role-card role-b">
+                <div class="role-header">
+                    <div class="role-name">전문 분야별 의사 Agent</div>
+                    <div class="role-human">(전문 분야 진단·치료 전문가)</div>
+                </div>
+                <div class="role-desc">환자와의 상호 대화와 검사를 통해 증상을 분석하고 정확한 진단을 내립니다. 전문 의학 지식으로 치료 계획을 수립하며, 평가 Agent의 피드백을 반영하여 치료의 안전성과 효과성을 높입니다. 실시간으로 최신 의학 연구 결과를 반영합니다.</div>
+            </div>
+            <div class="role-card role-c">
+                <div class="role-header">
+                    <div class="role-name"> 평가 Agent</div>
+                    <div class="role-human">(독립적 의료 결정 검증자)</div>
+                </div>
+                <div class="role-desc">의사 Agent와 완전히 독립적으로 치료 계획의 오류, 약물 상호작용, 임상 지침 준수 여부를 검증합니다. 하나의 Agent가 진단과 평가를 모두 담당할 때 발생할 수 있는 편향을 방지하며, 객관적 의료 질 검증을 수행합니다.</div>
+            </div>
+            <div class="role-card role-d">
+                <div class="role-header">
+                    <div class="role-name">보건복지부 Agent</div>
+                    <div class="role-human">(의료 시스템 조정자)</div>
+                </div>
+                <div class="role-desc">국가 의료 시스템 전반을 통제, 조정, 제어, 통괄하는 조정자(Ochestrator)입니다. 다양한 의료 기관과의 연계를 관리하며, 환자에게 최적의 의료 서비스를 제공합니다. 전문의 Agent를 선정, 병원 예약, 검사, 의료 기록 공유 등을 조정하여 환자의 의료 접근성을 극대화합니다. 의료 시스템의 효율성을 90% 이상 향상시킵니다.</div>
+            </div>
+        </div>
+
+        <div class="note" style="background:#f0f7ff;border-left:4px solid var(--accent-blue);padding:1rem;margin:2rem 0;border-radius:0 var(--radius-md) var(--radius-md) 0;">
+            <strong>시스템 핵심 장점:</strong><br>
+            1. 보건복지부 Agent가 국가 의료 시스템 전반을 통괄 제어하고, 건강보험평가 Agent, 전문 분야별 전문의 Agent, 의료 기관, 및 의료진 간의 협업 체계를 구축 및 운용.<br>
+            2. 전문 분야별 의사 Agent의 도움으로 정확한 진단과 치료 계획 수립<br>
+            3. 기존 대비 진료 과정 시간 현저히 단축 (수 일에서 수 주 → 수분)<br>
+            4. 비용을 기존 대비 1/2 이하로 절감<br>
+            5. AI 에이전트들 간의 협업으로, 환자, 의사, 의료 기관 직원 등 사람들 간의 업무 프로세스를 50% 이상 제거
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 4: 비교 분석 -->
+<section class="section surface" id="comparison">
+    <div class="container">
+        <h2 class="sec-title">전통적 방식 vs. AI 자동화 방식 비교</h2>
+        <p class="sec-lead">상호 독립적 AI 에이전트 시스템의 도입으로 의료 서비스 프로세스가 근본적으로 변화했습니다. 평가 Agent의 독립성과 환자-의사 Agent 간 상호 대화가 핵심 차별점입니다.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>비교 항목</th>
+                    <th>전통적 의료 서비스</th>
+                    <th>AI 자동화 시스템</th>
+                    <th>개선 효과</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>진단 소요 시간</td>
+                    <td>1일-4주 (평균 2주)</td>
+                    <td class="highlight">10~20분</td>
+                    <td class="highlight">100배 이상 단축</td>
+                </tr>
+                <tr>
+                    <td>의료 비용</td>
+                    <td>평균 5-50만 원</td>
+                    <td class="highlight">무료-1만 원</td>
+                    <td class="highlight">90-100% 절감</td>
+                </tr>
+                <tr>
+                    <td>진단 방식</td>
+                    <td>의사 단독 진단 (편향 가능성)</td>
+                    <td class="highlight">환자-의사 Agent-전문의 상호 대화</td>
+                    <td class="highlight">협업에 의한 정확한 진단</td>
+                </tr>
+                <tr>
+                    <td>치료 계획 검증</td>
+                    <td>의사 자체 검토 또는 동료 검토</td>
+                    <td class="highlight">독립적 의료 평가 Agent 검증</td>
+                    <td class="highlight">편향 없는 객관적 검증</td>
+                </tr>
+                <tr>
+                    <td>대기 시간</td>
+                    <td>1-4시간 (병원 대기)</td>
+                    <td class="highlight">실시간 처리</td>
+                    <td class="highlight">대기 시간 제거</td>
+                </tr>
+                <tr>
+                    <td>인간 간 소통</td>
+                    <td>환자-의사-약사 간 다수 회의</td>
+                    <td class="highlight">AI 에이전트 간 소통 (90% 감소)</td>
+                    <td class="highlight">의사소통 효율화</td>
+                </tr>
+                <tr>
+                    <td>의료 기록 관리</td>
+                    <td>종이 또는 분산 전자 기록</td>
+                    <td class="highlight"> Medical Data Vault</td>
+                    <td class="highlight">정보 접근성 향상</td>
+                </tr>
+                <tr>
+                    <td>접근성</td>
+                    <td>도시 중심, 시간 제약</td>
+                    <td class="highlight">전국민 24/7 접근 가능</td>
+                    <td class="highlight">보편적 의료 서비스. 전 국민 무상 의료.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Lazy Loading 탭 섹션 -->
+<section class="section lazy-tabs" id="lazy-docs">
+    <div class="container">
+        <h2 class="sec-title">기술 문서 상세 보기</h2>
+        <p class="sec-lead">아래 탭을 선택하여 시스템 요약과 경제적 효용 분석을 확인하세요. 문서는 필요한 시점에 자동으로 로드됩니다.</p>
+
+        <!-- 탭 네비게이션 -->
+        <div class="lazy-tab-nav">
+            <button class="lazy-tab-button active" data-target="summary-tab">
+                <i class="fas fa-file-alt"></i> 시스템 요약
+            </button>
+            <button class="lazy-tab-button" data-target="economic-tab">
+                <i class="fas fa-chart-line"></i> 경제적 효용 분석
+            </button>
+        </div>
+
+        <!-- 탭 내용 영역 -->
+        <div class="lazy-tab-content" id="tab-content-container">
+            <!-- 로딩 표시기 -->
+            <div id="loading-indicator" class="loading-indicator">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>문서를 로드하는 중입니다...</p>
+            </div>
+            
+            <!-- 요약 탭 내용 (기본적으로 로드됨) -->
+            <div id="summary-tab" class="tab-pane"></div>
+            
+            <!-- 경제적 효용 탭 내용 -->
+            <div id="economic-tab" class="tab-pane" style="display: none;"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 현재 경로에 따라 활성 탭 설정
+
+    // 채팅창 자동 스크롤
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = 0;
+    }
+
+    // Lazy Loading 탭 기능
+    const tabButtons = document.querySelectorAll('.lazy-tab-button');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    // 이미 로드된 탭 추적
+    const loadedTabs = {
+        'summary': false,
+        'economic': false
+    };
+    
+    // 탭 콘텐츠 캐시
+    const tabContents = {
+        'summary': null,
+        'economic': null
+    };
+
+    // 탭 전환 함수
+    function switchTab(tabName) {
+        // 모든 탭 버튼 비활성화
+        tabButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.target === `${tabName}-tab`) {
+                btn.classList.add('active');
+            }
+        });
+
+        // 모든 탭 패널 숨기기
+        tabPanes.forEach(pane => {
+            pane.style.display = 'none';
+        });
+
+        // 선택한 탭 패널 표시
+        const selectedTab = document.getElementById(`${tabName}-tab`);
+        
+        // 콘텐츠가 이미 로드된 경우 표시
+        if (loadedTabs[tabName] && tabContents[tabName]) {
+            loadingIndicator.style.display = 'none';
+            selectedTab.style.display = 'block';
+            selectedTab.innerHTML = tabContents[tabName];
+        } else {
+            // 콘텐츠 로드 필요
+            loadingIndicator.style.display = 'flex';
+            selectedTab.style.display = 'block';
+            loadTabContent(tabName);
+        }
+    }
+
+    // 탭 콘텐츠 로드 함수
+    function loadTabContent(tabName) {
+        const filePath = tabName === 'summary' 
+            ? 'medical_summary.html' 
+            : 'medical_economic_benefits.html';
+        
+        fetch(filePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP 오류! 상태: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(html => {
+                // HTML 파싱 및 주요 내용 추출
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // body 내용 가져오기 (헤더, 푸터 제외)
+                const bodyContent = doc.body.innerHTML;
+                
+                // 콘텐츠 저장
+                tabContents[tabName] = `
+                    <div class="loaded-content">
+                        ${bodyContent}
+                    </div>
+                `;
+                
+                // 로드 상태 업데이트
+                loadedTabs[tabName] = true;
+                
+                // 로딩 표시기 숨기고 콘텐츠 표시
+                loadingIndicator.style.display = 'none';
+                const selectedTab = document.getElementById(`${tabName}-tab`);
+                selectedTab.innerHTML = tabContents[tabName];
+                
+                // 로드된 콘텐츠에 스타일 적용
+                applyStylesToLoadedContent(selectedTab);
+            })
+            .catch(error => {
+                console.error(`${filePath} 로드 오류:`, error);
+                loadingIndicator.style.display = 'none';
+                const selectedTab = document.getElementById(`${tabName}-tab`);
+                selectedTab.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--accent-red);">
+                        <i class="fas fa-exclamation-triangle fa-2x" style="margin-bottom: 1rem;"></i>
+                        <h3>문서를 로드하는 중 오류가 발생했습니다</h3>
+                        <p>${error.message}</p>
+                        <button onclick="loadTabContent('${tabName}')" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--navy); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer;">
+                            다시 시도
+                        </button>
+                    </div>
+                `;
+            });
+    }
+
+    // 로드된 콘텐츠에 스타일 적용
+    function applyStylesToLoadedContent(container) {
+        // 테이블 스타일링
+        const tables = container.querySelectorAll('table');
+        tables.forEach(table => {
+            table.classList.add('data-table');
+        });
+        
+        // 강조 상자 스타일링
+        const highlightElements = container.querySelectorAll('.highlight, .note, .important');
+        highlightElements.forEach(el => {
+            el.classList.add('highlight-box');
+        });
+    }
+
+    // 탭 버튼에 이벤트 리스너 추가
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetTab = this.dataset.target.replace('-tab', '');
+            switchTab(targetTab);
+        });
+    });
+
+    // 페이지 로드 시 기본 탭 콘텐츠 로드
+    if (!loadedTabs.summary) {
+        loadTabContent('summary');
+    }
+
+    // Intersection Observer로 뷰포트에 들어올 때 초기 콘텐츠 로드
+    const lazySection = document.getElementById('lazy-docs');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !loadedTabs.summary) {
+                loadTabContent('summary');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        rootMargin: '200px',
+        threshold: 0.1
+    });
+
+    if (lazySection) {
+        observer.observe(lazySection);
+    }
+});
+
+// 글로벌 함수로 탭 재로드 기능 제공
+function reloadTab(tabName) {
+    if (window.loadedTabs && window.tabContents) {
+        window.loadedTabs[tabName] = false;
+        window.tabContents[tabName] = null;
+        
+        const activeButton = document.querySelector(`.lazy-tab-button[data-target="${tabName}-tab"].active`);
+        if (activeButton) {
+            // 현재 활성 탭이 재로드 대상이면 재로드
+            const event = new Event('click');
+            activeButton.dispatchEvent(event);
+        }
+    }
+}
+</script>
+<script src="/js/nav.js"></script>
+</body>
+</html>
+

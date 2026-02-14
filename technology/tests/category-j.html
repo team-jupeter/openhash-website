@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J. Vault 6서랍 테스트 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 15px; line-height: 1.6; color: #212529; background: #f8f9fa; margin: 0; }
+    .page-header { background: #1a3a6e; border-bottom: 3px solid #d4a017; }
+    .page-header .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .page-header .logo { color: #ffffff; font-size: 18px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .page-header .nav-menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+    .page-header .nav-menu a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 4px; }
+    .page-header .nav-menu a:hover, .page-header .nav-menu a.active { background: rgba(255,255,255,0.15); color: #ffffff; }
+    .title-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; padding: 24px 0; }
+    .title-section .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .breadcrumb { font-size: 13px; color: #6c757d; margin-bottom: 12px; }
+    .breadcrumb a { color: #1a3a6e; text-decoration: none; }
+    .page-title { font-size: 26px; font-weight: 700; color: #212529; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; }
+    .category-badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a3a6e; color: #ffffff; font-size: 16px; font-weight: 700; border-radius: 4px; }
+    .page-subtitle { font-size: 14px; color: #6c757d; margin: 0; }
+    .summary-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; }
+    .summary-table { max-width: 1200px; margin: 0 auto; display: flex; border-left: 1px solid #e5e8eb; }
+    .summary-cell { flex: 1; padding: 16px 24px; text-align: center; border-right: 1px solid #e5e8eb; }
+    .summary-label { font-size: 12px; color: #868e96; text-transform: uppercase; margin-bottom: 4px; }
+    .summary-value { font-size: 18px; font-weight: 600; color: #212529; }
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    .section { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 6px; margin-bottom: 24px; }
+    .section-header { padding: 20px 24px; border-bottom: 1px solid #e5e8eb; }
+    .section-title { font-size: 16px; font-weight: 600; color: #212529; margin: 0; }
+    .section-body { padding: 24px; }
+    .section-description { font-size: 14px; color: #6c757d; line-height: 1.7; margin: 0 0 24px 0; }
+    .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; background: #f8f9fa; border-radius: 4px; margin: 16px 0; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .vault-drawer { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; padding: 12px; text-align: center; }
+    .vault-icon { font-size: 24px; margin-bottom: 4px; }
+    .vault-name { font-size: 11px; font-weight: 600; color: #495057; }
+    .btn { display: inline-flex; align-items: center; font-family: inherit; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; }
+    .btn-primary { background: #1a3a6e; color: #ffffff; }
+    .btn-sm { font-size: 13px; padding: 4px 12px; }
+    .btn-run { background: #ffffff; color: #6c757d; border-color: #d0d7de; }
+    .test-list { display: flex; flex-direction: column; gap: 8px; }
+    .test-item { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .test-item.open { border-color: #d0d7de; }
+    .test-item-header { display: flex; align-items: center; padding: 16px 20px; cursor: pointer; gap: 16px; }
+    .test-item-header:hover { background: #f8f9fa; }
+    .test-item.open .test-item-header { border-bottom: 1px solid #e5e8eb; }
+    .test-id { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #1a3a6e; min-width: 48px; }
+    .test-name { flex: 1; font-size: 14px; font-weight: 500; color: #212529; }
+    .importance-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+    .importance-badge.critical { background: #fff5f5; color: #c92a2a; border: 1px solid #ffc9c9; }
+    .importance-badge.high { background: #fff9db; color: #e67700; border: 1px solid #ffec99; }
+    .importance-badge.medium { background: #e7f5ff; color: #1971c2; border: 1px solid #a5d8ff; }
+    .test-status { font-size: 13px; font-weight: 500; min-width: 70px; text-align: right; }
+    .test-status.pass { color: #0d6832; }
+    .test-status.fail { color: #c92a2a; }
+    .test-status.running { color: #1971c2; }
+    .toggle-icon { color: #868e96; font-size: 12px; transition: transform 0.2s; }
+    .test-item.open .toggle-icon { transform: rotate(180deg); }
+    .test-item-body { display: none; padding: 20px; }
+    .test-item.open .test-item-body { display: block; }
+    .test-field { margin-bottom: 20px; }
+    .test-field:last-child { margin-bottom: 0; }
+    .test-field-label { font-size: 12px; font-weight: 600; color: #6c757d; text-transform: uppercase; margin-bottom: 8px; }
+    .test-field-value { font-size: 14px; color: #212529; line-height: 1.6; }
+    .api-spec { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .api-row { display: flex; border-bottom: 1px solid #e5e8eb; }
+    .api-row:last-child { border-bottom: none; }
+    .api-label { width: 100px; padding: 12px 16px; background: #f1f3f5; font-size: 12px; font-weight: 500; color: #6c757d; border-right: 1px solid #e5e8eb; }
+    .api-value { flex: 1; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #212529; word-break: break-all; }
+    .code-block { position: relative; background: #f1f3f5; border: 1px solid #e5e8eb; border-radius: 4px; padding: 16px 70px 16px 16px; }
+    .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #212529; white-space: pre-wrap; word-break: break-all; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: #ffffff; border: 1px solid #e5e8eb; border-radius: 2px; padding: 4px 8px; font-size: 11px; color: #6c757d; cursor: pointer; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #e5e8eb; }
+    .data-table th { background: #f1f3f5; color: #6c757d; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; font-size: 12px; text-transform: uppercase; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .criteria-list { list-style: none; padding: 0; margin: 0; }
+    .criteria-list li { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 13px; }
+    .criteria-list li::before { content: '✓'; color: #0d6832; font-weight: 600; }
+    .criteria-list code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .result-container { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .result-placeholder { padding: 32px; text-align: center; color: #868e96; font-size: 13px; }
+    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .result-header.pass { background: #d3f9d8; }
+    .result-header.fail { background: #ffe3e3; }
+    .result-badge { font-size: 13px; font-weight: 600; }
+    .result-header.pass .result-badge { color: #0d6832; }
+    .result-header.fail .result-badge { color: #c92a2a; }
+    .result-time { font-size: 12px; color: #868e96; font-family: 'JetBrains Mono', monospace; }
+    .result-json { padding: 16px; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; max-height: 300px; overflow-y: auto; background: #ffffff; }
+    .result-error { padding: 16px; color: #c92a2a; font-size: 13px; }
+    .page-footer { background: #ffffff; border-top: 1px solid #e5e8eb; padding: 24px 0; margin-top: 32px; }
+    .page-footer .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; font-size: 13px; color: #868e96; }
+    .page-footer a { color: #1a3a6e; text-decoration: none; }
+    @media (max-width: 768px) { .summary-table { flex-direction: column; } .vault-grid { grid-template-columns: repeat(2, 1fr); } .test-item-header { flex-wrap: wrap; } .test-name { width: 100%; order: 2; } }
+    </style>
+    
+    <link rel="stylesheet" href="/css/hero.css">
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+    <section class="title-section"><div class="container"><div class="breadcrumb"><a href="/tests/">테스트 센터</a> / J. Vault 6서랍</div><h1 class="page-title"><span class="category-badge">J</span>Vault 6서랍 테스트</h1><p class="page-subtitle">모듈 800-810 - 자동 분류 데이터 관리 (6개 테스트)</p></div></section>
+    <section class="summary-section"><div class="summary-table"><div class="summary-cell"><div class="summary-label">테스트 수</div><div class="summary-value">6개</div></div><div class="summary-cell"><div class="summary-label">관련 모듈</div><div class="summary-value">800-810</div></div><div class="summary-cell"><div class="summary-label">중요도</div><div class="summary-value">High</div></div><div class="summary-cell"><div class="summary-label">상태</div><div class="summary-value" id="categoryStatus">대기</div></div></div></section>
+    <main class="main-content">
+        <div class="section"><div class="section-header"><h2 class="section-title">개요</h2></div><div class="section-body">
+            <p class="section-description">Vault는 사용자의 개인 데이터를 6개의 서랍으로 분류하여 안전하게 저장하는 시스템입니다. AI 기반 자동 분류 기능으로 데이터를 적절한 서랍에 배치합니다.</p>
+            <div class="vault-grid">
+                <div class="vault-drawer"><div class="vault-icon">💰</div><div class="vault-name">FINANCE</div></div>
+                <div class="vault-drawer"><div class="vault-icon">🏥</div><div class="vault-name">MEDICAL</div></div>
+                <div class="vault-drawer"><div class="vault-icon">🎓</div><div class="vault-name">EDUCATION</div></div>
+                <div class="vault-drawer"><div class="vault-icon">📋</div><div class="vault-name">ADMIN</div></div>
+                <div class="vault-drawer"><div class="vault-icon">🚗</div><div class="vault-name">TRANSPORT</div></div>
+                <div class="vault-drawer"><div class="vault-icon">📁</div><div class="vault-name">GENERAL</div></div>
+            </div>
+            <div style="margin-top: 24px;"><button class="btn btn-primary" id="runAllCategoryTests">전체 테스트 실행 (J-01 ~ J-06)</button></div>
+        </div></div>
+        <div class="section"><div class="section-header"><h2 class="section-title">테스트 목록</h2></div><div class="section-body"><div class="test-list" id="testList"></div></div></div>
+    </main>
+    <footer class="page-footer"><div class="container">© 2026 OpenHash. <a href="/tests/">테스트 센터</a> | J. Vault 6서랍 테스트 (6/64)</div></footer>
+    <script>
+    const OPENHASH_NODE = 'http://3.231.220.126';
+    const categoryTests = [
+        { id: 'J-01', name: 'Vault 생성', purpose: '새로운 Vault 생성 및 6개 서랍 초기화', importance: 'critical', description: '사용자를 위한 새로운 Vault를 생성합니다. 6개의 기본 서랍이 자동 생성됩니다.', endpoint: 'POST /vault/create', url: OPENHASH_NODE + ':5004/vault/create', curl: 'curl -X POST http://3.231.220.126:5004/vault/create \\\n  -H "Content-Type: application/json" \\\n  -d \'{"userId":"user_A"}\'', fields: [{ field: 'vaultId', type: 'string', desc: 'Vault 고유 ID' }, { field: 'drawers', type: 'array', desc: '서랍 목록 (6개)' }], criteria: ['vaultId가 존재', 'drawers.length === 6'], method: 'POST', body: { userId: 'user_A' } },
+        { id: 'J-02', name: '서랍 항목 추가', purpose: '특정 서랍에 새 항목 추가', importance: 'high', description: '지정된 서랍에 새로운 데이터 항목을 추가합니다.', endpoint: 'POST /vault/drawer/add', url: OPENHASH_NODE + ':5004/vault/drawer/add', curl: 'curl -X POST http://3.231.220.126:5004/vault/drawer/add \\\n  -H "Content-Type: application/json" \\\n  -d \'{"vaultId":"vault-user_A","drawer":"FINANCE","item":{"type":"bank_statement"}}\'', fields: [{ field: 'itemId', type: 'string', desc: '항목 ID' }, { field: 'added', type: 'boolean', desc: '추가 성공 여부' }], criteria: ['added === true'], method: 'POST', body: { vaultId: 'vault-user_A', drawer: 'FINANCE', item: { type: 'bank_statement' } } },
+        { id: 'J-03', name: '서랍 내용 조회', purpose: '특정 서랍의 모든 항목 조회', importance: 'high', description: '지정된 서랍에 저장된 모든 항목을 조회합니다.', endpoint: 'GET /vault/drawer/:vaultId/:drawer', url: OPENHASH_NODE + ':5004/vault/drawer/vault-user_A/FINANCE', curl: 'curl http://3.231.220.126:5004/vault/drawer/vault-user_A/FINANCE', fields: [{ field: 'items', type: 'array', desc: '항목 목록' }], criteria: ['items가 배열'] },
+        { id: 'J-04', name: '자동 분류 테스트', purpose: 'AI 기반 자동 서랍 분류', importance: 'high', description: '데이터 내용을 분석하여 적절한 서랍을 자동으로 추천합니다.', endpoint: 'POST /vault/classify', url: OPENHASH_NODE + ':5004/vault/classify', curl: 'curl -X POST http://3.231.220.126:5004/vault/classify \\\n  -H "Content-Type: application/json" \\\n  -d \'{"content":"혈압 측정 결과: 120/80"}\'', fields: [{ field: 'suggestedDrawer', type: 'string', desc: '추천 서랍' }, { field: 'confidence', type: 'number', desc: '신뢰도 (0-1)' }], criteria: ['suggestedDrawer가 존재', 'confidence > 0.5'], method: 'POST', body: { content: '혈압 측정 결과: 120/80' } },
+        { id: 'J-05', name: '전체 Vault 조회', purpose: 'Vault의 모든 서랍과 항목 조회', importance: 'medium', description: '사용자의 Vault 전체 현황을 조회합니다.', endpoint: 'GET /vault/:vaultId', url: OPENHASH_NODE + ':5004/vault/vault-user_A', curl: 'curl http://3.231.220.126:5004/vault/vault-user_A', fields: [{ field: 'vaultId', type: 'string', desc: 'Vault ID' }, { field: 'drawers', type: 'object', desc: '서랍별 항목 수' }], criteria: ['vaultId가 존재'] },
+        { id: 'J-06', name: 'Vault 항목 삭제', purpose: '서랍에서 특정 항목 삭제', importance: 'medium', description: '지정된 서랍에서 특정 항목을 삭제합니다.', endpoint: 'DELETE /vault/item/:vaultId/:itemId', url: OPENHASH_NODE + ':5004/vault/item/vault-user_A/item-123', curl: 'curl -X DELETE http://3.231.220.126:5004/vault/item/vault-user_A/item-123', fields: [{ field: 'deleted', type: 'boolean', desc: '삭제 성공 여부' }], criteria: ['deleted === true'], method: 'DELETE' }
+    ];
+    function createTestCard(test) { return `<div class="test-item" data-test="${test.id}"><div class="test-item-header" onclick="toggleTest('${test.id}')"><span class="test-id">${test.id}</span><span class="test-name">${test.name}</span><span class="importance-badge ${test.importance}">${test.importance}</span><span class="test-status" id="status-${test.id}">—</span><button class="btn btn-sm btn-run" onclick="event.stopPropagation(); runSingleTest('${test.id}')">실행</button><span class="toggle-icon">▼</span></div><div class="test-item-body"><div class="test-field"><div class="test-field-label">목적</div><div class="test-field-value">${test.purpose}</div></div><div class="test-field"><div class="test-field-label">설명</div><div class="test-field-value">${test.description}</div></div><div class="test-field"><div class="test-field-label">API 명세</div><div class="api-spec"><div class="api-row"><span class="api-label">엔드포인트</span><code class="api-value">${test.endpoint}</code></div><div class="api-row"><span class="api-label">URL</span><code class="api-value">${test.url}</code></div></div></div><div class="test-field"><div class="test-field-label">cURL 명령어</div><div class="code-block"><code>${test.curl}</code><button class="copy-btn" onclick="copyCode(this)">복사</button></div></div><div class="test-field"><div class="test-field-label">응답 필드</div><table class="data-table"><thead><tr><th>필드</th><th>타입</th><th>설명</th></tr></thead><tbody>${test.fields.map(f=>`<tr><td><code>${f.field}</code></td><td>${f.type}</td><td>${f.desc}</td></tr>`).join('')}</tbody></table></div><div class="test-field"><div class="test-field-label">판정 기준</div><ul class="criteria-list">${test.criteria.map(c=>`<li><code>${c}</code></li>`).join('')}</ul></div><div class="test-field"><div class="test-field-label">실행 결과</div><div class="result-container" id="result-${test.id}"><p class="result-placeholder">테스트를 실행하면 결과가 여기에 표시됩니다.</p></div></div></div></div>`; }
+    function renderTests() { document.getElementById('testList').innerHTML = categoryTests.map(createTestCard).join(''); document.querySelector('.test-item').classList.add('open'); }
+    function toggleTest(testId) { document.querySelector(`[data-test="${testId}"]`).classList.toggle('open'); }
+    function copyCode(btn) { navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => { btn.textContent = '복사됨!'; setTimeout(() => btn.textContent = '복사', 2000); }); }
+    async function runSingleTest(testId) {
+        const test = categoryTests.find(t => t.id === testId); if (!test) return;
+        updateTestStatus(testId, 'running');
+        try {
+            const startTime = Date.now();
+            const response = await fetch(test.url, { method: test.method || 'GET', headers: { 'Content-Type': 'application/json' }, body: test.body ? JSON.stringify(test.body) : null });
+            const result = await response.json();
+            const passed = validateTest(test, result);
+            displayResult(testId, result, Date.now() - startTime, passed); updateTestStatus(testId, passed ? 'pass' : 'fail');
+        } catch (error) { displayError(testId, error); updateTestStatus(testId, 'fail'); }
+        updateCategoryStatus();
+    }
+    function validateTest(test, result) {
+        switch(test.id) {
+            case 'J-01': return result.vaultId && result.drawers && result.drawers.length === 6;
+            case 'J-02': return result.added === true;
+            case 'J-03': return Array.isArray(result.items);
+            case 'J-04': return result.suggestedDrawer && result.confidence > 0.5;
+            case 'J-05': return result.vaultId;
+            case 'J-06': return result.deleted === true;
+            default: return true;
+        }
+    }
+    function updateTestStatus(testId, status) { const el = document.getElementById(`status-${testId}`); if (el) { el.className = 'test-status ' + status; el.textContent = status === 'running' ? '실행중...' : status === 'pass' ? '✓ PASS' : status === 'fail' ? '✗ FAIL' : '—'; } }
+    function displayResult(testId, result, elapsed, passed) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header ${passed ? 'pass' : 'fail'}"><span class="result-badge">${passed ? '✓ PASS' : '✗ FAIL'}</span><span class="result-time">${elapsed}ms</span></div><pre class="result-json">${JSON.stringify(result, null, 2)}</pre>`; }
+    function displayError(testId, error) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header fail"><span class="result-badge">✗ FAIL</span></div><div class="result-error"><strong>Error:</strong> ${error.message}</div>`; }
+    function updateCategoryStatus() { let pass = 0, fail = 0; document.querySelectorAll('.test-status').forEach(el => { if (el.classList.contains('pass')) pass++; if (el.classList.contains('fail')) fail++; }); const statusEl = document.getElementById('categoryStatus'); if (statusEl && (pass + fail) > 0) { statusEl.textContent = fail === 0 && pass === categoryTests.length ? '✓ 완료' : `${pass}/${pass + fail}`; if (fail === 0 && pass === categoryTests.length) statusEl.style.color = '#0d6832'; } }
+    async function runAllCategoryTests() { for (const test of categoryTests) { await runSingleTest(test.id); await new Promise(r => setTimeout(r, 300)); } }
+    document.addEventListener('DOMContentLoaded', () => { renderTests(); document.getElementById('runAllCategoryTests').addEventListener('click', runAllCategoryTests); });
+    </script>
+<script src="/js/nav.js"></script></body>
+</html>

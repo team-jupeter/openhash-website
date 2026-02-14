@@ -316,7 +316,6 @@
     </style>
 </head>
 <body>
-<div id="main-nav-placeholder"></div>
     <!-- Hero Section -->
     <!-- EGCT Hero -->
         
@@ -477,108 +476,6 @@
                 <div class="feature-label">에너지 절감</div>
             </div>
         </div>
-
-        <!-- ========== 특허 보고서 탭 ========== -->
-        <div class="section-divider">
-            <div class="section-header">
-                <span class="section-badge" style="background:#06b6d4;">Patent Report</span>
-                <h2 class="section-title">특허 <span class="highlight">상세 보고서</span></h2>
-                <p class="section-desc">특허 요약서와 경제적 효용 분석 보고서를 확인하세요.</p>
-            </div>
-        </div>
-
-        <style>
-            .pt-tabs{display:flex;gap:0;border-bottom:2px solid var(--gray-200);margin-bottom:0}
-            .pt-tab-btn{flex:1;padding:1rem 1.5rem;font-size:.95rem;font-weight:700;color:var(--gray-500);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .25s;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;gap:.5rem}
-            .pt-tab-btn:hover{color:var(--gray-700);background:var(--gray-50)}
-            .pt-tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);background:rgba(99,102,241,.04)}
-            .pt-tab-btn .pt-icon{font-size:1.2rem}
-            .pt-panel{display:none}
-            .pt-panel.active{display:block}
-            .pt-spinner{width:36px;height:36px;border:3px solid var(--gray-200);border-top-color:var(--primary);border-radius:50%;animation:pt-spin .7s linear infinite;margin:0 auto}
-            @keyframes pt-spin{to{transform:rotate(360deg)}}
-        </style>
-
-        <div class="pt-tabs" id="patent-report-tabs">
-            <button class="pt-tab-btn active" data-target="pt-abstract">
-                <span class="pt-icon">📋</span> 특허 요약서
-            </button>
-            <button class="pt-tab-btn" data-target="pt-economic">
-                <span class="pt-icon">📊</span> 경제적 효용 보고서
-            </button>
-        </div>
-
-        <div id="pt-abstract" class="pt-panel active">
-            <div style="text-align:center;padding:3rem 2rem">
-                <div class="pt-spinner"></div>
-                <p style="color:var(--gray-400);font-size:.85rem;margin-top:1rem">특허 요약서를 불러오는 중...</p>
-            </div>
-        </div>
-        <div id="pt-economic" class="pt-panel">
-            <div style="text-align:center;padding:3rem 2rem">
-                <div class="pt-spinner"></div>
-                <p style="color:var(--gray-400);font-size:.85rem;margin-top:1rem">경제적 효용 보고서를 불러오는 중...</p>
-            </div>
-        </div>
-
-        <script>
-        (function(){
-            var loaded={}, files={
-                'pt-abstract':'/currency/patent-abstract.html',
-                'pt-economic':'/currency/patent-economic-report.html'
-            };
-            function inject(id,html){
-                var el=document.getElementById(id); if(!el) return;
-                var doc=new DOMParser().parseFromString(html,'text/html');
-                doc.querySelectorAll('style').forEach(function(st){
-                    var s=document.createElement('style');
-                    s.textContent=st.textContent;
-                    document.head.appendChild(s);
-                });
-                var root=doc.querySelector('.pa-report')||doc.querySelector('.er-report');
-                el.innerHTML='';
-                if(root){el.appendChild(document.adoptNode(root))}
-                else{el.innerHTML=doc.body.innerHTML}
-                el.querySelectorAll('script').forEach(function(o){
-                    var n=document.createElement('script');n.textContent=o.textContent;
-                    o.parentNode.replaceChild(n,o);
-                });
-                doc.querySelectorAll('body > script').forEach(function(s){
-                    if(s.textContent.trim()){
-                        var n=document.createElement('script');
-                        n.textContent=s.textContent;
-                        el.appendChild(n);
-                    }
-                });
-            }
-            function load(id){
-                if(loaded[id]) return; loaded[id]=true;
-                fetch(files[id]).then(function(r){
-                    if(!r.ok) throw new Error('HTTP '+r.status);
-                    return r.text();
-                }).then(function(h){inject(id,h)}).catch(function(e){
-                    var p=document.getElementById(id);
-                    if(p) p.innerHTML='<div style="text-align:center;padding:2rem;color:#999">불러올 수 없습니다 ('+e.message+')</div>';
-                });
-            }
-            document.querySelectorAll('.pt-tab-btn').forEach(function(btn){
-                btn.addEventListener('click',function(){
-                    document.querySelectorAll('.pt-tab-btn').forEach(function(b){b.classList.remove('active')});
-                    document.querySelectorAll('.pt-panel').forEach(function(p){p.classList.remove('active')});
-                    this.classList.add('active');
-                    var panel=document.getElementById(this.dataset.target);
-                    if(panel) panel.classList.add('active');
-                    load(this.dataset.target);
-                });
-            });
-            new IntersectionObserver(function(entries,observer){
-                entries.forEach(function(e){
-                    if(e.isIntersecting){load('pt-abstract');observer.unobserve(e.target)}
-                });
-            },{threshold:0.1}).observe(document.getElementById('patent-report-tabs'));
-        })();
-        </script>
-        <!-- ========== 특허 보고서 탭 끝 ========== -->
     </div>
 
     <script>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경제적 효용 | OpenHash FPGA 금융 통합</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+.main-header {
+    background: var(--navy-dark);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.logo:hover {
+    color: var(--gold-light);
+}
+.main-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.nav-link {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+.nav-link.active {
+    color: var(--gold);
+    background: rgba(212,160,23,0.1);
+}
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    .main-nav {
+        justify-content: center;
+    }
+    .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+.stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+}
+.data-table th, .data-table td {
+    padding: 0.7rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    word-break: keep-all;
+}
+.data-table thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border-bottom: none;
+}
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+.benefit-box {
+    background: linear-gradient(145deg, #f0f7ff, #ffffff);
+    border-left: 6px solid var(--gold);
+    padding: 1.8rem;
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    margin: 2rem 0;
+}
+</style>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-inner">
+        <a href="/" class="logo">◆ OpenHash</a>
+        <nav class="main-nav">
+            <a href="/" class="nav-link">홈</a>
+            <a href="/gopang" class="nav-link">고팡</a>
+            <a href="/full-employment" class="nav-link">완전 고용</a>
+            <a href="/autonomous" class="nav-link">자율 주행</a>
+            <a href="/technology" class="nav-link">기술</a>
+            <a href="/automation" class="nav-link active">자동화</a>
+            <a href="/new-web" class="nav-link">새로운 웹</a>
+            <a href="/currency" class="nav-link">화폐</a>
+            <a href="/gopang-ai" class="nav-link">고팡 AI 체험</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">연간 1-2조원 시장 · 글로벌 90% 비용 절감</div>
+        <h1 class="hero-title">경제적 <span class="gold">효용</span> 분석</h1>
+    </div>
+</section>
+
+<div class="tab-section">
+    <div class="tab-nav">
+        <a href="/economic/cost" class="tab-link active">비용 절감</a>
+        <a href="/economic/time" class="tab-link">시간 단축</a>
+        <a href="/economic/resource" class="tab-link">자원 효율</a>
+        <a href="/economic/global" class="tab-link">글로벌 효과</a>
+        <a href="/economic/industry" class="tab-link">산업별 적용</a>
+    </div>
+</div>
+
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>경제적 파급효과</strong> — FPGA 기반 금융 통합 플랫폼의 산업·사회적 가치</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">경제성 분석 보고서 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 통계 요약 -->
+<section class="section" id="summary">
+    <div class="container">
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-value cost">90%</div>
+                <div class="stat-label">거래 비용 절감</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value time">99.9%</div>
+                <div class="stat-label">처리 시간 단축</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value speed">88.6%</div>
+                <div class="stat-label">전력 절감</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value success">1조$</div>
+                <div class="stat-label">연간 글로벌 수수료 절감</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 1. 비용 절감 효과 -->
+<section class="section surface" id="cost">
+    <div class="container">
+        <h2 class="sec-title">비용 절감 효과</h2>
+        <div class="benefit-box">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-green);">90-100%</div>
+                <div style="background: var(--accent-green); color: white; padding: 0.3rem 1rem; border-radius: 20px;">결제·송금 수수료</div>
+            </div>
+            <div style="margin-top: 1rem; font-size: 0.95rem;">
+                기존 전자상거래 결제 수수료 2-5% → UniversalCoin 0%<br>
+                국제 송금 수수료 7-15% → FPGA 글로벌 네트워크 0%<br>
+                <strong>연간 1조 달러 규모 수수료 경제 환원</strong>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+                <div style="font-weight: 700; color: var(--navy);">물류비용</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: var(--accent-red);">35% 절감</div>
+                <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                    - VRP 최적화 + 실시간 교통정보 → 배송 경로 효율 ↑<br>
+                    - 재고 최적화 (ABC 분석) → 과재고 50% 감소, 결품률 80% 감소<br>
+                    - 제주도 시뮬레이션: 연간 물류비 50억 → 32.5억
+                </div>
+            </div>
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+                <div style="font-weight: 700; color: var(--navy);">인건비</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: var(--accent-orange);">45% 절감</div>
+                <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                    - 시장 분석, 공급망 관리, 고객 상담 AI 대체<br>
+                    - 사람 개입 0회 거래 자동화<br>
+                    - AI 에이전트 5,000+ 운영비 대비 인건비 대체 효과
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. 시간 단축 효과 -->
+<section class="section" id="time">
+    <div class="container">
+        <h2 class="sec-title">시간 단축 효과</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>프로세스</th>
+                    <th>전통적 방식</th>
+                    <th>AI 자동화</th>
+                    <th>개선 배율</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>상품 탐색·비교</td>
+                    <td>2-3시간</td>
+                    <td class="highlight">3초</td>
+                    <td>3,600배</td>
+                </tr>
+                <tr>
+                    <td>결제 승인</td>
+                    <td>3-10초 (국내), 3-5일 (국제)</td>
+                    <td class="highlight">3.2ms</td>
+                    <td>1,000~10,000배</td>
+                </tr>
+                <tr>
+                    <td>대출 심사</td>
+                    <td>3-5일</td>
+                    <td class="highlight">100-500ms</td>
+                    <td>50만배</td>
+                </tr>
+                <tr>
+                    <td>보험금 지급</td>
+                    <td>7-14일</td>
+                    <td class="highlight">실시간 (스마트계약)</td>
+                    <td>무한대</td>
+                </tr>
+                <tr>
+                    <td>물류 배송</td>
+                    <td>2-3일</td>
+                    <td class="highlight">2-5시간</td>
+                    <td>12배</td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="margin-top: 2rem; background: var(--bg-surface); padding: 1.5rem; border-radius: var(--radius-md);">
+            <strong>종합: 거래生命周期 2~3일 → 3분 18초 (99.9% 단축)</strong>
+        </div>
+    </div>
+</section>
+
+<!-- 3. 자원 효율성 및 순환경제 -->
+<section class="section surface" id="resource">
+    <div class="container">
+        <h2 class="sec-title">자원 효율성 및 순환경제</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md);">
+                <div style="font-weight: 700; font-size: 1.1rem; color: var(--accent-green);">에너지 효율</div>
+                <div style="font-size: 1.3rem; font-weight: 800; margin: 0.8rem 0;">GPU 160.3W → FPGA 18.2W</div>
+                <div style="font-size: 1.5rem; font-weight: 900; color: var(--accent-red);">88.6% ▼</div>
+                <div style="margin-top: 1rem;">데이터센터 전력 소비 1/8 수준, 탄소배출 획기적 감축</div>
+            </div>
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md);">
+                <div style="font-weight: 700; font-size: 1.1rem; color: var(--accent-blue);">IoT 기반 자원 순환</div>
+                <div style="font-size: 1.3rem; font-weight: 800; margin: 0.8rem 0;">사용률 27% → 100%</div>
+                <div style="font-size: 1.5rem; font-weight: 900; color: var(--accent-blue);">+73%p</div>
+                <div style="margin-top: 1rem;">30일 미사용 제품 자동 재판매 (원가 70-90%), 탄소발자국 실시간 추적, 친환경 인센티브</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. 글로벌 경제 통합 효과 -->
+<section class="section" id="global">
+    <div class="container">
+        <h2 class="sec-title">글로벌 경제 통합 효과</h2>
+        <div style="background: linear-gradient(135deg, var(--navy-dark), var(--navy)); color: white; padding: 2rem; border-radius: var(--radius-lg);">
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                <div style="flex: 1;">
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--gold-light);">1.7억명</div>
+                    <div style="font-size: 0.95rem;">금융 소외 계층 금융 접근성 확보</div>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--gold-light);">0%</div>
+                    <div style="font-size: 0.95rem;">환전·송금 수수료</div>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--gold-light);">100%</div>
+                    <div style="font-size: 0.95rem;">환율 리스크 제거</div>
+                </div>
+            </div>
+            <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">
+                <strong>UniversalCoin 스테이블코인:</strong> 판매자 자산 담보 풀(담보비율 70%), 동적 재평가, 글로벌 즉시 결제
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. 산업별 경제 효과 -->
+<section class="section surface" id="industry">
+    <div class="container">
+        <h2 class="sec-title">산업별 적용 경제 효과</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>산업</th>
+                    <th>주요 개선</th>
+                    <th>경제적 효과</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>전자상거래</td>
+                    <td>가격분석 40%, 충동구매 방지 35%, 재고관리 25%</td>
+                    <td>연간 5조원 규모 충동구매 감소, 판매자 마진 15% 향상</td>
+                </tr>
+                <tr>
+                    <td>핀테크</td>
+                    <td>7.3M TPS, 신용평가 실시간화</td>
+                    <td>국내 간편결제 시장 TPS 한계 돌파, 해외송금 수수료 0%</td>
+                </tr>
+                <tr>
+                    <td>전통 금융</td>
+                    <td>대출심사 500ms, 포트폴리오 최적화, 보험계리 AI</td>
+                    <td>운영비 40% 절감, 불완전판매 70% 감소</td>
+                </tr>
+                <tr>
+                    <td>국제 무역</td>
+                    <td>스마트 신용장, 관세 자동 계산, IoT 공급망 추적</td>
+                    <td>무역금융 처리기간 5일→10분, 연간 1,000억달러 비용 절감</td>
+                </tr>
+                <tr>
+                    <td>디지털 자산</td>
+                    <td>멀티계층 지갑, 100개 투자상품 수익률 비교, 세금 최적화</td>
+                    <td>개인 투자자 수익률 8%p 향상, 자문 비용 90% 절감</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 6. 국내 시장 파급효과 -->
+<section class="section" id="domestic">
+    <div class="container">
+        <h2 class="sec-title">국내 시장 파급효과</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+            <div style="text-align: center; padding: 1.5rem; background: var(--bg-white); border-radius: var(--radius-md);">
+                <div style="font-size: 2rem; font-weight: 900; color: var(--accent-purple);">1-2조</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">초기 시장 규모 (연간)</div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: var(--bg-white); border-radius: var(--radius-md);">
+                <div style="font-size: 2rem; font-weight: 900; color: var(--accent-green);">2,500+</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">고부가가치 일자리 창출</div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: var(--bg-white); border-radius: var(--radius-md);">
+                <div style="font-size: 2rem; font-weight: 900; color: var(--accent-blue);">5.2조</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">연간 소비자 편익 (추정)</div>
+            </div>
+        </div>
+        <div class="benefit-box" style="margin-top: 2rem;">
+            <strong>소비자 보호의 경제적 가치</strong><br>
+            충동구매 사전 방지로 연간 5조원 이상의 소비자 손실 예방, 공정가격 모니터링으로 가격 거품 11% 제거
+        </div>
+    </div>
+</section>
+
+<!-- 7. 검증된 성능 기반 경제성 -->
+<section class="section surface" id="validation">
+    <div class="container">
+        <h2 class="sec-title">검증된 성능 기반 경제성</h2>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+            <div style="flex:1; min-width:200px;">
+                <div style="font-weight: 700;">✓ TPS 7.3M</div>
+                <div style="font-size:0.9rem;">토스 대비 146배 → 인프라 비용 1/146</div>
+            </div>
+            <div style="flex:1; min-width:200px;">
+                <div style="font-weight: 700;">✓ 전력 88.6% 절감</div>
+                <div style="font-size:0.9rem;">데이터센터 전기료 연간 500억→58억</div>
+            </div>
+            <div style="flex:1; min-width:200px;">
+                <div style="font-weight: 700;">✓ 재해복구 98.0%</div>
+                <div style="font-size:0.9rem;">다운타임 최소화, 기회비용 손실 제거</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const tabLinks = document.querySelectorAll('.tab-link');
+    tabLinks.forEach(link => {
+        if (currentPath.includes('cost')) {
+            if (link.getAttribute('href').includes('cost')) link.classList.add('active');
+            else link.classList.remove('active');
+        }
+    });
+});
+</script>
+</body>
+</html>

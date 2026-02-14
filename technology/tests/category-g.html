@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G. 5단계 거래 검증 테스트 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/tests/test-detail.css">
+    <style>
+    /* Inline Critical CSS for immediate render */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+        font-family: 'Noto Sans KR', -apple-system, sans-serif;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #212529;
+        background: #f8f9fa;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+    }
+    .page-header {
+        background: #1a3a6e;
+        border-bottom: 3px solid #d4a017;
+    }
+    .page-header .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 56px;
+    }
+    .page-header .logo {
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .page-header .nav-menu {
+        display: flex;
+        gap: 4px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .page-header .nav-menu a {
+        color: rgba(255,255,255,0.85);
+        text-decoration: none;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 4px;
+        transition: background 0.15s;
+    }
+    .page-header .nav-menu a:hover,
+    .page-header .nav-menu a.active {
+        background: rgba(255,255,255,0.15);
+        color: #ffffff;
+    }
+    .title-section {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e8eb;
+        padding: 24px 0;
+    }
+    .title-section .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+    .breadcrumb {
+        font-size: 13px;
+        color: #6c757d;
+        margin-bottom: 12px;
+    }
+    .breadcrumb a {
+        color: #1a3a6e;
+        text-decoration: none;
+    }
+    .page-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #212529;
+        margin: 0 0 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: #1a3a6e;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        border-radius: 4px;
+    }
+    .page-subtitle {
+        font-size: 14px;
+        color: #6c757d;
+        margin: 0;
+    }
+    .summary-section {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e8eb;
+    }
+    .summary-table {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        border-left: 1px solid #e5e8eb;
+    }
+    .summary-cell {
+        flex: 1;
+        padding: 16px 24px;
+        text-align: center;
+        border-right: 1px solid #e5e8eb;
+    }
+    .summary-label {
+        font-size: 12px;
+        color: #868e96;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+    .summary-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: #212529;
+    }
+    .main-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 24px;
+    }
+    .section {
+        background: #ffffff;
+        border: 1px solid #e5e8eb;
+        border-radius: 6px;
+        margin-bottom: 24px;
+    }
+    .section-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e5e8eb;
+    }
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0;
+    }
+    .section-body {
+        padding: 24px;
+    }
+    .section-description {
+        font-size: 14px;
+        color: #6c757d;
+        line-height: 1.7;
+        margin: 0 0 24px 0;
+    }
+    .step-indicator {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        position: relative;
+        margin: 24px 0;
+        padding: 0 16px;
+    }
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 14px;
+        left: 60px;
+        right: 60px;
+        height: 2px;
+        background: #e5e8eb;
+    }
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        min-width: 80px;
+    }
+    .step-number {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #1a3a6e;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 50%;
+        margin-bottom: 8px;
+    }
+    .step-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #212529;
+        text-align: center;
+    }
+    .step-desc {
+        font-size: 11px;
+        color: #868e96;
+        text-align: center;
+        margin-top: 2px;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-decoration: none;
+    }
+    .btn-primary {
+        background: #1a3a6e;
+        color: #ffffff;
+        border-color: #1a3a6e;
+    }
+    .btn-primary:hover {
+        background: #142d54;
+    }
+    .btn-sm {
+        font-size: 13px;
+        padding: 4px 12px;
+    }
+    .btn-run {
+        background: #ffffff;
+        color: #6c757d;
+        border-color: #d0d7de;
+    }
+    .btn-run:hover {
+        background: #f8f9fa;
+        color: #212529;
+    }
+    .test-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .test-item {
+        background: #ffffff;
+        border: 1px solid #e5e8eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .test-item.open {
+        border-color: #d0d7de;
+    }
+    .test-item-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: background 0.15s;
+        gap: 16px;
+    }
+    .test-item-header:hover {
+        background: #f8f9fa;
+    }
+    .test-item.open .test-item-header {
+        border-bottom: 1px solid #e5e8eb;
+    }
+    .test-id {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a3a6e;
+        min-width: 48px;
+    }
+    .test-name {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 500;
+        color: #212529;
+    }
+    .importance-badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    .importance-badge.critical {
+        background: #fff5f5;
+        color: #c92a2a;
+        border: 1px solid #ffc9c9;
+    }
+    .importance-badge.high {
+        background: #fff9db;
+        color: #e67700;
+        border: 1px solid #ffec99;
+    }
+    .importance-badge.medium {
+        background: #e7f5ff;
+        color: #1971c2;
+        border: 1px solid #a5d8ff;
+    }
+    .test-status {
+        font-size: 13px;
+        font-weight: 500;
+        min-width: 70px;
+        text-align: right;
+    }
+    .test-status.pass { color: #0d6832; }
+    .test-status.fail { color: #c92a2a; }
+    .test-status.running { color: #1971c2; }
+    .toggle-icon {
+        color: #868e96;
+        font-size: 12px;
+        transition: transform 0.2s;
+    }
+    .test-item.open .toggle-icon {
+        transform: rotate(180deg);
+    }
+    .test-item-body {
+        display: none;
+        padding: 20px;
+    }
+    .test-item.open .test-item-body {
+        display: block;
+    }
+    .test-field {
+        margin-bottom: 20px;
+    }
+    .test-field:last-child {
+        margin-bottom: 0;
+    }
+    .test-field-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+    .test-field-value {
+        font-size: 14px;
+        color: #212529;
+        line-height: 1.6;
+    }
+    .api-spec {
+        background: #f8f9fa;
+        border: 1px solid #e5e8eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .api-row {
+        display: flex;
+        border-bottom: 1px solid #e5e8eb;
+    }
+    .api-row:last-child {
+        border-bottom: none;
+    }
+    .api-label {
+        width: 100px;
+        padding: 12px 16px;
+        background: #f1f3f5;
+        font-size: 12px;
+        font-weight: 500;
+        color: #6c757d;
+        border-right: 1px solid #e5e8eb;
+    }
+    .api-value {
+        flex: 1;
+        padding: 12px 16px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        color: #212529;
+        word-break: break-all;
+    }
+    .code-block {
+        position: relative;
+        background: #f1f3f5;
+        border: 1px solid #e5e8eb;
+        border-radius: 4px;
+        padding: 16px;
+        padding-right: 70px;
+    }
+    .code-block code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #212529;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    .copy-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #ffffff;
+        border: 1px solid #e5e8eb;
+        border-radius: 2px;
+        padding: 4px 8px;
+        font-size: 11px;
+        color: #6c757d;
+        cursor: pointer;
+    }
+    .copy-btn:hover {
+        background: #f8f9fa;
+        color: #212529;
+    }
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        border: 1px solid #e5e8eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .data-table th {
+        background: #f1f3f5;
+        color: #6c757d;
+        font-weight: 600;
+        text-align: left;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e5e8eb;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+    .data-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e5e8eb;
+        color: #212529;
+        vertical-align: top;
+    }
+    .data-table tr:last-child td {
+        border-bottom: none;
+    }
+    .data-table code {
+        background: #f1f3f5;
+        padding: 2px 6px;
+        border-radius: 2px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+    }
+    .criteria-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .criteria-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 0;
+        font-size: 13px;
+        color: #212529;
+    }
+    .criteria-list li::before {
+        content: '✓';
+        color: #0d6832;
+        font-weight: 600;
+    }
+    .criteria-list code {
+        background: #f1f3f5;
+        padding: 2px 6px;
+        border-radius: 2px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+    }
+    .result-container {
+        background: #f8f9fa;
+        border: 1px solid #e5e8eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .result-placeholder {
+        padding: 32px;
+        text-align: center;
+        color: #868e96;
+        font-size: 13px;
+    }
+    .result-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e5e8eb;
+    }
+    .result-header.pass {
+        background: #d3f9d8;
+    }
+    .result-header.fail {
+        background: #ffe3e3;
+    }
+    .result-badge {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .result-header.pass .result-badge {
+        color: #0d6832;
+    }
+    .result-header.fail .result-badge {
+        color: #c92a2a;
+    }
+    .result-time {
+        font-size: 12px;
+        color: #868e96;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .result-json {
+        padding: 16px;
+        margin: 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #212529;
+        white-space: pre-wrap;
+        word-break: break-all;
+        max-height: 300px;
+        overflow-y: auto;
+        background: #ffffff;
+    }
+    .result-error {
+        padding: 16px;
+        color: #c92a2a;
+        font-size: 13px;
+    }
+    .page-footer {
+        background: #ffffff;
+        border-top: 1px solid #e5e8eb;
+        padding: 24px 0;
+        margin-top: 32px;
+    }
+    .page-footer .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        text-align: center;
+        font-size: 13px;
+        color: #868e96;
+    }
+    .page-footer a {
+        color: #1a3a6e;
+        text-decoration: none;
+    }
+    @media (max-width: 768px) {
+        .summary-table {
+            flex-direction: column;
+            border-left: none;
+            border-top: 1px solid #e5e8eb;
+        }
+        .summary-cell {
+            border-right: none;
+            border-bottom: 1px solid #e5e8eb;
+        }
+        .step-indicator {
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .step-indicator::before {
+            display: none;
+        }
+        .test-item-header {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .test-name {
+            width: 100%;
+            order: 2;
+        }
+    }
+    </style>
+    
+    <link rel="stylesheet" href="/css/hero.css">
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+    <!-- Header -->
+
+    <!-- Title Section -->
+    <section class="title-section">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/tests/">테스트 센터</a> / G. 5단계 거래 검증
+            </div>
+            <h1 class="page-title">
+                <span class="category-badge">G</span>
+                5단계 거래 검증 테스트
+            </h1>
+            <p class="page-subtitle">모듈 360 - 잔액/신원/한도/이상/규정 검증 (6개 테스트)</p>
+        </div>
+    </section>
+
+    <!-- Summary Section -->
+    <section class="summary-section">
+        <div class="summary-table">
+            <div class="summary-cell">
+                <div class="summary-label">테스트 수</div>
+                <div class="summary-value">6개</div>
+            </div>
+            <div class="summary-cell">
+                <div class="summary-label">관련 모듈</div>
+                <div class="summary-value">360</div>
+            </div>
+            <div class="summary-cell">
+                <div class="summary-label">중요도</div>
+                <div class="summary-value">Critical</div>
+            </div>
+            <div class="summary-cell">
+                <div class="summary-label">상태</div>
+                <div class="summary-value" id="categoryStatus">대기</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Overview Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">개요</h2>
+            </div>
+            <div class="section-body">
+                <p class="section-description">
+                    5단계 거래 검증은 모든 거래가 실행되기 전에 거쳐야 하는 필수 검증 단계입니다. 
+                    각 단계를 통과해야만 거래가 승인됩니다.
+                </p>
+                
+                <div class="step-indicator">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-name">잔액 검증</div>
+                        <div class="step-desc">충분한 잔액</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-name">신원 검증</div>
+                        <div class="step-desc">KYC 확인</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-name">한도 검증</div>
+                        <div class="step-desc">일일/건당 한도</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-name">이상 탐지</div>
+                        <div class="step-desc">패턴 분석</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-name">규정 준수</div>
+                        <div class="step-desc">AML/CFT</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" id="runAllCategoryTests">전체 테스트 실행 (G-01 ~ G-06)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test List Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">테스트 목록</h2>
+            </div>
+            <div class="section-body">
+                <div class="test-list" id="testList"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <div class="container">
+            © 2026 OpenHash. <a href="/tests/">테스트 센터</a> | G. 5단계 거래 검증 테스트 (6/64)
+        </div>
+    </footer>
+
+    <script>
+    const OPENHASH_NODE = 'http://3.231.220.126';
+    
+    const categoryTests = [
+        {
+            id: 'G-01', name: '정상 거래 5단계 검증',
+            purpose: '정상적인 거래가 5단계를 모두 통과하는지 확인',
+            importance: 'critical',
+            description: '정상적인 거래 요청에 대해 5단계 검증을 수행합니다:\n1. 잔액 검증: 송신자 잔액 ≥ 송금액\n2. 신원 검증: 송수신자 KYC 완료\n3. 한도 검증: 일일/건당 한도 이내\n4. 이상 탐지: 비정상 패턴 없음\n5. 규정 준수: AML/CFT 통과',
+            endpoint: 'POST /transaction/validate', url: OPENHASH_NODE + ':5004/transaction/validate',
+            curl: 'curl -X POST http://3.231.220.126:5004/transaction/validate \\\n  -H "Content-Type: application/json" \\\n  -d \'{"from":"user_A","to":"user_B","amount":100}\'',
+            fields: [
+                { field: 'valid', type: 'boolean', desc: '전체 검증 통과 여부' },
+                { field: 'stages', type: 'object', desc: '각 단계별 결과' },
+                { field: 'stages.stage1', type: 'string', desc: '잔액 검증 결과' },
+                { field: 'stages.stage2', type: 'string', desc: '신원 검증 결과' },
+                { field: 'stages.stage3', type: 'string', desc: '한도 검증 결과' },
+                { field: 'stages.stage4', type: 'string', desc: '이상 탐지 결과' },
+                { field: 'stages.stage5', type: 'string', desc: '규정 준수 결과' }
+            ],
+            criteria: ['valid === true', '5단계 모두 passed'],
+            method: 'POST',
+            body: { from: 'user_A', to: 'user_B', amount: 100 }
+        },
+        {
+            id: 'G-02', name: '잔액 부족 거래',
+            purpose: '잔액 부족 시 1단계에서 거부되는지 확인',
+            importance: 'high',
+            description: '송신자 잔액보다 큰 금액을 송금하려 할 때 1단계(잔액 검증)에서 거래가 거부되는지 확인합니다.',
+            endpoint: 'POST /transaction/validate', url: OPENHASH_NODE + ':5004/transaction/validate',
+            curl: 'curl -X POST http://3.231.220.126:5004/transaction/validate \\\n  -H "Content-Type: application/json" \\\n  -d \'{"from":"user_A","to":"user_B","amount":999999999}\'',
+            fields: [
+                { field: 'valid', type: 'boolean', desc: 'false 예상' },
+                { field: 'failedStage', type: 'number', desc: '실패한 단계 (1)' },
+                { field: 'reason', type: 'string', desc: '거부 사유' }
+            ],
+            criteria: ['valid === false', 'failedStage === 1'],
+            method: 'POST',
+            body: { from: 'user_A', to: 'user_B', amount: 999999999 }
+        },
+        {
+            id: 'G-03', name: '한도 초과 거래',
+            purpose: '일일 한도 초과 시 3단계에서 거부되는지 확인',
+            importance: 'high',
+            description: '일일 거래 한도(1,000,000)를 초과하는 거래 시 3단계(한도 검증)에서 거래가 거부되는지 확인합니다.',
+            endpoint: 'POST /transaction/validate', url: OPENHASH_NODE + ':5004/transaction/validate',
+            curl: 'curl -X POST http://3.231.220.126:5004/transaction/validate \\\n  -H "Content-Type: application/json" \\\n  -d \'{"from":"user_A","to":"user_B","amount":100000000}\'',
+            fields: [
+                { field: 'valid', type: 'boolean', desc: 'false 예상' },
+                { field: 'failedStage', type: 'number', desc: '실패한 단계 (3)' },
+                { field: 'limit', type: 'number', desc: '현재 한도' }
+            ],
+            criteria: ['valid === false', 'failedStage === 3'],
+            method: 'POST',
+            body: { from: 'user_A', to: 'user_B', amount: 100000000 }
+        },
+        {
+            id: 'G-04', name: '이상 탐지 테스트',
+            purpose: '비정상 패턴 감지 시 4단계에서 경고하는지 확인',
+            importance: 'high',
+            description: '짧은 시간 내 다수의 거래 등 비정상 패턴 발생 시 4단계(이상 탐지)에서 경고 또는 거부하는지 확인합니다.',
+            endpoint: 'POST /transaction/anomaly', url: OPENHASH_NODE + ':5004/transaction/anomaly',
+            curl: 'curl -X POST http://3.231.220.126:5004/transaction/anomaly \\\n  -H "Content-Type: application/json" \\\n  -d \'{"userId":"user_A","pattern":"rapid_transaction","count":15,"timeWindow":60}\'',
+            fields: [
+                { field: 'anomalyDetected', type: 'boolean', desc: '이상 탐지 여부' },
+                { field: 'riskLevel', type: 'string', desc: '위험 수준 (low/medium/high)' },
+                { field: 'action', type: 'string', desc: '권장 조치' }
+            ],
+            criteria: ['anomalyDetected === true'],
+            method: 'POST',
+            body: { userId: 'user_A', pattern: 'rapid_transaction', count: 15, timeWindow: 60 }
+        },
+        {
+            id: 'G-05', name: '미등록 사용자 거래',
+            purpose: 'KYC 미완료 사용자의 거래가 2단계에서 거부되는지 확인',
+            importance: 'high',
+            description: 'KYC(신원확인)가 완료되지 않은 사용자의 거래 요청 시 2단계(신원 검증)에서 거래가 거부되는지 확인합니다.',
+            endpoint: 'POST /transaction/validate', url: OPENHASH_NODE + ':5004/transaction/validate',
+            curl: 'curl -X POST http://3.231.220.126:5004/transaction/validate \\\n  -H "Content-Type: application/json" \\\n  -d \'{"from":"unregistered_user","to":"user_B","amount":100}\'',
+            fields: [
+                { field: 'valid', type: 'boolean', desc: 'false 예상' },
+                { field: 'failedStage', type: 'number', desc: '실패한 단계 (2)' },
+                { field: 'reason', type: 'string', desc: 'KYC 미완료' }
+            ],
+            criteria: ['valid === false', 'failedStage === 2'],
+            method: 'POST',
+            body: { from: 'unregistered_user', to: 'user_B', amount: 100 }
+        },
+        {
+            id: 'G-06', name: '검증 상세 로그',
+            purpose: '5단계 검증의 상세 로그 확인',
+            importance: 'medium',
+            description: '거래 검증 과정의 상세 로그를 조회합니다. 각 단계별 소요 시간, 검증 내용, 결과 등을 확인합니다.',
+            endpoint: 'GET /transaction/validate/log/:txId', url: OPENHASH_NODE + ':5004/transaction/validate/log/test-tx-001',
+            curl: 'curl http://3.231.220.126:5004/transaction/validate/log/test-tx-001',
+            fields: [
+                { field: 'txId', type: 'string', desc: '거래 ID' },
+                { field: 'logs', type: 'array', desc: '단계별 로그' },
+                { field: 'totalTime', type: 'number', desc: '총 소요 시간 (ms)' }
+            ],
+            criteria: ['logs가 배열']
+        }
+    ];
+
+    function createTestCard(test) {
+        return `
+        <div class="test-item" data-test="${test.id}">
+            <div class="test-item-header" onclick="toggleTest('${test.id}')">
+                <span class="test-id">${test.id}</span>
+                <span class="test-name">${test.name}</span>
+                <span class="importance-badge ${test.importance}">${test.importance}</span>
+                <span class="test-status" id="status-${test.id}">—</span>
+                <button class="btn btn-sm btn-run" onclick="event.stopPropagation(); runSingleTest('${test.id}')">실행</button>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="test-item-body">
+                <div class="test-field">
+                    <div class="test-field-label">목적</div>
+                    <div class="test-field-value">${test.purpose}</div>
+                </div>
+                <div class="test-field">
+                    <div class="test-field-label">설명</div>
+                    <div class="test-field-value">${test.description.replace(/\n/g, '<br>')}</div>
+                </div>
+                <div class="test-field">
+                    <div class="test-field-label">API 명세</div>
+                    <div class="api-spec">
+                        <div class="api-row">
+                            <span class="api-label">엔드포인트</span>
+                            <code class="api-value">${test.endpoint}</code>
+                        </div>
+                        <div class="api-row">
+                            <span class="api-label">URL</span>
+                            <code class="api-value">${test.url}</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-field">
+                    <div class="test-field-label">cURL 명령어</div>
+                    <div class="code-block">
+                        <code>${test.curl}</code>
+                        <button class="copy-btn" onclick="copyCode(this)">복사</button>
+                    </div>
+                </div>
+                <div class="test-field">
+                    <div class="test-field-label">응답 필드</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>필드</th><th>타입</th><th>설명</th></tr>
+                        </thead>
+                        <tbody>
+                            ${test.fields.map(f => `<tr><td><code>${f.field}</code></td><td>${f.type}</td><td>${f.desc}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="test-field">
+                    <div class="test-field-label">판정 기준</div>
+                    <ul class="criteria-list">
+                        ${test.criteria.map(c => `<li><code>${c}</code></li>`).join('')}
+                    </ul>
+                </div>
+                <div class="test-field">
+                    <div class="test-field-label">실행 결과</div>
+                    <div class="result-container" id="result-${test.id}">
+                        <p class="result-placeholder">테스트를 실행하면 결과가 여기에 표시됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function renderTests() {
+        document.getElementById('testList').innerHTML = categoryTests.map(createTestCard).join('');
+        document.querySelector('.test-item').classList.add('open');
+    }
+
+    function toggleTest(testId) {
+        document.querySelector(`[data-test="${testId}"]`).classList.toggle('open');
+    }
+
+    function copyCode(btn) {
+        const code = btn.previousElementSibling.textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            btn.textContent = '복사됨!';
+            setTimeout(() => btn.textContent = '복사', 2000);
+        });
+    }
+
+    async function runSingleTest(testId) {
+        const test = categoryTests.find(t => t.id === testId);
+        if (!test) return;
+        updateTestStatus(testId, 'running');
+        try {
+            const startTime = Date.now();
+            const response = await fetch(test.url, {
+                method: test.method || 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                body: test.body ? JSON.stringify(test.body) : null
+            });
+            const result = await response.json();
+            const elapsed = Date.now() - startTime;
+            const passed = validateTest(test, result);
+            displayResult(testId, result, elapsed, passed);
+            updateTestStatus(testId, passed ? 'pass' : 'fail');
+        } catch (error) {
+            displayError(testId, error);
+            updateTestStatus(testId, 'fail');
+        }
+        updateCategoryStatus();
+    }
+
+    function validateTest(test, result) {
+        switch(test.id) {
+            case 'G-01': return result.valid === true;
+            case 'G-02': return result.valid === false && result.failedStage === 1;
+            case 'G-03': return result.valid === false && result.failedStage === 3;
+            case 'G-04': return result.anomalyDetected === true;
+            case 'G-05': return result.valid === false && result.failedStage === 2;
+            case 'G-06': return Array.isArray(result.logs);
+            default: return true;
+        }
+    }
+
+    function updateTestStatus(testId, status) {
+        const el = document.getElementById(`status-${testId}`);
+        if (!el) return;
+        el.className = 'test-status ' + status;
+        el.textContent = status === 'running' ? '실행중...' : status === 'pass' ? '✓ PASS' : status === 'fail' ? '✗ FAIL' : '—';
+    }
+
+    function displayResult(testId, result, elapsed, passed) {
+        const container = document.getElementById(`result-${testId}`);
+        if (!container) return;
+        container.innerHTML = `
+            <div class="result-header ${passed ? 'pass' : 'fail'}">
+                <span class="result-badge">${passed ? '✓ PASS' : '✗ FAIL'}</span>
+                <span class="result-time">${elapsed}ms</span>
+            </div>
+            <pre class="result-json">${JSON.stringify(result, null, 2)}</pre>
+        `;
+    }
+
+    function displayError(testId, error) {
+        const container = document.getElementById(`result-${testId}`);
+        if (!container) return;
+        container.innerHTML = `
+            <div class="result-header fail">
+                <span class="result-badge">✗ FAIL</span>
+            </div>
+            <div class="result-error"><strong>Error:</strong> ${error.message}</div>
+        `;
+    }
+
+    function updateCategoryStatus() {
+        let pass = 0, fail = 0, total = categoryTests.length;
+        document.querySelectorAll('.test-status').forEach(el => {
+            if (el.classList.contains('pass')) pass++;
+            if (el.classList.contains('fail')) fail++;
+        });
+        const statusEl = document.getElementById('categoryStatus');
+        if (statusEl && (pass + fail) > 0) {
+            if (pass + fail === total && fail === 0) {
+                statusEl.textContent = '✓ 완료';
+                statusEl.style.color = '#0d6832';
+            } else {
+                statusEl.textContent = `${pass}/${pass + fail}`;
+            }
+        }
+    }
+
+    async function runAllCategoryTests() {
+        for (const test of categoryTests) {
+            await runSingleTest(test.id);
+            await new Promise(r => setTimeout(r, 300));
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderTests();
+        document.getElementById('runAllCategoryTests').addEventListener('click', runAllCategoryTests);
+    });
+    </script>
+<script src="/js/nav.js"></script></body>
+</html>

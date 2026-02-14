@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특허 요약서 - OpenHash EGCT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
+    <style>
+        :root {
+            --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#a5b4fc;
+            --gold:#d4a017;--gold-light:#f5d77a;--navy:#1e3a5f;--navy-dark:#0f2440;
+            --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+            --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+            --gray-800:#1f2937;--gray-900:#111827;
+            --green:#10b981;--green-light:#d1fae5;--red:#ef4444;--red-light:#fee2e2;
+            --blue:#3b82f6;--blue-light:#dbeafe;--orange:#f59e0b;--orange-light:#fef3c7;
+            --cyan:#06b6d4;--cyan-light:#cffafe;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Noto Sans KR',sans-serif;background:var(--gray-50);color:var(--gray-900);line-height:1.8;-webkit-font-smoothing:antialiased;}
+
+        .pa-report{width:100%;}
+        .pa-inner{max-width:1200px;margin:0 auto;padding:0 2rem;}
+
+        /* 히어로 */
+        .pa-hero{background:linear-gradient(135deg,#0a1628 0%,#1a2d4a 40%,#243b5c 70%,#1e3a5f 100%);color:#fff;padding:3.5rem 2rem 3rem;position:relative;overflow:hidden;}
+        .pa-hero::before{content:'';position:absolute;top:-30%;right:-5%;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 70%);border-radius:50%;}
+        .pa-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--primary),var(--cyan),var(--gold));}
+        .pa-hero .pa-inner{position:relative;z-index:1;}
+        .pa-hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.3rem .9rem;background:rgba(6,182,212,.2);border:1px solid rgba(6,182,212,.4);border-radius:100px;font-size:.72rem;font-weight:600;color:#67e8f9;letter-spacing:.05em;margin-bottom:1rem;}
+        .pa-hero-badge .pa-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pa-pulse 2s infinite;}
+        @keyframes pa-pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+        .pa-hero h1{font-size:1.7rem;font-weight:900;line-height:1.35;margin-bottom:.5rem;color:#fff;}
+        .pa-hero h1 .pa-en{display:block;font-size:.78rem;font-weight:500;opacity:.5;margin-top:.3rem;}
+        .pa-hero-desc{font-size:.88rem;opacity:.85;max-width:720px;margin-bottom:1.5rem;line-height:1.7;}
+        .pa-kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;}
+        .pa-kpi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1rem;text-align:center;position:relative;backdrop-filter:blur(4px);}
+        .pa-kpi-val{font-size:1.6rem;font-weight:900;color:var(--gold-light);line-height:1.2;}
+        .pa-kpi-label{font-size:.68rem;opacity:.7;margin-top:.2rem;}
+        .pa-kpi-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
+
+        /* 섹션 공통 */
+        .pa-section{padding:3rem 0;}
+        .pa-section+.pa-section{border-top:1px solid var(--gray-200);}
+        .pa-badge{display:inline-block;padding:.2rem .65rem;background:var(--primary);color:#fff;border-radius:100px;font-size:.68rem;font-weight:700;margin-bottom:.6rem;letter-spacing:.04em;}
+        .pa-title{font-size:1.4rem;font-weight:800;margin-bottom:.4rem;color:var(--gray-900);}
+        .pa-title .pa-hl{color:var(--primary-dark);}
+        .pa-desc{color:var(--gray-600);font-size:.88rem;margin-bottom:2rem;max-width:680px;}
+
+        /* ① 3열 카드 */
+        .pa-overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+        .pa-overview-card{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:1.8rem;position:relative;overflow:hidden;transition:transform .35s,box-shadow .35s;}
+        .pa-overview-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.08);}
+        .pa-overview-card .pa-oc-top{height:3px;position:absolute;top:0;left:0;right:0;}
+        .pa-oc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+        .pa-oc-icon svg{width:24px;height:24px;}
+        .pa-oc-icon.i-green{background:var(--green-light);color:var(--green);}
+        .pa-oc-icon.i-blue{background:var(--blue-light);color:var(--blue);}
+        .pa-oc-icon.i-gold{background:var(--orange-light);color:#b45309;}
+        .pa-oc-name{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--gray-900);}
+        .pa-oc-text{font-size:.84rem;color:var(--gray-600);line-height:1.7;}
+
+        /* ② 타임라인 */
+        .pa-timeline{position:relative;padding-left:2.5rem;}
+        .pa-timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--primary),var(--cyan),var(--green));}
+        .pa-tl-item{position:relative;margin-bottom:2rem;}
+        .pa-tl-item:last-child{margin-bottom:0;}
+        .pa-tl-dot{position:absolute;left:-2.5rem;top:.2rem;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:var(--primary);z-index:1;}
+        .pa-tl-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:1.2rem 1.5rem;transition:all .3s;}
+        .pa-tl-card:hover{border-color:var(--primary-light);box-shadow:0 4px 16px rgba(99,102,241,.08);}
+        .pa-tl-card h4{font-size:.95rem;font-weight:700;color:var(--gray-900);margin-bottom:.3rem;}
+        .pa-tl-card p{font-size:.82rem;color:var(--gray-600);line-height:1.65;}
+        .pa-tl-metric{display:inline-block;margin-top:.4rem;padding:.2rem .6rem;background:rgba(99,102,241,.08);border-radius:6px;font-size:.75rem;font-weight:700;color:var(--primary-dark);}
+
+        /* ③ 비교 */
+        .pa-compare-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:1.5rem;align-items:start;}
+        .pa-compare-box{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:1.5rem;min-height:320px;}
+        .pa-compare-box.pa-old{border-top:4px solid var(--red);}
+        .pa-compare-box.pa-new{border-top:4px solid var(--green);}
+        .pa-compare-box h4{font-size:.92rem;font-weight:700;margin-bottom:1rem;color:var(--gray-900);}
+        .pa-compare-list{list-style:none;padding:0;}
+        .pa-compare-list li{padding:.5rem 0 .5rem 1.5rem;position:relative;font-size:.82rem;color:var(--gray-700);line-height:1.55;border-bottom:1px solid var(--gray-100);}
+        .pa-compare-list li:last-child{border-bottom:none;}
+        .pa-old .pa-compare-list li::before{content:'✗';position:absolute;left:0;color:var(--red);font-weight:800;}
+        .pa-new .pa-compare-list li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:800;}
+        .pa-compare-vs{display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;text-orientation:mixed;font-size:1.2rem;font-weight:900;color:var(--gray-300);padding-top:2rem;}
+
+        /* ④ 기대효과 */
+        .pa-effect-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+        .pa-effect-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:1.5rem;text-align:center;position:relative;overflow:hidden;transition:all .3s;}
+        .pa-effect-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.06);}
+        .pa-ef-icon{font-size:1.8rem;margin-bottom:.6rem;}
+        .pa-ef-val{font-size:1.8rem;font-weight:900;color:var(--primary-dark);line-height:1.1;}
+        .pa-ef-unit{font-size:.75rem;font-weight:600;color:var(--gray-500);}
+        .pa-ef-label{font-size:.78rem;color:var(--gray-600);margin-top:.4rem;font-weight:500;}
+
+        /* ⑤ SSI */
+        .pa-ssi-flow{display:flex;align-items:stretch;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+        .pa-ssi-step{flex:1;min-width:140px;background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:1.2rem .8rem;text-align:center;transition:all .3s;}
+        .pa-ssi-step:hover{border-color:var(--cyan);box-shadow:0 4px 16px rgba(6,182,212,.1);}
+        .pa-ssi-num{width:28px;height:28px;background:var(--cyan);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;margin:0 auto .5rem;}
+        .pa-ssi-icon{font-size:1.4rem;margin-bottom:.3rem;}
+        .pa-ssi-name{font-size:.8rem;font-weight:700;color:var(--gray-900);margin-bottom:.15rem;}
+        .pa-ssi-desc{font-size:.72rem;color:var(--gray-500);line-height:1.4;}
+        .pa-ssi-arrow{display:flex;align-items:center;color:var(--gray-300);font-size:1.1rem;}
+
+        /* ⑥ CTA */
+        .pa-cta-banner{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 50%,#2d5a87 100%);color:#fff;border-radius:16px;padding:2.5rem;margin-top:1.5rem;position:relative;overflow:hidden;}
+        .pa-cta-banner::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:radial-gradient(circle,rgba(212,160,23,.15),transparent 70%);border-radius:50%;}
+        .pa-cta-banner h3{font-size:1.25rem;font-weight:800;margin-bottom:.6rem;position:relative;color:#fff;}
+        .pa-cta-text{font-size:.88rem;opacity:.85;line-height:1.7;max-width:800px;position:relative;}
+        .pa-cta-stats{display:flex;gap:2rem;margin-top:1.5rem;position:relative;flex-wrap:wrap;}
+        .pa-cta-stat{text-align:center;}
+        .pa-cta-stat-val{font-size:1.6rem;font-weight:900;color:var(--gold-light);}
+        .pa-cta-stat-label{font-size:.68rem;opacity:.6;margin-top:.1rem;}
+
+        /* 애니메이션 */
+        .pa-fade{opacity:0;transform:translateY(24px);transition:opacity .6s ease-out,transform .6s ease-out;}
+        .pa-fade.pa-visible{opacity:1;transform:translateY(0);}
+
+        /* 반응형 */
+        @media(max-width:900px){
+            .pa-overview-grid{grid-template-columns:1fr;}.pa-kpi-row{grid-template-columns:repeat(3,1fr);}
+            .pa-compare-wrap{grid-template-columns:1fr;}.pa-compare-vs{writing-mode:horizontal-tb;padding:0;}
+            .pa-effect-grid{grid-template-columns:repeat(2,1fr);}.pa-ssi-flow{flex-direction:column;}
+            .pa-ssi-arrow{transform:rotate(90deg);justify-content:center;}
+        }
+        @media(max-width:600px){
+            .pa-hero{padding:2rem 1.25rem;}.pa-inner{padding:0 1.25rem;}
+            .pa-kpi-row{grid-template-columns:repeat(2,1fr);}.pa-effect-grid{grid-template-columns:1fr;}
+            .pa-cta-stats{flex-direction:column;gap:1rem;}
+        }
+    </style>
+</head>
+<body>
+<div class="pa-report">
+
+<!-- 히어로 -->
+<div class="pa-hero">
+    <div class="pa-inner">
+        <div class="pa-hero-badge"><span class="pa-dot"></span> 특허 요약서 · PATENT ABSTRACT</div>
+        <h1>오픈해시 디지털 화폐 &amp; SSI 인증 시스템<span class="pa-en">Layer-Distributed Private Competitive Digital Currency System with FPGA-Accelerated AI Verification &amp; Self-Sovereign Identity</span></h1>
+        <p class="pa-hero-desc">기존 블록체인의 에너지 낭비와 속도 한계를 근본적으로 해결하는 차세대 디지털 화폐 플랫폼입니다. 기존 통신 인프라를 그대로 활용하고, AI와 FPGA 하드웨어 가속으로 실시간 금융 서비스를 제공하며, 중앙 기관 없이 개인이 직접 신원을 증명하는 SSI 인증을 통합합니다.</p>
+        <div class="pa-kpi-row">
+            <div class="pa-kpi"><div class="pa-kpi-bar" style="background:var(--green)"></div><div class="pa-kpi-val">98.5%</div><div class="pa-kpi-label">에너지 절감</div></div>
+            <div class="pa-kpi"><div class="pa-kpi-bar" style="background:var(--cyan)"></div><div class="pa-kpi-val">0.032ms</div><div class="pa-kpi-label">거래 검증 속도</div></div>
+            <div class="pa-kpi"><div class="pa-kpi-bar" style="background:var(--primary)"></div><div class="pa-kpi-val">99.4%</div><div class="pa-kpi-label">부정거래 탐지율</div></div>
+            <div class="pa-kpi"><div class="pa-kpi-bar" style="background:var(--gold)"></div><div class="pa-kpi-val">492만원</div><div class="pa-kpi-label">개인 연간 혜택</div></div>
+            <div class="pa-kpi"><div class="pa-kpi-bar" style="background:var(--orange)"></div><div class="pa-kpi-val">29건</div><div class="pa-kpi-label">특허 청구항</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ① 핵심 개요 -->
+<div class="pa-section pa-fade"><div class="pa-inner">
+    <span class="pa-badge">Overview</span>
+    <h2 class="pa-title">핵심 <span class="pa-hl">3대 기술</span></h2>
+    <p class="pa-desc">오픈해시 시스템은 계층 분산 무결성 검증, AI 기반 디지털 화폐, 자기주권 신원 인증이라는 3가지 핵심 기술의 융합으로 구성됩니다.</p>
+    <div class="pa-overview-grid">
+        <div class="pa-overview-card"><div class="pa-oc-top" style="background:var(--green)"></div><div class="pa-oc-icon i-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="pa-oc-name">제1부: 계층 분산 데이터 무결성</div><div class="pa-oc-text">기존 이동통신 네트워크의 5단계 행정 계층 구조(글로벌→국가→광역시도→시군구→읍면동)를 그대로 활용하여, 작업증명(PoW)이나 지분증명(PoS) 없이도 데이터 무결성을 확률적으로 보장합니다. 계층별 잔액 불변성 검증과 5단계 거래 검증 파이프라인으로 기존 블록체인 대비 에너지를 98.5% 절감합니다.</div></div>
+        <div class="pa-overview-card"><div class="pa-oc-top" style="background:var(--primary)"></div><div class="pa-oc-icon i-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="pa-oc-name">제2부: AI 디지털 화폐 시스템 (EGCT)</div><div class="pa-oc-text">민간 기업이 자유롭게 디지털 화폐를 발행·운용할 수 있는 플랫폼입니다. BERT-CNN-LSTM 앙상블 AI가 99.4% 정확도로 부정거래를 탐지하고, FPGA 칩이 암호 연산을 0.032ms에 처리합니다. 거래 즉시 재무제표가 자동 생성되고, 자율 은행·보험·증권 서비스가 통합 제공됩니다.</div></div>
+        <div class="pa-overview-card"><div class="pa-oc-top" style="background:var(--gold)"></div><div class="pa-oc-icon i-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="pa-oc-name">SSI 자기주권 신원 인증</div><div class="pa-oc-text">중앙 인증 기관 없이, 사용자가 직접 5가지 요소(신분증 원본, 발행자 서명, 해시값, 계층·노드 정보, 저장 시각)를 제시하여 신원을 증명합니다. 개인정보 주권을 사용자에게 완전히 돌려주며, 필요한 정보만 선택적으로 공개할 수 있습니다.</div></div>
+    </div>
+</div></div>
+
+<!-- ② 작동 원리 -->
+<div class="pa-section pa-fade"><div class="pa-inner">
+    <span class="pa-badge">How It Works</span>
+    <h2 class="pa-title">거래가 처리되는 <span class="pa-hl">과정</span></h2>
+    <p class="pa-desc">하나의 거래가 발생하면, 오픈해시 시스템은 다음과 같은 단계로 처리합니다.</p>
+    <div class="pa-timeline">
+        <div class="pa-tl-item"><div class="pa-tl-dot">1</div><div class="pa-tl-card"><h4>거래 발생 → 최하위 계층 노드가 수신</h4><p>사용자가 디지털 화폐 거래를 시작하면, 가장 가까운 읍면동 단위 노드가 이를 수신합니다. 기존 이동통신 인프라를 활용하므로 별도 네트워크가 필요 없습니다.</p><span class="pa-tl-metric">인프라 투자 비용: 0원</span></div></div>
+        <div class="pa-tl-item"><div class="pa-tl-dot">2</div><div class="pa-tl-card"><h4>5단계 거래 검증 파이프라인</h4><p>거래는 구문 검증 → 잔액 확인 → 이중지불 방지 → 서명 검증 → 비즈니스 규칙 검증까지 총 5단계를 거칩니다. 이 과정에서 계층별 잔액 불변성도 함께 검증됩니다.</p><span class="pa-tl-metric">계층 간 검증 시간: 4ms</span></div></div>
+        <div class="pa-tl-item"><div class="pa-tl-dot">3</div><div class="pa-tl-card"><h4>AI 앙상블 검증 + FPGA 가속 영지식 증명</h4><p>BERT-CNN-LSTM 앙상블 모델이 부정거래를 탐지(99.4% 정확도)하고, FPGA가 BN254 타원곡선 병렬 페어링으로 영지식 증명을 0.032ms에 완료합니다.</p><span class="pa-tl-metric">FPGA 검증: 0.032ms · AI 탐지: 99.4%</span></div></div>
+        <div class="pa-tl-item"><div class="pa-tl-dot">4</div><div class="pa-tl-card"><h4>재무제표 자동 생성 + 자율 금융 서비스</h4><p>검증 완료 즉시, 재무상태표·손익계산서·현금흐름표가 자동으로 생성됩니다. AI가 이 데이터를 실시간 분석하여 자율 은행(대출), 자율 보험(보장), 자율 증권(투자) 서비스를 최적화합니다.</p><span class="pa-tl-metric">전체 처리 시간: 0.87ms</span></div></div>
+        <div class="pa-tl-item"><div class="pa-tl-dot">5</div><div class="pa-tl-card"><h4>크로스체인 연동 + 글로벌 규제 자동 준수</h4><p>이더리움·폴리곤·아비트럼·zkSync 등 기존 블록체인과 원자적 자산 이동이 가능하며, 30개국 규제 프레임워크를 24시간 자동으로 준수합니다.</p><span class="pa-tl-metric">호환 체인: 4종 · 규제 커버리지: 30개국</span></div></div>
+    </div>
+</div></div>
+
+<!-- ③ 비교 -->
+<div class="pa-section pa-fade"><div class="pa-inner">
+    <span class="pa-badge">Comparison</span>
+    <h2 class="pa-title">기존 블록체인 vs <span class="pa-hl">오픈해시</span></h2>
+    <p class="pa-desc">기존 블록체인 기술의 근본적 한계를 새로운 패러다임으로 해결합니다.</p>
+    <div class="pa-compare-wrap">
+        <div class="pa-compare-box pa-old"><h4>⚠️ 기존 블록체인 (PoW/PoS)</h4><ul class="pa-compare-list"><li>막대한 전력 소비 (비트코인: 연간 150TWh)</li><li>느린 거래 처리 (10분~수 시간 소요)</li><li>높은 인프라 구축 비용 (전용 네트워크 필요)</li><li>낮은 부정거래 탐지율 (85~90%)</li><li>중앙 인증 기관 의존 (단일 실패점 존재)</li><li>개인정보 유출 위험 (원본 데이터 중앙 보관)</li><li>제한된 확장성과 크로스체인 호환성</li></ul></div>
+        <div class="pa-compare-vs">VS</div>
+        <div class="pa-compare-box pa-new"><h4>✅ 오픈해시 디지털 화폐 시스템</h4><ul class="pa-compare-list"><li>에너지 98.5% 절감 (기존 통신망 활용)</li><li>0.032ms 거래 검증, 4ms 계층 간 검증</li><li>별도 인프라 불필요 (유지보수 80~90% 절감)</li><li>AI 앙상블 99.4% 부정거래 탐지율</li><li>SSI 기반 탈중앙 인증 (단일 실패점 없음)</li><li>해시값만 저장 — 원본은 사용자가 보유</li><li>4개 블록체인 원자적 연동 + 30개국 규제 준수</li></ul></div>
+    </div>
+</div></div>
+
+<!-- ④ 기대효과 -->
+<div class="pa-section pa-fade"><div class="pa-inner">
+    <span class="pa-badge">Impact</span>
+    <h2 class="pa-title">경제적 <span class="pa-hl">기대 효과</span></h2>
+    <p class="pa-desc">이 시스템이 한국 금융 산업에 도입되면 다음과 같은 효과가 기대됩니다.</p>
+    <div class="pa-effect-grid">
+        <div class="pa-effect-card"><div class="pa-ef-icon">⚡</div><div class="pa-ef-val">98.5<span class="pa-ef-unit">%</span></div><div class="pa-ef-label">에너지 비용 절감</div></div>
+        <div class="pa-effect-card"><div class="pa-ef-icon">🏦</div><div class="pa-ef-val">24.3<span class="pa-ef-unit">조원</span></div><div class="pa-ef-label">연간 운영비 절감 (10년차)</div></div>
+        <div class="pa-effect-card"><div class="pa-ef-icon">🛡️</div><div class="pa-ef-val">2,115<span class="pa-ef-unit">억원</span></div><div class="pa-ef-label">연간 사기 방지 효과</div></div>
+        <div class="pa-effect-card"><div class="pa-ef-icon">👤</div><div class="pa-ef-val">492<span class="pa-ef-unit">만원</span></div><div class="pa-ef-label">개인당 연간 경제적 혜택</div></div>
+    </div>
+</div></div>
+
+<!-- ⑤ SSI -->
+<div class="pa-section pa-fade"><div class="pa-inner">
+    <span class="pa-badge">SSI Authentication</span>
+    <h2 class="pa-title">자기주권 <span class="pa-hl">신원 인증</span> 프로세스</h2>
+    <p class="pa-desc">중앙 기관 없이, 사용자가 직접 5가지 요소를 제시하여 신원을 증명합니다.</p>
+    <div class="pa-ssi-flow">
+        <div class="pa-ssi-step"><div class="pa-ssi-num">1</div><div class="pa-ssi-icon">🪪</div><div class="pa-ssi-name">신분증 원본</div><div class="pa-ssi-desc">사용자가 보유한 신분증 원본 데이터</div></div>
+        <div class="pa-ssi-arrow">→</div>
+        <div class="pa-ssi-step"><div class="pa-ssi-num">2</div><div class="pa-ssi-icon">🔏</div><div class="pa-ssi-name">발행자 서명</div><div class="pa-ssi-desc">발행 기관의 디지털 서명 검증</div></div>
+        <div class="pa-ssi-arrow">→</div>
+        <div class="pa-ssi-step"><div class="pa-ssi-num">3</div><div class="pa-ssi-icon">#</div><div class="pa-ssi-name">해시값 비교</div><div class="pa-ssi-desc">오픈해시 네트워크에 저장된 해시</div></div>
+        <div class="pa-ssi-arrow">→</div>
+        <div class="pa-ssi-step"><div class="pa-ssi-num">4</div><div class="pa-ssi-icon">🗂️</div><div class="pa-ssi-name">계층·노드 정보</div><div class="pa-ssi-desc">해시가 저장된 위치 정보</div></div>
+        <div class="pa-ssi-arrow">→</div>
+        <div class="pa-ssi-step"><div class="pa-ssi-num">5</div><div class="pa-ssi-icon">🕐</div><div class="pa-ssi-name">저장 시각</div><div class="pa-ssi-desc">타임스탬프 및 유효기간 확인</div></div>
+    </div>
+</div></div>
+
+<!-- ⑥ CTA -->
+<div class="pa-section pa-fade" style="padding-bottom:3rem;"><div class="pa-inner">
+    <div class="pa-cta-banner">
+        <h3>혁신의 핵심: "물리적 구조를 디지털 보안에 직접 매핑"</h3>
+        <div class="pa-cta-text">본 발명은 순수 소프트웨어/알고리즘 개선을 넘어, 현실 세계의 물리적 네트워크 구조를 디지털 보안에 직접 매핑하는 새로운 패러다임을 제시합니다. 시스템·방법·기록매체 3중 IP 보호로 총 29건의 청구항으로 구성되며, 기존 인프라를 활용하여 추가 투자 없이 즉시 배포가 가능합니다.</div>
+        <div class="pa-cta-stats">
+            <div class="pa-cta-stat"><div class="pa-cta-stat-val">4건</div><div class="pa-cta-stat-label">독립 청구항</div></div>
+            <div class="pa-cta-stat"><div class="pa-cta-stat-val">24건</div><div class="pa-cta-stat-label">종속 청구항</div></div>
+            <div class="pa-cta-stat"><div class="pa-cta-stat-val">1건</div><div class="pa-cta-stat-label">기록매체</div></div>
+            <div class="pa-cta-stat"><div class="pa-cta-stat-val">3중</div><div class="pa-cta-stat-label">IP 보호 구조</div></div>
+        </div>
+    </div>
+</div></div>
+
+</div>
+
+<script>
+(function(){
+    var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pa-visible');obs.unobserve(e.target);}});},{threshold:.12});
+    document.querySelectorAll('.pa-fade').forEach(function(el){obs.observe(el);});
+})();
+</script>
+</body>
+</html>

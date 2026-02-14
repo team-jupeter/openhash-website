@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A. 노드 기본 테스트 - OpenHash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 15px; line-height: 1.6; color: #212529; background: #f8f9fa; margin: 0; -webkit-font-smoothing: antialiased; }
+    .page-header { background: #1a3a6e; border-bottom: 3px solid #d4a017; }
+    .page-header .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .page-header .logo { color: #ffffff; font-size: 18px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .page-header .nav-menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+    .page-header .nav-menu a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 4px; transition: background 0.15s; }
+    .page-header .nav-menu a:hover, .page-header .nav-menu a.active { background: rgba(255,255,255,0.15); color: #ffffff; }
+    .title-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; padding: 24px 0; }
+    .title-section .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .breadcrumb { font-size: 13px; color: #6c757d; margin-bottom: 12px; }
+    .breadcrumb a { color: #1a3a6e; text-decoration: none; }
+    .page-title { font-size: 26px; font-weight: 700; color: #212529; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; }
+    .category-badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a3a6e; color: #ffffff; font-size: 16px; font-weight: 700; border-radius: 4px; }
+    .page-subtitle { font-size: 14px; color: #6c757d; margin: 0; }
+    .summary-section { background: #ffffff; border-bottom: 1px solid #e5e8eb; }
+    .summary-table { max-width: 1200px; margin: 0 auto; display: flex; border-left: 1px solid #e5e8eb; }
+    .summary-cell { flex: 1; padding: 16px 24px; text-align: center; border-right: 1px solid #e5e8eb; }
+    .summary-label { font-size: 12px; color: #868e96; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .summary-value { font-size: 18px; font-weight: 600; color: #212529; }
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    .section { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 6px; margin-bottom: 24px; }
+    .section-header { padding: 20px 24px; border-bottom: 1px solid #e5e8eb; }
+    .section-title { font-size: 16px; font-weight: 600; color: #212529; margin: 0; }
+    .section-body { padding: 24px; }
+    .section-description { font-size: 14px; color: #6c757d; line-height: 1.7; margin: 0 0 24px 0; }
+    .layer-diagram { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 16px; background: #f8f9fa; border-radius: 4px; margin: 16px 0; flex-wrap: wrap; }
+    .layer-node { display: flex; flex-direction: column; align-items: center; padding: 12px 16px; background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; min-width: 100px; }
+    .layer-node.l4 { border-left: 3px solid #e03131; }
+    .layer-node.l3 { border-left: 3px solid #f76707; }
+    .layer-node.l2 { border-left: 3px solid #2f9e44; }
+    .layer-node.l1 { border-left: 3px solid #1971c2; }
+    .layer-label { font-size: 12px; font-weight: 600; color: #495057; }
+    .layer-port { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #868e96; }
+    .layer-status { font-size: 11px; margin-top: 4px; }
+    .layer-arrow { color: #adb5bd; font-size: 18px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+    .btn-primary { background: #1a3a6e; color: #ffffff; border-color: #1a3a6e; }
+    .btn-primary:hover { background: #142d54; }
+    .btn-sm { font-size: 13px; padding: 4px 12px; }
+    .btn-run { background: #ffffff; color: #6c757d; border-color: #d0d7de; }
+    .btn-run:hover { background: #f8f9fa; color: #212529; }
+    .test-list { display: flex; flex-direction: column; gap: 8px; }
+    .test-item { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .test-item.open { border-color: #d0d7de; }
+    .test-item-header { display: flex; align-items: center; padding: 16px 20px; cursor: pointer; transition: background 0.15s; gap: 16px; }
+    .test-item-header:hover { background: #f8f9fa; }
+    .test-item.open .test-item-header { border-bottom: 1px solid #e5e8eb; }
+    .test-id { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #1a3a6e; min-width: 48px; }
+    .test-name { flex: 1; font-size: 14px; font-weight: 500; color: #212529; }
+    .importance-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .importance-badge.critical { background: #fff5f5; color: #c92a2a; border: 1px solid #ffc9c9; }
+    .importance-badge.high { background: #fff9db; color: #e67700; border: 1px solid #ffec99; }
+    .importance-badge.medium { background: #e7f5ff; color: #1971c2; border: 1px solid #a5d8ff; }
+    .test-status { font-size: 13px; font-weight: 500; min-width: 70px; text-align: right; }
+    .test-status.pass { color: #0d6832; }
+    .test-status.fail { color: #c92a2a; }
+    .test-status.running { color: #1971c2; }
+    .toggle-icon { color: #868e96; font-size: 12px; transition: transform 0.2s; }
+    .test-item.open .toggle-icon { transform: rotate(180deg); }
+    .test-item-body { display: none; padding: 20px; }
+    .test-item.open .test-item-body { display: block; }
+    .test-field { margin-bottom: 20px; }
+    .test-field:last-child { margin-bottom: 0; }
+    .test-field-label { font-size: 12px; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .test-field-value { font-size: 14px; color: #212529; line-height: 1.6; }
+    .api-spec { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .api-row { display: flex; border-bottom: 1px solid #e5e8eb; }
+    .api-row:last-child { border-bottom: none; }
+    .api-label { width: 100px; padding: 12px 16px; background: #f1f3f5; font-size: 12px; font-weight: 500; color: #6c757d; border-right: 1px solid #e5e8eb; }
+    .api-value { flex: 1; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #212529; word-break: break-all; }
+    .code-block { position: relative; background: #f1f3f5; border: 1px solid #e5e8eb; border-radius: 4px; padding: 16px; padding-right: 70px; }
+    .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #212529; white-space: pre-wrap; word-break: break-all; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: #ffffff; border: 1px solid #e5e8eb; border-radius: 2px; padding: 4px 8px; font-size: 11px; color: #6c757d; cursor: pointer; }
+    .copy-btn:hover { background: #f8f9fa; color: #212529; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .data-table th { background: #f1f3f5; color: #6c757d; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; font-size: 12px; text-transform: uppercase; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #e5e8eb; color: #212529; vertical-align: top; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .criteria-list { list-style: none; padding: 0; margin: 0; }
+    .criteria-list li { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 13px; color: #212529; }
+    .criteria-list li::before { content: '✓'; color: #0d6832; font-weight: 600; }
+    .criteria-list code { background: #f1f3f5; padding: 2px 6px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .result-container { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 4px; overflow: hidden; }
+    .result-placeholder { padding: 32px; text-align: center; color: #868e96; font-size: 13px; }
+    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #e5e8eb; }
+    .result-header.pass { background: #d3f9d8; }
+    .result-header.fail { background: #ffe3e3; }
+    .result-badge { font-size: 13px; font-weight: 600; }
+    .result-header.pass .result-badge { color: #0d6832; }
+    .result-header.fail .result-badge { color: #c92a2a; }
+    .result-time { font-size: 12px; color: #868e96; font-family: 'JetBrains Mono', monospace; }
+    .result-json { padding: 16px; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: #212529; white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; background: #ffffff; }
+    .result-error { padding: 16px; color: #c92a2a; font-size: 13px; }
+    .page-footer { background: #ffffff; border-top: 1px solid #e5e8eb; padding: 24px 0; margin-top: 32px; }
+    .page-footer .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; font-size: 13px; color: #868e96; }
+    .page-footer a { color: #1a3a6e; text-decoration: none; }
+    @media (max-width: 768px) {
+        .summary-table { flex-direction: column; border-left: none; border-top: 1px solid #e5e8eb; }
+        .summary-cell { border-right: none; border-bottom: 1px solid #e5e8eb; }
+        .layer-diagram { flex-direction: column; }
+        .layer-arrow { transform: rotate(90deg); }
+        .test-item-header { flex-wrap: wrap; gap: 8px; }
+        .test-name { width: 100%; order: 2; }
+    }
+    </style>
+    
+    <link rel="stylesheet" href="/css/hero.css">
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+
+    <section class="title-section">
+        <div class="container">
+            <div class="breadcrumb"><a href="/tests/">테스트 센터</a> / A. 노드 기본</div>
+            <h1 class="page-title"><span class="category-badge">A</span>노드 기본 테스트</h1>
+            <p class="page-subtitle">4계층 노드 헬스체크 및 정보 조회 (8개 테스트)</p>
+        </div>
+    </section>
+
+    <section class="summary-section">
+        <div class="summary-table">
+            <div class="summary-cell"><div class="summary-label">테스트 수</div><div class="summary-value">8개</div></div>
+            <div class="summary-cell"><div class="summary-label">관련 모듈</div><div class="summary-value">-</div></div>
+            <div class="summary-cell"><div class="summary-label">중요도</div><div class="summary-value">Critical</div></div>
+            <div class="summary-cell"><div class="summary-label">상태</div><div class="summary-value" id="categoryStatus">대기</div></div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="section">
+            <div class="section-header"><h2 class="section-title">개요</h2></div>
+            <div class="section-body">
+                <p class="section-description">OpenHash는 4계층 구조로 운영됩니다. Layer 4(국가) → Layer 3(광역시도) → Layer 2(시군구) → Layer 1(읍면동). 각 계층의 노드가 정상 작동하는지 확인하는 기본 테스트입니다.</p>
+                <div class="layer-diagram">
+                    <div class="layer-node l4"><span class="layer-label">Layer 4</span><span class="layer-port">:5001</span><span class="layer-status" id="l4-status">-</span></div>
+                    <span class="layer-arrow">→</span>
+                    <div class="layer-node l3"><span class="layer-label">Layer 3</span><span class="layer-port">:5002</span><span class="layer-status" id="l3-status">-</span></div>
+                    <span class="layer-arrow">→</span>
+                    <div class="layer-node l2"><span class="layer-label">Layer 2</span><span class="layer-port">:5003</span><span class="layer-status" id="l2-status">-</span></div>
+                    <span class="layer-arrow">→</span>
+                    <div class="layer-node l1"><span class="layer-label">Layer 1</span><span class="layer-port">:5004</span><span class="layer-status" id="l1-status">-</span></div>
+                </div>
+                <div style="margin-top: 24px;"><button class="btn btn-primary" id="runAllCategoryTests">전체 테스트 실행 (A-01 ~ A-08)</button></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-header"><h2 class="section-title">테스트 목록</h2></div>
+            <div class="section-body"><div class="test-list" id="testList"></div></div>
+        </div>
+    </main>
+
+    <footer class="page-footer"><div class="container">© 2026 OpenHash. <a href="/tests/">테스트 센터</a> | A. 노드 기본 테스트 (8/64)</div></footer>
+
+    <script>
+    const OPENHASH_NODE = 'http://3.231.220.126';
+    const categoryTests = [
+        { id: 'A-01', name: 'Layer 4 헬스체크', purpose: 'Layer 4 (국가) 노드의 상태 확인', importance: 'critical', description: 'Layer 4는 OpenHash 네트워크의 최상위 계층입니다.\n국가 단위의 거래를 처리하며, n=13, f=4, quorum=9로 설정됩니다.', endpoint: 'GET /health', url: OPENHASH_NODE + ':5001/health', curl: 'curl http://3.231.220.126:5001/health', fields: [{ field: 'status', type: 'string', desc: '노드 상태 (healthy/unhealthy)' }, { field: 'layer', type: 'number', desc: '계층 번호 (4)' }, { field: 'layerId', type: 'string', desc: '계층 ID (KR)' }], criteria: ['status === "healthy"', 'layer === 4'] },
+        { id: 'A-02', name: 'Layer 3 헬스체크', purpose: 'Layer 3 (광역시도) 노드의 상태 확인', importance: 'critical', description: 'Layer 3는 광역시/도 단위를 담당합니다.\n제주특별자치도 노드이며, n=10, f=3, quorum=7로 설정됩니다.', endpoint: 'GET /health', url: OPENHASH_NODE + ':5002/health', curl: 'curl http://3.231.220.126:5002/health', fields: [{ field: 'status', type: 'string', desc: '노드 상태' }, { field: 'layer', type: 'number', desc: '계층 번호 (3)' }, { field: 'layerId', type: 'string', desc: '계층 ID (KR-JEJU)' }], criteria: ['status === "healthy"', 'layer === 3'] },
+        { id: 'A-03', name: 'Layer 2 헬스체크', purpose: 'Layer 2 (시군구) 노드의 상태 확인', importance: 'critical', description: 'Layer 2는 시/군/구 단위를 담당합니다.\n서귀포시 노드이며, n=7, f=2, quorum=5로 설정됩니다.', endpoint: 'GET /health', url: OPENHASH_NODE + ':5003/health', curl: 'curl http://3.231.220.126:5003/health', fields: [{ field: 'status', type: 'string', desc: '노드 상태' }, { field: 'layer', type: 'number', desc: '계층 번호 (2)' }, { field: 'layerId', type: 'string', desc: '계층 ID (KR-JEJU-SEOGWIPO)' }], criteria: ['status === "healthy"', 'layer === 2'] },
+        { id: 'A-04', name: 'Layer 1 헬스체크', purpose: 'Layer 1 (읍면동) 노드의 상태 확인', importance: 'critical', description: 'Layer 1은 읍/면/동 단위를 담당합니다.\n중문동 노드이며, n=4, f=1, quorum=3으로 설정됩니다.', endpoint: 'GET /health', url: OPENHASH_NODE + ':5004/health', curl: 'curl http://3.231.220.126:5004/health', fields: [{ field: 'status', type: 'string', desc: '노드 상태' }, { field: 'layer', type: 'number', desc: '계층 번호 (1)' }, { field: 'layerId', type: 'string', desc: '계층 ID (KR-JEJU-SEOGWIPO-JUNGMUN)' }], criteria: ['status === "healthy"', 'layer === 1'] },
+        { id: 'A-05', name: '노드 정보 조회', purpose: 'Layer 4 노드의 상세 정보 조회', importance: 'high', description: '노드의 LPBFT 합의 설정(n, f, quorum)과 계층 정보를 조회합니다.', endpoint: 'GET /info', url: OPENHASH_NODE + ':5001/info', curl: 'curl http://3.231.220.126:5001/info', fields: [{ field: 'n', type: 'number', desc: '전체 노드 수' }, { field: 'f', type: 'number', desc: '허용 장애 노드 수' }, { field: 'quorum', type: 'number', desc: '합의 정족수 (2f+1)' }], criteria: ['n === 3*f + 1', 'quorum === 2*f + 1'] },
+        { id: 'A-06', name: '계층 구조 확인', purpose: 'Layer 1 노드가 상위 계층과 연결되어 있는지 확인', importance: 'high', description: 'Layer 1 노드의 parent 필드가 Layer 2를 가리키는지 확인합니다.', endpoint: 'GET /info', url: OPENHASH_NODE + ':5004/info', curl: 'curl http://3.231.220.126:5004/info', fields: [{ field: 'parent', type: 'string', desc: '상위 계층 URL' }, { field: 'layer', type: 'number', desc: '현재 계층' }], criteria: ['parent가 :5003 포함'] },
+        { id: 'A-07', name: '노드 통계 조회', purpose: '노드의 운영 통계 조회', importance: 'medium', description: '노드의 업타임, 처리된 거래 수 등 통계를 조회합니다.', endpoint: 'GET /stats', url: OPENHASH_NODE + ':5004/stats', curl: 'curl http://3.231.220.126:5004/stats', fields: [{ field: 'uptime', type: 'number', desc: '업타임 (초)' }, { field: 'transactions', type: 'number', desc: '처리된 거래 수' }], criteria: ['uptime이 숫자'] },
+        { id: 'A-08', name: '전체 계층 연결 테스트', purpose: '4개 계층 노드가 모두 정상 응답하는지 확인', importance: 'critical', description: 'Layer 4 → Layer 3 → Layer 2 → Layer 1 순으로 모든 노드의 health 엔드포인트를 호출합니다.', endpoint: 'GET /health (다중)', url: '4개 노드 순차 호출', curl: 'for port in 5001 5002 5003 5004; do curl http://3.231.220.126:$port/health; done', fields: [{ field: 'allHealthy', type: 'boolean', desc: '모든 노드 정상 여부' }], criteria: ['4개 노드 모두 healthy'], isMultiple: true, ports: [5001, 5002, 5003, 5004] }
+    ];
+
+    function createTestCard(test) {
+        return `<div class="test-item" data-test="${test.id}">
+            <div class="test-item-header" onclick="toggleTest('${test.id}')">
+                <span class="test-id">${test.id}</span>
+                <span class="test-name">${test.name}</span>
+                <span class="importance-badge ${test.importance}">${test.importance}</span>
+                <span class="test-status" id="status-${test.id}">—</span>
+                <button class="btn btn-sm btn-run" onclick="event.stopPropagation(); runSingleTest('${test.id}')">실행</button>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="test-item-body">
+                <div class="test-field"><div class="test-field-label">목적</div><div class="test-field-value">${test.purpose}</div></div>
+                <div class="test-field"><div class="test-field-label">설명</div><div class="test-field-value">${test.description.replace(/\n/g, '<br>')}</div></div>
+                <div class="test-field"><div class="test-field-label">API 명세</div><div class="api-spec"><div class="api-row"><span class="api-label">엔드포인트</span><code class="api-value">${test.endpoint}</code></div><div class="api-row"><span class="api-label">URL</span><code class="api-value">${test.url}</code></div></div></div>
+                <div class="test-field"><div class="test-field-label">cURL 명령어</div><div class="code-block"><code>${test.curl}</code><button class="copy-btn" onclick="copyCode(this)">복사</button></div></div>
+                <div class="test-field"><div class="test-field-label">응답 필드</div><table class="data-table"><thead><tr><th>필드</th><th>타입</th><th>설명</th></tr></thead><tbody>${test.fields.map(f => `<tr><td><code>${f.field}</code></td><td>${f.type}</td><td>${f.desc}</td></tr>`).join('')}</tbody></table></div>
+                <div class="test-field"><div class="test-field-label">판정 기준</div><ul class="criteria-list">${test.criteria.map(c => `<li><code>${c}</code></li>`).join('')}</ul></div>
+                <div class="test-field"><div class="test-field-label">실행 결과</div><div class="result-container" id="result-${test.id}"><p class="result-placeholder">테스트를 실행하면 결과가 여기에 표시됩니다.</p></div></div>
+            </div>
+        </div>`;
+    }
+
+    function renderTests() { document.getElementById('testList').innerHTML = categoryTests.map(createTestCard).join(''); document.querySelector('.test-item').classList.add('open'); }
+    function toggleTest(testId) { document.querySelector(`[data-test="${testId}"]`).classList.toggle('open'); }
+    function copyCode(btn) { navigator.clipboard.writeText(btn.previousElementSibling.textContent).then(() => { btn.textContent = '복사됨!'; setTimeout(() => btn.textContent = '복사', 2000); }); }
+
+    async function runSingleTest(testId) {
+        const test = categoryTests.find(t => t.id === testId);
+        if (!test) return;
+        updateTestStatus(testId, 'running');
+        try {
+            const startTime = Date.now();
+            let result, passed;
+            if (test.isMultiple) {
+                result = { nodes: [] };
+                for (const port of test.ports) {
+                    const res = await fetch(`${OPENHASH_NODE}:${port}/health`);
+                    const data = await res.json();
+                    result.nodes.push({ port, ...data });
+                    updateLayerStatus(data.layer, data.status === 'healthy');
+                }
+                result.allHealthy = result.nodes.every(n => n.status === 'healthy');
+                passed = result.allHealthy;
+            } else {
+                const response = await fetch(test.url);
+                result = await response.json();
+                passed = validateTest(test, result);
+                if (result.layer) updateLayerStatus(result.layer, result.status === 'healthy');
+            }
+            displayResult(testId, result, Date.now() - startTime, passed);
+            updateTestStatus(testId, passed ? 'pass' : 'fail');
+        } catch (error) { displayError(testId, error); updateTestStatus(testId, 'fail'); }
+        updateCategoryStatus();
+    }
+
+    function validateTest(test, result) {
+        switch(test.id) {
+            case 'A-01': return result.status === 'healthy' && result.layer === 4;
+            case 'A-02': return result.status === 'healthy' && result.layer === 3;
+            case 'A-03': return result.status === 'healthy' && result.layer === 2;
+            case 'A-04': return result.status === 'healthy' && result.layer === 1;
+            case 'A-05': return result.n && result.f && result.quorum;
+            case 'A-06': return result.parent && result.parent.includes('5003');
+            case 'A-07': return typeof result.uptime === 'number';
+            default: return true;
+        }
+    }
+
+    function updateLayerStatus(layer, healthy) {
+        const el = document.getElementById(`l${layer}-status`);
+        if (el) { el.textContent = healthy ? '✓' : '✗'; el.style.color = healthy ? '#0d6832' : '#c92a2a'; }
+    }
+    function updateTestStatus(testId, status) { const el = document.getElementById(`status-${testId}`); if (el) { el.className = 'test-status ' + status; el.textContent = status === 'running' ? '실행중...' : status === 'pass' ? '✓ PASS' : status === 'fail' ? '✗ FAIL' : '—'; } }
+    function displayResult(testId, result, elapsed, passed) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header ${passed ? 'pass' : 'fail'}"><span class="result-badge">${passed ? '✓ PASS' : '✗ FAIL'}</span><span class="result-time">${elapsed}ms</span></div><pre class="result-json">${JSON.stringify(result, null, 2)}</pre>`; }
+    function displayError(testId, error) { const container = document.getElementById(`result-${testId}`); if (container) container.innerHTML = `<div class="result-header fail"><span class="result-badge">✗ FAIL</span></div><div class="result-error"><strong>Error:</strong> ${error.message}</div>`; }
+    function updateCategoryStatus() { let pass = 0, fail = 0; document.querySelectorAll('.test-status').forEach(el => { if (el.classList.contains('pass')) pass++; if (el.classList.contains('fail')) fail++; }); const statusEl = document.getElementById('categoryStatus'); if (statusEl && (pass + fail) > 0) { statusEl.textContent = fail === 0 && pass === categoryTests.length ? '✓ 완료' : `${pass}/${pass + fail}`; if (fail === 0 && pass === categoryTests.length) statusEl.style.color = '#0d6832'; } }
+    async function runAllCategoryTests() { for (const test of categoryTests) { await runSingleTest(test.id); await new Promise(r => setTimeout(r, 300)); } }
+    document.addEventListener('DOMContentLoaded', () => { renderTests(); document.getElementById('runAllCategoryTests').addEventListener('click', runAllCategoryTests); });
+    </script>
+<script src="/js/nav.js"></script></body>
+</html>

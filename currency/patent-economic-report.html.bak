@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경제적 효용 보고서 - OpenHash EGCT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="/js/header.js"></script>
+    <link rel="stylesheet" href="/css/hero.css">
+    <style>
+        :root {
+            --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#a5b4fc;
+            --gold:#d4a017;--gold-light:#f5d77a;--navy:#1e3a5f;--navy-dark:#0f2440;
+            --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+            --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+            --gray-800:#1f2937;--gray-900:#111827;
+            --green:#10b981;--green-light:#d1fae5;--red:#ef4444;--red-light:#fee2e2;
+            --blue:#3b82f6;--blue-light:#dbeafe;--orange:#f59e0b;--orange-light:#fef3c7;
+            --cyan:#06b6d4;--cyan-light:#cffafe;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Noto Sans KR',sans-serif;background:var(--gray-50);color:var(--gray-900);line-height:1.8;-webkit-font-smoothing:antialiased;}
+
+        .er-report{width:100%;}
+        .er-inner{max-width:1200px;margin:0 auto;padding:0 2rem;}
+
+        /* 히어로 */
+        .er-hero{background:linear-gradient(135deg,#0c1a2e 0%,#162d4a 40%,#1b3b5a 70%,#1e4068 100%);color:#fff;padding:3.5rem 2rem 3rem;position:relative;overflow:hidden;}
+        .er-hero::before{content:'';position:absolute;top:-30%;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(16,185,129,.1) 0%,transparent 70%);border-radius:50%;}
+        .er-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--primary),var(--gold),var(--green));}
+        .er-hero .er-inner{position:relative;z-index:1;}
+        .er-hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.3rem .9rem;background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.4);border-radius:100px;font-size:.72rem;font-weight:600;color:#6ee7b7;letter-spacing:.05em;margin-bottom:1rem;}
+        .er-hero-badge .er-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:er-pulse 2s infinite;}
+        @keyframes er-pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+        .er-hero h1{font-size:1.7rem;font-weight:900;line-height:1.35;margin-bottom:.5rem;color:#fff;}
+        .er-hero h1 .er-sub{display:block;font-size:.82rem;font-weight:500;opacity:.6;margin-top:.3rem;}
+        .er-hero-desc{font-size:.88rem;opacity:.85;max-width:720px;margin-bottom:1.5rem;line-height:1.7;}
+        .er-hero-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+        .er-hk{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1rem;text-align:center;position:relative;backdrop-filter:blur(4px);}
+        .er-hk-val{font-size:1.5rem;font-weight:900;color:var(--gold-light);line-height:1.2;}
+        .er-hk-label{font-size:.68rem;opacity:.7;margin-top:.2rem;}
+        .er-hk-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
+
+        /* 섹션 공통 */
+        .er-section{padding:3rem 0;}
+        .er-section+.er-section{border-top:1px solid var(--gray-200);}
+        .er-badge{display:inline-block;padding:.2rem .65rem;background:var(--green);color:#fff;border-radius:100px;font-size:.68rem;font-weight:700;margin-bottom:.6rem;letter-spacing:.04em;}
+        .er-badge.er-badge-blue{background:var(--primary);}
+        .er-badge.er-badge-gold{background:var(--gold);}
+        .er-title{font-size:1.4rem;font-weight:800;margin-bottom:.4rem;color:var(--gray-900);}
+        .er-title .er-hl{color:var(--primary-dark);}
+        .er-title .er-hl-green{color:var(--green);}
+        .er-desc{color:var(--gray-600);font-size:.88rem;margin-bottom:2rem;max-width:700px;}
+
+        /* ① 금융 산업 현황 카드 */
+        .er-industry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem;}
+        .er-ind-card{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:1.5rem;position:relative;overflow:hidden;transition:all .3s;}
+        .er-ind-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.06);}
+        .er-ind-card .er-ic-top{height:3px;position:absolute;top:0;left:0;right:0;}
+        .er-ic-icon{font-size:2rem;margin-bottom:.6rem;}
+        .er-ic-name{font-size:1rem;font-weight:700;color:var(--gray-900);margin-bottom:.8rem;}
+        .er-ic-row{display:flex;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid var(--gray-100);font-size:.8rem;}
+        .er-ic-row:last-child{border-bottom:none;}
+        .er-ic-key{color:var(--gray-500);font-weight:500;}
+        .er-ic-val{color:var(--gray-900);font-weight:700;}
+
+        /* 종합 배너 */
+        .er-total-banner{background:linear-gradient(135deg,var(--navy-dark),var(--navy));border-radius:14px;padding:1.5rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;color:#fff;}
+        .er-tb-item{text-align:center;}
+        .er-tb-val{font-size:1.5rem;font-weight:900;color:var(--gold-light);}
+        .er-tb-label{font-size:.72rem;opacity:.7;margin-top:.1rem;}
+
+        /* ② 시나리오 비교 테이블 */
+        .er-scenario-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:2px solid var(--gray-200);}
+        .er-sc-tab{padding:.6rem 1.2rem;font-size:.85rem;font-weight:600;color:var(--gray-500);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:inherit;}
+        .er-sc-tab:hover{color:var(--gray-700);}
+        .er-sc-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+        .er-sc-panel{display:none;}
+        .er-sc-panel.active{display:block;}
+
+        .er-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        .er-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--gray-200);}
+        .er-table thead th{padding:.8rem 1rem;font-size:.78rem;font-weight:700;text-align:center;background:var(--gray-100);border-bottom:1px solid var(--gray-200);color:var(--gray-700);}
+        .er-table thead th:first-child{text-align:left;}
+        .er-table tbody td{padding:.75rem 1rem;font-size:.82rem;text-align:center;border-bottom:1px solid var(--gray-100);color:var(--gray-700);}
+        .er-table tbody td:first-child{text-align:left;font-weight:600;color:var(--gray-900);}
+        .er-table tbody tr:last-child td{border-bottom:none;}
+        .er-table .er-td-primary{color:var(--primary-dark);font-weight:700;}
+        .er-table .er-td-green{color:var(--green);font-weight:700;}
+        .er-table .er-td-highlight{background:rgba(99,102,241,.04);}
+        .er-table tfoot td{padding:.8rem 1rem;font-size:.82rem;font-weight:700;background:rgba(99,102,241,.06);border-top:2px solid var(--primary-light);color:var(--primary-dark);}
+        .er-table tfoot td:first-child{text-align:left;}
+        .er-table tfoot td{text-align:center;}
+
+        /* ③ 시각화 바 차트 */
+        .er-chart-group{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:1.5rem;}
+        .er-chart-box{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:1.5rem;}
+        .er-chart-box h4{font-size:.92rem;font-weight:700;color:var(--gray-900);margin-bottom:1rem;}
+        .er-bar-row{margin-bottom:1rem;}
+        .er-bar-label{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.3rem;}
+        .er-bar-name{color:var(--gray-700);font-weight:600;}
+        .er-bar-val{color:var(--primary-dark);font-weight:700;}
+        .er-bar-track{height:10px;background:var(--gray-100);border-radius:5px;overflow:hidden;}
+        .er-bar-fill{height:100%;border-radius:5px;width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1);}
+        .er-bar-fill.green{background:linear-gradient(90deg,var(--green),#34d399);}
+        .er-bar-fill.blue{background:linear-gradient(90deg,var(--blue),#60a5fa);}
+        .er-bar-fill.primary{background:linear-gradient(90deg,var(--primary),var(--primary-light));}
+        .er-bar-fill.gold{background:linear-gradient(90deg,var(--gold),var(--gold-light));}
+        .er-bar-fill.cyan{background:linear-gradient(90deg,var(--cyan),#22d3ee);}
+        .er-bar-fill.orange{background:linear-gradient(90deg,var(--orange),#fbbf24);}
+
+        /* ④ 10년 누적 효과 */
+        .er-cumul-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem;}
+        .er-cumul-card{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:1.5rem;text-align:center;position:relative;overflow:hidden;transition:all .3s;}
+        .er-cumul-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.06);}
+        .er-cc-icon{font-size:2rem;margin-bottom:.5rem;}
+        .er-cc-val{font-size:1.8rem;font-weight:900;color:var(--primary-dark);line-height:1.1;}
+        .er-cc-unit{font-size:.75rem;font-weight:600;color:var(--gray-500);}
+        .er-cc-label{font-size:.8rem;color:var(--gray-600);margin-top:.4rem;font-weight:500;}
+        .er-cc-note{font-size:.68rem;color:var(--gray-400);margin-top:.2rem;}
+
+        /* ⑤ 부가적 영향 */
+        .er-ripple-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+        .er-ripple-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:1.25rem;transition:all .3s;}
+        .er-ripple-card:hover{border-color:var(--primary-light);box-shadow:0 4px 16px rgba(99,102,241,.06);}
+        .er-rp-title{font-size:.9rem;font-weight:700;color:var(--gray-900);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+        .er-rp-title .er-rp-icon{font-size:1.1rem;}
+        .er-rp-list{list-style:none;padding:0;}
+        .er-rp-list li{padding:.25rem 0 .25rem 1.2rem;position:relative;font-size:.8rem;color:var(--gray-600);line-height:1.6;}
+        .er-rp-list li::before{content:'→';position:absolute;left:0;color:var(--primary);font-weight:700;}
+
+        /* ⑥ 결론 배너 */
+        .er-conclusion{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 50%,#2d5a87 100%);color:#fff;border-radius:16px;padding:2.5rem;margin-top:1.5rem;position:relative;overflow:hidden;}
+        .er-conclusion::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:radial-gradient(circle,rgba(16,185,129,.15),transparent 70%);border-radius:50%;}
+        .er-conclusion h3{font-size:1.25rem;font-weight:800;margin-bottom:.8rem;position:relative;color:#fff;}
+        .er-conc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;position:relative;}
+        .er-conc-item{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem;}
+        .er-conc-item h5{font-size:.85rem;font-weight:700;margin-bottom:.3rem;color:var(--gold-light);}
+        .er-conc-item p{font-size:.78rem;opacity:.8;line-height:1.5;}
+
+        .er-source{margin-top:1.5rem;padding:1rem;background:var(--gray-100);border-radius:8px;font-size:.72rem;color:var(--gray-500);line-height:1.6;position:relative;}
+        .er-source strong{color:var(--gray-700);}
+
+        /* 애니메이션 */
+        .er-fade{opacity:0;transform:translateY(24px);transition:opacity .6s ease-out,transform .6s ease-out;}
+        .er-fade.er-visible{opacity:1;transform:translateY(0);}
+
+        /* 반응형 */
+        @media(max-width:900px){
+            .er-industry-grid{grid-template-columns:1fr;}.er-hero-kpi{grid-template-columns:repeat(2,1fr);}
+            .er-total-banner{grid-template-columns:repeat(2,1fr);}.er-chart-group{grid-template-columns:1fr;}
+            .er-cumul-grid{grid-template-columns:1fr;}.er-ripple-grid{grid-template-columns:1fr;}
+            .er-conc-grid{grid-template-columns:1fr;}
+        }
+        @media(max-width:600px){
+            .er-hero{padding:2rem 1.25rem;}.er-inner{padding:0 1.25rem;}
+            .er-hero-kpi{grid-template-columns:1fr 1fr;}.er-scenario-tabs{overflow-x:auto;}
+        }
+    </style>
+</head>
+<body>
+<div class="er-report">
+
+<!-- 히어로 -->
+<div class="er-hero">
+    <div class="er-inner">
+        <div class="er-hero-badge"><span class="er-dot"></span> 경제적 효용 분석 · ECONOMIC IMPACT REPORT</div>
+        <h1>계층 분산 기반 디지털 화폐 시스템의 경제적 효용 분석<span class="er-sub">한국 금융 산업(은행·보험·증권) 도입 시 10년간 영향 평가</span></h1>
+        <p class="er-hero-desc">본 보고서는 오픈해시 디지털 화폐 시스템이 한국 금융 산업에 도입될 경우, 5년간 50% 자동화 및 10년간 90% 자동화 시나리오를 기반으로 예상되는 경제적 효용을 정량적으로 분석합니다.</p>
+        <div class="er-hero-kpi">
+            <div class="er-hk"><div class="er-hk-bar" style="background:var(--green)"></div><div class="er-hk-val">24.3조원</div><div class="er-hk-label">연간 직접 비용 절감 (10년차)</div></div>
+            <div class="er-hk"><div class="er-hk-bar" style="background:var(--primary)"></div><div class="er-hk-val">762.3조원</div><div class="er-hk-label">연간 총 경제적 효과 (10년차)</div></div>
+            <div class="er-hk"><div class="er-hk-bar" style="background:var(--gold)"></div><div class="er-hk-val">~4,500조원</div><div class="er-hk-label">10년 누적 경제적 가치</div></div>
+            <div class="er-hk"><div class="er-hk-bar" style="background:var(--cyan)"></div><div class="er-hk-val">GDP 20%</div><div class="er-hk-label">한국 GDP 대비 비중</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ① 금융 산업 현황 -->
+<div class="er-section er-fade"><div class="er-inner">
+    <span class="er-badge">Industry Overview</span>
+    <h2 class="er-title">한국 금융 산업 <span class="er-hl">현황</span></h2>
+    <p class="er-desc">한국 금융 산업은 은행·보험·증권 3개 업권을 중심으로 총자산 약 5,900조 원, 종사자 약 25만 명 규모의 거대 산업입니다.</p>
+    <div class="er-industry-grid">
+        <div class="er-ind-card"><div class="er-ic-top" style="background:var(--blue)"></div><div class="er-ic-icon">🏦</div><div class="er-ic-name">은행업</div>
+            <div class="er-ic-row"><span class="er-ic-key">총자산</span><span class="er-ic-val">3,856조 원</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">순이자마진(NIM)</span><span class="er-ic-val">1.58%</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">인력 규모</span><span class="er-ic-val">약 12만 명</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">연간 인건비</span><span class="er-ic-val">약 15조 원</span></div>
+        </div>
+        <div class="er-ind-card"><div class="er-ic-top" style="background:var(--green)"></div><div class="er-ic-icon">🛡️</div><div class="er-ic-name">보험업</div>
+            <div class="er-ic-row"><span class="er-ic-key">총자산</span><span class="er-ic-val">1,245조 원</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">보험료 수입</span><span class="er-ic-val">195조 원</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">인력 규모</span><span class="er-ic-val">약 8만 명</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">보험사기 손실</span><span class="er-ic-val">연 2조 원</span></div>
+        </div>
+        <div class="er-ind-card"><div class="er-ic-top" style="background:var(--gold)"></div><div class="er-ic-icon">📈</div><div class="er-ic-name">증권업</div>
+            <div class="er-ic-row"><span class="er-ic-key">총자산</span><span class="er-ic-val">812조 원</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">매출액</span><span class="er-ic-val">23조 원</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">인력 규모</span><span class="er-ic-val">약 5만 명</span></div>
+            <div class="er-ic-row"><span class="er-ic-key">거래 처리 비용</span><span class="er-ic-val">연 1.5조 원</span></div>
+        </div>
+    </div>
+    <div class="er-total-banner">
+        <div class="er-tb-item"><div class="er-tb-val">5,913조</div><div class="er-tb-label">총자산 합계</div></div>
+        <div class="er-tb-item"><div class="er-tb-val">25만 명</div><div class="er-tb-label">총 종사자 수</div></div>
+        <div class="er-tb-item"><div class="er-tb-val">30조 원</div><div class="er-tb-label">연간 총 인건비</div></div>
+        <div class="er-tb-item"><div class="er-tb-val">2.1TWh</div><div class="er-tb-label">연간 에너지 소비</div></div>
+    </div>
+</div></div>
+
+<!-- ② 시나리오별 분석 -->
+<div class="er-section er-fade"><div class="er-inner">
+    <span class="er-badge er-badge-blue">Scenario Analysis</span>
+    <h2 class="er-title">단계별 자동화 <span class="er-hl">시나리오 분석</span></h2>
+    <p class="er-desc">5년차 50% 자동화와 10년차 90% 자동화 시나리오의 경제적 효과를 비교합니다.</p>
+
+    <div class="er-scenario-tabs">
+        <button class="er-sc-tab active" data-tab="sc-compare">종합 비교</button>
+        <button class="er-sc-tab" data-tab="sc-5yr">시나리오 1: 5년차 (50%)</button>
+        <button class="er-sc-tab" data-tab="sc-10yr">시나리오 2: 10년차 (90%)</button>
+    </div>
+
+    <!-- 종합 비교 -->
+    <div class="er-sc-panel active" id="sc-compare">
+        <div class="er-table-wrap">
+        <table class="er-table">
+            <thead><tr><th style="width:30%">구분</th><th>5년차 (자동화 50%)</th><th class="er-td-highlight">10년차 (자동화 90%)</th><th>비고</th></tr></thead>
+            <tbody>
+                <tr><td>연간 인건비 절감</td><td>10.5조 원</td><td class="er-td-highlight er-td-primary">22.95조 원</td><td>재교육 비용 1.25조 원 별도</td></tr>
+                <tr><td>연간 에너지 비용 절감</td><td>1,551억 원</td><td class="er-td-highlight er-td-primary">2,791억 원</td><td>전력 단가 150원/kWh 기준</td></tr>
+                <tr><td>연간 사기 방지 효과</td><td>1,175억 원</td><td class="er-td-highlight er-td-primary">2,115억 원</td><td>보험·은행 통합</td></tr>
+                <tr><td>연간 인프라 비용 절감</td><td>4,500억 원</td><td class="er-td-highlight er-td-primary">8,100억 원</td><td>데이터센터·서버 비용</td></tr>
+                <tr><td>연간 신규 경제적 가치</td><td>147.6조 원</td><td class="er-td-highlight er-td-primary">738조 원</td><td>개인 금융 최적화 편익</td></tr>
+            </tbody>
+            <tfoot>
+                <tr><td>총 연간 직접 비용 절감</td><td>12.2조 원</td><td class="er-td-highlight">24.3조 원</td><td>인건비+에너지+사기+인프라</td></tr>
+                <tr><td>총 연간 경제적 효과</td><td>159.8조 원</td><td class="er-td-highlight">762.3조 원</td><td>직접절감+신규가치</td></tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+
+    <!-- 5년차 상세 -->
+    <div class="er-sc-panel" id="sc-5yr">
+        <div class="er-table-wrap">
+        <table class="er-table">
+            <thead><tr><th style="width:30%">항목</th><th>산출 근거</th><th>연간 효과</th></tr></thead>
+            <tbody>
+                <tr><td>인건비 절감</td><td>25만 명 × 50% × 인력대체율 70%</td><td class="er-td-green">10.5조 원</td></tr>
+                <tr><td>재교육/전직 지원</td><td>12.5만 명 × 1,000만 원 (1회성)</td><td>1.25조 원</td></tr>
+                <tr><td>에너지 절감</td><td>2.1TWh × 50% × 98.5% = 1.034TWh</td><td class="er-td-green">1,551억 원</td></tr>
+                <tr><td>보험사기 방지</td><td>2조 원 × (99.4%-90%) × 50%</td><td class="er-td-green">940억 원</td></tr>
+                <tr><td>은행사기 방지</td><td>5,000억 원 × 동일 조건</td><td class="er-td-green">235억 원</td></tr>
+                <tr><td>인프라 비용 절감</td><td>1조 원 × 50% × 90% 절감</td><td class="er-td-green">4,500억 원</td></tr>
+                <tr><td>신규 경제적 가치</td><td>300만 명 × 492만 원</td><td class="er-td-primary">147.6조 원</td></tr>
+            </tbody>
+            <tfoot><tr><td>총 연간 효과</td><td></td><td>159.8조 원</td></tr></tfoot>
+        </table>
+        </div>
+    </div>
+
+    <!-- 10년차 상세 -->
+    <div class="er-sc-panel" id="sc-10yr">
+        <div class="er-table-wrap">
+        <table class="er-table">
+            <thead><tr><th style="width:30%">항목</th><th>산출 근거</th><th>연간 효과</th></tr></thead>
+            <tbody>
+                <tr><td>인건비 절감</td><td>25만 명 × 90% × 인력대체율 85%</td><td class="er-td-green">22.95조 원</td></tr>
+                <tr><td>에너지 절감</td><td>2.1TWh × 90% × 98.5% = 1.861TWh</td><td class="er-td-green">2,791억 원</td></tr>
+                <tr><td>보험사기 방지</td><td>2조 원 × 9.4% × 90%</td><td class="er-td-green">1,692억 원</td></tr>
+                <tr><td>은행사기 방지</td><td>5,000억 원 × 9.4% × 90%</td><td class="er-td-green">423억 원</td></tr>
+                <tr><td>인프라 비용 절감</td><td>1조 원 × 90% × 90% 절감</td><td class="er-td-green">8,100억 원</td></tr>
+                <tr><td>신규 경제적 가치</td><td>1,500만 명 × 492만 원</td><td class="er-td-primary">738조 원</td></tr>
+            </tbody>
+            <tfoot><tr><td>총 연간 효과</td><td></td><td>762.3조 원</td></tr></tfoot>
+        </table>
+        </div>
+    </div>
+</div></div>
+
+<!-- ③ 비주얼 차트 -->
+<div class="er-section er-fade"><div class="er-inner">
+    <span class="er-badge er-badge-blue">Visual Comparison</span>
+    <h2 class="er-title">시나리오별 <span class="er-hl">비용 절감 규모</span> 시각화</h2>
+    <p class="er-desc">5년차와 10년차 시나리오의 각 항목별 비용 절감 규모를 비교합니다.</p>
+    <div class="er-chart-group">
+        <div class="er-chart-box">
+            <h4>5년차 (자동화 50%) — 직접 비용 절감</h4>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">인건비 절감</span><span class="er-bar-val">10.5조 원</span></div><div class="er-bar-track"><div class="er-bar-fill blue" data-width="86"></div></div></div>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">인프라 절감</span><span class="er-bar-val">4,500억 원</span></div><div class="er-bar-track"><div class="er-bar-fill green" data-width="37"></div></div></div>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">에너지 절감</span><span class="er-bar-val">1,551억 원</span></div><div class="er-bar-track"><div class="er-bar-fill cyan" data-width="13"></div></div></div>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">사기 방지</span><span class="er-bar-val">1,175억 원</span></div><div class="er-bar-track"><div class="er-bar-fill orange" data-width="10"></div></div></div>
+        </div>
+        <div class="er-chart-box">
+            <h4>10년차 (자동화 90%) — 직접 비용 절감</h4>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">인건비 절감</span><span class="er-bar-val">22.95조 원</span></div><div class="er-bar-track"><div class="er-bar-fill blue" data-width="94"></div></div></div>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">인프라 절감</span><span class="er-bar-val">8,100억 원</span></div><div class="er-bar-track"><div class="er-bar-fill green" data-width="33"></div></div></div>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">에너지 절감</span><span class="er-bar-val">2,791억 원</span></div><div class="er-bar-track"><div class="er-bar-fill cyan" data-width="11"></div></div></div>
+            <div class="er-bar-row"><div class="er-bar-label"><span class="er-bar-name">사기 방지</span><span class="er-bar-val">2,115억 원</span></div><div class="er-bar-track"><div class="er-bar-fill orange" data-width="9"></div></div></div>
+        </div>
+    </div>
+</div></div>
+
+<!-- ④ 10년 누적 효과 -->
+<div class="er-section er-fade"><div class="er-inner">
+    <span class="er-badge er-badge-gold">Cumulative Impact</span>
+    <h2 class="er-title">10년간 <span class="er-hl">누적 경제 효과</span></h2>
+    <p class="er-desc">할인율 5% 적용 기준, 10년간 누적된 경제적 효과를 종합합니다.</p>
+    <div class="er-cumul-grid">
+        <div class="er-cumul-card"><div class="er-cc-icon">💰</div><div class="er-cc-val">~150<span class="er-cc-unit">조 원</span></div><div class="er-cc-label">직접 비용 절감 (10년 누적)</div><div class="er-cc-note">인건비+에너지+사기방지+인프라</div></div>
+        <div class="er-cumul-card"><div class="er-cc-icon">🌐</div><div class="er-cc-val">~4,500<span class="er-cc-unit">조 원</span></div><div class="er-cc-label">총 경제적 가치 (10년 누적)</div><div class="er-cc-note">한국 GDP의 약 20% 수준</div></div>
+        <div class="er-cumul-card"><div class="er-cc-icon">📊</div><div class="er-cc-val">738<span class="er-cc-unit">조원/年</span></div><div class="er-cc-label">10년차 연간 경제적 가치</div><div class="er-cc-note">한국 GDP의 약 3.5%</div></div>
+    </div>
+</div></div>
+
+<!-- ⑤ 부가적 영향 -->
+<div class="er-section er-fade"><div class="er-inner">
+    <span class="er-badge">Ripple Effects</span>
+    <h2 class="er-title">부가적 <span class="er-hl-green">경제적 파급효과</span></h2>
+    <p class="er-desc">직접 비용 절감을 넘어, 산업 전반에 걸친 파급효과를 분석합니다.</p>
+    <div class="er-ripple-grid">
+        <div class="er-ripple-card"><div class="er-rp-title"><span class="er-rp-icon">👥</span> 고용 구조 전환</div><ul class="er-rp-list"><li>단순 반복 업무 22.5만 명 감소</li><li>AI/블록체인 전문인력 5만 명 신규 창출</li><li>순 고용 감소: 17.5만 명 (전체 금융 종사자의 70%)</li></ul></div>
+        <div class="er-ripple-card"><div class="er-rp-title"><span class="er-rp-icon">🏧</span> 금융 접근성 향상</div><ul class="er-rp-list"><li>SSI 인증으로 비은행 인구 600만 명 금융 접근 가능</li><li>연간 추가 신용 창출: 약 60조 원 (1인당 평균 1,000만 원)</li></ul></div>
+        <div class="er-ripple-card"><div class="er-rp-title"><span class="er-rp-icon">🔗</span> 산업 간 파급효과</div><ul class="er-rp-list"><li>통신산업 매출 증가: 연간 3,000억 원 (인프라 재활용)</li><li>FPGA/반도체 수요 증가: 연간 5,000억 원</li><li>AI 소프트웨어 시장 성장: 연간 2조 원</li></ul></div>
+        <div class="er-ripple-card"><div class="er-rp-title"><span class="er-rp-icon">⚖️</span> 규제 비용 절감</div><ul class="er-rp-list"><li>글로벌 규제 자동 준수로 법무·컴플라이언스 인력 30% 감소</li><li>연간 규제 준수 비용 2조 원 중 6,000억 원 절감</li></ul></div>
+    </div>
+</div></div>
+
+<!-- ⑥ 결론 -->
+<div class="er-section er-fade" style="padding-bottom:3rem;"><div class="er-inner">
+    <div class="er-conclusion">
+        <h3>결론 및 시사점</h3>
+        <div class="er-conc-grid">
+            <div class="er-conc-item"><h5>직접적 비용 절감</h5><p>10년 후 연간 24.3조 원의 운영 비용 절감. 에너지, 인프라, 사기 손실, 인건비 등 다각적 절감 효과 달성.</p></div>
+            <div class="er-conc-item"><h5>경제적 가치 창출</h5><p>개인 금융 최적화를 통한 연간 738조 원의 거시경제적 편익. 한국 GDP의 약 3.5%에 해당하는 규모.</p></div>
+            <div class="er-conc-item"><h5>산업 구조 개편</h5><p>금융업 디지털 전환 가속화, 핀테크·테크핀 융합 생태계 조기 성장. 금융 포용성 향상 및 개인정보 주권 회복.</p></div>
+        </div>
+    </div>
+    <div class="er-source">
+        <strong>자료 출처:</strong> 한국은행 경제통계시스템, 금융감독원 통계, 보험개발원, 한국증권업협회, 통계청 고용동향, 에너지경제연구원 전력통계, CEO스코어 금융그룹 자산추이 조사(2024), 본 특허 명세서의 성능 지표.
+        본 분석은 보수적인 가정을 기반으로 한 최소 효과를 추정한 것이며, 기술 확산 속도가 가속화되거나 부가적 혁신이 결합될 경우 실제 경제적 효과는 이보다 클 수 있음.
+    </div>
+</div></div>
+
+</div>
+
+<script>
+(function(){
+    // IntersectionObserver — fade + bar animation
+    var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){
+        if(e.isIntersecting){
+            e.target.classList.add('er-visible');
+            e.target.querySelectorAll('.er-bar-fill').forEach(function(bar){
+                var w=bar.dataset.width;if(w) bar.style.width=w+'%';
+            });
+            obs.unobserve(e.target);
+        }
+    });},{threshold:.12});
+    document.querySelectorAll('.er-fade').forEach(function(el){obs.observe(el);});
+
+    // 탭 전환
+    document.querySelectorAll('.er-sc-tab').forEach(function(tab){
+        tab.addEventListener('click',function(){
+            var t=this.dataset.tab;
+            document.querySelectorAll('.er-sc-tab').forEach(function(b){b.classList.remove('active');});
+            document.querySelectorAll('.er-sc-panel').forEach(function(p){p.classList.remove('active');});
+            this.classList.add('active');
+            document.getElementById(t).classList.add('active');
+        });
+    });
+})();
+</script>
+</body>
+</html>
