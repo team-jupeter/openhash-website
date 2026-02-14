@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>의회 자동화 시스템 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+
+/* 고팡 배너 */
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+
+/* 탭 네비게이션 (자동화 메뉴) */
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+
+/* Hero 섹션 */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* 컨텐츠 공통 */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+
+/* 채팅 인터페이스 (개선) */
+.chat-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin: 2.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+.chat-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+}
+.status-indicator.active { background: #4caf50; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.message {
+    max-width: 85%;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    position: relative;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    word-break: keep-all;
+    box-shadow: var(--shadow-sm);
+}
+.message-left {
+    align-self: flex-start;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent-blue);
+    margin-right: auto;
+}
+.message-right {
+    align-self: flex-end;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-right: 4px solid var(--accent-green);
+    margin-left: auto;
+}
+.message-system {
+    align-self: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    max-width: 95%;
+    text-align: center;
+    font-style: italic;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    border-radius: var(--radius-lg);
+    padding: 0.7rem 1rem;
+}
+.message-critical {
+    border-left-color: var(--accent-red) !important;
+    background: #fff5f5 !important;
+}
+.message-warning {
+    border-left-color: var(--accent-orange) !important;
+    background: #fff8e1 !important;
+}
+.message-success {
+    border-left-color: var(--accent-green) !important;
+    background: #f1f8e9 !important;
+}
+.message-sender {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed var(--border-light);
+}
+.avatar {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-elevated);
+    text-align: center;
+    line-height: 26px;
+    margin-right: 0.4rem;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+.message-content {
+    line-height: 1.7;
+    display: block;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    white-space: pre-line;
+}
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-caption);
+    text-align: right;
+    margin-top: 0.5rem;
+    padding-top: 0.3rem;
+    border-top: 1px dotted var(--border-light);
+}
+.chat-input-area {
+    display: flex;
+    padding: 1rem;
+    background: var(--bg-white);
+    border-top: 1px solid var(--border);
+    gap: 0.5rem;
+}
+.chat-input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.chat-send-btn, .chat-ai-btn {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.chat-send-btn {
+    background: var(--navy);
+    color: white;
+}
+.chat-send-btn:hover {
+    background: var(--navy-light);
+}
+.chat-ai-btn {
+    background: var(--gold);
+    color: var(--navy-dark);
+}
+.chat-ai-btn:hover {
+    background: var(--gold-light);
+}
+
+/* 통계 카드 */
+.stat-cards { display: grid; grid-template-columns: repeat(4,1fr); gap:1rem; margin:2rem 0; }
+.stat-card { background: var(--bg-white); border:1px solid var(--border-light); border-radius: var(--radius-md); padding:1.5rem; text-align: center; box-shadow: var(--shadow-sm); }
+.stat-value { font-size: 1.8rem; font-weight:900; line-height:1.2; }
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.5rem; }
+
+/* 역할 카드 (세로 나열) */
+.role-grid { display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; }
+.role-card { background: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1.5rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+.role-card.role-a { border-left: 4px solid var(--accent-green); }
+.role-card.role-b { border-left: 4px solid var(--accent-blue); }
+.role-card.role-c { border-left: 4px solid var(--accent-purple); }
+.role-card.role-d { border-left: 4px solid var(--accent-red); }
+.role-header { margin-bottom: 1rem; }
+.role-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+.role-human { color: var(--text-tertiary); font-size: 0.85rem; font-weight: 500; }
+.role-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* 비교 테이블 */
+.data-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.92rem; }
+.data-table th, .data-table td { padding: 0.7rem 0.9rem; text-align: left; border-bottom: 1px solid var(--border-light); vertical-align: top; word-break: keep-all; }
+.data-table thead th { background: var(--navy); color: #fff; font-weight: 600; font-size: 0.88rem; border-bottom: none; }
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+
+/* 리포트 탭 */
+.report-tab-nav {
+    display: flex;
+    gap: 0.2rem;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.5rem;
+}
+.report-tab-btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.report-tab-btn:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.report-tab-btn.active {
+    color: var(--navy);
+    border-bottom-color: var(--navy);
+    background: var(--bg-white);
+}
+.report-tab-content {
+    min-height: 400px;
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+.loading-indicator {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-caption);
+    font-style: italic;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-messages { height: 400px; padding: 1rem; }
+    .message { max-width: 95%; }
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .report-tab-nav { flex-direction: column; }
+    .report-tab-btn { text-align: left; }
+    .chat-input-area { flex-wrap: wrap; }
+    .chat-send-btn, .chat-ai-btn { flex: 1; }
+}
+
+/* ===== 기술 보고서 탭 전용 스타일 (로드된 페이지용) ===== */
+.report-tab-content .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a3a6e;
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid #1a3a6e;
+    display: inline-block;
+}
+.report-tab-content .subsection-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 1rem 0 0.5rem;
+}
+.report-tab-content .rating-stars {
+    display: inline-block;
+    margin-left: 0.5rem;
+    color: #d4a017;
+    font-weight: 700;
+}
+.report-tab-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.report-tab-content th {
+    background: #f8f9fa;
+    font-weight: 600;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #dee2e6;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #495057;
+}
+.report-tab-content td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+.report-tab-content .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.report-tab-content .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.report-tab-content .info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.2rem;
+    transition: all 0.2s;
+}
+.report-tab-content .info-card .card-title {
+    font-weight: 700;
+    color: #1a3a6e;
+    margin-bottom: 0.6rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.report-tab-content .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    background: #1a3a6e;
+    margin-right: 0.5rem;
+}
+.report-tab-content .badge-blue { background: #1971c2; }
+.report-tab-content .badge-green { background: #2e7d32; }
+.report-tab-content .badge-gold { background: #d4a017; color: #0f2647; }
+
+@media (max-width: 600px) {
+    .report-tab-content .grid-2,
+    .report-tab-content .grid-3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">입법 혁신: 중앙집중에서 분산 협업으로의 전환</div>
+        <h1 class="hero-title">의회 시스템 <span class="gold">자동화</span> 시스템</h1>
+    </div>
+</section>
+
+<!-- 탭 네비게이션 (자동화 메뉴) -->
+<div class="tab-section">
+    <div class="tab-nav">
+        <a href="/automation/court/" class="tab-link">법원</a>
+        <a href="/automation/patent/" class="tab-link">특허청</a>
+        <a href="/automation/tax/" class="tab-link">국세청</a>
+        <a href="/automation/medical/" class="tab-link">의료</a>
+        <a href="/automation/market/" class="tab-link">시장</a>
+        <a href="/automation/congress/" class="tab-link active">의회</a>
+        <a href="/automation/province/" class="tab-link">도청</a>
+        <a href="/automation/city/" class="tab-link">시청</a>
+        <a href="/automation/town/" class="tab-link">읍면동</a>
+    </div>
+</div>
+
+<!-- 고팡 배너 -->
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡</strong> — OpenHash+AI 기반의 의회 자동화 시스템을 직접 경험해 보세요</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 의회 서비스의 역할 전환 섹션 -->
+<section class="section" id="role-transition">
+    <div class="container">
+        <h2 class="sec-title">의회 서비스의 역할 전환</h2>
+        <p class="sec-lead">
+            고팡 시스템에 의해, 의회는 기존의 중앙집중적·대의적 입법 과정에서 분산·참여적·실시간 협업 시스템으로 전환합니다. 구체적으로, AI 에이전트들이 법안의 복잡도, 중요도, 전문성 요구도를 분석하여 확률적 계층 선택 알고리즘에 따라 적절한 심의 경로를 결정합니다. 시민은 개인 AI 비서를 통해 법안 발의, 수정, 투표에 직접 참여하며, 각자의 전문성에 따라 차등적 동의권을 행사합니다. 법안의 모든 변경 이력과 논의 과정은 OpenHash에 투명하게 기록되어 위변조가 불가능합니다. 이를 통해 입법 투명성 95% 향상, 시민 참여율 35% 달성, 법안 처리 시간 30% 단축을 실현합니다.
+        </p>
+    </div>
+</section>
+
+<!-- 시스템 구성 요소 섹션 -->
+<section class="section surface" id="system-components">
+    <div class="container">
+        <h2 class="sec-title">시스템 구성 요소</h2>
+        <p class="sec-lead">오픈소스 LLM 기반 입법 전문 에이전트 시스템:</p>
+        <div style="margin: 2rem 0;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">1. 법안 분석 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">법안의 복잡도, 중요도, 전문성 요구도를 분석하여 적절한 심의 계층(Layer 1~4)을 추천합니다. 확률적 계층 선택 알고리즘(PLSA)을 적용하여 시스템 효율을 최적화합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">2. 전문성 평가 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">개인정보 금고(PDV)에 저장된 학력, 경력, 자격, 연구, 사회기여도 등 5개 지표를 기반으로 시민의 전문성 점수를 산출하고, 법안 분야별 가중치를 부여합니다. tanh 함수로 가중치를 [1.0, 2.0] 범위로 정규화합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">3. 차등적 동의권 시스템</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">법안 발의에 필요한 동의 수를 전문성 가중치에 따라 계산합니다. 일반 법안 0.1%, 중요 법안 0.3%, 헌법 개정 1%의 가중 동의를 요구하여 전문성과 민주성의 균형을 유지합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-orange); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">4. 3단계 검증 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">시민배심원단(무작위 선발), 전문가 패널 교차검증, 전국민 투표의 3단계를 자동으로 조직하고 결과를 집계합니다. 영지식증명(ZKP)으로 프라이버시를 보호하면서 투명성을 보장합니다.</div>
+                </div>
+            </div>
+            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: var(--gold-light);">Global Openhash Legislative Network</div>
+                <div style="font-size: 0.9rem; line-height: 1.8;">4계층 해시체인(읍면동→시군구→광역시도→국가)으로 모든 입법 과정의 무결성을 보장합니다. 각 계층은 확률적 계층 선택 알고리즘에 의해 동적으로 배분되며, 실시간으로 500,000 TPS를 처리합니다. 제주도 파일럿 테스트에서 67만명 동시 접속, 99.9% 가동률을 달성했습니다.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 2: 채팅 시뮬레이션 -->
+<section class="section surface" id="chat-simulation">
+    <div class="container">
+        <h2 class="sec-title">실시간 입법 채팅 시뮬레이션</h2>
+        <p class="sec-lead">시민이 AI 비서를 통해 법안을 발의하고, 전문성 평가를 거쳐 차등적 동의권으로 동의를 모으며, 3단계 검증을 통과하여 최종 법안으로 확정되는 과정을 보여줍니다.</p>
+        <div class="chat-container">
+            <div class="chat-header"><div>입법 자동화 채팅</div><div class="chat-status"><div class="status-indicator active"></div><span>실시간 처리 중</span></div></div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message message-left"><div class="message-sender"><span class="avatar">👤</span> 박시민 (제주시)</div><div class="message-content">제주 지역 관광객 증가로 인한 쓰레기 문제를 해결하기 위해 '1회용품 사용 규제 조례안'을 발의하려고 합니다. AI 비서님, 절차를 시작해 주세요.</div><div class="message-time">14:02:15</div></div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">🤖</span> AI 비서</div><div class="message-content">네, 법안 발의를 지원하겠습니다. 귀하의 개인정보 금고(PDV)에서 전문성 데이터를 분석한 결과, 환경 관련 학위(환경공학 석사), 관련 경력(5년), 자격증(환경영향평가사)을 보유하고 있어 전문성 점수 82점, 가중치 1.45가 산출되었습니다. 법안 복잡도를 분석하여 확률적 계층 선택 결과 Layer 2(시군구)가 적합합니다.</div><div class="message-time">14:02:28</div></div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">⚙️</span> 법안 분석 AI</div><div class="message-content">[법안 분석 결과] 유형: 조례안, 복잡도: 0.65, 중요도: 0.7, 전문성 요구도: 0.6. 확률적 계층 선택(PLSA) 결과: Layer 1 (읍면동) 20%, Layer 2 (시군구) 60%, Layer 3 (광역시도) 15%, Layer 4 (국가) 5% → Layer 2 선택.</div><div class="message-time">14:02:40</div></div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">📊</span> 전문성 평가 AI</div><div class="message-content">제주시 유권자 30만명 대상 전문성 분석 완료. 환경 분야 전문가(박사, 관련 경력 10년 이상) 320명, 일반 시민 29만 6천명. 법안 발의에 필요한 가중 동의 수: 전체 유권자의 0.3% → 900 가중 동의 필요. 현재까지 450 가중 동의 확보 (전문가 150명 × 1.8 = 270, 일반 시민 180명 × 1.0 = 180).</div><div class="message-time">14:03:10</div></div>
+                <div class="message message-left"><div class="message-sender"><span class="avatar">👤</span> 박시민</div><div class="message-content">아직 동의가 부족하군요. SNS에 홍보해 주시고, 환경 단체에도 협조 요청해 주세요.</div><div class="message-time">14:03:30</div></div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">🤖</span> AI 비서</div><div class="message-content">네, 제주환경연합, 제주녹색당 등 5개 단체에 자동으로 협조 요청 메시지를 전송했습니다. 실시간 동의 현황을 업데이트하겠습니다.</div><div class="message-time">14:03:45</div></div>
+                <div class="message message-right message-success"><div class="message-sender"><span class="avatar">📊</span> 전문성 평가 AI</div><div class="message-content">[동의 임계 도달] 총 가중 동의 920 (전문가 180명 × 1.8 = 324, 일반 시민 596명 × 1.0 = 596). 발의 요건 충족. 법안이 정식 심의 절차로 회부됩니다.</div><div class="message-time">14:05:10</div></div>
+                <div class="message message-system">[3단계 검증 프로세스 시작]</div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">⚖️</span> 시민배심원단 AI</div><div class="message-content">1단계: 시민배심원단(제주시 1,000명 무작위 선발) 구성 완료. 4주간 숙의 토론 진행 중. 현재 찬성 63%, 반대 22%, 미결정 15%. 2/3 찬성 필요.</div><div class="message-time">14:06:00</div></div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">🔬</span> 전문가 패널 AI</div><div class="message-content">2단계: 전문가 패널(환경학 박사 5명, 찬성 측; 환경단체 5명, 반대 측; 중립 전문가 5명) 교차검증 완료. 기술적 타당성 88점, 사회적 수용성 82점, 비용 효과성 90점. 패널 12명 찬성, 3명 반대.</div><div class="message-time">14:07:15</div></div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">🗳️</span> 전국민 투표 AI</div><div class="message-content">3단계: 제주시 전체 시민 대상 투표 실시. 투표율 42%, 찬성 68%, 반대 32%. 법안 확정 요건 충족.</div><div class="message-time">14:08:30</div></div>
+                <div class="message message-right message-success"><div class="message-sender"><span class="avatar">🏛️</span> 의회 AI</div><div class="message-content">[최종 의결] '1회용품 사용 규제 조례안'이 가결되었습니다. 법안 전문과 투표 결과, 전문가 검증 보고서, 시민 의견이 OpenHash Layer 2(제주시)와 Layer 3(제주도)에 해시 기록되어 위변조 불가능합니다.</div><div class="message-time">14:09:45</div></div>
+                <div class="message message-right"><div class="message-sender"><span class="avatar">🤖</span> AI 비서</div><div class="message-content">[처리 요약] 발의부터 확정까지 총 소요 시간: 4일 3시간 (기존 대비 75% 단축). 참여 시민: 12만 5천명. 전문성 가중치 적용으로 전문가 의견이 효과적으로 반영되었습니다. 법안 전문을 귀하의 PDV에 저장했습니다.</div><div class="message-time">14:10:15</div></div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="의견을 입력하세요..." class="chat-input">
+                <button id="sendMessageBtn" class="chat-send-btn">전송</button>
+                <button id="simulateAiBtn" class="chat-ai-btn">AI 응답 생성</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 3: 참여자 역할 -->
+<section class="section" id="roles">
+    <div class="container">
+        <h2 class="sec-title">협업 구조: AI 에이전트 시스템</h2>
+        <p class="sec-lead">법안 분석, 전문성 평가, 차등 동의권, 3단계 검증 등 각 단계를 전담하는 독립 AI 에이전트들이 협력하여 입법 과정을 완전 자동화합니다.</p>
+        <div class="role-grid">
+            <div class="role-card role-a"><div class="role-header"><div class="role-name">AI 비서</div><div class="role-human">(시민 대리인)</div></div><div class="role-desc">개인 시민에게 할당되어 법안 발의, 의견 제출, 투표 참여를 지원합니다. 시민의 PDV를 관리하며 전문성 데이터를 안전하게 보관하고 필요 시 평가 에이전트에 제공합니다.</div></div>
+            <div class="role-card role-b"><div class="role-header"><div class="role-name">법안 분석 AI</div><div class="role-human">(계층 선택)</div></div><div class="role-desc">발의된 법안의 복잡도, 중요도, 전문성 요구도를 수치화하고 확률적 계층 선택 알고리즘으로 적절한 심의 계층(Layer 1~4)을 결정합니다.</div></div>
+            <div class="role-card role-c"><div class="role-header"><div class="role-name">전문성 평가 AI</div><div class="role-human">(가중치 부여)</div></div><div class="role-desc">시민의 학력, 경력, 자격, 연구, 사회기여도를 종합하여 전문성 점수를 산출하고 법안 분야별 가중치를 부여합니다. 차등적 동의권 계산을 담당합니다.</div></div>
+            <div class="role-card role-d"><div class="role-header"><div class="role-name">3단계 검증 AI</div><div class="role-human">(숙의·투표 관리)</div></div><div class="role-desc">시민배심원단 무작위 선발, 전문가 패널 구성, 전국민 투표 실시를 자동화하고 결과를 집계·검증합니다. 영지식증명으로 프라이버시를 보호합니다.</div></div>
+        </div>
+        <div class="note" style="background:#f0f7ff;border-left:4px solid var(--accent-blue);padding:1rem;margin:2rem 0;border-radius:0 var(--radius-md) var(--radius-md) 0;">
+            <strong>시스템 핵심 장점:</strong><br>1. <strong>확률적 계층 선택</strong>으로 법안 특성에 최적화된 심의 경로 제공<br>2. <strong>AI 기반 전문성 평가</strong>로 전문가 의견에 차등적 가중치 부여 → 전문성과 민주성 조화<br>3. <strong>3단계 검증</strong>으로 시민, 전문가, 전체 국민의 숙의 보장<br>4. <strong>OpenHash 무결성</strong>으로 모든 과정 위변조 불가능, 투명성 95% 향상<br>5. 기존 대비 법안 처리 시간 30% 단축, 시민 참여율 7배 증가
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 4: 비교 분석 -->
+<section class="section surface" id="comparison">
+    <div class="container">
+        <h2 class="sec-title">전통적 방식 vs. AI 자동화 방식 비교</h2>
+        <p class="sec-lead">AI 에이전트 시스템과 해시체인 기반 무결성 기술로 입법 과정의 효율성과 투명성이 획기적으로 향상됩니다.</p>
+        <table class="data-table">
+            <thead><tr><th>비교 항목</th><th>전통적 의회</th><th>AI 자동화 시스템</th><th>개선 효과</th></tr></thead>
+            <tbody>
+                <tr><td>법안 발의 동의</td><td>일률적 1인 1표, 10만 명 서명 필요</td><td class="highlight">전문성 가중치 적용 차등 동의권</td><td class="highlight">전문가 의견 1.5~2배 반영</td></tr>
+                <tr><td>심의 경로</td><td>고정된 상임위, 정당별 배분</td><td class="highlight">확률적 계층 선택으로 동적 최적화</td><td class="highlight">처리 시간 30% 단축</td></tr>
+                <tr><td>시민 참여율</td><td>5% 미만</td><td class="highlight">35% 이상</td><td class="highlight">7배 증가</td></tr>
+                <tr><td>투명성</td><td>회의록 부분 공개, 수정 가능</td><td class="highlight">모든 과정 OpenHash 기록, 위변조 불가</td><td class="highlight">신뢰도 60% → 95%</td></tr>
+                <tr><td>검증 절차</td><td>상임위→본회의 단선적</td><td class="highlight">시민배심원단→전문가 패널→국민투표 3단계</td><td class="highlight">숙의 민주주의 강화</td></tr>
+                <tr><td>데이터 무결성</td><td>종이 문서, 전자 파일 (위변조 가능)</td><td class="highlight">SHA-256 해시체인 + 디지털 서명</td><td class="highlight">법적 증거력 확보</td></tr>
+                <tr><td>처리 용량</td><td>연간 2,000건 법안</td><td class="highlight">일일 500,000 TPS, 무제한 확장</td><td class="highlight">실시간 대규모 참여 가능</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 기술 보고서 탭 섹션 -->
+<section class="section" id="report-tabs">
+    <div class="container">
+        <h2 class="sec-title">기술 보고서</h2>
+        <div class="report-tab-nav">
+            <button class="report-tab-btn active" data-tab="evaluation">특허 출원서 종합 평가</button>
+            <button class="report-tab-btn" data-tab="market">특허기술의 시장성 분석</button>
+            <button class="report-tab-btn" data-tab="conservative">보수적 관점</button>
+        </div>
+        <div class="report-tab-content" id="report-content">
+            <div class="loading-indicator">로딩 중...</div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 채팅 메시지 스크롤을 첫 메시지로 고정
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = 0;
+    }
+
+    // 채팅 메시지 전송 기능 (사람 개입)
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendMessageBtn');
+    const simulateAiBtn = document.getElementById('simulateAiBtn');
+
+    function addMessage(sender, content, type = 'left', avatar = '👤', isCritical = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message message-${type}`;
+        if (isCritical) messageDiv.classList.add('message-critical');
+
+        const senderDiv = document.createElement('div');
+        senderDiv.className = 'message-sender';
+        senderDiv.innerHTML = `<span class="avatar">${avatar}</span> ${sender}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.innerHTML = content;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        const now = new Date();
+        timeDiv.textContent = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        messageDiv.appendChild(senderDiv);
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timeDiv);
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        if (text) {
+            addMessage('박시민', text, 'left', '👤');
+            chatInput.value = '';
+        }
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendBtn.click();
+    });
+
+    simulateAiBtn.addEventListener('click', () => {
+        const responses = [
+            { sender: '법안 분석 AI', content: '법안 복잡도를 재분석 중입니다. 잠시만 기다려 주세요.', avatar: '⚙️' },
+            { sender: '전문성 평가 AI', content: '해당 분야 전문가 풀을 업데이트했습니다. 추가 동의 현황을 모니터링 중입니다.', avatar: '📊' },
+            { sender: '시민배심원단 AI', content: '숙의 토론 중간 결과: 찬성 58%, 반대 28%. 추가 의견을 반영하여 토론을 진행합니다.', avatar: '⚖️' },
+            { sender: 'AI 비서', content: '법안 진행 상황을 정기적으로 보고드리겠습니다.', avatar: '🤖' }
+        ];
+        const rand = Math.floor(Math.random() * responses.length);
+        addMessage(responses[rand].sender, responses[rand].content, 'right', responses[rand].avatar);
+    });
+
+    // ========== 기술 보고서 탭 기능 (3개 탭) ==========
+    const tabs = document.querySelectorAll('.report-tab-btn');
+    const reportContent = document.getElementById('report-content');
+    const loadingDiv = document.querySelector('.loading-indicator');
+    const fileMap = {
+        evaluation: 'congress-evaluation.html',
+        market: 'congress-market.html',
+        conservative: 'congress-conservative.html'
+    };
+    let loadedTabs = { evaluation: false, market: false, conservative: false };
+    let tabContents = { evaluation: null, market: null, conservative: null };
+    let currentTab = 'evaluation';
+
+    function loadTab(tabId) {
+        // 이미 로드된 탭이면 캐시된 내용 표시
+        if (loadedTabs[tabId] && tabContents[tabId]) {
+            reportContent.innerHTML = tabContents[tabId];
+            return;
+        }
+
+        loadingDiv.style.display = 'block';
+        reportContent.innerHTML = '<div class="loading-indicator">로딩 중...</div>';
+
+        fetch(fileMap[tabId])
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                let content = doc.body.innerHTML;
+                // 캐시에 저장
+                tabContents[tabId] = content;
+                loadedTabs[tabId] = true;
+                reportContent.innerHTML = content;
+                loadingDiv.style.display = 'none';
+            })
+            .catch(error => {
+                reportContent.innerHTML = `<div class="loading-indicator" style="color: var(--accent-red);">로딩 실패: ${error.message}</div>`;
+                loadingDiv.style.display = 'none';
+            });
+    }
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+            tabs.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const tabId = this.dataset.tab;
+            currentTab = tabId;
+            loadTab(tabId);
+        });
+    });
+
+    // 초기 로드 (첫 번째 탭)
+    loadTab('evaluation');
+});
+</script>
+<script src="/js/nav.js"></script>
+</body>
+</html>
