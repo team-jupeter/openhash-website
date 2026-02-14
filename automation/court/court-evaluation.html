@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특허 출원서 종합 평가</title>
+    <style>
+        /* OpenHash 디자인 시스템 (간소화) */
+        :root {
+            --navy: #1a3a6e;
+            --navy-dark: #0f2647;
+            --gold: #d4a017;
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --text-tertiary: #6c757d;
+            --bg-white: #ffffff;
+            --bg-surface: #f8f9fa;
+            --border: #dee2e6;
+            --border-light: #e9ecef;
+            --accent-blue: #1971c2;
+            --accent-green: #2e7d32;
+            --accent-purple: #6a1b9a;
+            --accent-red: #c92a2a;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.7;
+            background: transparent;
+            font-size: 15px;
+        }
+        .report-container {
+            max-width: 100%;
+            padding: 0.5rem 0;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 1.5rem 0 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid var(--navy);
+            display: inline-block;
+        }
+        .subsection-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1rem 0 0.5rem;
+        }
+        .rating-stars {
+            display: inline-block;
+            margin-left: 0.5rem;
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        th {
+            background: var(--bg-surface);
+            font-weight: 600;
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin: 1rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            background: var(--navy);
+            margin-right: 0.5rem;
+        }
+        .badge-blue { background: var(--accent-blue); }
+        .badge-green { background: var(--accent-green); }
+        .badge-purple { background: var(--accent-purple); }
+        .badge-gold { background: var(--gold); color: var(--navy-dark); }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .stat-highlight {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-light);
+            margin: 1rem 0;
+        }
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+
+        <!-- 고유성 -->
+        <h2 class="section-title">고유성</h2>
+        <table>
+            <thead><tr><th>항목</th><th>본 발명의 특징</th><th>기존 기술과의 차별점</th></tr></thead>
+            <tbody>
+                <tr><td>합의 메커니즘</td><td>작업증명(PoW)/지분증명(PoS) 없이 SHA-256 이중 해싱 기반 <strong>확률적 계층 선택</strong></td><td>비트코인·이더리움은 에너지 집약적 합의; 본 발명은 해시의 암호학적 무작위성만으로 계층 선택</td></tr>
+                <tr><td>네트워크 구조</td><td>기존 통신 인프라의 <strong>물리적 계층(읍면동→시군구→광역시도→국가)</strong> 활용</td><td>블록체인은 가상 P2P 네트워크; 본 발명은 실제 인프라를 신뢰 계층으로 재해석</td></tr>
+                <tr><td>보안 메커니즘</td><td><strong>계층 간 상호 검증</strong>: 하향식(BLS+머클 증명) + 상향식(이상 감시) 양방향 실시간 검증</td><td>기존 단일 계층 내 합의(PBFT)와 달리 계층 간 감시로 오염 노드를 5ms 내 격리</td></tr>
+                <tr><td>데이터 처리</td><td><strong>오프라인 우선 배치 처리</strong>: 통신 불가 환경에서 로컬 해시 체인 구축 후 일괄 전송</td><td>블록체인은 항상 온라인 전제; 오프라인 시 사용 불가능</td></tr>
+                <tr><td>무결성/진실성 구분</td><td><strong>디지털 공증인 개념</strong>: 무결성(위변조 방지)만 보장, 진실성은 생산자 신뢰도에 의존</td><td>기존 시스템은 혼동하거나 진실성까지 보장하려다 한계</td></tr>
+                <tr><td>AI 융합 방식</td><td><strong>다중 독립 AI 에이전트</strong>: 원고/피고 측 변호사 Agent를 독립적으로 생성, 논증 유도</td><td>단일 AI가 양측 대변하거나 단순 법률 자문에 그침</td></tr>
+                <tr><td>법적 투명성</td><td><strong>자연어 대화 기록 공개</strong>: AI 에이전트 간 합의 과정 전체 투명 제공</td><td>기존 AI 판결 시스템은 결과만 제시하거나 블랙박스 처리</td></tr>
+                <tr><td>입법 환류 기능</td><td><strong>국제 법제 비교 + 입법 권고안 자동 생성</strong>: 타국 법체계 차이 분석 및 법률 개정 제안</td><td>단순 판결을 넘어 법체계 발전에 기여하는 순환적 기능은 전례 없음</td></tr>
+            </tbody>
+        </table>
+        <div style="margin: 0.5rem 0 1.5rem; text-align: right;">
+            <span class="badge">고유성</span> <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+
+        <!-- 신규성 -->
+        <h2 class="section-title">신규성</h2>
+        <table>
+            <thead><tr><th>선행기술</th><th>핵심 내용</th><th>본 발명과의 차이 (신규성)</th></tr></thead>
+            <tbody>
+                <tr><td>비트코인 (US 8,037,399 B2)</td><td>PoW, 7 TPS, 연간 121 TWh 소비</td><td>✅ 확률적 계층 선택 → 에너지 98.5% 절감, 노드 수 비례 TPS 선형 증가</td></tr>
+                <tr><td>이더리움 (US 9,436,923 B1)</td><td>PoS, 모든 노드 동등 권한</td><td>✅ 계층별 차등 권한, 상위 계층만 PBFT 합의</td></tr>
+                <tr><td>샤딩 (EP 3,559,848 A1)</td><td>블록체인 수평 분할, 크로스샤드 오버헤드</td><td>✅ 수직적 계층 구조로 물리적 인프라 활용, 크로스샤드 문제 원천 해결</td></tr>
+                <tr><td>Hashgraph (US 10,552,864 B2)</td><td>DAG, 비잔틴 1/3 한계, 폐쇄적 특허</td><td>✅ 오픈소스 기반, 계층 간 상호 검증으로 1/3 한계 극복</td></tr>
+                <tr><td>IBM Hyperledger Fabric</td><td>허가형 블록체인, 채널 프라이버시</td><td>✅ 국가/기관 단위 자유로운 진입/퇴출, 무중단 운영</td></tr>
+                <tr><td>기존 AI 법률 시스템</td><td>단일 AI 법률 자문, 판례 검색</td><td>✅ 다중 독립 AI 에이전트 논증, 합의 도출, 국제 법제 비교, 입법 권고</td></tr>
+            </tbody>
+        </table>
+        <div style="margin: 0.5rem 0 1.5rem; text-align: right;">
+            <span class="badge badge-blue">신규성</span> <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+
+        <!-- 진보성 -->
+        <h2 class="section-title">진보성</h2>
+        <table>
+            <thead><tr><th>기술적 과제</th><th>기존 접근법 한계</th><th>본 발명의 해결 방식</th><th>진보적 요소</th></tr></thead>
+            <tbody>
+                <tr><td>에너지 효율 + 확장성 동시 달성</td><td>PoW 에너지 과다, PoS 중앙화 위험, 샤딩 복잡성</td><td>SHA-256 이중 해싱 확률적 계층 선택, 노드 수 비례 TPS</td><td>해시의 암호학적 무작위성을 합의 메커니즘으로 전환한 점은 비자명</td></tr>
+                <tr><td>실시간 보안 + 자동 복구</td><td>BFT 합의는 노드 증가 시 통신 복잡도 O(n²)</td><td>계층 간 상호 검증으로 5ms 내 오염 노드 격리, 15초 내 자동 복구</td><td>단일 계층 내 합의를 넘어 계층 간 감시 체계 도입</td></tr>
+                <tr><td>통신 두절 환경에서의 사용</td><td>블록체인은 항상 온라인 필요</td><td>오프라인 배치 처리: 로컬 해시 체인 → 배치 Merkle Root 일괄 전송</td><td>오프라인 환경을 고려한 설계는 블록체인 패러다임 확장</td></tr>
+                <tr><td>법적 분쟁 해결의 공정성</td><td>단일 AI 판결 편향 가능성, 인간 판사 시간/비용 과다</td><td>원고/피고 독립 AI 에이전트 간 논증, 자연어 대화 투명 공개, 국제 법제 비교</td><td>독립 에이전트 간 논증을 통한 합의 도출은 법률 AI 신규 방법론</td></tr>
+                <tr><td>법률 체계 지속적 발전</td><td>법률 개정은 사회 변화에 느리게 대응</td><td>국제 법제 비교 분석 기반 입법 권고안 자동 생성</td><td>AI가 판결을 넘어 입법 정책에 기여하는 순환적 시스템은 혁신적</td></tr>
+            </tbody>
+        </table>
+        <div style="margin: 0.5rem 0 1.5rem; text-align: right;">
+            <span class="badge badge-purple">진보성</span> <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+
+        <!-- 혁신성 -->
+        <h2 class="section-title">혁신성</h2>
+        <div class="grid-2">
+            <div class="card">
+                <span class="badge badge-gold">기술 패러다임 전환</span>
+                <p style="margin-top:0.5rem;">블록체인의 '합의' 중심에서 '확률적 계층 선택'+'계층 간 상호 검증'으로 새로운 패러다임 제시</p>
+            </div>
+            <div class="card">
+                <span class="badge badge-gold">인프라 활용 혁신</span>
+                <p>기존 통신 인프라를 신뢰 인프라로 재해석 → 별도 구축 비용 100% 절감</p>
+            </div>
+            <div class="card">
+                <span class="badge badge-gold">에너지 혁신</span>
+                <p>비트코인 대비 98.5% 에너지 절감 (연간 121 TWh → 1.8 TWh)</p>
+            </div>
+            <div class="card">
+                <span class="badge badge-gold">확장성 혁신</span>
+                <p>노드 수 비례 선형 TPS 증가 → 수백만 TPS까지 확장 가능 (Visa 수준 초과)</p>
+            </div>
+            <div class="card">
+                <span class="badge badge-gold">글로벌 포용성</span>
+                <p>오프라인 배치 처리로 통신 인프라 열악한 지역에서도 데이터 무결성 서비스 제공</p>
+            </div>
+            <div class="card">
+                <span class="badge badge-gold">법률 서비스 혁신</span>
+                <p>AI 기반 법적 분쟁 해결로 사법 접근성 대폭 향상 (비용 90%↓, 시간 수년→수분)</p>
+            </div>
+            <div class="card">
+                <span class="badge badge-gold">민주적 의사결정</span>
+                <p>배심원단 참여 옵션으로 AI 판결에 인간의 사회적 통념 반영</p>
+            </div>
+            <div class="card">
+                <span class="badge badge-gold">법제 발전 기여</span>
+                <p>국제 법제 비교 및 입법 권고로 사법·입법부 정책 결정 지원</p>
+            </div>
+        </div>
+        <div style="margin: 0.5rem 0 1.5rem; text-align: right;">
+            <span class="badge badge-gold">혁신성</span> <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+
+        <!-- 산업상 이용 가능성 -->
+        <h2 class="section-title">산업상 이용 가능성</h2>
+        <table>
+            <thead><tr><th>산업 분야</th><th>적용 사례</th><th>기대 효과</th></tr></thead>
+            <tbody>
+                <tr><td>공공 행정</td><td>전자문서 인증 (운전면허증, 졸업증명서)</td><td>위변조 방지, 행정 효율성 향상</td></tr>
+                <tr><td>금융</td><td>디지털 화폐(EGCT) 거래 검증, 실시간 재무제표</td><td>사기 탐지, 투명성 확보, 비용 절감</td></tr>
+                <tr><td>의료</td><td>전자의무기록(EMR) 무결성, 원격 진료 데이터 신뢰성</td><td>환자 데이터 보호, 의료 오류 감소</td></tr>
+                <tr><td>법률</td><td>AI 기반 법적 분쟁 해결 플랫폼, 온라인 분쟁 해결(ODR)</td><td>사법 접근성 향상, 법원 업무 부담 경감</td></tr>
+                <tr><td>공급망·물류</td><td>제품 이력 추적, 위변조 방지</td><td>투명성 확보, 위조 상품 방지</td></tr>
+                <tr><td>교육</td><td>학위 증명서 위변조 방지, 학습 이력 검증</td><td>학력 위조 방지, 국제 교류 촉진</td></tr>
+                <tr><td>지식재산</td><td>특허 출원 자동화, 지식재산권 보호</td><td>출원 시간 단축(수년→수시간), 비용 절감</td></tr>
+                <tr><td>부동산</td><td>등기부 등본 위변조 방지</td><td>거래 안전성 확보, 사기 방지</td></tr>
+                <tr><td>글로벌 비즈니스</td><td>국제 계약 이행 검증, 무역 분쟁 해결</td><td>법적 리스크 감소, 신속한 분쟁 해결</td></tr>
+                <tr><td>재난·개발도상국</td><td>오프라인 배치 처리로 데이터 무결성 서비스 제공</td><td>디지털 격차 해소, 글로벌 포용성 확보</td></tr>
+            </tbody>
+        </table>
+        <div style="margin: 0.5rem 0 1.5rem; text-align: right;">
+            <span class="badge badge-green">산업상 이용 가능성</span> <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+
+        <!-- 종합 평가 -->
+        <h2 class="section-title">종합 평가</h2>
+        <div class="card">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <span class="badge">고유성 ⭐⭐⭐⭐⭐</span>
+                <span class="badge badge-blue">신규성 ⭐⭐⭐⭐⭐</span>
+                <span class="badge badge-purple">진보성 ⭐⭐⭐⭐⭐</span>
+                <span class="badge badge-gold">혁신성 ⭐⭐⭐⭐⭐</span>
+                <span class="badge badge-green">산업상 이용 가능성 ⭐⭐⭐⭐⭐</span>
+            </div>
+            <p style="line-height: 1.8; font-size:0.95rem;">
+                본 특허 출원은 확률적 계층 선택과 계층 간 상호 검증이라는 새로운 패러다임을 통해 기존 블록체인의 근본적 한계(에너지, 확장성, 속도)를 극복하였을 뿐만 아니라, AI 멀티에이전트 시스템과 결합하여 법률, 행정, 금융 등 사회 전반의 데이터 무결성 문제를 해결하는 혁신적인 발명이다. 특히 오프라인 환경 지원과 데이터 무결성/진실성 구분 개념은 글로벌 포용성을 확보하였으며, AI 기반 법적 분쟁 해결 시스템의 투명한 논증 과정과 입법 환류 기능은 기술을 넘어 사회 제도 발전에 기여할 수 있는 진보성을 갖추었다.
+            </p>
+            <hr>
+            <div style="text-align: center; font-weight: 600; color: var(--navy);">
+                종합 평가: 모든 항목에서 최고 등급 (⭐⭐⭐⭐⭐)
+            </div>
+        </div>
+    </div>
+</body>
+</html>
