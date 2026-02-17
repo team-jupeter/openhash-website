@@ -1,10 +1,8 @@
-
-
-// nav.js - menu.html을 로드하고 활성화 처리
+// nav.js - 드롭다운 메뉴 지원 (기술·자동화 하위 메뉴 포함)
 (function() {
     'use strict';
 
-    // CSS 스타일 주입 (드롭다운 포함) - 기존과 동일
+    // CSS 스타일 주입 (드롭다운 포함)
     if (!document.getElementById('nav-style')) {
         var style = document.createElement('style');
         style.id = 'nav-style';
@@ -146,62 +144,88 @@
         document.head.appendChild(style);
     }
 
-    // 현재 경로
     var currentPath = window.location.pathname;
 
-    /**
-     * 메뉴 HTML을 로드하고 활성화 처리
-     */
-    async function loadMenu() {
-        // 플레이스홀더 찾기 (없으면 하드코딩된 nav가 있다고 가정)
-        var placeholder = document.getElementById('main-nav-placeholder');
-        if (!placeholder) {
-            // 플레이스홀더가 없으면 이미 nav가 존재할 수 있으므로 활성화만 수행
-            setActiveMenuItem();
-            return;
-        }
+    var menu = [
+        { href: '/', label: '홈' },
+        {
+            label: '기술',
+            href: '/technology/',
+            dropdown: [
+                { href: '/technology/principle/', label: '원리' },
+                { href: '/technology/practical/', label: '실용' },
+                { href: '/technology/simulation/', label: '시뮬레이션' },
+                { href: '/technology/tests/', label: '테스트' },
+                { href: '/technology/decentralization/', label: '탈중앙화' }
+            ]
+        },
+        { href: '/gopang/', label: '고팡' },
+        {
+            label: '인프라 자동화',
+            href: '/automation/',
+            dropdown: [
+                { href: '/automation/market/', label: '시장' },
+                { href: '/automation/employment/', label: '완전 고용' },
+                { href: '/automation/currency/', label: '화폐' },
+                { href: '/automation/autonomous/', label: '자율 주행' },
+                { href: '/automation/medical/', label: '의료' },
+                { href: '/automation/court/', label: '법원' },
+                { href: '/automation/congress/', label: '의회' },
+                { href: '/automation/defense/', label: '국방' },
+                { href: '/automation/patent/', label: '특허청' },
+                { href: '/automation/tax/', label: '국세청' },
+                { href: '/automation/province/', label: '지방 자치' }
+            ]
+        },
+        { href: '/agent-web/', label: '새로운 웹' }
+    ];
 
-        try {
-            var response = await fetch('/menu.html');
-            if (!response.ok) throw new Error('메뉴 로딩 실패');
-            var html = await response.text();
-            placeholder.innerHTML = html;
-            setActiveMenuItem(); // 활성화 처리
-            // 드롭다운 토글 클릭 차단
-            document.querySelectorAll('.dropdown-toggle').forEach(function(toggle) {
-                toggle.addEventListener('click', function(e) { e.preventDefault(); });
-            });
-        } catch (error) {
-            console.error('메뉴 로딩 오류:', error);
-            placeholder.innerHTML = '<nav class="nav"><div class="nav-inner">메뉴를 불러올 수 없습니다.</div></nav>';
-        }
-    }
+    function renderMenu() {
+        var html = '<nav class=\"nav\"><div class=\"nav-inner\">' +
+            '<a href=\"/\" class=\"logo\">◆ Open<span>Hash</span></a>' +
+            '<ul class=\"nav-menu\">';
 
-    /**
-     * 현재 경로에 맞게 활성 메뉴 항목 표시
-     */
-    function setActiveMenuItem() {
-        // 모든 nav-menu a 태그
-        var links = document.querySelectorAll('.nav-menu a');
-        links.forEach(function(link) {
-            link.classList.remove('active');
-            var href = link.getAttribute('href');
-            if (!href || href === '#') return;
-
-            // 정확히 일치하거나, 서브경로인 경우 (단, 루트 제외)
-            if (href === '/' && currentPath === '/') {
-                link.classList.add('active');
-            } else if (href !== '/' && currentPath.indexOf(href) === 0) {
-                link.classList.add('active');
+        menu.forEach(function(item) {
+            if (item.dropdown) {
+                var isActive = (item.label === '기술' && currentPath.indexOf('/technology/') === 0) ||
+                               (item.label === '인프라 자동화' && currentPath.indexOf('/automation/') === 0);
+                html += '<li class=\"dropdown\">';
+                html += '<a href=\"' + item.href + '\" class=\"dropdown-toggle' + (isActive ? ' active' : '') + '\">' + item.label + '</a>';
+                html += '<div class=\"dropdown-menu\">';
+                item.dropdown.forEach(function(subItem) {
+                    var isSubActive = currentPath === subItem.href ||
+                                     (currentPath.indexOf(subItem.href) === 0 && subItem.href !== '/');
+                    html += '<a href=\"' + subItem.href + '\"' + (isSubActive ? ' class=\"active\"' : '') + '>' + subItem.label + '</a>';
+                });
+                html += '</div></li>';
+            } else {
+                var isActive = (currentPath === item.href) ||
+                    (item.href !== '/' && currentPath.indexOf(item.href) === 0);
+                if (item.href === '/' && currentPath !== '/') isActive = false;
+                html += '<li><a href=\"' + item.href + '\"' + (isActive ? ' class=\"active\"' : '') + '>' + item.label + '</a></li>';
             }
         });
+
+        html += '</ul>' +
+            '<a href=\"https://www.gopang.net\" target=\"_blank\" rel=\"noopener\" class=\"nav-cta\">고팡 AI 체험 <span class=\"nav-cta-arrow\">→</span></a>' +
+            '</div></nav>';
+        return html;
     }
 
-    // DOM 로드 후 실행
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadMenu);
+    // 기존 nav.nav가 있으면 교체, 없으면 삽입
+    var oldNav = document.querySelector('nav.nav');
+    if (oldNav) {
+        oldNav.outerHTML = renderMenu();
     } else {
-        loadMenu();
+        document.body.insertAdjacentHTML('afterbegin', renderMenu());
     }
-})();
 
+    // 드롭다운 토글 클릭 이벤트 차단 (href가 "#"인 경우에만)
+    document.querySelectorAll('.dropdown-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            if (this.getAttribute('href') === '#') {
+                e.preventDefault();
+            }
+        });
+    });
+})();

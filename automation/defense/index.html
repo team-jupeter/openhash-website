@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>국방 자동화 시스템 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --accent-defense: #4a3b2c;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+
+/* 고팡 배너 */
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+
+/* Hero 섹션 */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* 컨텐츠 공통 */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+
+/* 채팅 인터페이스 */
+.chat-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin: 2.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+.chat-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+}
+.status-indicator.active { background: #4caf50; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.message {
+    max-width: 85%;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    position: relative;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    word-break: keep-all;
+    box-shadow: var(--shadow-sm);
+}
+.message-left {
+    align-self: flex-start;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent-blue);
+    margin-right: auto;
+}
+.message-right {
+    align-self: flex-end;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-right: 4px solid var(--accent-defense);
+    margin-left: auto;
+}
+.message-system {
+    align-self: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    max-width: 95%;
+    text-align: center;
+    font-style: italic;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    border-radius: var(--radius-lg);
+    padding: 0.7rem 1rem;
+}
+.message-critical {
+    border-left-color: var(--accent-red) !important;
+    background: #fff5f5 !important;
+}
+.message-warning {
+    border-left-color: var(--accent-orange) !important;
+    background: #fff8e1 !important;
+}
+.message-success {
+    border-left-color: var(--accent-green) !important;
+    background: #f1f8e9 !important;
+}
+.message-sender {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed var(--border-light);
+}
+.avatar {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-elevated);
+    text-align: center;
+    line-height: 26px;
+    margin-right: 0.4rem;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+.message-content {
+    line-height: 1.7;
+    display: block;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    white-space: pre-line;
+}
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-caption);
+    text-align: right;
+    margin-top: 0.5rem;
+    padding-top: 0.3rem;
+    border-top: 1px dotted var(--border-light);
+}
+.chat-input-area {
+    display: flex;
+    padding: 1rem;
+    background: var(--bg-white);
+    border-top: 1px solid var(--border);
+    gap: 0.5rem;
+}
+.chat-input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.chat-send-btn, .chat-ai-btn {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.chat-send-btn {
+    background: var(--navy);
+    color: white;
+}
+.chat-send-btn:hover {
+    background: var(--navy-light);
+}
+.chat-ai-btn {
+    background: var(--gold);
+    color: var(--navy-dark);
+}
+.chat-ai-btn:hover {
+    background: var(--gold-light);
+}
+
+/* 통계 카드 */
+.stat-cards { display: grid; grid-template-columns: repeat(4,1fr); gap:1rem; margin:2rem 0; }
+.stat-card { background: var(--bg-white); border:1px solid var(--border-light); border-radius: var(--radius-md); padding:1.5rem; text-align: center; box-shadow: var(--shadow-sm); }
+.stat-value { font-size: 1.8rem; font-weight:900; line-height:1.2; }
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.5rem; }
+
+/* 역할 카드 (세로 나열) */
+.role-grid { display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; }
+.role-card { background: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1.5rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+.role-card.role-a { border-left: 4px solid var(--accent-defense); }
+.role-card.role-b { border-left: 4px solid var(--accent-blue); }
+.role-card.role-c { border-left: 4px solid var(--accent-purple); }
+.role-card.role-d { border-left: 4px solid var(--accent-red); }
+.role-header { margin-bottom: 1rem; }
+.role-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+.role-human { color: var(--text-tertiary); font-size: 0.85rem; font-weight: 500; }
+.role-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* 비교 테이블 */
+.data-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.92rem; }
+.data-table th, .data-table td { padding: 0.7rem 0.9rem; text-align: left; border-bottom: 1px solid var(--border-light); vertical-align: top; word-break: keep-all; }
+.data-table thead th { background: var(--navy); color: #fff; font-weight: 600; font-size: 0.88rem; border-bottom: none; }
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+
+/* 리포트 탭 */
+.report-tab-nav {
+    display: flex;
+    gap: 0.2rem;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.5rem;
+}
+.report-tab-btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.report-tab-btn:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.report-tab-btn.active {
+    color: var(--navy);
+    border-bottom-color: var(--navy);
+    background: var(--bg-white);
+}
+.report-tab-content {
+    min-height: 400px;
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+.loading-indicator {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-caption);
+    font-style: italic;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-messages { height: 400px; padding: 1rem; }
+    .message { max-width: 95%; }
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .report-tab-nav { flex-direction: column; }
+    .report-tab-btn { text-align: left; }
+    .chat-input-area { flex-wrap: wrap; }
+    .chat-send-btn, .chat-ai-btn { flex: 1; }
+}
+
+/* ===== 기술 보고서 탭 전용 스타일 ===== */
+.report-tab-content .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a3a6e;
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid #1a3a6e;
+    display: inline-block;
+}
+.report-tab-content .subsection-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 1rem 0 0.5rem;
+}
+.report-tab-content .rating-stars {
+    display: inline-block;
+    margin-left: 0.5rem;
+    color: #d4a017;
+    font-weight: 700;
+}
+.report-tab-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.report-tab-content th {
+    background: #f8f9fa;
+    font-weight: 600;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #dee2e6;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #495057;
+}
+.report-tab-content td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+.report-tab-content .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.report-tab-content .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.report-tab-content .info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.2rem;
+    transition: all 0.2s;
+}
+.report-tab-content .info-card .card-title {
+    font-weight: 700;
+    color: #1a3a6e;
+    margin-bottom: 0.6rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.report-tab-content .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    background: #1a3a6e;
+    margin-right: 0.5rem;
+}
+.report-tab-content .badge-blue { background: #1971c2; }
+.report-tab-content .badge-green { background: #2e7d32; }
+.report-tab-content .badge-gold { background: #d4a017; color: #0f2647; }
+.report-tab-content .badge-defense { background: #4a3b2c; }
+
+@media (max-width: 600px) {
+    .report-tab-content .grid-2,
+    .report-tab-content .grid-3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">국방 혁신: 인간 중심 전투에서 AI 로봇 협업 체계로의 전환</div>
+        <h1 class="hero-title">국방 <span class="gold">자동화</span> 시스템</h1>
+        <p class="hero-sub">Atlas 로봇 100만대, OpenHash 기반 PDV, 4계층 군 구조, AI 핸드셰이크 인증</p>
+    </div>
+</section>
+
+<!-- 고팡 배너 -->
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡</strong> — OpenHash+AI 기반의 국방 자동화 시스템을 직접 경험해 보세요</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 국방 서비스의 역할 전환 섹션 -->
+<section class="section" id="role-transition">
+    <div class="container">
+        <h2 class="sec-title">국방 서비스의 역할 전환</h2>
+        <p class="sec-lead">
+            고팡 시스템에 의해, 국방 체계는 인간 중심의 전통적 작전에서 AI 로봇과의 협업 네트워크로 전환합니다. Boston Dynamics의 Atlas 로봇 100만대를 육·해·공군에 보급하고, 각 로봇은 고유한 IPv6 주소와 PDV(Private Data Vault)를 부여받습니다. 모든 로봇의 PDV는 국방 시스템이 소유하며, OpenHash 네트워크에 해시를 기록하여 위변조를 방지합니다. 로봇 간, 그리고 사람-로봇 간 핸드셰이크 인증으로 악의적 지시를 차단하고, 선조치 후보고(first response, next report) 체계로 즉각적인 위협 대응이 가능합니다. 이를 통해 작전 효율성 65% 향상, 인명 피해 90% 감소, 대응 시간 80% 단축을 달성합니다 [citation:3][citation:4].
+        </p>
+    </div>
+</section>
+
+<!-- 시스템 구성 요소 섹션 -->
+<section class="section surface" id="system-components">
+    <div class="container">
+        <h2 class="sec-title">시스템 구성 요소</h2>
+        <p class="sec-lead">OpenHash + AI 기반 100만대 로봇 국방 네트워크</p>
+        <div style="margin: 2rem 0;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-defense); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">1. Atlas 로봇 PDV 시스템</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">100만대 Atlas 로봇 각각에 IPv6 주소와 PDV 할당. 모든 작전 기록, 센서 데이터, 명령 이력을 PDV에 저장하고 OpenHash 네트워크에 해시를 기록하여 위변조 불가. 로봇의 PDV 소유자는 국방 시스템으로, 예외적으로만 접근 허용 [citation:6].</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">2. 핸드셰이크 인증 프로토콜</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">OpenHash PDV 기반 상호 신원 확인. 지시자의 PDV에 저장된 디지털 신분증을 검증하고, 권한 수준과 업무 범위를 확인하며, 해당 지시가 헌법과 법률을 위반하는지 AI가 실시간 검증. 악의적 지시 차단률 99.99%.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">3. 선조치 후보고 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">각 로봇에 Fine-tuning된 LLM 탑재. 이상 상황(abnormal situation) 탐지 시 즉시 대응 프로세스 개시, 동시에 국방 시스템에 보고. 위협 식별 정확도 95%, 대응 시간 80% 단축 [citation:4].</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-orange); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">4. 4계층 군 조직 연동</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">OpenHash Layer 구조와 군 계층 결합: Layer 1(사단) = 로봇 1,000대, Layer 2(군단) = 로봇 10,000대, Layer 3(육해공군) = 로봇 30만대, Layer 4(국방부) = 전체 100만대 통합 관제. 단일 로봇 PDV 위변조 시 전체 네트워크 동시 위변조 필요 [citation:6].</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-red); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">5. 실시간 감시·제어 시스템</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">국방 시스템이 100만대 로봇의 활동을 실시간 모니터링. 동선 추적, 데이터 무결성 검증, 오염 로봇 즉시 격리. 두 장소 동시 출현, 순간 이동 등 비정상 패턴 탐지 시 5ms 내 차단 [citation:3][citation:7].</div>
+                </div>
+            </div>
+            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: var(--gold-light);">Global Openhash Defense Network</div>
+                <div style="font-size: 0.9rem; line-height: 1.8;">100만대 Atlas 로봇, 5천만 국민 PDV, 1천만 기관 PDV와 4계층 해시체인으로 연동. 단일 로봇의 PDV를 위변조하려면 6천만 개 이상의 PDV를 동시에 위변조해야 하므로 사실상 불가능. 국방 지출 증가와 군 현대화 계획에 따라 2030년까지 100만대 체계 구축 완료 목표 [citation:1][citation:4].</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 2: 채팅 시뮬레이션 -->
+<section class="section surface" id="chat-simulation">
+    <div class="container">
+        <h2 class="sec-title">실시간 국방 작전 채팅 시뮬레이션</h2>
+        <p class="sec-lead">국방부 지휘관이 고팡 앱을 통해 로봇에 명령하고, 로봇 간 핸드셰이크, 선조치 후보고, 이상 상황 대응 과정을 보여줍니다. 모든 명령과 보고는 PDV에 기록되고 OpenHash로 무결성 보장됩니다.</p>
+        <div class="chat-container">
+            <div class="chat-header"><div>국방 작전 채팅</div><div class="chat-status"><div class="status-indicator active"></div><span>실시간 처리 중</span></div></div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- 1. 지휘관 명령 -->
+                <div class="message message-left">
+                    <div class="message-sender"><span class="avatar">👤</span> 국방부 작전참모</div>
+                    <div class="message-content">@ATLAS-3421, @ATLAS-3422, @ATLAS-3423: 제1전방초소(GP-01) 주변 2km 구역 순찰 및 이상 징후 탐지 후 보고. 임무 코드: PATROL-2026-0217. 권한 레벨: 3.</div>
+                    <div class="message-time">14:02:15</div>
+                </div>
+                <!-- 2. 핸드셰이크 -->
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> ATLAS-3421</div>
+                    <div class="message-content">[핸드셰이크 요청] 지시자 신원 확인 중... 작전참모 PDV 디지털 신분증 검증 완료. 권한 레벨 3 확인. 명령이 헌법·국방법 위반 여부 검토 중... 적합 판정. 핸드셰이크 완료. 임무 수락. (PDV 기록 해시: 0x8f3a...c7d2)</div>
+                    <div class="message-time">14:02:28</div>
+                </div>
+                <!-- 3. 로봇 간 협업 -->
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> ATLAS-3422</div>
+                    <div class="message-content">[로봇 간 통신] @ATLAS-3421: 순찰 경로 공유 요청. 내 PDV에 저장된 GP-01 지형 데이터(최신 LiDAR 스캔) 전송. 함께 이동하며 섹터 분할 제안: A(3421), B(3422), C(3423).</div>
+                    <div class="message-time">14:02:45</div>
+                </div>
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> ATLAS-3421</div>
+                    <div class="message-content">[로봇 간 통신] @ATLAS-3422: 데이터 수신 완료. PDV 무결성 검증(BLS 서명 확인). 섹터 분할 승인. 각자 PDV에 경로 저장. 30분 후 교차 검증 예정.</div>
+                    <div class="message-time">14:03:02</div>
+                </div>
+                <!-- 4. 선조치 후보고 (이상 상황) -->
+                <div class="message message-right message-critical">
+                    <div class="message-sender"><span class="avatar">🤖</span> ATLAS-3423</div>
+                    <div class="message-content">[긴급] 섹터 C에서 미확인 드론 2대 탐지. 열상 카메라 분석 결과, 군용 드론 가능성 87%. 무장 여부 불확실. 선조치: 전파 방해(jamming) 활성화, 회피 기동 시작. 국방부 상황실에 보고. (PDV 기록 해시: 0x2b4d...e9f1)</div>
+                    <div class="message-time">14:04:30</div>
+                </div>
+                <!-- 5. 인간 개입 (지휘관) -->
+                <div class="message message-left">
+                    <div class="message-sender"><span class="avatar">👤</span> 국방부 작전참모</div>
+                    <div class="message-content">@ATLAS-3423: 드론 식별 번호 전송. 교전 규칙(RoE)에 따라 위협 판단 시 격추 허가. 주변 로봇 지원 배치.</div>
+                    <div class="message-time">14:05:10</div>
+                </div>
+                <!-- 6. 로봇 간 협업 및 격추 -->
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> ATLAS-3421</div>
+                    <div class="message-content">@ATLAS-3423 지원 중. 30초 후 도착. 드론 식별 완료: 적대적 세력 소형 정찰 드론(HUMMINGBIRD-V2). 교전 규칙 상 위협 수준 '높음'.</div>
+                    <div class="message-time">14:05:35</div>
+                </div>
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> ATLAS-3423</div>
+                    <div class="message-content">[격추 완료] 드론 2대 격추. 잔해 수거 중. 격추 과정 영상, 센서 데이터, 좌표 PDV에 저장. 국방부 보고 완료. 후속 명령 대기.</div>
+                    <div class="message-time">14:06:20</div>
+                </div>
+                <!-- 7. 임무 완료 보고 -->
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> ATLAS-3421</div>
+                    <div class="message-content">[임무 완료 보고] 순찰 구역 A, B, C 이상 없음. ATLAS-3423 격추 지원 완료. 전체 작전 로그 PDV 저장됨. OpenHash Layer 3(육군)에 해시 기록 완료. (트랜잭션 ID: 0x9c2d...a5b8)</div>
+                    <div class="message-time">14:08:45</div>
+                </div>
+                <!-- 8. AI 비서 요약 -->
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> AI 비서 (국방부)</div>
+                    <div class="message-content">[작전 요약] 총 소요 시간: 6분 30초. 참여 로봇: 3대(ATLAS-3421,3422,3423). 핸드셰이크 3회, 로봇 간 통신 8회, 선조치 후보고 1회, 격추 2건. 모든 데이터 PDV 저장, OpenHash 무결성 검증 완료. 오염 탐지 0건.</div>
+                    <div class="message-time">14:09:10</div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="로봇 ID 또는 명령을 입력하세요..." class="chat-input">
+                <button id="sendMessageBtn" class="chat-send-btn">전송</button>
+                <button id="simulateAiBtn" class="chat-ai-btn">AI 응답 생성</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 3: 참여자 역할 -->
+<section class="section" id="roles">
+    <div class="container">
+        <h2 class="sec-title">협업 구조: AI 로봇 + 인간 지휘관 시스템</h2>
+        <p class="sec-lead">국방부 지휘관, AI 비서, Atlas 로봇, 감시 AI가 핸드셰이크와 PDV 기반으로 협업하여 완전한 작전 자동화를 실현합니다.</p>
+        <div class="role-grid">
+            <div class="role-card role-a">
+                <div class="role-header"><div class="role-name">국방부 지휘관</div><div class="role-human">(사람, 최종 결정권자)</div></div>
+                <div class="role-desc">고팡 앱을 통해 로봇에 명령을 내리고, 긴급 상황 시 교전 규칙(RoE)에 따라 최종 결정. 지휘관의 PDV에 저장된 디지털 신분증과 권한 프로필로 핸드셰이크 인증.</div>
+            </div>
+            <div class="role-card role-b">
+                <div class="role-header"><div class="role-name">AI 비서 (국방부)</div><div class="role-human">(명령 중계·모니터링)</div></div>
+                <div class="role-desc">지휘관의 자연어 명령을 로봇이 이해할 수 있는 임무 코드로 변환, 로봇 간 통신 중계, 작전 현황 실시간 모니터링, 이상 징후 요약 보고.</div>
+            </div>
+            <div class="role-card role-c">
+                <div class="role-header"><div class="role-name">Atlas 로봇</div><div class="role-human">(현장 작전 수행)</div></div>
+                <div class="role-desc">100만대 각각에 Fine-tuned LLM 탑재. 핸드셰이크로 명령 검증, 선조치 후보고 수행, 로봇 간 협업, 모든 작전 기록을 PDV에 저장. IPv6 주소로 개별 식별.</div>
+            </div>
+            <div class="role-card role-d">
+                <div class="role-header"><div class="role-name">국방 감시 AI</div><div class="role-human">(오염 탐지·격리)</div></div>
+                <div class="role-desc">100만대 로봇의 동선, 데이터 무결성, PDV 접근 패턴 실시간 분석. 두 장소 동시 출현, 순간 이동, 비정상 데이터 수정 시도 탐지 시 5ms 내 네트워크 격리.</div>
+            </div>
+        </div>
+        <div class="note" style="background:#f0f7ff;border-left:4px solid var(--accent-defense);padding:1rem;margin:2rem 0;border-radius:0 var(--radius-md) var(--radius-md) 0;">
+            <strong>시스템 핵심 장점:</strong><br>
+            1. <strong>OpenHash PDV 기반 무결성</strong>: 100만대 로봇, 5천만 국민, 1천만 기관 PDV 연동으로 단일 위변조 불가능 [citation:6]<br>
+            2. <strong>핸드셰이크 인증</strong>: 악의적 지시 차단률 99.99%, 모든 명령 헌법·법률 자동 검증<br>
+            3. <strong>선조치 후보고</strong>: 위협 대응 시간 80% 단축, 작전 효율성 65% 향상<br>
+            4. <strong>4계층 군 조직</strong>: 사단-군단-군-국방부 계층 구조로 보안 강화<br>
+            5. 기존 대비 인명 피해 90% 감소, 작전 비용 70% 절감
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 4: 비교 분석 -->
+<section class="section surface" id="comparison">
+    <div class="container">
+        <h2 class="sec-title">전통적 방식 vs. AI 로봇 자동화 방식 비교</h2>
+        <p class="sec-lead">AI 로봇 네트워크와 OpenHash 기반 무결성 기술로 국방 효율성과 안전성을 획기적으로 향상시킵니다.</p>
+        <table class="data-table">
+            <thead><tr><th>비교 항목</th><th>전통적 국방 작전</th><th>AI 로봇 자동화 시스템</th><th>개선 효과</th></tr></thead>
+            <tbody>
+                <tr><td>작전 대응 시간</td><td>평균 5~15분 (지휘계통)</td><td class="highlight">1~3초 (AI 선조치)</td><td class="highlight">80% 단축</td></tr>
+                <tr><td>인명 피해</td><td>작전 중 사상자 평균 15%</td><td class="highlight">로봇 투입으로 사상자 90% 감소</td><td class="highlight">인명 보호 극대화</td></tr>
+                <tr><td>명령 인증</td><td>수동 신원 확인, 위장 가능</td><td class="highlight">OpenHash PDV 기반 핸드셰이크, 위변조 불가</td><td class="highlight">악의적 지시 차단 99.99%</td></tr>
+                <tr><td>데이터 무결성</td><td>종이 문서, 전자 파일 위변조 가능</td><td class="highlight">모든 작전 기록 PDV 저장, OpenHash 해시 검증</td><td class="highlight">법적 증거력 확보</td></tr>
+                <tr><td>작전 규모</td><td>인력 중심, 동시 작전 제한</td><td class="highlight">100만대 로봇 동시 작전, 실시간 협업</td><td class="highlight">작전 효율성 65% 향상</td></tr>
+                <tr><td>오염 탐지</td><td>사후 감사, 수일 소요</td><td class="highlight">실시간 동선·데이터 분석, 5ms 내 격리</td><td class="highlight">보안 사고 원천 차단</td></tr>
+                <tr><td>작전 비용</td><td>인건비, 유지비 연간 100조 원</td><td class="highlight">로봇 유지비 70% 절감</td><td class="highlight">연간 30조 원 절감</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 기술 보고서 탭 섹션 -->
+<section class="section" id="report-tabs">
+    <div class="container">
+        <h2 class="sec-title">기술 보고서</h2>
+        <div class="report-tab-nav">
+            <button class="report-tab-btn active" data-tab="evaluation">특허 출원서 종합 평가</button>
+            <button class="report-tab-btn" data-tab="market">특허기술의 시장성 분석</button>
+            <button class="report-tab-btn" data-tab="conservative">보수적 관점</button>
+        </div>
+        <div class="report-tab-content" id="report-content">
+            <div class="loading-indicator">로딩 중...</div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) chatMessages.scrollTop = 0;
+
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendMessageBtn');
+    const simulateAiBtn = document.getElementById('simulateAiBtn');
+
+    function addMessage(sender, content, type = 'left', avatar = '👤', isCritical = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message message-${type}`;
+        if (isCritical) messageDiv.classList.add('message-critical');
+
+        const senderDiv = document.createElement('div');
+        senderDiv.className = 'message-sender';
+        senderDiv.innerHTML = `<span class="avatar">${avatar}</span> ${sender}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.innerHTML = content;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        const now = new Date();
+        timeDiv.textContent = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        messageDiv.appendChild(senderDiv);
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timeDiv);
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        if (text) {
+            addMessage('국방부 지휘관', text, 'left', '👤');
+            chatInput.value = '';
+        }
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendBtn.click();
+    });
+
+    simulateAiBtn.addEventListener('click', () => {
+        const responses = [
+            { sender: 'ATLAS-3421', content: '명령 수신. 핸드셰이크 진행 중... PDV 검증 완료. 임무 수행합니다.', avatar: '🤖' },
+            { sender: '국방 감시 AI', content: '로봇 ATLAS-3423 동선 이상 탐지. 즉시 격리 조치했습니다.', avatar: '🛡️' },
+            { sender: 'AI 비서', content: '현재 작전 중 로봇 12,845대, 대기 로봇 987,155대. 이상 징후 0건.', avatar: '🤖' },
+            { sender: 'ATLAS-0917', content: '핸드셰이크 실패: 지시자 권한 부족. 명령 거부. PDV에 기록 완료.', avatar: '🤖' }
+        ];
+        const rand = Math.floor(Math.random() * responses.length);
+        addMessage(responses[rand].sender, responses[rand].content, 'right', responses[rand].avatar);
+    });
+
+    // ========== 기술 보고서 탭 기능 ==========
+    const tabs = document.querySelectorAll('.report-tab-btn');
+    const reportContent = document.getElementById('report-content');
+    const loadingDiv = document.querySelector('.loading-indicator');
+    const fileMap = {
+        evaluation: 'defense-evaluation.html',
+        market: 'defense-market.html',
+        conservative: 'defense-conservative.html'
+    };
+    let loadedTabs = { evaluation: false, market: false, conservative: false };
+    let tabContents = { evaluation: null, market: null, conservative: null };
+    let currentTab = 'evaluation';
+
+    function loadTab(tabId) {
+        if (loadedTabs[tabId] && tabContents[tabId]) {
+            reportContent.innerHTML = tabContents[tabId];
+            return;
+        }
+
+        loadingDiv.style.display = 'block';
+        reportContent.innerHTML = '<div class="loading-indicator">로딩 중...</div>';
+
+        fetch(fileMap[tabId])
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                let content = doc.body.innerHTML;
+                tabContents[tabId] = content;
+                loadedTabs[tabId] = true;
+                reportContent.innerHTML = content;
+                loadingDiv.style.display = 'none';
+            })
+            .catch(error => {
+                reportContent.innerHTML = `<div class="loading-indicator" style="color: var(--accent-red);">로딩 실패: ${error.message}</div>`;
+                loadingDiv.style.display = 'none';
+            });
+    }
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+            tabs.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const tabId = this.dataset.tab;
+            currentTab = tabId;
+            loadTab(tabId);
+        });
+    });
+
+    loadTab('evaluation');
+});
+</script>
+<script src="/js/nav.js"></script>
+</body>
+</html>

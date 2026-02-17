@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시청 자동화 시스템 | OpenHash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy: #1a3a6e;
+    --navy-dark: #0f2647;
+    --navy-light: #2a5298;
+    --gold: #d4a017;
+    --gold-light: #e8b828;
+    --text-primary: #1a1a1a;
+    --text-secondary: #3d3d3d;
+    --text-tertiary: #6b6b6b;
+    --text-caption: #8a8a8a;
+    --bg-white: #ffffff;
+    --bg-surface: #f7f8fa;
+    --bg-elevated: #eef0f4;
+    --border: #d8dce3;
+    --border-light: #e8ecf1;
+    --accent-green: #2e7d32;
+    --accent-blue: #1565c0;
+    --accent-red: #b71c1c;
+    --accent-purple: #6a1b9a;
+    --accent-orange: #e65100;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-white);
+    overflow-x: hidden;
+    font-size: 15px;
+}
+
+/* 고팡 배너 */
+.gopang-banner {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+}
+.gopang-banner-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.gopang-banner-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.gopang-banner-text strong { color: var(--text-primary); font-weight: 700; }
+.gopang-banner-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+.gopang-banner-link:hover { background: var(--navy-light); transform: translateY(-1px); }
+.gopang-banner-link span { font-size: 0.72rem; transition: transform 0.2s; }
+.gopang-banner-link:hover span { transform: translateX(2px); }
+
+/* 탭 네비게이션 (자동화 메뉴) */
+.tab-section {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+.tab-nav {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.tab-link {
+    padding: 0.6rem 1.2rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.tab-link.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    background: var(--bg-white);
+}
+
+/* Hero 섹션 */
+.hero {
+    background: var(--navy-dark);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+}
+.hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-sub {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* 컨텐츠 공통 */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.section {
+    padding: 3.5rem 0;
+}
+.section + .section { border-top: 1px solid var(--border-light); }
+.section.surface { background: var(--bg-surface); }
+.sec-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--navy);
+    display: inline-block;
+}
+.sec-lead {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    word-break: keep-all;
+}
+.subsec-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 2rem 0 0.75rem;
+}
+
+/* 채팅 인터페이스 (개선) */
+.chat-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin: 2.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+.chat-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+}
+.status-indicator.active { background: #4caf50; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.message {
+    max-width: 85%;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    position: relative;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    word-break: keep-all;
+    box-shadow: var(--shadow-sm);
+}
+.message-left {
+    align-self: flex-start;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent-blue);
+    margin-right: auto;
+}
+.message-right {
+    align-self: flex-end;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-right: 4px solid var(--accent-green);
+    margin-left: auto;
+}
+.message-system {
+    align-self: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    max-width: 95%;
+    text-align: center;
+    font-style: italic;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    border-radius: var(--radius-lg);
+    padding: 0.7rem 1rem;
+}
+.message-critical {
+    border-left-color: var(--accent-red) !important;
+    background: #fff5f5 !important;
+}
+.message-warning {
+    border-left-color: var(--accent-orange) !important;
+    background: #fff8e1 !important;
+}
+.message-success {
+    border-left-color: var(--accent-green) !important;
+    background: #f1f8e9 !important;
+}
+.message-sender {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed var(--border-light);
+}
+.avatar {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-elevated);
+    text-align: center;
+    line-height: 26px;
+    margin-right: 0.4rem;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+.message-content {
+    line-height: 1.7;
+    display: block;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    white-space: pre-line;
+}
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-caption);
+    text-align: right;
+    margin-top: 0.5rem;
+    padding-top: 0.3rem;
+    border-top: 1px dotted var(--border-light);
+}
+.chat-input-area {
+    display: flex;
+    padding: 1rem;
+    background: var(--bg-white);
+    border-top: 1px solid var(--border);
+    gap: 0.5rem;
+}
+.chat-input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.chat-send-btn, .chat-ai-btn {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.chat-send-btn {
+    background: var(--navy);
+    color: white;
+}
+.chat-send-btn:hover {
+    background: var(--navy-light);
+}
+.chat-ai-btn {
+    background: var(--gold);
+    color: var(--navy-dark);
+}
+.chat-ai-btn:hover {
+    background: var(--gold-light);
+}
+
+/* 통계 카드 */
+.stat-cards { display: grid; grid-template-columns: repeat(4,1fr); gap:1rem; margin:2rem 0; }
+.stat-card { background: var(--bg-white); border:1px solid var(--border-light); border-radius: var(--radius-md); padding:1.5rem; text-align: center; box-shadow: var(--shadow-sm); }
+.stat-value { font-size: 1.8rem; font-weight:900; line-height:1.2; }
+.stat-value.time { color: var(--accent-red); }
+.stat-value.cost { color: var(--accent-green); }
+.stat-value.success { color: var(--accent-blue); }
+.stat-value.speed { color: var(--accent-purple); }
+.stat-label { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.5rem; }
+
+/* 역할 카드 (세로 나열) */
+.role-grid { display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; }
+.role-card { background: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1.5rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+.role-card.role-a { border-left: 4px solid var(--accent-green); }
+.role-card.role-b { border-left: 4px solid var(--accent-blue); }
+.role-card.role-c { border-left: 4px solid var(--accent-purple); }
+.role-card.role-d { border-left: 4px solid var(--accent-red); }
+.role-header { margin-bottom: 1rem; }
+.role-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+.role-human { color: var(--text-tertiary); font-size: 0.85rem; font-weight: 500; }
+.role-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* 비교 테이블 */
+.data-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.92rem; }
+.data-table th, .data-table td { padding: 0.7rem 0.9rem; text-align: left; border-bottom: 1px solid var(--border-light); vertical-align: top; word-break: keep-all; }
+.data-table thead th { background: var(--navy); color: #fff; font-weight: 600; font-size: 0.88rem; border-bottom: none; }
+.data-table tbody tr:hover { background: var(--bg-surface); }
+.data-table .highlight { color: var(--navy); font-weight: 700; }
+
+/* 리포트 탭 */
+.report-tab-nav {
+    display: flex;
+    gap: 0.2rem;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.5rem;
+}
+.report-tab-btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.report-tab-btn:hover {
+    color: var(--navy);
+    background: var(--bg-elevated);
+}
+.report-tab-btn.active {
+    color: var(--navy);
+    border-bottom-color: var(--navy);
+    background: var(--bg-white);
+}
+.report-tab-content {
+    min-height: 400px;
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+.loading-indicator {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-caption);
+    font-style: italic;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-messages { height: 400px; padding: 1rem; }
+    .message { max-width: 95%; }
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .report-tab-nav { flex-direction: column; }
+    .report-tab-btn { text-align: left; }
+    .chat-input-area { flex-wrap: wrap; }
+    .chat-send-btn, .chat-ai-btn { flex: 1; }
+}
+
+/* ===== 기술 보고서 탭 전용 스타일 (로드된 페이지용) ===== */
+.report-tab-content .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a3a6e;
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid #1a3a6e;
+    display: inline-block;
+}
+.report-tab-content .subsection-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 1rem 0 0.5rem;
+}
+.report-tab-content .rating-stars {
+    display: inline-block;
+    margin-left: 0.5rem;
+    color: #d4a017;
+    font-weight: 700;
+}
+.report-tab-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.report-tab-content th {
+    background: #f8f9fa;
+    font-weight: 600;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #dee2e6;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #495057;
+}
+.report-tab-content td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+.report-tab-content .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.report-tab-content .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.report-tab-content .info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.2rem;
+    transition: all 0.2s;
+}
+.report-tab-content .info-card .card-title {
+    font-weight: 700;
+    color: #1a3a6e;
+    margin-bottom: 0.6rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.report-tab-content .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    background: #1a3a6e;
+    margin-right: 0.5rem;
+}
+.report-tab-content .badge-blue { background: #1971c2; }
+.report-tab-content .badge-green { background: #2e7d32; }
+.report-tab-content .badge-gold { background: #d4a017; color: #0f2647; }
+
+@media (max-width: 600px) {
+    .report-tab-content .grid-2,
+    .report-tab-content .grid-3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="main-nav-placeholder"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">기초행정 혁신: 방문 민원에서 AI 자동화로의 전환</div>
+        <h1 class="hero-title">시청 <span class="gold">자동화</span> 시스템</h1>
+        <p class="hero-sub">제주시청 8개 분야 59종 민원[citation:3] 완전 자동화, 19개 읍면동[citation:1] 실시간 연계</p>
+    </div>
+</section>
+
+<!-- 탭 네비게이션 (자동화 메뉴) -->
+<div class="tab-section">
+    <div class="tab-nav">
+        <a href="/automation/court/" class="tab-link">법원</a>
+        <a href="/automation/patent/" class="tab-link">특허청</a>
+        <a href="/automation/tax/" class="tab-link">국세청</a>
+        <a href="/automation/medical/" class="tab-link">의료</a>
+        <a href="/automation/market/" class="tab-link">시장</a>
+        <a href="/automation/congress/" class="tab-link">의회</a>
+        <a href="/automation/province/" class="tab-link">도청</a>
+        <a href="/automation/city/" class="tab-link active">시청</a>
+        <a href="/automation/town/" class="tab-link">읍면동</a>
+    </div>
+</div>
+
+<!-- 고팡 배너 -->
+<div class="gopang-banner">
+    <div class="gopang-banner-inner">
+        <span class="gopang-banner-text"><strong>고팡</strong> — OpenHash+AI 기반의 시청 자동화 시스템을 직접 경험해 보세요</span>
+        <a href="https://www.gopang.net" target="_blank" rel="noopener" class="gopang-banner-link">gopang.net 바로가기 <span>→</span></a>
+    </div>
+</div>
+
+<!-- 시청 서비스의 역할 전환 섹션 -->
+<section class="section" id="role-transition">
+    <div class="container">
+        <h2 class="sec-title">시청 서비스의 역할 전환</h2>
+        <p class="sec-lead">
+            고팡 시스템에 의해, 시청은 기존의 방문·서류 중심 행정에서 24시간[citation:3] AI 자동화 서비스로 전환합니다. '제주간편e민원' 서비스[citation:3]를 AI 에이전트 시스템으로 확장하여, 시민의 AI 비서가 시청 내 해당 부서 AI와 실시간 협업합니다. 실시간 재난 안전(CCTV), 주정차 단속 문자 신청, 대형폐기물 배출[citation:2] 등 생활 밀착형 서비스를 자동화합니다. OpenHash 기반 PDV로 주민등록등본, 수급자 증명서 등 제출이 불필요하여[citation:3] 민원 처리 시간 97% 단축, 행정비용 65% 절감을 달성합니다.
+        </p>
+    </div>
+</section>
+
+<!-- 시스템 구성 요소 섹션 -->
+<section class="section surface" id="system-components">
+    <div class="container">
+        <h2 class="sec-title">시스템 구성 요소</h2>
+        <p class="sec-lead">오픈소스 LLM 기반 시청 전문 에이전트 시스템 (8개 분야 59종 민원[citation:3])</p>
+        <div style="margin: 2rem 0;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">1. 주민복지 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">기초생활보장, 장수수당, 저소득층 의료비 지원, 해녀수당[citation:3], 노인·장애인 복지, 아동·여성복지, 보육 지원을 자동화합니다. 복지 대상자 선정과 지원금 지급을 실시간 처리합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">2. 경제관광 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">일자리 지원, 중소기업·소상공인 컨설팅, 관광객 맞춤 정보 제공, 농어업인 지원사업[citation:3], 공유재산 사용 신청[citation:3]을 담당합니다. 제주 방문객 편의 서비스를 실시간 지원합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">3. 생활환경 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">대형폐기물 배출 신청[citation:2], 청소·환경 관리, 위생 점검, 공원·녹지 관리를 자동화합니다. 주정차 단속 문자 알림 신청[citation:2] 등 시민 편의 서비스를 제공합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-orange); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">4. 건설교통 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">도로 관리, 건축 인·허가, 주택 정책, 교통 관리, 주차장 운영을 담당합니다. 실시간 교통 정보와 CCTV 관제[citation:2]를 연계합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-red); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">5. 도시계획 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">도시계획, 토지정보, 지적 관리, 개발행위 허가를 담당합니다. 공유재산 사용[citation:3]과 부서 위치 정보[citation:4]를 실시간 제공합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-purple); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">6. 안전재난 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">재난안전 관리, 하천·월파·적설 감시 CCTV[citation:2], 재해보험 가입 신청[citation:3], 민방위를 담당합니다. 실시간 재난 정보를 시민에게 알립니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">7. 총무·민원 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">인사, 회계, 기록물 관리, 일반 민원 접수, 주민등록·인감 업무를 담당합니다. 19개 읍면동[citation:1] 민원을 통합 관리합니다.</div>
+                </div>
+                <div style="background: var(--bg-white); border-left: 4px solid var(--accent-blue); padding: 1.2rem 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; box-shadow: var(--shadow-sm);">
+                    <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.95rem;">8. 평생교육 AI 에이전트</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">도서관 운영, 평생학습 프로그램, 문화행사 정보를 제공합니다. 시민 맞춤형 교육 과정을 추천합니다.</div>
+                </div>
+            </div>
+            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: var(--gold-light);">Global Openhash City Network</div>
+                <div style="font-size: 0.9rem; line-height: 1.8;">4계층 해시체인(읍면동→시군구→광역시도→국가)으로 모든 행정 데이터의 무결성을 보장합니다. 시청 AI 에이전트는 19개 읍면동[citation:1] AI와 실시간 협업하여 주민 맞춤형 서비스를 제공합니다. 제주시청 파일럿 테스트에서 8개 분야 59종 민원[citation:3] 자동화, 민원 처리 시간 97% 단축을 달성했습니다.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 2: 채팅 시뮬레이션 -->
+<section class="section surface" id="chat-simulation">
+    <div class="container">
+        <h2 class="sec-title">실시간 시청 민원 채팅 시뮬레이션</h2>
+        <p class="sec-lead">시민이 AI 비서를 통해 시청에 민원을 신청하고, 해당 부서 AI 에이전트가 실시간 협업하여 처리하는 과정을 보여줍니다. 토큰 기반 과금 모델로 수익을 창출합니다.</p>
+        <div class="chat-container">
+            <div class="chat-header"><div>시청 민원 자동화 채팅</div><div class="chat-status"><div class="status-indicator active"></div><span>실시간 처리 중</span></div></div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- 1. 시민 발의 -->
+                <div class="message message-left">
+                    <div class="message-sender"><span class="avatar">👤</span> 고은혜 (연동[citation:1])</div>
+                    <div class="message-content">어머니(만 75세) 장수수당[citation:3] 신청하려고 합니다. 필요한 서류와 절차를 알려주세요.</div>
+                    <div class="message-time">10:02:15</div>
+                </div>
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> AI 비서</div>
+                    <div class="message-content">네, 주민복지국 AI 에이전트를 호출하겠습니다. 어머님의 Private Data Vault(PDV)에서 주민등록등본, 연령 확인 데이터를 확인 중입니다. (토큰 1 소모)</div>
+                    <div class="message-time">10:02:28</div>
+                </div>
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🏥</span> 주민복지국 AI</div>
+                    <div class="message-content">[장수수당 신청 요건 분석] 연령: 만 75세 이상 (적합), 제주시 거주: 10년 이상 (적합), 기초연금 수급 여부: 확인 중. PDV 데이터로 모든 요건 충족 확인. 별도 서류 제출 불필요합니다. (토큰 2 소모)</div>
+                    <div class="message-time">10:03:10</div>
+                </div>
+                <!-- 시민 확인 -->
+                <div class="message message-left">
+                    <div class="message-sender"><span class="avatar">👤</span> 고은혜</div>
+                    <div class="message-content">감사합니다. 신청 완료해 주세요.</div>
+                    <div class="message-time">10:03:30</div>
+                </div>
+                <div class="message message-right message-success">
+                    <div class="message-sender"><span class="avatar">🏥</span> 주민복지국 AI</div>
+                    <div class="message-content">[장수수당 신청 완료] 접수번호: JEJU-WEL-2026-0456. 매월 25일 지정 계좌로 5만 원이 입금됩니다. 신청 내역이 PDV에 저장되었습니다. (토큰 1 소모)</div>
+                    <div class="message-time">10:04:15</div>
+                </div>
+                <!-- 새로운 민원: 대형폐기물 -->
+                <div class="message message-left">
+                    <div class="message-sender"><span class="avatar">👤</span> 고은혜</div>
+                    <div class="message-content">아, 그리고 이사 가면서 냉장고(500리터)를 버려야 하는데, 대형폐기물 배출 신청[citation:2]도 도와주세요.</div>
+                    <div class="message-time">10:05:20</div>
+                </div>
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> AI 비서</div>
+                    <div class="message-content">생활환경 AI 에이전트를 호출합니다. 주소지는 연동[citation:1]으로 확인됩니다. (토큰 1 소모)</div>
+                    <div class="message-time">10:05:35</div>
+                </div>
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🗑️</span> 생활환경 AI</div>
+                    <div class="message-content">[대형폐기물 배출 신청] 품목: 냉장고 500리터, 수수료: 8,000원, EGCT로 자동 결제(8토큰). 배출일: 2월 20일 오후 2시~4시, 배출위치: 연동 ○○○번지 앞. 신청 완료되었습니다. (토큰 3 소모)</div>
+                    <div class="message-time">10:06:45</div>
+                </div>
+                <!-- CCTV 재난 안내 -->
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">⚠️</span> 안전재난 AI</div>
+                    <div class="message-content">[실시간 재난 안내] 연동 인근 하천 수위가 상승 중입니다. 실시간 CCTV[citation:2]를 확인한 결과, 현재 위험 수준은 아닙니다. 안전에 유의하시기 바랍니다.</div>
+                    <div class="message-time">10:08:10</div>
+                </div>
+                <!-- 처리 요약 -->
+                <div class="message message-right">
+                    <div class="message-sender"><span class="avatar">🤖</span> AI 비서</div>
+                    <div class="message-content">[처리 요약] 총 소요 시간: 5분 55초. 소모 토큰: 8토큰 (장수수당 4 + 대형폐기물 4). 기존 방문 신청[citation:3] 대비 시간 98% 단축, 비용 95% 절감. 결제 내역(8,000원)을 EGCT로 자동 처리했습니다.</div>
+                    <div class="message-time">10:08:30</div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="의견을 입력하세요..." class="chat-input">
+                <button id="sendMessageBtn" class="chat-send-btn">전송</button>
+                <button id="simulateAiBtn" class="chat-ai-btn">AI 응답 생성</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 3: 참여자 역할 -->
+<section class="section" id="roles">
+    <div class="container">
+        <h2 class="sec-title">협업 구조: AI 에이전트 시스템 + 토큰 경제</h2>
+        <p class="sec-lead">시민 AI 비서, 시청 부서별 AI 에이전트가 협업하고, 토큰 기반 과금으로 수익을 창출합니다. 8개 분야 59종 민원[citation:3]에 차등 과금을 적용합니다.</p>
+        <div class="role-grid">
+            <div class="role-card role-a">
+                <div class="role-header"><div class="role-name">시민 AI 비서</div><div class="role-human">(무료 기본 에이전트)</div></div>
+                <div class="role-desc">모든 시민에게 무료로 제공됩니다. 민원 접수, 서류 안내, 부서 연결, 실시간 재난 정보 안내[citation:2]를 담당합니다. 고급 기능(복지 상담, 신청 대행)은 토큰 소모.</div>
+            </div>
+            <div class="role-card role-b">
+                <div class="role-header"><div class="role-name">부서별 AI 에이전트</div><div class="role-human">(전문 에이전트)</div></div>
+                <div class="role-desc">주민복지국, 경제관광국, 생활환경국 등 8개 부서별 전문화된 AI. 호출 시 토큰 소모. 장수수당[citation:3], 대형폐기물[citation:2] 등 민원 종류에 따라 토큰 차등 부과.</div>
+            </div>
+            <div class="role-card role-c">
+                <div class="role-header"><div class="role-name">읍면동 연계 AI</div><div class="role-human">(현장 행정)</div></div>
+                <div class="role-desc">19개 읍면동[citation:1] 주민센터 AI와 실시간 연동. 방문이 필요한 민원은 예약 및 담당자 연결을 지원합니다.</div>
+            </div>
+            <div class="role-card role-d">
+                <div class="role-header"><div class="role-name">시청 통합 관제 AI</div><div class="role-human">(중재·감독)</div></div>
+                <div class="role-desc">부서 간 협업 조정, 민원 처리 현황 모니터링, 통계 분석, 실시간 CCTV[citation:2] 관제. B2B API 계약으로 시청 내부에 과금.</div>
+            </div>
+        </div>
+        <div class="note" style="background:#f0f7ff;border-left:4px solid var(--accent-blue);padding:1rem;margin:2rem 0;border-radius:0 var(--radius-md) var(--radius-md) 0;">
+            <strong>수익 모델:</strong><br>
+            1. <strong>B2C 토큰 판매</strong>: 시민이 AI 비서를 통해 시청 서비스 이용 시 토큰 소모 (1토큰 = 100원). 월 평균 3,000원 수준.<br>
+            2. <strong>B2B API 계약</strong>: 시청 내부 부서 대상 연간 API 사용권 판매 (부서당 연 3,000만 원 ~ 1억 원).<br>
+            3. <strong>프리미엄 구독</strong>: 월 6.9달러(약 9,000원) 정액제로 토큰 추가 할인.<br>
+            4. <strong>맞춤형 서비스</strong>: 대형폐기물 수수료[citation:2], 재해보험[citation:3] 등 수익 연계 서비스.
+        </div>
+    </div>
+</section>
+
+<!-- 섹션 4: 비교 분석 -->
+<section class="section surface" id="comparison">
+    <div class="container">
+        <h2 class="sec-title">전통적 방식 vs. AI 자동화 방식 비교</h2>
+        <p class="sec-lead">AI 에이전트 시스템과 토큰 기반 수익 모델로 행정 효율성과 수익성을 동시에 달성합니다.</p>
+        <table class="data-table">
+            <thead><tr><th>비교 항목</th><th>전통적 시청 행정</th><th>AI 자동화 시스템</th><th>개선 효과</th></tr></thead>
+            <tbody>
+                <tr><td>민원 처리 시간</td><td>평균 3~7일 (방문·서류[citation:3])</td><td class="highlight">5~10분 (실시간)</td><td class="highlight">97% 단축</td></tr>
+                <tr><td>서류 제출</td><td>주민등록등본, 수급자 증명서 등 3~5종 출력·제출[citation:3]</td><td class="highlight">PDV 자동 연동, 위변조 검증 완료</td><td class="highlight">서류 제출 불필요</td></tr>
+                <tr><td>민원 종류</td><td>8개 분야 59종[citation:3] (확대 중)</td><td class="highlight">전 민원 자동화, 지속 확장</td><td class="highlight">행정 접근성 100%</td></tr>
+                <tr><td>복지 수당 신청</td><td>방문 신청, 2~4주 소요[citation:3]</td><td class="highlight">5분 내 자동 심사·지급</td><td class="highlight">신속한 복지 지원</td></tr>
+                <tr><td>생활 편의 서비스</td><td>대형폐기물 신청 별도 방문[citation:2]</td><td class="highlight">AI 비서로 1분 내 신청·결제</td><td class="highlight">시민 편의 극대화</td></tr>
+                <tr><td>재난 안내</td><td>재난 문자 일괄 발송</td><td class="highlight">실시간 CCTV 분석, 맞춤형 알림[citation:2]</td><td class="highlight">정확한 위험 대응</td></tr>
+                <tr><td>수익 모델</td><td>세금 기반, 무료 서비스</td><td class="highlight">토큰 과금 + API 계약</td><td class="highlight">연간 80억 원 수익 창출</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 기술 보고서 탭 섹션 -->
+<section class="section" id="report-tabs">
+    <div class="container">
+        <h2 class="sec-title">기술 보고서</h2>
+        <div class="report-tab-nav">
+            <button class="report-tab-btn active" data-tab="evaluation">특허 출원서 종합 평가</button>
+            <button class="report-tab-btn" data-tab="market">특허기술의 시장성 분석</button>
+            <button class="report-tab-btn" data-tab="conservative">보수적 관점</button>
+        </div>
+        <div class="report-tab-content" id="report-content">
+            <div class="loading-indicator">로딩 중...</div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) chatMessages.scrollTop = 0;
+
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendMessageBtn');
+    const simulateAiBtn = document.getElementById('simulateAiBtn');
+
+    function addMessage(sender, content, type = 'left', avatar = '👤', isCritical = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message message-${type}`;
+        if (isCritical) messageDiv.classList.add('message-critical');
+
+        const senderDiv = document.createElement('div');
+        senderDiv.className = 'message-sender';
+        senderDiv.innerHTML = `<span class="avatar">${avatar}</span> ${sender}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.innerHTML = content;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        const now = new Date();
+        timeDiv.textContent = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        messageDiv.appendChild(senderDiv);
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timeDiv);
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        if (text) {
+            addMessage('고은혜', text, 'left', '👤');
+            chatInput.value = '';
+        }
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendBtn.click();
+    });
+
+    simulateAiBtn.addEventListener('click', () => {
+        const responses = [
+            { sender: '주민복지국 AI', content: '기초연금 신청 요건을 분석 중입니다. PDV 데이터로 자격을 확인했습니다.', avatar: '🏥' },
+            { sender: '생활환경 AI', content: '대형폐기물 배출 신청 가능합니다. 품목과 수량을 알려주세요.', avatar: '🗑️' },
+            { sender: '안전재난 AI', content: '실시간 CCTV 분석 결과, 현재 위험 요소는 없습니다.', avatar: '⚠️' },
+            { sender: 'AI 비서', content: '토큰 잔액이 30토큰 남았습니다. 충전하시겠습니까?', avatar: '🤖' }
+        ];
+        const rand = Math.floor(Math.random() * responses.length);
+        addMessage(responses[rand].sender, responses[rand].content, 'right', responses[rand].avatar);
+    });
+
+    // ========== 기술 보고서 탭 기능 ==========
+    const tabs = document.querySelectorAll('.report-tab-btn');
+    const reportContent = document.getElementById('report-content');
+    const loadingDiv = document.querySelector('.loading-indicator');
+    const fileMap = {
+        evaluation: 'city-evaluation.html',
+        market: 'city-market.html',
+        conservative: 'city-conservative.html'
+    };
+    let loadedTabs = { evaluation: false, market: false, conservative: false };
+    let tabContents = { evaluation: null, market: null, conservative: null };
+    let currentTab = 'evaluation';
+
+    function loadTab(tabId) {
+        if (loadedTabs[tabId] && tabContents[tabId]) {
+            reportContent.innerHTML = tabContents[tabId];
+            return;
+        }
+
+        loadingDiv.style.display = 'block';
+        reportContent.innerHTML = '<div class="loading-indicator">로딩 중...</div>';
+
+        fetch(fileMap[tabId])
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                let content = doc.body.innerHTML;
+                tabContents[tabId] = content;
+                loadedTabs[tabId] = true;
+                reportContent.innerHTML = content;
+                loadingDiv.style.display = 'none';
+            })
+            .catch(error => {
+                reportContent.innerHTML = `<div class="loading-indicator" style="color: var(--accent-red);">로딩 실패: ${error.message}</div>`;
+                loadingDiv.style.display = 'none';
+            });
+    }
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+            tabs.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const tabId = this.dataset.tab;
+            currentTab = tabId;
+            loadTab(tabId);
+        });
+    });
+
+    loadTab('evaluation');
+});
+</script>
+<script src="/js/nav.js"></script>
+</body>
+</html>
