@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash: 부가 서비스 · 경제적 가치 · 결론 (파일 5/7)</title>
+    <style>
+        /* 정부 공식 사이트 디자인 + Material Design 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-size: 14px;
+            font-family: 'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafc;
+            color: #1e2b3c;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #0a1a2b;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin: 2.5rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid #e5e9f0;
+        }
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.8rem 0 0.8rem 0;
+        }
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.2rem 0 0.5rem 0;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+
+        /* 테이블 스타일 */
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .tech-table th {
+            background-color: #f0f4fa;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            color: #1e3a5f;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        .tech-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9edf3;
+            vertical-align: top;
+        }
+        .tech-table td:first-child {
+            font-weight: 500;
+            color: #0a2942;
+            width: 20%;
+        }
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #dce5f0;
+            margin: 2rem 0;
+        }
+
+        /* 푸터 */
+        .doc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dce1e8;
+        }
+        .btn-next {
+            background-color: #003876;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-next:hover {
+            background-color: #002856;
+        }
+        .btn-prev {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-prev:hover {
+            background-color: #5a6268;
+        }
+        .page-info {
+            color: #7f8fa4;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+    <!-- nav.js는 서버에서 제공 (기존 사이트 메뉴) -->
+    <script src="/js/nav.js" defer></script>
+</head>
+<body>
+<div class="container">
+<div class="file-nav"><a href="/openhash/openhash-file1.html" title="Openhash 기술 문서: 데이터 무결성 보장 시스템">1</a><a href="/openhash/openhash-file2.html" title="Openhash: 핵심 메커니즘 1 (파일 2/7)">2</a><a href="/openhash/openhash-file3.html" title="Openhash: 핵심 메커니즘 2 (파일 3/7)">3</a><a href="/openhash/openhash-file4.html" title="Openhash: 핵심 메커니즘 3 (파일 4/7)">4</a><a href="/openhash/openhash-file5.html" title="Openhash: 부가 서비스 · 경제적 가치 · 결론 (파일 5/7)" class="active">5</a><a href="/openhash/openhash-file6.html" title="Openhash: AI 융합 · 사회 전 영역의 자동화 혁명 (파일 6/7)">6</a><a href="/openhash/openhash-file7.html" title="Openhash: 글로벌 네트워크 구축 (파일 7/7)">7</a></div>
+    <!-- 문서 제목 -->
+    <h1>Openhash 기술 문서: 부가 서비스 · 경제적 가치 · 결론</h1>
+    <p style="color: #5f6f82; font-size: 0.95rem;">파일 5/7 · PDV 볼트 · 오프라인 배치 · 동적 노드 관리 · 경제적 가치 · 활용 방안 · 차세대 무결성 표준</p>
+
+    <!-- 8. 부가 서비스 모듈 -->
+    <h2>8. 부가 서비스 모듈</h2>
+
+    <h3>8.1 PDV(볼트) 서비스 모듈(800)</h3>
+    <p>사용자의 개인 데이터를 6개 서랍으로 자동 분류하여 관리합니다.</p>
+    <table class="tech-table">
+        <tr><th>서랍 유형</th><th>분류 데이터</th></tr>
+        <tr><td>금융 서랍</td><td>은행, 계좌, 송금, 투자, 보험, 세금 관련 데이터</td></tr>
+        <tr><td>의료 서랍</td><td>병원, 약국, 진료, 처방, 건강, 검진 관련 데이터</td></tr>
+        <tr><td>교육 서랍</td><td>학교, 대학, 학원, 등록금, 장학금 관련 데이터</td></tr>
+        <tr><td>행정 서랍</td><td>주민센터, 구청, 민원, 증명서, 여권 관련 데이터</td></tr>
+        <tr><td>교통 서랍</td><td>버스, 지하철, 고속열차, 주유, 톨게이트 관련 데이터</td></tr>
+        <tr><td>일반 서랍</td><td>기타 분류 불가 항목</td></tr>
+    </table>
+
+    <h4>8.1.1 자동 분류 엔진(810)</h4>
+    <ol>
+        <li>콘텐츠에서 키워드 추출</li>
+        <li>각 서랍 유형별 키워드 매칭 점수 계산</li>
+        <li>최고 점수의 서랍 선택 (동점 시 일반 서랍)</li>
+        <li>신뢰도 산출: (최고점수/총점수)×100 + 최고점수</li>
+    </ol>
+
+    <h3>8.2 오프라인 배치 처리 모듈(700)</h3>
+    <p>통신 인프라가 열악한 환경에서도 데이터 무결성 검증 서비스를 제공합니다.</p>
+    <p><strong>로컬 해시 체인(710) 구조:</strong></p>
+    <ul>
+        <li>첫 번째 해시 = 해시(첫 번째 데이터)</li>
+        <li>두 번째 해시 = 해시(첫 번째 해시 + 두 번째 데이터)</li>
+        <li>세 번째 해시 = 해시(두 번째 해시 + 세 번째 데이터)</li>
+    </ul>
+    <p><strong>오프라인 처리 절차:</strong></p>
+    <ol>
+        <li>로컬 해시 체인(710) 구축하여 오프라인 데이터 수집</li>
+        <li>배치 머클 루트(720) 생성</li>
+        <li>오프라인 서명(730) 첨부</li>
+        <li>네트워크 연결 복구 시 일괄 전송</li>
+    </ol>
+    <p>효과: 통신 횟수 = 오프라인 기간 중 거래 수의 1/n로 감소, 통신 비용 및 데이터 사용량 현저히 절감</p>
+
+    <h3>8.3 동적 노드 관리 모듈(370)</h3>
+    <p>국가 또는 기관 단위의 자유로운 진입과 퇴출을 지원합니다.</p>
+    <table class="tech-table">
+        <tr><th>기능</th><th>설명</th></tr>
+        <tr><td>신규 노드 진입</td><td>상위 계층에서 현재 상태 스냅샷 전송, 빠른 동기화 수행</td></tr>
+        <tr><td>기존 노드 퇴출</td><td>해당 노드 담당 데이터를 인접 노드로 자동 이관</td></tr>
+        <tr><td>성능 목표</td><td>다운타임 0초, 데이터 손실률 0%</td></tr>
+    </table>
+
+    <hr>
+
+    <!-- 9. 경제적 가치와 활용 방안 -->
+    <h2>9. 경제적 가치와 활용 방안</h2>
+
+    <h3>9.1 기술의 경제적 가치</h3>
+    <p>모든 기술은 상응하는 경제적 가치를 갖습니다. 여타 상품들과 마찬가지로, 어떤 기술은 고작 수백만 원에 불과한 반면, 어떤 기술들은 수십 조의 가치를 갖습니다.</p>
+    <ul>
+        <li>Google의 검색 기술: 수백 조 원의 가치</li>
+        <li>블록체인 기술: 수백 조 원의 시가총액 형성</li>
+        <li>Openhash: AI 입력 데이터의 참(True)을 보장하는 기술로, 그 가치는 측정 불가</li>
+    </ul>
+
+    <h3>9.2 인프라 구축 비용 절감</h3>
+    <table class="tech-table">
+        <tr><th>항목</th><th>기존 기술</th><th>Openhash</th></tr>
+        <tr><td>네트워크 인프라</td><td>전용 네트워크 구축 필요</td><td>기존 통신망 인프라 활용</td></tr>
+        <tr><td>추가 구축 비용</td><td>수백억~수천억 원</td><td>0원</td></tr>
+        <tr><td>유지보수 비용</td><td>별도 체계 필요</td><td>통신사 기존 유지보수 체계 활용</td></tr>
+        <tr><td>확장 비용</td><td>노드 추가 시 비용 증가</td><td>기지국 활용으로 선형적 확장</td></tr>
+    </table>
+
+    <h3>9.3 에너지 비용 절감</h3>
+    <table class="tech-table">
+        <tr><th>비교 대상</th><th>연간 에너지 소비</th><th>비고</th></tr>
+        <tr><td>비트코인 네트워크</td><td>121 TWh</td><td>중소 국가 연간 소비량과 맞먹음</td></tr>
+        <tr><td>Openhash</td><td>작업증명/지분증명 불필요</td><td>99.9% 이상 절감</td></tr>
+    </table>
+
+    <h3>9.4 활용 방안</h3>
+
+    <h4>9.4.1 금융 분야</h4>
+    <ul>
+        <li>실시간 결제 시스템 (밀리초 단위 거래 확정)</li>
+        <li>국제 송금 (글로벌 계층 활용)</li>
+        <li>디지털 자산 거래소</li>
+        <li>스테이블코인 발행 및 검증</li>
+    </ul>
+
+    <h4>9.4.2 행정 분야</h4>
+    <ul>
+        <li>주민등록, 여권, 등본 등 공문서 위변조 방지</li>
+        <li>전자투표 시스템 (무결성 보장)</li>
+        <li>공공 조달 계약 관리</li>
+        <li>부동산 등기 시스템</li>
+    </ul>
+
+    <h4>9.4.3 의료 분야</h4>
+    <ul>
+        <li>전자의무기록(EMR) 무결성 보장</li>
+        <li>처방전 위변조 방지</li>
+        <li>의료 데이터 공유 및 검증</li>
+        <li>임상시험 데이터 신뢰성 확보</li>
+    </ul>
+
+    <h4>9.4.4 물류 및 공급망</h4>
+    <ul>
+        <li>제품 이력 추적</li>
+        <li>위조 상품 방지</li>
+        <li>국제 물류 문서 검증</li>
+        <li>스마트 계약 기반 자동 결제</li>
+    </ul>
+
+    <h4>9.4.5 법률 분야</h4>
+    <ul>
+        <li>전자 계약 무결성 보장</li>
+        <li>법률 문서 위변조 방지</li>
+        <li>증거 자료 신뢰성 확보</li>
+        <li>공증 시스템 대체</li>
+    </ul>
+
+    <h3>9.5 신원 증명 혁신</h3>
+    <p>Openhash는 국가 기관이 개인 정보를 알지 못해도 개인이 자신의 정보만으로 신원을 증명할 수 있게 합니다. 즉, AI 시대를 맞아, 국가의 기능과 역할을 새로이 규정할 수 있습니다.</p>
+    <table class="tech-table">
+        <tr><th>기존 방식</th><th>Openhash 방식</th></tr>
+        <tr><td>외교부에 여권 정보 요청 혹은 외교부 직인</td><td>내가 보유한 여권 정보만으로 신원 증명</td></tr>
+        <tr><td>행정부에 주민등록 정보 요청 혹은 직인</td><td>내가 보유한 주민등록증과 등본으로 신원 증명</td></tr>
+        <tr><td>중앙 집중식 신원 관리</td><td>분산형 자기 주권 신원(Self-Sovereign Identity)</td></tr>
+    </table>
+
+    <hr>
+
+    <!-- 10. 결론: 차세대 무결성 표준 -->
+    <h2>10. 결론: 차세대 무결성 표준</h2>
+
+    <h3>10.1 Openhash의 혁신성 요약</h3>
+    <table class="tech-table">
+        <tr><th>측면</th><th>기존 기술</th><th>Openhash</th></tr>
+        <tr><td>에너지 효율성</td><td>작업증명으로 전력 대량 소모</td><td>물리적 계층 구조 활용, 합의 연산 불필요</td></tr>
+        <tr><td>처리 속도</td><td>초~분 단위 지연</td><td>밀리초(ms) 단위 거래 확정 (평균 3.1ms)</td></tr>
+        <tr><td>확장성</td><td>노드 증가 시 성능 저하</td><td>노드 수에 비례하여 처리량 선형 증가</td></tr>
+        <tr><td>중앙화</td><td>채굴 풀, 지분 집중</td><td>행정 계층 기반 분산, 대표 노드 순환 선출</td></tr>
+        <tr><td>보안</td><td>51% 공격 위험</td><td>계층 간 상호 검증 + 이중 서명 + 확률적 선택</td></tr>
+        <tr><td>인프라 비용</td><td>전용 네트워크 구축 필요</td><td>기존 통신망 인프라 활용 (추가 비용 0)</td></tr>
+        <tr><td>데이터 주권</td><td>플랫폼 종속</td><td>사용자 데이터 소유권 보장</td></tr>
+    </table>
+
+    <h3>10.2 철학적 완성</h3>
+    <p>Openhash는 단순한 기술 혁신을 넘어, 디지털 사회의 신뢰 비용을 0에 가깝게 만드는 플랫폼입니다.</p>
+    <ul>
+        <li>직조(Weaving)의 원리: 데이터가 데이터를 보호하는 자기 방어 구조</li>
+        <li>집단 보호의 원리: 개체를 보호하는 최선의 방법은 전체</li>
+        <li>물리적 신뢰 활용: 국가라는 인류의 가장 유용한 도구를 신뢰의 근간으로 활용</li>
+        <li>자기 주권 신원: 국가나 기관(은행, 병원, 학교 등)이 내 정보를 알지 못해도 내가 나를 증명</li>
+    </ul>
+
+    <h3>10.3 최종 성능 요약</h3>
+    <table class="tech-table">
+        <tr><th>항목</th><th>성능</th></tr>
+        <tr><td>거래 검증 응답 시간</td><td>평균 3.1ms 이내</td></tr>
+        <tr><td>5단계 검증 완료 시간 (BLS)</td><td>평균 1.4ms</td></tr>
+        <tr><td>5단계 검증 완료 시간 (Ed25519)</td><td>평균 0.13ms</td></tr>
+        <tr><td>계층 간 검증 시간</td><td>평균 1.5ms</td></tr>
+        <tr><td>단일 노드 처리량</td><td>5,354 TPS</td></tr>
+        <tr><td>전체 네트워크 처리량</td><td>수천만 TPS</td></tr>
+        <tr><td>대역폭 절감율</td><td>99% 이상</td></tr>
+        <tr><td>자동 분류 정확도</td><td>85%~100%</td></tr>
+        <tr><td>에너지 절감율</td><td>99.9% 이상</td></tr>
+    </table>
+    <p>Openhash는 블록체인의 한계를 극복하고, 물리적 현실 세계의 계층 구조를 활용하여 에너지 낭비 없이, 실시간으로, 무한히 확장 가능한 무결성 검증 시스템을 제공합니다.</p>
+
+    <!-- 문서 푸터 (절대 경로 사용) -->
+    <div class="doc-footer">
+        <div>
+            <a href="/openhash/openhash-file4.html" title="Openhash: 핵심 메커니즘 3 (파일 4/7)" class="btn-prev">← 이전: 파일 4</a>
+        </div>
+        <span class="page-info">파일 5/7 · 부가 서비스 · 경제적 가치 · 결론</span>
+        <a href="/openhash/openhash-file6.html" title="Openhash: AI 융합 · 사회 전 영역의 자동화 혁명 (파일 6/7)" class="btn-next">다음: 파일 6 (AI 융합) →</a>
+    </div>
+    <p style="font-size: 0.75rem; color: #a0b2c6; margin-top: 2rem; text-align: center;">ⓒ Openhash 특허 출원 기반. 이 문서는 요약본이며, 자세한 내용은 특허 명세서를 참조하십시오.</p>
+</div>
+</body>
+</html>

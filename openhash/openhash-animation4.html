@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash 이중 지출 방지 메커니즘</title>
+    <style>
+        body {
+    font-size: 14px;
+            background-color: #f5f7fb;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,40,80,0.1);
+            padding: 30px 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+        }
+        .title strong {
+            color: #003876;
+        }
+        .svg-wrapper {
+            display: flex;
+            justify-content: center;
+            background: #fafcff;
+            border-radius: 16px;
+            padding: 10px;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0 5px;
+            font-size: 0.9rem;
+            color: #4a5b6f;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot-blue {
+            width: 14px;
+            height: 14px;
+            background-color: #003876;
+            border-radius: 50%;
+        }
+        .dot-red {
+            width: 14px;
+            height: 14px;
+            background-color: #cc7f6e;
+            border-radius: 50%;
+        }
+        .message-box {
+            background-color: #eef2f7;
+            border-left: 5px solid #003876;
+            padding: 12px 20px;
+            margin: 20px 0 10px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: #1e2b3c;
+            font-weight: 400;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            word-break: keep-all;
+            height: auto;
+            min-height: unset;
+        }
+        .log-panel {
+            background-color: #f8fafd;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 10px 0 15px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.03);
+        }
+        .log-line {
+            margin-bottom: 4px;
+            border-bottom: 1px dashed #d0dae8;
+            padding-bottom: 4px;
+        }
+        .log-line:last-child {
+            border-bottom: none;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .stage-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .stage-btn.active {
+            background-color: #003876;
+            border-color: #003876;
+            color: white;
+        }
+        .stage-btn:hover {
+            background-color: #e6edf8;
+        }
+        .note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7f8fa4;
+            margin-top: 15px;
+        }
+        .lock-icon {
+            font-size: 14px;
+            fill: #d97706;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        <strong>이중 지출 방지 메커니즘</strong> · 계정 잠금과 다중 검증
+    </div>
+    <div class="legend">
+        <div class="legend-item"><span class="dot-blue"></span> 메시지/해시 전송</div>
+        <div class="legend-item"><span class="dot-red"></span> 잠금/해제 응답</div>
+        <div class="legend-item"><span style="color:#d97706;">🔒</span> 잠금 상태</div>
+        <div class="legend-item"><span style="color:#003876;">⚡</span> 물리적 최근 노드</div>
+    </div>
+    <div class="svg-wrapper">
+        <svg width="800" height="400" viewBox="0 0 800 400">
+            <!-- 배경 계층 구분선 -->
+            <line x1="50" y1="150" x2="750" y2="150" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <line x1="50" y1="250" x2="750" y2="250" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <text x="60" y="140" fill="#4a5b6f" font-size="10">광역시도</text>
+            <text x="60" y="240" fill="#4a5b6f" font-size="10">시군구</text>
+            <text x="60" y="340" fill="#4a5b6f" font-size="10">읍면동</text>
+
+            <!-- 노드들 -->
+            <!-- 사용자 A (물리적으로 노드 B 아래) -->
+            <circle id="userA" cx="500" cy="350" r="16" fill="white" stroke="#003876" stroke-width="2.5" />
+            <text x="500" y="380" text-anchor="middle" fill="#2c3e50" font-size="11">사용자 A</text>
+            <!-- 사용자 B (필요시) -->
+            <circle id="userB" cx="500" cy="350" r="16" fill="white" stroke="#003876" stroke-width="2.5" visibility="hidden" />
+            <text id="userBtext" x="500" y="380" text-anchor="middle" fill="#2c3e50" font-size="11" visibility="hidden">사용자 B</text>
+
+            <!-- 주소지 읍면동 노드 D -->
+            <circle id="nodeD" cx="350" cy="290" r="16" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="350" y="260" text-anchor="middle" fill="#2c3e50" font-size="11">주소지 읍면동 D</text>
+
+            <!-- 거래 노드 B (물리적 최근 노드) -->
+            <circle id="nodeB" cx="500" cy="290" r="16" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="500" y="260" text-anchor="middle" fill="#2c3e50" font-size="11">노드 B</text>
+            <text x="500" y="310" text-anchor="middle" fill="#003876" font-size="8">⚡ 최근 노드</text>
+
+            <!-- 시군구 노드 C -->
+            <circle id="nodeC" cx="400" cy="200" r="16" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="400" y="170" text-anchor="middle" fill="#2c3e50" font-size="11">시군구 C</text>
+
+            <!-- 광역시도 노드 E -->
+            <circle id="nodeE" cx="550" cy="100" r="16" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="550" y="70" text-anchor="middle" fill="#2c3e50" font-size="11">광역시도 E</text>
+
+            <!-- 연결선 (점선) -->
+            <line id="connA-D" x1="500" y1="334" x2="350" y2="304" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="4 3" />
+            <line id="connA-B" x1="500" y1="334" x2="500" y2="306" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="4 3" />
+            <line id="connB-D" x1="500" y1="290" x2="350" y2="290" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="4 3" />
+            <line id="connD-C" x1="350" y1="274" x2="400" y2="216" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="4 3" />
+            <line id="connC-E" x1="400" y1="184" x2="550" y2="116" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="4 3" />
+
+            <!-- 잠금 아이콘 -->
+            <text id="lockA" x="530" y="340" class="lock-icon" fill="#d97706" font-size="20" visibility="hidden">🔒</text>
+            <text id="lockD" x="380" y="280" class="lock-icon" fill="#d97706" font-size="20" visibility="hidden">🔒</text>
+            <text id="lockB" x="530" y="280" class="lock-icon" fill="#d97706" font-size="20" visibility="hidden">🔒</text>
+
+            <!-- 파란 점 (메시지 전송) -->
+            <circle id="blueDot" cx="500" cy="350" r="7" fill="#003876" opacity="0.9" visibility="hidden" />
+            <!-- 빨간 점 (응답) -->
+            <circle id="redDot" cx="500" cy="350" r="7" fill="#cc7f6e" opacity="0.9" visibility="hidden" />
+        </svg>
+    </div>
+
+    <!-- 메시지 박스 -->
+    <div id="message" class="message-box">
+        방법 1: 연결 상태 기반 잠금
+    </div>
+
+    <!-- 로그 패널 -->
+    <div id="logPanel" class="log-panel">
+        <div class="log-line">▶ 사용자 A가 물리적 최근 노드 B와 연결됨</div>
+        <div class="log-line">▶ 모든 사용자는 자신의 주소지 읍면동을 가짐</div>
+        <div class="log-line">▶ 계정 잠금 상태로 전환</div>
+    </div>
+
+    <!-- 단계 버튼 -->
+    <div class="controls">
+        <button class="stage-btn active" data-stage="0">1. 연결 상태</button>
+        <button class="stage-btn" data-stage="1">2. 잠금 메시지</button>
+        <button class="stage-btn" data-stage="2">3. 체인 제어권</button>
+        <button class="stage-btn" data-stage="3">4. 디지털 서명</button>
+        <button class="stage-btn" data-stage="4">5. 상위 감시</button>
+    </div>
+    <div class="note">
+        ※ 사용자 A는 물리적으로 가장 가까운 노드 B에 연결됩니다. 모든 사용자는 자신의 주소지 읍면동을 가집니다.
+    </div>
+</div>
+
+<script>
+    (function() {
+        // 방법별 메시지 및 로그
+        const methodMessages = [
+            "방법 1: 연결 상태 기반 잠금 - 사용자 단말기가 물리적 최근 노드 B와 연결 중이면 계정 잠금, 연결 해제 시 해제",
+            "방법 2: 주소지 읍면동 노드를 통한 계정 잠금 메시지 - 사용자가 노드 B에 해시 전송 → 노드 B가 주소지 읍면동 D에 잠금 요청 → 확인 후 체인 갱신 → 해제",
+            "방법 3: 노드의 해시 체인 제어권 - 사용자가 노드 B에 해시 전송 시점부터 노드 B가 사용자 체인 제어",
+            "방법 4: 주소지 읍면동 노드의 디지털 서명 - 사용자 체인 갱신 시 주소지 읍면동 D의 서명 필요 (잠금 상태)",
+            "방법 5: 상위 계층에 의한 하위 계층 실시간 모니터링 - 시군구 C가 주소지 읍면동 D를, 광역시도 E가 시군구 C를 감시"
+        ];
+
+        const methodLogs = [
+            // 방법 1
+            `▶ 사용자 A가 물리적 최근 노드 B와 연결 중
+▶ 계정 잠금 상태 (🔒)
+▶ 사용자 A가 다른 노드에 전송 시도 → 차단
+▶ 연결 해제 → 잠금 해제
+※ 모든 사용자는 자신의 주소지 읍면동을 가짐`,
+            // 방법 2
+            `▶ 사용자 A → 노드 B: 거래 해시 전송 (파란 점)
+▶ 노드 B → 주소지 읍면동 D: 잠금 요청
+▶ 주소지 읍면동 D: 잠금 설정 (🔒)
+▶ 주소지 읍면동 D → 노드 B: 확인 응답 (빨간 점)
+▶ 노드 B: 체인 갱신 후 주소지 읍면동 D에 해제 요청
+▶ 주소지 읍면동 D: 잠금 해제`,
+            // 방법 3
+            `▶ 사용자 A → 노드 B: 거래 해시 전송
+▶ 노드 B가 사용자 A의 해시 체인 제어권 획득
+▶ 사용자 A의 체인은 노드 B에 의해 갱신됨
+▶ 갱신 완료 후 제어권 반환`,
+            // 방법 4
+            `▶ 사용자 A: 체인 갱신 시 주소지 읍면동 D의 디지털 서명 필요
+▶ 주소지 읍면동 D: 서명 대기 중 (잠금)
+▶ 서명 완료 → 체인 갱신 → 잠금 해제`,
+            // 방법 5
+            `▶ 주소지 읍면동 D의 모든 활동을 시군구 C가 실시간 감시
+▶ 시군구 C는 광역시도 E의 감시를 받음
+▶ 이상 징후 발생 시 상위 계층이 즉시 탐지`
+        ];
+
+        // DOM 요소
+        const msgDiv = document.getElementById('message');
+        const logPanel = document.getElementById('logPanel');
+        const stageBtns = document.querySelectorAll('.stage-btn');
+
+        // SVG 요소들
+        const userA = document.getElementById('userA');
+        const userB = document.getElementById('userB');
+        const userBtext = document.getElementById('userBtext');
+        const nodeD = document.getElementById('nodeD');
+        const nodeB = document.getElementById('nodeB');
+        const nodeC = document.getElementById('nodeC');
+        const nodeE = document.getElementById('nodeE');
+        const lockA = document.getElementById('lockA');
+        const lockD = document.getElementById('lockD');
+        const lockB = document.getElementById('lockB');
+        const blueDot = document.getElementById('blueDot');
+        const redDot = document.getElementById('redDot');
+
+        // 연결선
+        const connAD = document.getElementById('connA-D');
+        const connAB = document.getElementById('connA-B');
+        const connBD = document.getElementById('connB-D');
+        const connDC = document.getElementById('connD-C');
+        const connCE = document.getElementById('connC-E');
+
+        // 모든 노드와 선 초기화
+        function resetAll() {
+            userA.setAttribute('visibility', 'visible');
+            userB.setAttribute('visibility', 'hidden');
+            userBtext.setAttribute('visibility', 'hidden');
+            nodeD.setAttribute('visibility', 'visible');
+            nodeB.setAttribute('visibility', 'visible');
+            nodeC.setAttribute('visibility', 'hidden');
+            nodeE.setAttribute('visibility', 'hidden');
+            connAD.setAttribute('visibility', 'visible');
+            connAB.setAttribute('visibility', 'visible');
+            connBD.setAttribute('visibility', 'visible');
+            connDC.setAttribute('visibility', 'hidden');
+            connCE.setAttribute('visibility', 'hidden');
+            lockA.setAttribute('visibility', 'hidden');
+            lockD.setAttribute('visibility', 'hidden');
+            lockB.setAttribute('visibility', 'hidden');
+            blueDot.setAttribute('visibility', 'hidden');
+            redDot.setAttribute('visibility', 'hidden');
+        }
+
+        // 점 애니메이션
+        function animateDot(dot, fromX, fromY, toX, toY, duration, callback) {
+            const startTime = performance.now();
+            dot.setAttribute('visibility', 'visible');
+            dot.setAttribute('cx', fromX);
+            dot.setAttribute('cy', fromY);
+
+            function step(now) {
+                const elapsed = now - startTime;
+                const t = Math.min(elapsed / duration, 1);
+                const x = fromX + (toX - fromX) * t;
+                const y = fromY + (toY - fromY) * t;
+                dot.setAttribute('cx', x);
+                dot.setAttribute('cy', y);
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    dot.setAttribute('visibility', 'hidden');
+                    if (callback) callback();
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        // 방법 실행
+        function runMethod(method) {
+            msgDiv.textContent = methodMessages[method];
+            logPanel.innerHTML = methodLogs[method].split('\n').map(line => `<div class="log-line">${line}</div>`).join('');
+            stageBtns.forEach((btn, i) => {
+                if (i === method) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            resetAll();
+
+            switch(method) {
+                case 0: // 방법1: 연결 상태
+                    lockA.setAttribute('visibility', 'visible');
+                    break;
+
+                case 1: // 방법2: 잠금 메시지
+                    nodeC.setAttribute('visibility', 'hidden');
+                    nodeE.setAttribute('visibility', 'hidden');
+                    setTimeout(() => {
+                        // A->B 파란 점
+                        animateDot(blueDot, 500, 350, 500, 290, 800, () => {
+                            // B->D 빨간 점 (잠금 요청)
+                            animateDot(redDot, 500, 290, 350, 290, 800, () => {
+                                lockD.setAttribute('visibility', 'visible');
+                                // D->B 빨간 점 (확인 응답)
+                                animateDot(redDot, 350, 290, 500, 290, 800, () => {
+                                    setTimeout(() => {
+                                        lockD.setAttribute('visibility', 'hidden');
+                                    }, 500);
+                                });
+                            });
+                        });
+                    }, 200);
+                    break;
+
+                case 2: // 방법3: 체인 제어권
+                    lockB.setAttribute('visibility', 'visible');
+                    animateDot(blueDot, 500, 350, 500, 290, 800, () => {});
+                    break;
+
+                case 3: // 방법4: 디지털 서명
+                    nodeB.setAttribute('visibility', 'hidden');
+                    connAB.setAttribute('visibility', 'hidden');
+                    connBD.setAttribute('visibility', 'hidden');
+                    lockD.setAttribute('visibility', 'visible');
+                    animateDot(blueDot, 500, 350, 350, 290, 800, () => {
+                        setTimeout(() => {
+                            lockD.setAttribute('visibility', 'hidden');
+                            animateDot(redDot, 350, 290, 500, 350, 800, null);
+                        }, 500);
+                    });
+                    break;
+
+                case 4: // 방법5: 상위 감시
+                    nodeC.setAttribute('visibility', 'visible');
+                    nodeE.setAttribute('visibility', 'visible');
+                    connDC.setAttribute('visibility', 'visible');
+                    connCE.setAttribute('visibility', 'visible');
+                    break;
+            }
+        }
+
+        // 버튼 이벤트
+        stageBtns.forEach((btn, idx) => {
+            btn.addEventListener('click', () => {
+                runMethod(idx);
+            });
+        });
+
+        // 초기 실행
+        runMethod(0);
+    })();
+</script>
+</body>
+</html>

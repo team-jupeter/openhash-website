@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash 계층 간 상호 검증 애니메이션</title>
+    <style>
+        body {
+    font-size: 14px;
+            background-color: #f5f7fb;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,40,80,0.1);
+            padding: 30px 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+        }
+        .title strong {
+            color: #003876;
+        }
+        .svg-wrapper {
+            display: flex;
+            justify-content: center;
+            background: #fafcff;
+            border-radius: 16px;
+            padding: 10px;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0 5px;
+            font-size: 0.9rem;
+            color: #4a5b6f;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot-blue {
+            width: 14px;
+            height: 14px;
+            background-color: #003876;
+            border-radius: 50%;
+        }
+        .dot-red {
+            width: 14px;
+            height: 14px;
+            background-color: #cc7f6e;
+            border-radius: 50%;
+        }
+        .hash-chain-box {
+            font-size: 0.7rem;
+            fill: #2c3e50;
+        }
+        .message-box {
+            background-color: #eef2f7;
+            border-left: 5px solid #003876;
+            padding: 12px 20px;
+            margin: 20px 0 10px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: #1e2b3c;
+            font-weight: 400;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            word-break: keep-all;
+            height: auto;
+            min-height: unset;
+        }
+        .log-panel {
+            background-color: #f8fafd;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 10px 0 15px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.03);
+        }
+        .log-line {
+            margin-bottom: 4px;
+            border-bottom: 1px dashed #d0dae8;
+            padding-bottom: 4px;
+        }
+        .log-line:last-child {
+            border-bottom: none;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .stage-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .stage-btn.active {
+            background-color: #003876;
+            border-color: #003876;
+            color: white;
+        }
+        .stage-btn:hover {
+            background-color: #e6edf8;
+        }
+        .note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7f8fa4;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        <strong>계층 간 상호 검증</strong> · 하향식 검증과 상향식 감시
+    </div>
+    <div class="legend">
+        <div class="legend-item"><span class="dot-blue"></span> 해시 전송</div>
+        <div class="legend-item"><span class="dot-red"></span> 최종 해시 반환</div>
+    </div>
+    <div class="svg-wrapper">
+        <svg width="800" height="450" viewBox="0 0 800 450">
+            <!-- 배경 계층 구분선 (옅은 색) -->
+            <line x1="50" y1="120" x2="750" y2="120" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <line x1="50" y1="240" x2="750" y2="240" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <line x1="50" y1="360" x2="750" y2="360" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <text x="60" y="110" fill="#4a5b6f" font-size="10">Layer 3 (광역시도)</text>
+            <text x="60" y="230" fill="#4a5b6f" font-size="10">Layer 2 (시군구)</text>
+            <text x="60" y="350" fill="#4a5b6f" font-size="10">Layer 1 (읍면동)</text>
+            <text x="60" y="410" fill="#4a5b6f" font-size="10">사용자</text>
+
+            <!-- 노드들 (원) -->
+            <!-- 사용자 A -->
+            <circle id="userA" cx="200" cy="400" r="16" fill="white" stroke="#003876" stroke-width="2.5" />
+            <text x="200" y="430" text-anchor="middle" fill="#2c3e50" font-size="11">사용자 A</text>
+            <!-- 노드 B (Layer1) -->
+            <circle id="nodeB" cx="400" cy="320" r="16" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="400" y="290" text-anchor="middle" fill="#2c3e50" font-size="11">노드 B (L1)</text>
+            <!-- 노드 C (Layer2) -->
+            <circle id="nodeC" cx="600" cy="200" r="16" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="600" y="170" text-anchor="middle" fill="#2c3e50" font-size="11">노드 C (L2)</text>
+
+            <!-- 연결선 (점선) -->
+            <line x1="200" y1="384" x2="400" y2="336" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="4 3" />
+            <line x1="400" y1="304" x2="600" y2="216" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="4 3" />
+
+            <!-- 해시 체인 표시 (간단한 텍스트 상자) -->
+            <rect x="120" y="50" width="100" height="30" fill="#eef2f7" rx="4" />
+            <text x="170" y="70" text-anchor="middle" fill="#2c3e50" font-size="10">Hash Chain A</text>
+            <text id="chainA" x="170" y="90" text-anchor="middle" fill="#003876" font-size="10">[... H0]</text>
+
+            <rect x="320" y="50" width="100" height="30" fill="#eef2f7" rx="4" />
+            <text x="370" y="70" text-anchor="middle" fill="#2c3e50" font-size="10">Hash Chain B</text>
+            <text id="chainB" x="370" y="90" text-anchor="middle" fill="#003876" font-size="10">[... H0]</text>
+
+            <rect x="520" y="50" width="100" height="30" fill="#eef2f7" rx="4" />
+            <text x="570" y="70" text-anchor="middle" fill="#2c3e50" font-size="10">Hash Chain C</text>
+            <text id="chainC" x="570" y="90" text-anchor="middle" fill="#003876" font-size="10">[... H0]</text>
+
+            <!-- 파란 점 (전송) -->
+            <circle id="blueDot" cx="200" cy="400" r="7" fill="#003876" opacity="0.9" visibility="hidden" />
+            <!-- 빨간 점 (반환) -->
+            <circle id="redDot" cx="200" cy="400" r="7" fill="#cc7f6e" opacity="0.9" visibility="hidden" />
+        </svg>
+    </div>
+
+    <!-- 메시지 박스 (단계 설명) -->
+    <div id="message" class="message-box">
+        사용자 A의 거래 데이터.
+    </div>
+
+    <!-- 로그 패널 (상세 과정) -->
+    <div id="logPanel" class="log-panel">
+        <div class="log-line">▶ 데이터: "Tx_A1: 2025-02-21 일기"</div>
+        <div class="log-line">▶ Hash 생성: SHA256 → H_A1 = 0x3f8a...</div>
+        <div class="log-line">▶ Chain A: H_A0 + H_A1 → H_A1 (갱신)</div>
+        <div class="log-line">...</div>
+    </div>
+
+    <!-- 단계 컨트롤 -->
+    <div class="controls">
+        <button class="stage-btn active" data-stage="0">1. 데이터 생성</button>
+        <button class="stage-btn" data-stage="1">2. Hash 생성</button>
+        <button class="stage-btn" data-stage="2">3. 전송 (A→B)</button>
+        <button class="stage-btn" data-stage="3">4. B 갱신</button>
+        <button class="stage-btn" data-stage="4">5. 반환 (B→A)</button>
+        <button class="stage-btn" data-stage="5">6. A 갱신</button>
+        <button class="stage-btn" data-stage="6">7. B→C Merkle 전송</button>
+        <button class="stage-btn" data-stage="7">8. C 갱신 및 반환</button>
+        <button class="stage-btn" data-stage="8">9. B 갱신</button>
+    </div>
+    <div class="note">
+        ※ 자동으로 4초마다 다음 단계로 전환됩니다. 버튼을 눌러 수동으로도 진행할 수 있습니다.
+    </div>
+</div>
+
+<script>
+    (function() {
+        // 단계별 메시지 (간단한 설명)
+        const messages = [
+            "사용자 A의 거래 데이터.",
+            "거래 데이터로부터 Hash를 만듭니다. (Hash A1)",
+            "사용자 A가 이 Hash를 Layer 1의 노드 B로 전송합니다. (파란색 공)",
+            "노드 B가 자신의 Hash Chain을 갱신합니다. (H_B0 + Hash A1 → H_B1)",
+            "노드 B가 갱신된 최종 Hash를 사용자 A에게 반환합니다. (빨간색 공)",
+            "사용자 A가 받은 Hash로 자신의 Hash Chain을 갱신합니다. (H_A0 + 반환된 Hash → H_A1)",
+            "노드 B가 주기적으로 Layer 2의 노드 C에 자신의 Hash Chain의 Merkle Root를 전송합니다.",
+            "노드 C가 자신의 Hash Chain을 갱신하고, 최종 Hash를 노드 B에게 반환합니다.",
+            "노드 B가 노드 C의 최종 Hash로 자신의 Hash Chain을 갱신합니다. (H_B1 + 반환된 Hash → H_B2)"
+        ];
+
+        // 단계별 상세 로그 (각 단계에서 표시할 내용)
+        const logDetails = [
+            // 0: 데이터 생성
+            `▶ 데이터: "Tx_A1: 2025-02-21 일기"
+▶ (Hash 생성 전)`,
+            // 1: Hash 생성
+            `▶ 데이터: "Tx_A1: 2025-02-21 일기"
+▶ Hash 생성 (SHA-256): H_A1 = 0x3f8a1b2c...
+▶ Chain A 현재: H_A0`,
+            // 2: 전송 A→B
+            `▶ H_A1 전송: 사용자 A → 노드 B
+▶ 노드 B 수신 대기 중...`,
+            // 3: B 갱신
+            `▶ 노드 B: 기존 체인 H_B0
+▶ H_A1 수신 → 새 체인 계산: H_B1 = hash(H_B0 + H_A1)
+▶ Chain B: H_B0 → H_B1`,
+            // 4: 반환 B→A
+            `▶ 노드 B → 사용자 A: 최종 해시 H_B1 반환`,
+            // 5: A 갱신
+            `▶ 사용자 A: 기존 체인 H_A0
+▶ 노드 B로부터 H_B1 수신 → 새 체인 계산: H_A1 = hash(H_A0 + H_B1)
+▶ Chain A: H_A0 → H_A1`,
+            // 6: B→C Merkle 전송
+            `▶ 노드 B: 현재 체인의 Merkle Root 계산 (MR_B)
+▶ MR_B 전송: 노드 B → 노드 C`,
+            // 7: C 갱신 및 반환
+            `▶ 노드 C: 기존 체인 H_C0
+▶ MR_B 수신 → 새 체인 계산: H_C1 = hash(H_C0 + MR_B)
+▶ Chain C: H_C0 → H_C1
+▶ 노드 C → 노드 B: 최종 해시 H_C1 반환`,
+            // 8: B 갱신 (C의 반환 후)
+            `▶ 노드 B: 기존 체인 H_B1
+▶ 노드 C로부터 H_C1 수신 → 새 체인 계산: H_B2 = hash(H_B1 + H_C1)
+▶ Chain B: H_B1 → H_B2
+✅ 모든 체인 연동 완료`
+        ];
+
+        // 각 단계에서 해시 체인 텍스트 업데이트
+        const chainA = document.getElementById('chainA');
+        const chainB = document.getElementById('chainB');
+        const chainC = document.getElementById('chainC');
+        const blueDot = document.getElementById('blueDot');
+        const redDot = document.getElementById('redDot');
+        const msgDiv = document.getElementById('message');
+        const logPanel = document.getElementById('logPanel');
+        const stageBtns = document.querySelectorAll('.stage-btn');
+
+        let currentStage = 0;
+        let autoTimer = null;
+
+        // 좌표
+        const userPos = {x:200, y:400};
+        const nodeBPos = {x:400, y:320};
+        const nodeCPos = {x:600, y:200};
+
+        // 해시 체인 시뮬레이션 (간단한 문자열)
+        let chainAStr = 'H_A0';
+        let chainBStr = 'H_B0';
+        let chainCStr = 'H_C0';
+
+        function updateChainDisplay() {
+            chainA.textContent = `[... ${chainAStr}]`;
+            chainB.textContent = `[... ${chainBStr}]`;
+            chainC.textContent = `[... ${chainCStr}]`;
+        }
+
+        // 로그 업데이트
+        function updateLog(stage) {
+            logPanel.innerHTML = logDetails[stage].split('\n').map(line => `<div class="log-line">${line}</div>`).join('');
+        }
+
+        // 점 애니메이션 (from → to, 색상)
+        function animateDot(dot, fromX, fromY, toX, toY, duration, callback) {
+            const startTime = performance.now();
+            dot.setAttribute('visibility', 'visible');
+            dot.setAttribute('cx', fromX);
+            dot.setAttribute('cy', fromY);
+
+            function step(now) {
+                const elapsed = now - startTime;
+                const t = Math.min(elapsed / duration, 1);
+                const x = fromX + (toX - fromX) * t;
+                const y = fromY + (toY - fromY) * t;
+                dot.setAttribute('cx', x);
+                dot.setAttribute('cy', y);
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    dot.setAttribute('visibility', 'hidden');
+                    if (callback) callback();
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        // 단계 실행
+        function runStage(stage) {
+            currentStage = stage;
+            msgDiv.textContent = messages[stage];
+            updateLog(stage);
+            stageBtns.forEach((btn, i) => {
+                if (i === stage) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // 모든 점 숨기기
+            blueDot.setAttribute('visibility', 'hidden');
+            redDot.setAttribute('visibility', 'hidden');
+
+            switch(stage) {
+                case 0:
+                    // 데이터 생성 (아무것도 안함)
+                    break;
+                case 1:
+                    // Hash 생성 (체인은 아직 변경 안 됨)
+                    break;
+                case 2:
+                    // A→B 파란점 전송
+                    animateDot(blueDot, userPos.x, userPos.y, nodeBPos.x, nodeBPos.y, 1000, null);
+                    break;
+                case 3:
+                    // B 갱신
+                    chainBStr = 'H_B1';
+                    updateChainDisplay();
+                    break;
+                case 4:
+                    // B→A 빨간점 반환
+                    animateDot(redDot, nodeBPos.x, nodeBPos.y, userPos.x, userPos.y, 1000, null);
+                    break;
+                case 5:
+                    // A 갱신
+                    chainAStr = 'H_A1';
+                    updateChainDisplay();
+                    break;
+                case 6:
+                    // B→C Merkle 전송 (파란점)
+                    animateDot(blueDot, nodeBPos.x, nodeBPos.y, nodeCPos.x, nodeCPos.y, 1200, null);
+                    break;
+                case 7:
+                    // C 갱신 및 반환 (C 갱신 후 빨간점 반환)
+                    chainCStr = 'H_C1';
+                    updateChainDisplay();
+                    // 잠시 후 빨간점 C→B
+                    setTimeout(() => {
+                        animateDot(redDot, nodeCPos.x, nodeCPos.y, nodeBPos.x, nodeBPos.y, 1000, null);
+                    }, 300);
+                    break;
+                case 8:
+                    // B 갱신 (C의 반환 후)
+                    chainBStr = 'H_B2';
+                    updateChainDisplay();
+                    break;
+            }
+        }
+
+        // 자동 전환
+        function startAutoCycle() {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(() => {
+                let next = (currentStage + 1) % 9;
+                runStage(next);
+            }, 4000);
+        }
+
+        // 버튼 이벤트
+        stageBtns.forEach((btn, idx) => {
+            btn.addEventListener('click', () => {
+                clearInterval(autoTimer);
+                runStage(idx);
+                startAutoCycle();
+            });
+        });
+
+        // 초기화
+        updateChainDisplay();
+        runStage(0);
+        startAutoCycle();
+    })();
+</script>
+</body>
+</html>

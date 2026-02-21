@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash 머클 트리 동기화 (아래→위) + 합체 애니메이션</title>
+    <style>
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,40,80,0.1);
+            padding: 30px 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+        }
+        .title strong {
+            color: #003876;
+        }
+        .svg-wrapper {
+            display: flex;
+            justify-content: center;
+            background: #fafcff;
+            border-radius: 16px;
+            padding: 10px;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0 5px;
+            font-size: 0.9rem;
+            color: #4a5b6f;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot-blue {
+            width: 14px;
+            height: 14px;
+            background-color: #003876;
+            border-radius: 50%;
+        }
+        .dot-red {
+            width: 14px;
+            height: 14px;
+            background-color: #cc7f6e;
+            border-radius: 50%;
+        }
+        .message-box {
+            background-color: #eef2f7;
+            border-left: 5px solid #003876;
+            padding: 12px 20px;
+            margin: 20px 0 10px;
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #1e2b3c;
+            font-weight: 400;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            word-break: keep-all;
+            height: auto;
+        }
+        .stats-panel {
+            background-color: #f8fafd;
+            border: 1px solid #dce5f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            line-height: 1.6;
+        }
+        .stats-panel table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .stats-panel th {
+            background-color: #e7edf8;
+            font-weight: 500;
+            padding: 6px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .stats-panel td {
+            padding: 6px;
+            border-bottom: 1px solid #d0dae8;
+            text-align: right;
+        }
+        .stats-panel td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+        .highlight {
+            background-color: #fff3bf;
+            font-weight: 500;
+        }
+        .note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7f8fa4;
+            margin-top: 15px;
+        }
+        /* 선 그리기 애니메이션 */
+        .line {
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            animation: draw 0.8s forwards;
+        }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        <strong>머클 트리 동기화</strong> · 대역폭 절감 (합체 애니메이션)
+    </div>
+    <div class="legend">
+        <div class="legend-item"><span class="dot-blue"></span> 트랜잭션 해시</div>
+        <div class="legend-item"><span class="dot-red"></span> 머클 루트</div>
+        <div class="legend-item"><span style="color:#4a6572;">──</span> 합체 과정</div>
+    </div>
+    <div class="svg-wrapper">
+        <svg width="800" height="420" viewBox="0 0 800 420">
+            <!-- 배경 계층 구분선 -->
+            <line x1="50" y1="110" x2="750" y2="110" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <line x1="50" y1="190" x2="750" y2="190" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <line x1="50" y1="270" x2="750" y2="270" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <line x1="50" y1="350" x2="750" y2="350" stroke="#d0dae8" stroke-width="1" stroke-dasharray="5 3" />
+            <text x="60" y="100" fill="#4a5b6f" font-size="10">최종 루트</text>
+            <text x="60" y="180" fill="#4a5b6f" font-size="10">중간 해시 (레벨2)</text>
+            <text x="60" y="260" fill="#4a5b6f" font-size="10">중간 해시 (레벨1)</text>
+            <text x="60" y="340" fill="#4a5b6f" font-size="10">트랜잭션 해시</text>
+            <text x="60" y="390" fill="#4a5b6f" font-size="10">상위 노드</text>
+
+            <!-- 트랜잭션 해시 (하단) - 6개 (좌표 조정) -->
+            <circle cx="150" cy="370" r="7" fill="#003876" opacity="0.8" />
+            <circle cx="250" cy="370" r="7" fill="#003876" opacity="0.8" />
+            <circle cx="350" cy="370" r="7" fill="#003876" opacity="0.8" />
+            <circle cx="450" cy="370" r="7" fill="#003876" opacity="0.8" />
+            <circle cx="550" cy="370" r="7" fill="#003876" opacity="0.8" />
+            <circle cx="650" cy="370" r="7" fill="#003876" opacity="0.8" />
+
+            <!-- 중간 해시 레벨1 (3개) -->
+            <circle id="l1_1" cx="200" cy="290" r="8" fill="#5f6f82" style="visibility:hidden;" />
+            <circle id="l1_2" cx="400" cy="290" r="8" fill="#5f6f82" style="visibility:hidden;" />
+            <circle id="l1_3" cx="600" cy="290" r="8" fill="#5f6f82" style="visibility:hidden;" />
+
+            <!-- 중간 해시 레벨2 (2개) -->
+            <circle id="l2_1" cx="300" cy="210" r="8" fill="#5f6f82" style="visibility:hidden;" />
+            <circle id="l2_2" cx="500" cy="210" r="8" fill="#5f6f82" style="visibility:hidden;" />
+
+            <!-- 최종 머클 루트 -->
+            <circle id="merkleRoot" cx="400" cy="130" r="10" fill="#cc7f6e" style="visibility:hidden;" />
+
+            <!-- 상위 노드 -->
+            <circle id="targetNode" cx="700" cy="130" r="12" fill="white" stroke="#4a6572" stroke-width="2" style="visibility:hidden;" />
+            <text id="targetText" x="700" y="110" text-anchor="middle" fill="#2c3e50" font-size="10" style="visibility:hidden;">상위 노드</text>
+
+            <!-- 연결선 (실선, 처음에는 숨김) -->
+            <!-- 트랜잭션 → 레벨1 -->
+            <g id="lines_tx_l1" style="visibility:hidden;">
+                <line x1="150" y1="370" x2="200" y2="290" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="250" y1="370" x2="200" y2="290" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="350" y1="370" x2="400" y2="290" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="450" y1="370" x2="400" y2="290" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="550" y1="370" x2="600" y2="290" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="650" y1="370" x2="600" y2="290" stroke="#4a6572" stroke-width="1.5" class="line" />
+            </g>
+
+            <!-- 레벨1 → 레벨2 -->
+            <g id="lines_l1_l2" style="visibility:hidden;">
+                <line x1="200" y1="290" x2="300" y2="210" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="400" y1="290" x2="300" y2="210" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="600" y1="290" x2="500" y2="210" stroke="#4a6572" stroke-width="1.5" class="line" />
+            </g>
+
+            <!-- 레벨2 → 루트 -->
+            <g id="lines_l2_root" style="visibility:hidden;">
+                <line x1="300" y1="210" x2="400" y2="130" stroke="#4a6572" stroke-width="1.5" class="line" />
+                <line x1="500" y1="210" x2="400" y2="130" stroke="#4a6572" stroke-width="1.5" class="line" />
+            </g>
+
+            <!-- 루트 → 상위 노드 (전송선) -->
+            <line id="transferLine" x1="400" y1="130" x2="700" y2="130" stroke="#003876" stroke-width="2" stroke-dasharray="5 3" style="visibility:hidden;" />
+            <circle id="movingDot" cx="400" cy="130" r="8" fill="#003876" style="visibility:hidden;" />
+        </svg>
+    </div>
+
+    <!-- 메시지 박스 -->
+    <div id="message" class="message-box">트랜잭션 해시들이 하위 계층에 있습니다. (6개)</div>
+
+    <!-- 대역폭 절감 효과 패널 -->
+    <div class="stats-panel">
+        <strong>📊 대역폭 절감 효과</strong>
+        <table id="bandwidthTable">
+            <tr><th>트랜잭션 수</th><th>개별 전송</th><th>머클 루트</th><th>절감율</th></tr>
+            <tr id="row10"><td>10개</td><td>1,280 B</td><td>32 B</td><td>97.5%</td></tr>
+            <tr id="row100"><td>100개</td><td>12,800 B</td><td>32 B</td><td>99.75%</td></tr>
+            <tr id="row1000"><td>1,000개</td><td>128,000 B</td><td>32 B</td><td>99.975%</td></tr>
+            <tr id="row10000"><td>10,000개</td><td>1.28 MB</td><td>32 B</td><td>99.9975%</td></tr>
+        </table>
+        <p style="margin-top:8px; font-size:0.85rem;">※ 이중 서명 패킷(232B) 기준 99% 이상 절감 확인</p>
+    </div>
+
+    <div class="note">자동으로 단계가 전환됩니다. (3초 간격, 선 그리기 애니메이션)</div>
+</div>
+
+<script>
+    (function() {
+        const l1_1 = document.getElementById('l1_1');
+        const l1_2 = document.getElementById('l1_2');
+        const l1_3 = document.getElementById('l1_3');
+        const l2_1 = document.getElementById('l2_1');
+        const l2_2 = document.getElementById('l2_2');
+        const root = document.getElementById('merkleRoot');
+        const targetNode = document.getElementById('targetNode');
+        const targetText = document.getElementById('targetText');
+        const movingDot = document.getElementById('movingDot');
+        const transferLine = document.getElementById('transferLine');
+        const lines_tx_l1 = document.getElementById('lines_tx_l1');
+        const lines_l1_l2 = document.getElementById('lines_l1_l2');
+        const lines_l2_root = document.getElementById('lines_l2_root');
+        const msgDiv = document.getElementById('message');
+        const rows = {
+            row10: document.getElementById('row10'),
+            row100: document.getElementById('row100'),
+            row1000: document.getElementById('row1000'),
+            row10000: document.getElementById('row10000')
+        };
+
+        const messages = [
+            "6개의 트랜잭션 해시가 하위 계층에 있습니다. (개별 전송 시 6×32B = 192B)",
+            "트랜잭션 해시들이 쌍으로 묶여 중간 해시(레벨1)를 형성합니다. (선 그리기)",
+            "중간 해시들이 다시 쌍으로 묶여 레벨2 해시를 형성합니다.",
+            "최종적으로 하나의 머클 루트가 생성됩니다. (32B)",
+            "머클 루트만 상위 계층 노드로 전송됩니다. 대역폭 99% 이상 절감!"
+        ];
+
+        let currentStage = 0;
+        let autoTimer;
+
+        function resetAll() {
+            // 모든 노드 숨김
+            l1_1.style.visibility = 'hidden';
+            l1_2.style.visibility = 'hidden';
+            l1_3.style.visibility = 'hidden';
+            l2_1.style.visibility = 'hidden';
+            l2_2.style.visibility = 'hidden';
+            root.style.visibility = 'hidden';
+            targetNode.style.visibility = 'hidden';
+            if (targetText) targetText.style.visibility = 'hidden';
+            movingDot.style.visibility = 'hidden';
+            transferLine.style.visibility = 'hidden';
+            lines_tx_l1.style.visibility = 'hidden';
+            lines_l1_l2.style.visibility = 'hidden';
+            lines_l2_root.style.visibility = 'hidden';
+            // 표 하이라이트 초기화
+            Object.values(rows).forEach(r => r.classList.remove('highlight'));
+        }
+
+        function animateDot(dot, fromX, fromY, toX, toY, duration, callback) {
+            const start = performance.now();
+            dot.setAttribute('cx', fromX);
+            dot.setAttribute('cy', fromY);
+            dot.style.visibility = 'visible';
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+                const x = fromX + (toX - fromX) * t;
+                const y = fromY + (toY - fromY) * t;
+                dot.setAttribute('cx', x);
+                dot.setAttribute('cy', y);
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    dot.style.visibility = 'hidden';
+                    if (callback) callback();
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function showStage(stage) {
+            resetAll();
+            currentStage = stage;
+            msgDiv.textContent = messages[stage];
+
+            // 표 하이라이트 (트랜잭션 수에 따라)
+            if (stage === 0 || stage === 1 || stage === 2 || stage === 3) {
+                rows.row10.classList.add('highlight');
+            } else if (stage === 4) {
+                rows.row10000.classList.add('highlight');
+            }
+
+            switch(stage) {
+                case 0:
+                    // 트랜잭션만 보임 (아무것도 추가 안 함)
+                    break;
+                case 1:
+                    l1_1.style.visibility = 'visible';
+                    l1_2.style.visibility = 'visible';
+                    l1_3.style.visibility = 'visible';
+                    lines_tx_l1.style.visibility = 'visible';
+                    break;
+                case 2:
+                    l1_1.style.visibility = 'visible';
+                    l1_2.style.visibility = 'visible';
+                    l1_3.style.visibility = 'visible';
+                    l2_1.style.visibility = 'visible';
+                    l2_2.style.visibility = 'visible';
+                    lines_tx_l1.style.visibility = 'visible';
+                    lines_l1_l2.style.visibility = 'visible';
+                    break;
+                case 3:
+                    l1_1.style.visibility = 'visible';
+                    l1_2.style.visibility = 'visible';
+                    l1_3.style.visibility = 'visible';
+                    l2_1.style.visibility = 'visible';
+                    l2_2.style.visibility = 'visible';
+                    root.style.visibility = 'visible';
+                    lines_tx_l1.style.visibility = 'visible';
+                    lines_l1_l2.style.visibility = 'visible';
+                    lines_l2_root.style.visibility = 'visible';
+                    break;
+                case 4:
+                    l1_1.style.visibility = 'visible';
+                    l1_2.style.visibility = 'visible';
+                    l1_3.style.visibility = 'visible';
+                    l2_1.style.visibility = 'visible';
+                    l2_2.style.visibility = 'visible';
+                    root.style.visibility = 'visible';
+                    targetNode.style.visibility = 'visible';
+                    if (targetText) targetText.style.visibility = 'visible';
+                    transferLine.style.visibility = 'visible';
+                    lines_tx_l1.style.visibility = 'visible';
+                    lines_l1_l2.style.visibility = 'visible';
+                    lines_l2_root.style.visibility = 'visible';
+                    // 머클 루트 이동 애니메이션
+                    animateDot(movingDot, 400, 130, 700, 130, 1200, () => {
+                        // 이동 후 루트 숨김 (선택)
+                        root.style.visibility = 'hidden';
+                    });
+                    break;
+            }
+        }
+
+        // 자동 전환 (3초)
+        function startAuto() {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(() => {
+                let next = (currentStage + 1) % 5;
+                showStage(next);
+            }, 3000);
+        }
+
+        // 초기 실행
+        showStage(0);
+        startAuto();
+
+        // (선택) 수동 버튼을 추가할 수 있으나, 여기서는 생략 (간단히)
+    })();
+</script>
+</body>
+</html>

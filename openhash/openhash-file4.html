@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash: 핵심 메커니즘 3 (파일 4/7)</title>
+    <style>
+        /* 정부 공식 사이트 디자인 + Material Design 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-size: 14px;
+            font-family: 'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafc;
+            color: #1e2b3c;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #0a1a2b;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin: 2.5rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid #e5e9f0;
+        }
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.8rem 0 0.8rem 0;
+        }
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.2rem 0 0.5rem 0;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+
+        /* 애니메이션 iframe 스타일 */
+        .animation-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,40,80,0.05);
+            text-align: center;
+        }
+        .animation-title {
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .animation-frame {
+            width: 100%;
+            max-width: 900px;
+            height: 520px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin: 0 auto;
+            display: block;
+        }
+        .iframe-note {
+            font-size: 0.85rem;
+            color: #7f8fa4;
+            margin-top: 0.8rem;
+        }
+
+        /* 테이블 스타일 */
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .tech-table th {
+            background-color: #f0f4fa;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            color: #1e3a5f;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        .tech-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9edf3;
+            vertical-align: top;
+        }
+        .tech-table td:first-child {
+            font-weight: 500;
+            color: #0a2942;
+            width: 20%;
+        }
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+
+        /* 푸터 */
+        .doc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dce1e8;
+        }
+        .btn-next {
+            background-color: #003876;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-next:hover {
+            background-color: #002856;
+        }
+        .btn-prev {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-prev:hover {
+            background-color: #5a6268;
+        }
+        .page-info {
+            color: #7f8fa4;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 1.8rem; }
+            .animation-frame { height: 450px; }
+        }
+    </style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+    <!-- nav.js는 서버에서 제공 (기존 사이트 메뉴) -->
+    <script src="/js/nav.js" defer></script>
+</head>
+<body>
+<div class="container">
+<div class="file-nav"><a href="/openhash/openhash-file1.html" title="Openhash 기술 문서: 데이터 무결성 보장 시스템">1</a><a href="/openhash/openhash-file2.html" title="Openhash: 핵심 메커니즘 1 (파일 2/7)">2</a><a href="/openhash/openhash-file3.html" title="Openhash: 핵심 메커니즘 2 (파일 3/7)">3</a><a href="/openhash/openhash-file4.html" title="Openhash: 핵심 메커니즘 3 (파일 4/7)" class="active">4</a><a href="/openhash/openhash-file5.html" title="Openhash: 부가 서비스 · 경제적 가치 · 결론 (파일 5/7)">5</a><a href="/openhash/openhash-file6.html" title="Openhash: AI 융합 · 사회 전 영역의 자동화 혁명 (파일 6/7)">6</a><a href="/openhash/openhash-file7.html" title="Openhash: 글로벌 네트워크 구축 (파일 7/7)">7</a></div>
+    <!-- 문서 제목 -->
+    <h1>Openhash 기술 문서: 핵심 메커니즘 상세 (3/3)</h1>
+    <p style="color: #5f6f82; font-size: 0.95rem;">파일 4/7 · 머클 트리 동기화 · 노드 퇴출 및 병합 · 성능 측정 · 보안 강화</p>
+
+    <!-- 5.8 머클 트리 동기화 모듈(330) -->
+    <h3>5.8 머클 트리 동기화 모듈(330)</h3>
+    <h4>5.8.1 기본 원리</h4>
+    <p>개별 트랜잭션을 머클 트리 구조로 요약하여 머클 루트만 상위 계층에 전송함으로써 대역폭을 현저히 절감합니다.</p>
+
+    <!-- 애니메이션: 머클 트리 동기화 -->
+    <div class="animation-section">
+        <div class="animation-title">🔷 머클 트리 동기화 애니메이션</div>
+        <iframe class="animation-frame" src="/openhash/openhash-animation5.html" title="머클 트리 동기화"></iframe>
+        <div class="iframe-note">※ 여러 트랜잭션 해시가 머클 트리로 요약되어 머클 루트만 상위 계층으로 전송됩니다.</div>
+    </div>
+
+    <h4>5.8.2 대역폭 절감 효과</h4>
+    <table class="tech-table">
+        <tr><th>트랜잭션 수</th><th>개별 전송 시 데이터량</th><th>머클 트리 요약 시</th><th>절감율</th></tr>
+        <tr><td>10개</td><td>약 1,280바이트</td><td>약 32바이트</td><td>97.5%</td></tr>
+        <tr><td>100개</td><td>약 12,800바이트</td><td>약 32바이트</td><td>99.75%</td></tr>
+        <tr><td>1,000개</td><td>약 128,000바이트</td><td>약 32바이트</td><td>99.975%</td></tr>
+        <tr><td>10,000개</td><td>약 1.28MB</td><td>약 32바이트</td><td>99.9975%</td></tr>
+    </table>
+    <p>일 실시예에서 이중 서명 패킷(232바이트) 기준으로 측정한 결과, 다수의 트랜잭션을 머클 트리로 요약할 경우 99% 이상의 대역폭 절감이 가능함을 확인하였습니다.</p>
+
+    <!-- 5.9 노드 퇴출 및 해시 체인 병합 -->
+    <h3>5.9 노드 퇴출 및 해시 체인 병합</h3>
+    <p>Openhash는 노드의 자유로운 진입과 퇴출을 지원하며, 노드 퇴출 시 해당 노드의 해시 체인을 다른 노드에 병합하는 프로세스를 수행합니다. 이는 분산 버전 관리 시스템(Git)의 브랜치 병합 방식과 유사한 원리로 동작합니다.</p>
+
+    <!-- 애니메이션: 노드 퇴출 및 병합 -->
+    <div class="animation-section">
+        <div class="animation-title">🔷 노드 퇴출 및 해시 체인 병합 애니메이션</div>
+        <iframe class="animation-frame" src="/openhash/openhash-animation6.html" title="노드 퇴출 및 병합"></iframe>
+        <div class="iframe-note">※ 노드 A가 퇴출되고, 그 해시 체인이 노드 B로 병합되는 과정을 보여줍니다.</div>
+    </div>
+
+    <h4>5.9.1 노드 퇴출 시 해시 체인 병합 프로세스</h4>
+    <table class="tech-table">
+        <tr><th>단계</th><th>설명</th></tr>
+        <tr><td>1단계: 노드 퇴출 결정</td><td>자발적 퇴출 신청 또는 시스템의 강제 퇴출 결정</td></tr>
+        <tr><td>2단계: 병합 대상 노드 선정</td><td>지리적 인접성, 처리 용량, 신뢰도 점수 기준</td></tr>
+        <tr><td>3단계: 해시 체인 임시 복제</td><td>퇴출 노드의 전체 해시 체인을 임시 저장소에 복제</td></tr>
+        <tr><td>4단계: 충돌 검사</td><td>타임스탬프 충돌, 해시 연결성 충돌 검사</td></tr>
+        <tr><td>5단계: 충돌 해결</td><td>충돌 시 LPBFT 합의 발동으로 병합 방식 결정</td></tr>
+        <tr><td>6단계: 병합 수행</td><td>퇴출 노드 체인을 대상 노드 체인에 통합, 새 연결 해시 생성</td></tr>
+        <tr><td>7단계: 네트워크 차단</td><td>퇴출 노드의 네트워크 연결 차단</td></tr>
+        <tr><td>8단계: 통합 체인 공개</td><td>병합 완료된 새 통합 체인을 공개 영역에 게시</td></tr>
+    </table>
+
+    <h4>5.9.2 무결성 증명 절차</h4>
+    <ol>
+        <li>사용자가 특정 시점에 특정 노드에 문서 해시를 제출한 사실을 주장</li>
+        <li>검증자는 해당 노드의 해시 체인에서 해당 시점 근처의 해시 조회</li>
+        <li>사용자가 제출한 해시와 체인에 기록된 해시 일치 시 문서 무결성 증명</li>
+        <li>불일치 시 문서 위변조 가능성 판정</li>
+    </ol>
+
+    <!-- 6. 성능 측정 결과 -->
+    <h2>6. 성능 측정 결과</h2>
+    <p>AWS 클라우드 환경(Intel Xeon Platinum 8259CL @ 2.50GHz)에서 측정한 결과입니다.</p>
+
+    <h4>6.1 계층 간 검증 시간</h4>
+    <table class="tech-table">
+        <tr><th>검증 항목</th><th>평균</th><th>중앙값</th><th>최소값</th><th>95백분위</th></tr>
+        <tr><td>BLS 서명 검증</td><td>1.3816ms</td><td>1.3745ms</td><td>1.3528ms</td><td>1.4309ms</td></tr>
+        <tr><td>머클 증명 검증</td><td>0.0654ms</td><td>0.0421ms</td><td>0.0285ms</td><td>0.0812ms</td></tr>
+        <tr><td>SHA-256 이중 재해싱</td><td>0.0127ms</td><td>0.0085ms</td><td>0.0073ms</td><td>0.0186ms</td></tr>
+        <tr><td>계층 간 검증 종합</td><td>1.4735ms</td><td>1.4409ms</td><td>1.4107ms</td><td>1.5377ms</td></tr>
+    </table>
+
+    <h4>6.2 거래 검증 시간</h4>
+    <table class="tech-table">
+        <tr><th>검증 단계</th><th>평균 시간</th><th>비고</th></tr>
+        <tr><td>5단계 거래 검증 (BLS)</td><td>1.4031ms</td><td>잔액, 신원, 한도, 이상, 규정</td></tr>
+        <tr><td>5단계 거래 검증 (Ed25519)</td><td>0.1323ms</td><td>더 빠른 서명 알고리즘</td></tr>
+        <tr><td>LPBFT 사전 준비 단계</td><td>4.7133ms</td><td>4개 노드 기준</td></tr>
+        <tr><td>LPBFT 준비 단계</td><td>6.0570ms</td><td>4개 노드 기준</td></tr>
+        <tr><td>LPBFT 확정 단계</td><td>6.0986ms</td><td>4개 노드 기준</td></tr>
+        <tr><td>LPBFT 전체 합의</td><td>16.8689ms</td><td>4개 노드 기준</td></tr>
+    </table>
+
+    <h4>6.3 전체 거래 E2E 시간</h4>
+    <p>5단계 검증, 계층 탐색, 계층 간 통신, 해시 체인 갱신(이중 서명), 응답 생성을 포함한 전체 거래 시간:</p>
+    <table class="tech-table">
+        <tr><th>측정 항목</th><th>값</th></tr>
+        <tr><td>평균</td><td>3.0880ms</td></tr>
+        <tr><td>중앙값</td><td>3.0199ms</td></tr>
+        <tr><td>최소값</td><td>2.9506ms</td></tr>
+        <tr><td>95백분위</td><td>3.1905ms</td></tr>
+    </table>
+
+    <h4>6.4 처리량(TPS)</h4>
+    <table class="tech-table">
+        <tr><th>구성</th><th>TPS</th></tr>
+        <tr><td>단일 노드 (Ed25519 서명 기준)</td><td>5,354 TPS</td></tr>
+        <tr><td>대한민국 읍면동 3,500개 × 2개 노드</td><td>7,000개 노드</td></tr>
+        <tr><td>전체 네트워크 예상 처리량</td><td>수천만 TPS</td></tr>
+    </table>
+    <p>이는 Visa(약 2만 TPS)나 기존 블록체인(비트코인 7 TPS, 이더리움 30 TPS)과 비교할 수 없을 정도로 높은 수치입니다.</p>
+
+    <h4>6.5 대역폭 절감율</h4>
+    <table class="tech-table">
+        <tr><th>트랜잭션 수</th><th>절감율</th></tr>
+        <tr><td>10개</td><td>97.5%</td></tr>
+        <tr><td>100개</td><td>99.75%</td></tr>
+        <tr><td>1,000개</td><td>99.975%</td></tr>
+        <tr><td>10,000개</td><td>99.9975%</td></tr>
+    </table>
+
+    <h4>6.6 자동 분류 정확도</h4>
+    <table class="tech-table">
+        <tr><th>카테고리</th><th>F1 점수</th></tr>
+        <tr><td>금융</td><td>95.2%</td></tr>
+        <tr><td>의료</td><td>83.3%</td></tr>
+        <tr><td>교육</td><td>100.0%</td></tr>
+        <tr><td>행정</td><td>94.7%</td></tr>
+        <tr><td>교통</td><td>82.4%</td></tr>
+        <tr><td>일반</td><td>84.2%</td></tr>
+        <tr><td>전체 정확도</td><td>90.0%</td></tr>
+    </table>
+
+    <!-- 7. 보안 강화 기술 -->
+    <h2>7. 보안 강화 기술</h2>
+    <h4>7.1 양자 내성 암호</h4>
+    <p>Representative 노드(210) 간의 통신에는 미국 국립표준기술연구소(NIST)가 표준화한 CRYSTALS-Dilithium 서명 알고리즘이 적용되어 양자 컴퓨터 공격에도 안전합니다.</p>
+
+    <h4>7.2 BLS 서명 집약</h4>
+    <p>다중 서명을 단일 서명으로 통합함으로써 서명 크기와 검증 시간을 현저히 단축합니다.</p>
+
+    <h4>7.3 Shamir 비밀 분산</h4>
+    <p>마스터 개인 키를 n개의 조각으로 분할하고, k개 이상의 조각이 협력해야만 복원이 가능하도록 구성합니다.</p>
+    <ul>
+        <li>일 실시예: n=10, k=7 (7-of-10 임계값)</li>
+    </ul>
+
+    <h4>7.4 AI 멀티에이전트 시스템</h4>
+    <table class="tech-table">
+        <tr><th>에이전트</th><th>기능</th></tr>
+        <tr><td>법률 준수 검증 에이전트(510)</td><td>개인정보보호법, 의료법, 금융법 등 준수 여부 자동 검증, 10만 건 이상 판례로 미세 조정된 LLM 활용</td></tr>
+        <tr><td>설명 가능성 에이전트(520)</td><td>AI 판단의 근거를 SHAP 분석을 통해 제시, 인간 검토 옵션 보장</td></tr>
+        <tr><td>이상 탐지 에이전트(530)</td><td>Isolation Forest 알고리즘으로 비정상 접근 패턴 실시간 탐지, 5단계 검증과 통합</td></tr>
+        <tr><td>자동 분류 에이전트(540)</td><td>볼트 서비스 모듈의 자동 분류 엔진(810)과 연동, 콘텐츠 키워드 분석 및 가중치 기반 분류</td></tr>
+    </table>
+
+    <h4>7.5 데이터 신뢰도 체인(500)</h4>
+    <p>데이터의 출처, 변형 이력, 검증 이력을 불변 로그로 기록하여 완벽한 감사 추적을 가능하게 합니다.</p>
+
+    <!-- 문서 푸터 (절대 경로 사용) -->
+    <div class="doc-footer">
+        <div>
+            <a href="/openhash/openhash-file3.html" title="Openhash: 핵심 메커니즘 2 (파일 3/7)" class="btn-prev">← 이전: 파일 3</a>
+        </div>
+        <span class="page-info">파일 4/7 · 머클 트리 · 노드 병합 · 성능 · 보안</span>
+        <a href="/openhash/openhash-file5.html" title="Openhash: 부가 서비스 · 경제적 가치 · 결론 (파일 5/7)" class="btn-next">다음: 파일 5 (부가 서비스, 경제적 가치) →</a>
+    </div>
+    <p style="font-size: 0.75rem; color: #a0b2c6; margin-top: 2rem; text-align: center;">ⓒ Openhash 특허 출원 기반. 이 문서는 요약본이며, 자세한 내용은 특허 명세서를 참조하십시오.</p>
+</div>
+</body>
+</html>

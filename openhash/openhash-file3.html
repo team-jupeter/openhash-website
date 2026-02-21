@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash: 핵심 메커니즘 2 (파일 3/7)</title>
+    <style>
+        /* 정부 공식 사이트 디자인 + Material Design 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-size: 14px;
+            font-family: 'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafc;
+            color: #1e2b3c;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #0a1a2b;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin: 2.5rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid #e5e9f0;
+        }
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.8rem 0 0.8rem 0;
+        }
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.2rem 0 0.5rem 0;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+        .lead {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #2c3e50;
+            background-color: #f2f5fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        /* 애니메이션 iframe 스타일 */
+        .animation-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,40,80,0.05);
+            text-align: center;
+        }
+        .animation-title {
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .animation-frame {
+            width: 100%;
+            max-width: 900px;
+            height: 800px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin: 0 auto;
+            display: block;
+        }
+        .iframe-note {
+            font-size: 0.85rem;
+            color: #7f8fa4;
+            margin-top: 0.8rem;
+        }
+
+        /* 테이블 스타일 */
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .tech-table th {
+            background-color: #f0f4fa;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            color: #1e3a5f;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        .tech-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9edf3;
+            vertical-align: top;
+        }
+        .tech-table td:first-child {
+            font-weight: 500;
+            color: #0a2942;
+            width: 20%;
+        }
+        .layer-stats {
+            background-color: #f8fafd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .layer-stats table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .layer-stats td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #dce5f0;
+        }
+        .layer-stats tr:last-child td {
+            border-bottom: none;
+        }
+        .badge {
+            background-color: #e7edf8;
+            color: #1e3a5f;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #dce5f0;
+            margin: 2rem 0;
+        }
+
+        /* 푸터 */
+        .doc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dce1e8;
+        }
+        .btn-next {
+            background-color: #003876;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-next:hover {
+            background-color: #002856;
+        }
+        .btn-prev {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-prev:hover {
+            background-color: #5a6268;
+        }
+        .page-info {
+            color: #7f8fa4;
+            font-size: 0.9rem;
+        }
+        .material-symbol {
+            font-size: 1.1rem;
+            margin-right: 0.3rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 1.8rem; }
+            .animation-frame { height: 800px; }
+        }
+    </style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+    <!-- nav.js는 서버에서 제공 (기존 사이트 메뉴) -->
+    <script src="/js/nav.js" defer></script>
+</head>
+<body>
+<div class="container">
+<div class="file-nav"><a href="/openhash/openhash-file1.html" title="Openhash 기술 문서: 데이터 무결성 보장 시스템">1</a><a href="/openhash/openhash-file2.html" title="Openhash: 핵심 메커니즘 1 (파일 2/7)">2</a><a href="/openhash/openhash-file3.html" title="Openhash: 핵심 메커니즘 2 (파일 3/7)" class="active">3</a><a href="/openhash/openhash-file4.html" title="Openhash: 핵심 메커니즘 3 (파일 4/7)">4</a><a href="/openhash/openhash-file5.html" title="Openhash: 부가 서비스 · 경제적 가치 · 결론 (파일 5/7)">5</a><a href="/openhash/openhash-file6.html" title="Openhash: AI 융합 · 사회 전 영역의 자동화 혁명 (파일 6/7)">6</a><a href="/openhash/openhash-file7.html" title="Openhash: 글로벌 네트워크 구축 (파일 7/7)">7</a></div>
+    <!-- 문서 제목 -->
+    <h1>Openhash 기술 문서: 핵심 메커니즘 상세 (2/3)</h1>
+    <p style="color: #5f6f82; font-size: 0.95rem;">파일 3/7 · 계층 간 상호 검증 · 이중 서명 · 이중 지출 방지 · 비상시 합의(LPBFT)</p>
+
+    <!-- 5.4 계층 간 상호 검증 -->
+    <h3>5.4 계층 간 상호 검증</h3>
+    <p>Openhash는 평상시 하향식 검증과 상향식 감시를 통해 데이터 무결성을 보장합니다. 핵심 요소는 모든 데이터를 비공개하는 반면, 모든 Hash를 공개하는 것입니다. 즉, PDV에 저장된 데이터는 비공개이지만, PDV의 Hash Chain과 모든 노드의 Hash Chain은 공개합니다. 그러므로, 모두가 모두의 Hash Chain을 검증할 수 있습니다.</p>
+    <p>예를 들어, 사용자 A가 자신의 어느날 일기를 PDV에 기록하고, 그 Hash(Hash A)를 그의 주소지 읍면동 노드에 전송하였으며, 주소지 노드는 그 상위 시군구로 전송하고(Hash B), 시군구는 광역시도(Hash C), 광역시도는 국가, 국가는 글로벌 노드에 전송하였다면(Hash D), 이들 Hash A, B, C, D는 시간적으로 연속될 뿐 아니라, 그 각각의 진위를 수학적으로 검증할 수 있습니다. 모든 Hash를 공개한다는 것은 누구라도, 언제라도, 어떤 사용자 혹은 노드의 Hash Chain이라도 그 진위 혹은 오염 여부를 검증할 수 있다는 의미입니다.</p>
+
+    <!-- 애니메이션: 계층 간 상호 검증 (5.4) -->
+    <div class="animation-section">
+        <div class="animation-title">🔷 계층 간 상호 검증 애니메이션</div>
+        <iframe class="animation-frame" src="/openhash/openhash-animation3.html" title="계층 간 상호 검증"></iframe>
+        <div class="iframe-note">※ 사용자 A → 노드 B → 노드 C로 해시가 전달되고, 각 노드의 해시 체인이 갱신되며 상호 연동됩니다.</div>
+    </div>
+
+    <h4>5.4.1 하향식 검증 모듈(310)</h4>
+    <p>상위 계층이 하위 계층의 데이터 무결성을 주기적으로 검증합니다.</p>
+    <p><strong>검증 항목:</strong></p>
+    <table class="tech-table">
+        <tr><th>검증 항목</th><th>설명</th><th>성능</th></tr>
+        <tr><td>BLS 서명 검증</td><td>쌍선형 사상 등식 확인</td><td>평균 1.3816ms</td></tr>
+        <tr><td>머클 증명 검증</td><td>무작위 트랜잭션에 대한 머클 경로 검증</td><td>평균 0.0654ms</td></tr>
+        <tr><td>타임스탬프 검증</td><td>현재 시각 기준 ±5분 범위 확인</td><td>-</td></tr>
+        <tr><td>잔액 불변성 검증</td><td>계층별 총액 변동 확인</td><td>-</td></tr>
+        <tr><td>시퀀스 연속성 검증</td><td>해시 체인 연결성 확인</td><td>-</td></tr>
+        <tr><td>해시 체인 검증</td><td>전체 체인 무결성 확인</td><td>-</td></tr>
+    </table>
+    <p><strong>계층별 검증 주기 및 샘플링 비율(예시):</strong> 일정 범위 내에서 Random 결정</p>
+    <table class="tech-table">
+        <tr><th>검증 관계</th><th>주기</th><th>샘플링 비율</th></tr>
+        <tr><td>글로벌 → 국가</td><td>1시간</td><td>5%</td></tr>
+        <tr><td>국가 → 광역시도</td><td>30분</td><td>10%</td></tr>
+        <tr><td>광역시도 → 시군구</td><td>10분</td><td>15%</td></tr>
+        <tr><td>시군구 → 읍면동</td><td>5분</td><td>20%</td></tr>
+    </table>
+
+    <h4>5.4.2 상향식 감시 모듈(320)</h4>
+    <p>하위 계층이 상위 계층의 비정상 동작을 실시간으로 모니터링합니다.</p>
+    <table class="tech-table">
+        <tr><th>감시 항목</th><th>이상 징후 기준</th></tr>
+        <tr><td>응답 지연</td><td>평균 응답 시간 대비 3배 이상 지연</td></tr>
+        <tr><td>서명 검증 실패율</td><td>최근 100건 중 5건 이상 실패, 또는 연속 3회 실패</td></tr>
+        <tr><td>데이터 불일치</td><td>동일 시점에 상이한 데이터 전송 (이중 지불 시도)</td></tr>
+        <tr><td>잔액 불일치</td><td>보고된 계층별 총액과 실제 합산액 차이 1T 이상</td></tr>
+        <tr><td>선택적 거부</td><td>특정 노드만 지속적으로 거부</td></tr>
+        <tr><td>순서 조작</td><td>타임스탬프 역전 현상</td></tr>
+    </table>
+    <p><strong>이상 징후 대응 절차:</strong></p>
+    <ol>
+        <li>경고 발령</li>
+        <li>재검증 요청 (정상 복귀 시 경고 해제)</li>
+        <li>노드 격리 (재검증 실패 시 연결 즉시 차단, 트래픽 우회 경로 활성화)</li>
+        <li>LPBFT 발동</li>
+        <li>블랙리스트 등재</li>
+    </ol>
+
+    <h4>5.4.3 크로스 검증</h4>
+    <p>인접하지 않은 계층 간에도 주기적으로 크로스 검증을 수행하여 중간 계층의 담합 공격을 방지합니다.</p>
+    <table class="tech-table">
+        <tr><th>크로스 검증 관계</th><th>주기</th></tr>
+        <tr><td>읍면동 ↔ 광역시도</td><td>1시간</td></tr>
+        <tr><td>광역시도 ↔ 글로벌</td><td>12시간</td></tr>
+    </table>
+
+    <!-- 5.5 이중 서명 및 해시 체인 공개 -->
+    <h3>5.5 이중 서명 및 해시 체인 공개</h3>
+    <h4>5.5.1 이중 서명 메커니즘</h4>
+    <p>사용자의 해시 체인을 갱신하려면 두 개의 서명이 필요합니다:</p>
+    <table class="tech-table">
+        <tr><th>서명 주체</th><th>역할</th></tr>
+        <tr><td>사용자 자신의 디지털 서명</td><td>사용자 동의 없이 노드가 임의로 체인을 변경하는 것을 방지</td></tr>
+        <tr><td>사용자가 속한 읍면동 노드의 디지털 서명</td><td>사용자 혼자 체인을 조작하는 것을 방지</td></tr>
+    </table>
+    <p>이러한 이중 서명 메커니즘은:</p>
+    <ul>
+        <li>노드가 사용자의 동의 없이 임의로 해시 체인을 변경하는 것을 방지</li>
+        <li>사용자가 노드의 검증 없이 해시 체인을 조작하는 것을 방지</li>
+        <li>데이터 무결성과 사용자 주권을 동시에 보장</li>
+    </ul>
+
+    <h4>5.5.2 해시 체인 공개 원칙</h4>
+    <p>모든 사용자와 모든 노드의 해시 체인은 원칙적으로 공개됩니다:</p>
+    <table class="tech-table">
+        <tr><th>특징</th><th>설명</th></tr>
+        <tr><td>투명성</td><td>누구나 다른 누구의 해시 체인에 접근하여 열람 가능</td></tr>
+        <tr><td>검증 가능성</td><td>해당 해시 체인에 첨부된 디지털 서명의 진위를 누구나 검증 가능</td></tr>
+        <tr><td>개인정보 보호</td><td>해시값만 공개되므로 원본 데이터의 내용은 보호됨 (해시 함수의 역상 저항성)</td></tr>
+        <tr><td>분산 신뢰</td><td>특정 사용자나 노드의 부정 행위를 누구나 탐지 가능</td></tr>
+    </table>
+
+    <h4>5.5.3 공개 검증 구조</h4>
+    <p>Openhash는 모든 사용자와 노드의 해시 체인을 실시간으로 공개하여 누구나 언제든지 정합성을 검증할 수 있는 공개 검증 구조를 제공합니다.</p>
+    <p><strong>노드 해시 체인 공개 영역:</strong></p>
+    <ul>
+        <li>노드 1 체인: 공개 해시값 N1_PUB</li>
+        <li>노드 2 체인: 공개 해시값 N2_PUB</li>
+        <li>노드 3 체인: 공개 해시값 N3_PUB</li>
+    </ul>
+    <p><strong>사용자 해시 체인 공개 영역:</strong></p>
+    <ul>
+        <li>사용자 A 체인: 공개 해시값 A_PUB</li>
+        <li>사용자 B 체인: 공개 해시값 B_PUB</li>
+        <li>사용자 C 체인: 공개 해시값 C_PUB</li>
+    </ul>
+    <p>교차 검증 경로: 사용자는 노드의 공개 해시값을 검증할 수 있고, 노드도 사용자의 공개 해시값을 검증할 수 있습니다.</p>
+
+    <h4>5.5.4 해시 체인 무결성 규칙</h4>
+    <table class="tech-table">
+        <tr><th>규칙</th><th>설명</th></tr>
+        <tr><td>노드 체인 규칙</td><td>노드 체인의 새 해시값 = 해시(기존 최종 해시값 + 사용자로부터 수신한 거래 해시값)</td></tr>
+        <tr><td>노드 체인 제한</td><td>사용자로부터 수신한 해시값만 포함 가능, 외부/임의 해시 삽입 불가</td></tr>
+        <tr><td>사용자 체인 규칙</td><td>사용자 체인의 새 해시값 = 해시(기존 최종 해시값 + 노드로부터 수신한 응답 해시값)</td></tr>
+        <tr><td>사용자 체인 제한</td><td>노드로부터 수신한 응답 해시값만 포함 가능</td></tr>
+    </table>
+
+    <h4>5.5.5 노드 오염 탐지 조건</h4>
+    <table class="tech-table">
+        <tr><th>조건</th><th>설명</th></tr>
+        <tr><td>출처 불명 해시</td><td>노드 체인에 출처가 불명확한 해시값 발견</td></tr>
+        <tr><td>무응답 해시</td><td>사용자 체인에 노드 응답 없이 생성된 해시값 존재</td></tr>
+        <tr><td>연결성 위반</td><td>이전 해시값과 현재 해시값의 연결 관계가 성립하지 않음</td></tr>
+    </table>
+
+    <!-- 5.6 이중 지출 방지 메커니즘 -->
+    <h3>5.6 이중 지출 방지 메커니즘</h3>
+    <h4>5.6.1 계정 잠금 기본 원리</h4>
+    <p>특정 사용자로부터 거래 데이터의 해시를 접수한 노드는 사용자의 해시 체인과 노드의 해시 체인의 갱신을 완료하는 시점까지 해당 사용자의 계정을 잠금(Lock) 상태로 전환합니다.</p>
+
+    <!-- 애니메이션: 이중 지출 방지 (5.6) -->
+    <div class="animation-section">
+        <div class="animation-title">🔷 이중 지출 방지 메커니즘 애니메이션</div>
+        <iframe class="animation-frame" src="/openhash/openhash-animation4.html" title="이중 지출 방지"></iframe>
+        <div class="iframe-note">※ 사용자 A는 물리적 최근 노드 B에 연결되며, 주소지 읍면동 D와 함께 잠금 및 검증 과정을 수행합니다.</div>
+    </div>
+
+    <h4>5.6.2 계정 잠금 판단 방법</h4>
+    <p><strong>방법 1: 연결 상태 기반 판단</strong></p>
+    <ul>
+        <li>사용자 단말기가 어느 한 노드와 연결 중인 상태에서는 새로운 거래 데이터를 다른 노드에 전송할 수 없음</li>
+        <li>연결 해제 = 사용자와 노드의 해시 체인 갱신 과정 종료</li>
+    </ul>
+    <p><strong>방법 2: 읍면동 노드를 통한 계정 잠금 메시지</strong></p>
+    <ol>
+        <li>사용자가 거래 데이터 해시를 노드에 전송</li>
+        <li>해당 노드가 사용자 소속 읍면동 노드에 계정 잠금 메시지 전송</li>
+        <li>읍면동 노드의 잠금 상태 확인 후 노드의 해시 체인 갱신 개시</li>
+        <li>해시 체인 갱신 완료 후 읍면동 노드에 잠금 해제 메시지 전달</li>
+    </ol>
+    <p><strong>방법 3: 노드의 해시 체인 제어권</strong></p>
+    <ul>
+        <li>사용자가 거래 데이터 해시를 노드에 전송하는 시점부터 해시 체인 갱신 완료 시점까지, 해당 노드가 해당 사용자의 해시 체인에 대한 제어권 보유</li>
+    </ul>
+    <p><strong>방법 4: 읍면동 노드의 디지털 서명을 통한 잠금 상태 관리</strong></p>
+    <ul>
+        <li>사용자의 해시 체인은 반드시 그가 속한 읍면동 계층 노드에 의해 갱신</li>
+        <li>해당 노드의 디지털 서명에 의해 잠긴 상태가 됨</li>
+    </ul>
+    <p><strong>방법 5: 상위 계층에 의한 하위 계층 실시간 모니터링</strong></p>
+    <ul>
+        <li>읍면동 노드의 모든 활동은 시군구 노드에 의해 실시간 모니터링</li>
+        <li>시군구 노드는 광역시도 노드에 의해 감시 (계층적 감시 구조)</li>
+    </ul>
+
+    <!-- 5.7 비상시 합의 (LPBFT) -->
+    <h3>5.7 비상시 합의 (LPBFT)</h3>
+    <p>Openhash는 평상시에는 계층 간 상호 검증만으로 운영되지만, 비상 상황에서만 경량화된 PBFT(Lightweight PBFT) 합의를 발동합니다.</p>
+
+    <h4>5.7.1 LPBFT 발동 조건</h4>
+    <table class="tech-table">
+        <tr><th>조건</th><th>설명</th></tr>
+        <tr><td>노드 오염 감지</td><td>동일 노드의 2회 이상 검증 실패</td></tr>
+        <tr><td>데이터 불일치</td><td>동일 트랜잭션에 대해 2개 이상의 상이한 버전 존재</td></tr>
+        <tr><td>계층 잔액 불일치</td><td>계층별 총액 합산 불일치 10T 이상</td></tr>
+        <tr><td>다수 노드 장애</td><td>동일 계층 내 30% 이상 노드 응답 없음</td></tr>
+        <tr><td>체인 분기 감지</td><td>동일 높이에서 2개 이상의 블록 존재</td></tr>
+    </table>
+
+    <h4>5.7.2 LPBFT 합의 절차 (3단계)</h4>
+    <p><strong>제1단계: 사전 준비 단계</strong></p>
+    <ul>
+        <li>해당 계층의 Primary 노드(220)가 리더로 자동 선정</li>
+        <li>리더가 검증 대상 데이터와 제안 메시지 생성</li>
+        <li>모든 Replica 노드(230)에게 브로드캐스트</li>
+        <li>메시지 형식: 뷰 번호, 시퀀스 번호, 다이제스트, 서명</li>
+        <li>성능: 평균 4.7133밀리초 (4개 노드 기준)</li>
+    </ul>
+    <p><strong>제2단계: 준비 단계</strong></p>
+    <ul>
+        <li>각 Replica 노드가 사전 준비 메시지 검증</li>
+        <li>검증 통과 시 준비 메시지를 다른 모든 노드에게 전송</li>
+        <li>2f+1개 이상의 준비 메시지 수집 시 다음 단계 진행</li>
+        <li>f: 허용 가능한 악의적 노드 수 (전체 노드 n = 3f+1 이상)</li>
+        <li>성능: 평균 6.0570밀리초 (4개 노드 기준)</li>
+    </ul>
+    <p><strong>제3단계: 확정 단계</strong></p>
+    <ul>
+        <li>2f+1개 준비 메시지를 수집한 노드가 확정 메시지 브로드캐스트</li>
+        <li>2f+1개 이상의 확정 메시지 수집 시 합의 완료</li>
+        <li>합의 결과로 상태 업데이트</li>
+        <li>오염 노드 격리 및 복구 절차 시작</li>
+        <li>성능: 평균 6.0986밀리초 (4개 노드 기준)</li>
+    </ul>
+    <p>전체 LPBFT 합의 시간: 평균 16.8689밀리초</p>
+
+    <h4>5.7.3 계층별 LPBFT 구성</h4>
+    <table class="tech-table">
+        <tr><th>계층</th><th>노드 수</th><th>허용 장애(f)</th><th>합의 임계값(2f+1)</th></tr>
+        <tr><td>읍면동</td><td>4</td><td>1</td><td>3</td></tr>
+        <tr><td>시군구</td><td>7</td><td>2</td><td>5</td></tr>
+        <tr><td>광역시도</td><td>10</td><td>3</td><td>7</td></tr>
+        <tr><td>국가</td><td>13</td><td>4</td><td>9</td></tr>
+        <tr><td>글로벌</td><td>19</td><td>6</td><td>13</td></tr>
+    </table>
+
+    <h4>5.7.4 비상 해제 조건</h4>
+    <table class="tech-table">
+        <tr><th>조건</th><th>설명</th></tr>
+        <tr><td>오염 노드 격리 완료</td><td>해당 노드 네트워크 차단 완료</td></tr>
+        <tr><td>데이터 불일치 해소</td><td>충돌 데이터 해결 완료</td></tr>
+        <tr><td>계층 잔액 정합성 회복</td><td>계층별 총액 일치 확인</td></tr>
+        <tr><td>Representative 노드 복귀</td><td>2/3 이상 정상 복귀 확인</td></tr>
+    </table>
+
+    <h4>5.7.5 평상시 vs 비상시 비교</h4>
+    <table class="tech-table">
+        <tr><th>구분</th><th>평상시</th><th>비상시(LPBFT)</th></tr>
+        <tr><td>검증 방식</td><td>계층 간 상호 검증</td><td>다수결 합의</td></tr>
+        <tr><td>참여 노드</td><td>인접 계층 노드만</td><td>Representative 노드 전체</td></tr>
+        <tr><td>응답 시간</td><td>평균 1.5ms</td><td>평균 17ms</td></tr>
+        <tr><td>네트워크 부하</td><td>낮음</td><td>일시적 증가</td></tr>
+        <tr><td>에너지 소비</td><td>최소</td><td>일시적 증가</td></tr>
+        <tr><td>목표 최대 발동 빈도</td><td>-</td><td>연간 10회 이하 (0.001% 미만)</td></tr>
+    </table>
+
+    <!-- 문서 푸터 (절대 경로 사용) -->
+    <div class="doc-footer">
+        <div>
+            <a href="/openhash/openhash-file2.html" title="Openhash: 핵심 메커니즘 1 (파일 2/7)" class="btn-prev">← 이전: 파일 2</a>
+        </div>
+        <span class="page-info">파일 3/7 · 계층 간 상호 검증 · 이중 서명 · 이중 지출 · LPBFT</span>
+        <a href="/openhash/openhash-file4.html" title="Openhash: 핵심 메커니즘 3 (파일 4/7)" class="btn-next">다음: 파일 4 (동기화, 노드 관리, 성능) →</a>
+    </div>
+    <p style="font-size: 0.75rem; color: #a0b2c6; margin-top: 2rem; text-align: center;">ⓒ Openhash 특허 출원 기반. 이 문서는 요약본이며, 자세한 내용은 특허 명세서를 참조하십시오.</p>
+</div>
+</body>
+</html>

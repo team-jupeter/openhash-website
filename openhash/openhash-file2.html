@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash: 핵심 메커니즘 1 (파일 2/7)</title>
+    <style>
+        /* 정부 공식 사이트 디자인 + Material Design 기반 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-size: 14px;
+            font-family: 'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafc;
+            color: #1e2b3c;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #0a1a2b;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin: 2.5rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid #e5e9f0;
+        }
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.8rem 0 0.8rem 0;
+        }
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin: 1.2rem 0 0.5rem 0;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+        .lead {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #2c3e50;
+            background-color: #f2f5fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        /* 시각화 영역 (iframe) */
+        .animation-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,40,80,0.05);
+            text-align: center;
+        }
+        .animation-title {
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .animation-frame {
+            width: 100%;
+            max-width: 1000px;
+            height: 580px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin: 0 auto;
+            display: block;
+        }
+        .iframe-note {
+            font-size: 0.85rem;
+            color: #7f8fa4;
+            margin-top: 0.8rem;
+        }
+
+        /* 테이블 스타일 */
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .tech-table th {
+            background-color: #f0f4fa;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            color: #1e3a5f;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        .tech-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9edf3;
+            vertical-align: top;
+        }
+        .tech-table td:first-child {
+            font-weight: 500;
+            color: #0a2942;
+            width: 20%;
+        }
+        .layer-stats {
+            background-color: #f8fafd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .layer-stats table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .layer-stats td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #dce5f0;
+        }
+        .layer-stats tr:last-child td {
+            border-bottom: none;
+        }
+        .badge {
+            background-color: #e7edf8;
+            color: #1e3a5f;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.2rem;
+            color: #2f4050;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #dce5f0;
+            margin: 2rem 0;
+        }
+
+        /* 푸터 */
+        .doc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dce1e8;
+        }
+        .btn-next {
+            background-color: #003876;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-next:hover {
+            background-color: #002856;
+        }
+        .btn-prev {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn-prev:hover {
+            background-color: #5a6268;
+        }
+        .page-info {
+            color: #7f8fa4;
+            font-size: 0.9rem;
+        }
+        .material-symbol {
+            font-size: 1.1rem;
+            margin-right: 0.3rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 1.8rem; }
+            .animation-frame { height: 500px; }
+        }
+    </style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+<style>.file-nav{display:flex;justify-content:center;gap:10px;margin:20px 0}.file-nav a{display:inline-block;padding:8px 16px;background:#f0f4fa;border:1px solid #cbd5e1;border-radius:40px;color:#1e3a5f;text-decoration:none;font-size:0.9rem;font-weight:500}.file-nav a.active{background:#003876;border-color:#003876;color:#fff}</style>
+    <!-- nav.js는 서버에서 제공 (기존 사이트 메뉴) -->
+    <script src="/js/nav.js" defer></script>
+</head>
+<body>
+<div class="container">
+<div class="file-nav"><a href="/openhash/openhash-file1.html" title="Openhash 기술 문서: 데이터 무결성 보장 시스템">1</a><a href="/openhash/openhash-file2.html" title="Openhash: 핵심 메커니즘 1 (파일 2/7)" class="active">2</a><a href="/openhash/openhash-file3.html" title="Openhash: 핵심 메커니즘 2 (파일 3/7)">3</a><a href="/openhash/openhash-file4.html" title="Openhash: 핵심 메커니즘 3 (파일 4/7)">4</a><a href="/openhash/openhash-file5.html" title="Openhash: 부가 서비스 · 경제적 가치 · 결론 (파일 5/7)">5</a><a href="/openhash/openhash-file6.html" title="Openhash: AI 융합 · 사회 전 영역의 자동화 혁명 (파일 6/7)">6</a><a href="/openhash/openhash-file7.html" title="Openhash: 글로벌 네트워크 구축 (파일 7/7)">7</a></div>
+    <!-- 문서 제목 (상단 메뉴는 nav.js가 삽입) -->
+    <h1>Openhash 기술 문서: 핵심 메커니즘 상세 (1/3)</h1>
+    <p style="color: #5f6f82; font-size: 0.95rem;">파일 2/7 · 확률적 계층 선택 · 잔액 불변성 검증 · 5단계 거래 검증</p>
+
+    <!-- 5. 핵심 메커니즘 상세 -->
+    <h2>5. 핵심 메커니즘 상세</h2>
+
+    <!-- 5.1 확률적 계층 선택 모듈(300) -->
+    <h3>5.1 확률적 계층 선택 모듈(300)</h3>
+    <h4>5.1.1 기본 원리</h4>
+    <p>오픈해시는 모든 종류의 데이터 위변조를 방지하는 기술이지만, 본 문서는 이해를 돕기 위한 예시로 상업적 거래 데이터를 기준으로 설명합니다. 확률적 계층 선택 모듈은 거래 당사자 간의 최하위 공통 계층을 기준으로 기록 계층을 확률적으로 선택합니다. 가령, 두 거래 당사자가 각기 제주시(Layer 2) 한림읍(Layer 1)과 서귀포시(Layer 2) 안덕면(Layer 1)에 위치하면, 두 거래 당사자의 최하위 공통 계층은 제주특별자치도(Layer 3)입니다. 그러므로, 두 사람 간의 거래 데이터의 Hash를 기록하는 계층은 제주시와 서귀포시의 직속 상위 계층인 제주특별자치도(Layer 3) 또는 그 상위 계층인 한국(Layer 4) 중 어느 하나를 확률적으로 선택합니다. 가령, 70%의 확률로 제주특별자치도 노드를 선택하고, 30%의 확률로 한국 노드를 선택할 수 있습니다.</p>
+    <p>이처럼, 확률적으로 기록 계층을 분산하는 이유는 크게 두 가지입니다. 첫째는 적대적 공격자가 특정 거래 데이터의 Hash를 기록하게될 계층을 확정할 수 없으므로, 공격 대상 노드를 특정할 수 없고, 둘째, 후술하는 직조(weaving) 메커니즘에 의해, 모든 계층과 모든 사용자의 Hash Chain이 마치 직물의 수많은 실오라기처럼 가로 세로 연동되기 때문입니다.</p>
+
+    <h4>5.1.2 계층 선택 알고리즘</h4>
+    <ol>
+        <li>최하위 공통 계층 식별: 거래 당사자 A와 B의 주소지 혹은 물리적 소재지를 기준으로, 소속 계층 정보를 분석하여 최하위 공통 계층을 찾습니다.</li>
+        <li>문서 해시 생성: 문서 내용을 SHA-256 알고리즘으로 해싱하여 문서 해시값(400)을 생성합니다.</li>
+        <li>타임스탬프 생성: 현재 시각의 타임스탬프를 생성합니다.</li>
+        <li>이중 재해싱: 문서 해시값과 타임스탬프를 연결한 후 1차 재해싱, 그 결과에 대해 2차 재해싱을 수행합니다.</li>
+        <li>범위값 변환: 2차 재해싱 결과를 0~1 사이의 난수값으로 변환합니다.</li>
+        <li>계층 선택: 해당 범위값을 최하위 공통 계층에 따라 사전 정의된 확률 분포와 비교하여 기록 계층을 선택합니다.</li>
+    </ol>
+    <p>성능: 1,024바이트 문서 기준 SHA-256 이중 재해싱에 평균 0.0127밀리초 소요됩니다.</p>
+
+    <h4>5.1.3 최하위 공통 계층별 선택 범위</h4>
+    <table class="tech-table">
+        <tr><th>최하위 공통 계층</th><th>선택 가능 계층</th></tr>
+        <tr><td>읍면동 계층(100)</td><td>읍면동(100), 시군구(110), 광역시도(120), 국가(125), 글로벌(130)</td></tr>
+        <tr><td>시군구 계층(110)</td><td>시군구(110), 광역시도(120), 국가(125), 글로벌(130)</td></tr>
+        <tr><td>광역시도 계층(120)</td><td>광역시도(120), 국가(125), 글로벌(130)</td></tr>
+        <tr><td>국가 계층(125)</td><td>국가(125), 글로벌(130)</td></tr>
+        <tr><td>글로벌 계층(130)</td><td>글로벌(130) (100% 확률)</td></tr>
+    </table>
+
+    <h4>5.1.4 중요도 기반 확률 분포</h4>
+    <p>데이터의 중요도에 따라 확률 분포가 차등 적용됩니다. 가령, 버스 요금 지불 데이터와 부동산 매매 계약서의 중요도는 다릅니다.</p>
+    <p><strong>최하위 공통 계층이 읍면동(100)인 경우:</strong></p>
+    <table class="tech-table">
+        <tr><th>중요도</th><th>읍면동</th><th>시군구</th><th>광역시도</th><th>국가</th><th>글로벌</th></tr>
+        <tr><td>낮음</td><td>50%</td><td>30%</td><td>12%</td><td>6%</td><td>2%</td></tr>
+        <tr><td>높음</td><td>15%</td><td>20%</td><td>30%</td><td>25%</td><td>10%</td></tr>
+    </table>
+    <p><strong>최하위 공통 계층이 시군구(110)인 경우:</strong></p>
+    <table class="tech-table">
+        <tr><th>중요도</th><th>시군구</th><th>광역시도</th><th>국가</th><th>글로벌</th></tr>
+        <tr><td>낮음</td><td>55%</td><td>27%</td><td>13%</td><td>5%</td></tr>
+        <tr><td>높음</td><td>20%</td><td>35%</td><td>30%</td><td>15%</td></tr>
+    </table>
+    <p><strong>최하위 공통 계층이 광역시도(120)인 경우:</strong></p>
+    <table class="tech-table">
+        <tr><th>중요도</th><th>광역시도</th><th>국가</th><th>글로벌</th></tr>
+        <tr><td>낮음</td><td>60%</td><td>30%</td><td>10%</td></tr>
+        <tr><td>높음</td><td>25%</td><td>45%</td><td>30%</td></tr>
+    </table>
+    <p><strong>최하위 공통 계층이 국가(125)인 경우:</strong></p>
+    <table class="tech-table">
+        <tr><th>중요도</th><th>국가</th><th>글로벌</th></tr>
+        <tr><td>낮음</td><td>70%</td><td>30%</td></tr>
+        <tr><td>높음</td><td>40%</td><td>60%</td></tr>
+    </table>
+
+    <h4>5.1.5 중요도 판정 기준</h4>
+    <p>중요도 판정은 거래 금액, 데이터 카테고리, 콘텐츠 키워드를 종합하여 점수를 산출합니다:</p>
+    <ul>
+        <li>60점 이상: 높은 중요도</li>
+        <li>25점 이상 60점 미만: 일반 중요도</li>
+        <li>25점 미만: 낮은 중요도</li>
+    </ul>
+    <p>(이러한 점수 기준 및 분류 체계는 시스템 운영자가 필요에 따라 조정 가능)</p>
+
+    <h4>5.1.6 노드 결정 정책</h4>
+    <p>확률적 계층 선택 메커니즘에 의해, 계층(Layer)을 결정하면, 선택된 계층 내에서 구체적으로 어느 노드에 해시를 전송할지는 별도의 노드 결정 정책에 따릅니다.</p>
+    <p><strong>행정 소속 기반 방식:</strong></p>
+    <ul>
+        <li>사용자가 시스템에 등록한 주소지의 행정구역에 따라 각 계층의 노드가 고정적으로 결정됩니다</li>
+        <li>거래 이력의 추적 및 관리가 용이합니다</li>
+    </ul>
+    <p><strong>현재 위치 기반 방식:</strong></p>
+    <ul>
+        <li>사용자의 현재 물리적 위치에 따라 각 계층의 노드가 동적으로 결정됩니다</li>
+        <li>사용자와 지리적으로 가까운 노드를 활용하여 네트워크 지연 시간을 최소화합니다</li>
+    </ul>
+    <p><strong>혼용 방식</strong>: 행정 소속 기반과 현재 위치 기반을 혼용하여, 공격자가 해당 노드를 더욱 알 수 없게 합니다.</p>
+
+    <h4>5.1.7 보안 이점</h4>
+    <table class="tech-table">
+        <tr><th>보안 측면</th><th>설명</th></tr>
+        <tr><td>예측 불가능성</td><td>공격자는 특정 거래가 어느 계층에 기록될지 사전에 알 수 없습니다. 거래 해시와 타임스탬프는 거래 당사자만이 생성 시점에 알 수 있으므로, 공격자가 원하는 계층에 기록되도록 조작하는 것이 사실상 불가능합니다.</td></tr>
+        <tr><td>다중 계층 동시 공격의 어려움</td><td>공격자가 특정 거래를 위변조하려면, 해당 거래가 기록된 모든 계층의 노드를 동시에 장악해야 합니다. 최상위 계층인 글로벌 계층과 국가 계층에 기록된 거래는 해당 국가 노드뿐만 아니라 그 하위의 모든 경로까지 동시에 제어해야 하며, 이는 현실적으로 불가능에 가깝습니다. 반대로, 최하위 계층인 개별 사용자가 보유한 거래 데이터를 위변조하려면, 해당 사용자가 Hash를 전송한 모든 노드를 위변조해야 하며, 직조(weaving) 메커니즘은 Layer 1부터 Layer 5까지 모든 계층의 노드를 상호 연동하므로, 결국, 전세계 모든 노드들과 모든 사용자의 데이터를 동시에 위변조해야 합니다.</td></tr>
+        <tr><td>확률적 분산</td><td>공격자가 특정 노드를 장악하더라도, 그 노드에 기록될 거래는 전체 거래 중 일부에 불과합니다. 확률적 분포 덕분에 공격자의 영향력이 국한됩니다.</td></tr>
+        <tr><td>암호학적 안전성</td><td>SHA-256은 현재까지 알려진 양자 컴퓨터 공격에도 안전한 암호학적 해시 함수입니다. 두 번 해싱함으로써 충돌 공격 가능성을 더욱 낮춥니다.</td></tr>
+    </table>
+
+    <!-- 새로운 예시 섹션: 애니메이션과 설명 추가 -->
+    <h4>5.1.8 예시: 제주도 거래에서의 확률적 계층 및 2차 노드 선택</h4>
+    <p>다음 애니메이션은 제주시 한림읍의 사용자 A와 서귀포시 안덕면의 사용자 B의 거래 예시를 보여줍니다. 두 사용자의 최하위 공통 계층은 제주특별자치도(Layer 3)입니다. 제주특별자치도는 Layer 3에 속하는 여러 광역시도 노드들 중 하나이며, 다시 복수의 2차 노드로 구성됩니다. 실제로 한국의 17개 광역시도 각각이 Layer 3의 1차 노드이고, 그 중 제주특별자치도는 3개의 2차 노드를 가집니다. 사용자 A와 B가 거래 데이터의 Hash를 전송할 계층은 확률적으로 제주특별자치도(70%) 또는 한국(Layer 4, 30%) 중 선택됩니다. 만약 제주특별자치도가 선택되면, 다시 그 내부의 3개 2차 노드 중 하나가 무작위로 선택됩니다. 한국이 선택되면 한국의 3개 2차 노드 중 하나가 무작위로 선택됩니다.</p>
+    <p>이 과정을 통해 사용자 A, 사용자 B, 그리고 선택된 계층의 선택된 노드의 Hash Chain이 상호 연동됩니다. 모든 사용자들과 모든 계층, 모든 노드의 Hash Chain이 상호 연동되고, 모든 Hash Chain이 공개되므로, 누구나 다른 모든 사용자와 노드들의 Hash Chain 무결성을 검증할 수 있습니다.</p>
+
+    <!-- 애니메이션 iframe -->
+    <div class="animation-section">
+        <div class="animation-title">🔷 확률적 계층 및 2차 노드 선택 애니메이션 (제주도 거래 예시)</div>
+        <iframe class="animation-frame" src="openhash-animation2.html" title="Openhash 계층별 랜덤 노드 선택 애니메이션"></iframe>
+        <div class="iframe-note">※ 애니메이션: 사용자 A(한림읍)와 B(안덕면)의 거래. 최하위 공통 계층 Layer 3(제주도)에서 70% 확률로 Layer 3, 30%로 Layer 4(한국) 선택 후, 해당 계층 내 2차 노드 중 하나를 무작위 선택. 선택된 노드로 해시 전송 및 반환.</div>
+    </div>
+
+    <!-- 5.2 계층별 잔액 불변성 검증 모듈(350) -->
+    <h3>5.2 계층별 잔액 불변성 검증 모듈(350)</h3>
+    <h4>5.2.1 기본 원리</h4>
+    <p>계층별 잔액 불변성 검증 모듈은 행정 계층 구조를 기반으로 거래 당사자의 공통 계층을 탐색하고, 해당 계층 이상의 총 잔액 불변성을 검증합니다.</p>
+
+    <h4>5.2.2 검증 절차</h4>
+    <ol>
+        <li>계층 정보 조회: 거래 당사자 A와 B의 계층 정보(소속 읍면동부터 글로벌까지)를 조회합니다.</li>
+        <li>공통 계층 탐색: 최하위 계층인 읍면동부터 상향 비교하여 두 당사자가 공통으로 속하는 가장 낮은 계층(공통 계층)을 식별합니다.</li>
+        <li>계층 분류:
+            <ul>
+                <li>변동 허용 계층: 공통 계층 미만의 계층 (잔액 증감 허용)</li>
+                <li>불변 계층: 공통 계층 이상의 계층 (총액 유지 필수)</li>
+            </ul>
+        </li>
+        <li>델타 합계 검증: 변동 허용 계층의 잔액 델타 합계를 계산합니다.
+            <ul>
+                <li>정상 거래: 발신자 감소분 + 수신자 증가분 = 0</li>
+                <li>델타 합계 ≠ 0: 부정 거래로 판정, 즉시 차단</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h4>5.2.3 사례 분석</h4>
+    <p><strong>사례 1: 동일 시군구 내 서로 다른 읍면동 거래</strong></p>
+    <ul>
+        <li>사용자 A: 서울 강남구 역삼동</li>
+        <li>사용자 B: 서울 강남구 삼성동</li>
+        <li>공통 계층: 강남구(시군구 계층)</li>
+        <li>변동 허용 계층: 읍면동 계층 (역삼동, 삼성동)</li>
+        <li>불변 계층: 강남구, 서울시, 대한민국, 글로벌</li>
+    </ul>
+    <p><strong>사례 2: 서로 다른 시군구 거래</strong></p>
+    <ul>
+        <li>사용자 A: 서울 강남구 역삼동</li>
+        <li>사용자 B: 서울 서초구 서초동</li>
+        <li>공통 계층: 서울시(광역시도 계층)</li>
+        <li>변동 허용 계층: 읍면동 계층, 시군구 계층 (강남구, 서초구)</li>
+        <li>불변 계층: 서울시, 대한민국, 글로벌</li>
+    </ul>
+    <p><strong>사례 3: 서로 다른 국가 거래</strong></p>
+    <ul>
+        <li>사용자 A: 대한민국 서울</li>
+        <li>사용자 B: 일본 도쿄</li>
+        <li>공통 계층: 글로벌 계층</li>
+        <li>변동 허용 계층: 모든 국가 계층 이하</li>
+        <li>불변 계층: 글로벌 계층</li>
+    </ul>
+
+    <!-- 5.3 5단계 거래 검증 모듈(360) -->
+    <h3>5.3 5단계 거래 검증 모듈(360)</h3>
+    <p>5단계 거래 검증 모듈은 모든 거래에 대해 다음의 5단계 검증 파이프라인을 순차적으로 수행합니다.</p>
+
+    <h4>5.3.1 제1단계: 잔액 확인</h4>
+    <table class="tech-table">
+        <tr><th>항목</th><th>내용</th></tr>
+        <tr><td>검증 대상</td><td>발신자의 현재 잔액 ≥ 거래 금액</td></tr>
+        <tr><td>실패 시 처리</td><td>거래 즉시 실패, 재시도 불가능</td></tr>
+    </table>
+
+    <h4>5.3.2 제2단계: 신원 확인</h4>
+    <table class="tech-table">
+        <tr><th>항목</th><th>내용</th></tr>
+        <tr><td>검증 대상</td><td>발신자와 수신자의 신원 확인, 본인 인증 상태, 계층 등록 여부</td></tr>
+        <tr><td>실패 시 처리</td><td>본인 인증 절차 요청</td></tr>
+    </table>
+
+    <h4>5.3.3 제3단계: 한도 확인</h4>
+    <table class="tech-table">
+        <tr><th>항목</th><th>내용</th></tr>
+        <tr><td>단일 거래 한도</td><td>기본 100T (시스템 운영자 조정 가능)</td></tr>
+        <tr><td>일일 거래 한도</td><td>개인별 설정</td></tr>
+        <tr><td>초과 시 처리</td><td>승인 대기 상태로 전환, 명시적 승인 요구</td></tr>
+    </table>
+
+    <h4>5.3.4 제4단계: 이상 탐지</h4>
+    <table class="tech-table">
+        <tr><th>이상 탐지 조건</th><th>설명</th></tr>
+        <tr><td>거래 횟수 이상</td><td>1시간 내 거래 횟수 10건 이상</td></tr>
+        <tr><td>거래 금액 이상</td><td>1시간 내 거래 금액 500T 이상</td></tr>
+        <tr><td>급격한 변화</td><td>거래 금액이 평균의 5배 이상</td></tr>
+        <tr><td>이상 거래 판정 시</td><td>승인 대기 상태로 전환</td></tr>
+    </table>
+
+    <h4>5.3.5 제5단계: 규정 준수</h4>
+    <table class="tech-table">
+        <tr><th>항목</th><th>내용</th></tr>
+        <tr><td>블랙리스트 확인</td><td>블랙리스트 및 국제 제재 대상 여부 확인</td></tr>
+        <tr><td>고액 거래 보고</td><td>1,000T 이상 거래는 통화 거래 보고 대상으로 기록</td></tr>
+        <tr><td>위반 시 처리</td><td>거래 즉시 실패, 감사 로그에 기록</td></tr>
+    </table>
+
+    <h4>5.3.6 검증 성능</h4>
+    <table class="tech-table">
+        <tr><th>서명 방식</th><th>평균 시간</th><th>중앙값</th><th>최소값</th><th>95백분위</th></tr>
+        <tr><td>BLS 서명</td><td>1.4031ms</td><td>1.3762ms</td><td>1.3518ms</td><td>1.4416ms</td></tr>
+        <tr><td>Ed25519 서명</td><td>0.1323ms</td><td>0.1272ms</td><td>0.1260ms</td><td>0.1476ms</td></tr>
+    </table>
+
+    <!-- 문서 푸터 -->
+    <div class="doc-footer">
+        <div>
+            <a href="/openhash/openhash-file1.html" title="Openhash 기술 문서: 데이터 무결성 보장 시스템" class="btn-prev">← 이전: 파일 1</a>
+        </div>
+        <span class="page-info">파일 2/7 · 확률적 계층 선택 · 잔액 불변성 · 5단계 검증</span>
+        <a href="openhash-file3.html" class="btn-next">다음: 파일 3 (계층 검증, 합의) →</a>
+    </div>
+    <p style="font-size: 0.75rem; color: #a0b2c6; margin-top: 2rem; text-align: center;">ⓒ Openhash 특허 출원 기반. 이 문서는 요약본이며, 자세한 내용은 특허 명세서를 참조하십시오.</p>
+</div>
+</body>
+</html>
