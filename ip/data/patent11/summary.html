@@ -1,0 +1,54 @@
+<div class="patent-detail">
+    <h4>📄 FPGA 가속 해시체인 기반 지능형 세무거래 처리 시스템</h4>
+
+    <div style="background: #f5f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+        <p style="margin:0; font-size:1.1rem;">AWS 실증 검증 완료: <strong>PBFT 합의 300,129 TPS, AI 탈세 탐지 99.5% 정확도, 내부자 공격 방어 확률 10^-32,170, 투자 회수 5.4개월</strong></p>
+    </div>
+
+    <h5>🔍 배경</h5>
+    <p>기존 세무정보시스템(홈택스, IRS, ELSTER)은 중앙집중식 구조로 인해 연말정산 시 과부하, 단일 실패점, 실시간 처리 불가, 수동 탈세 탐지 등의 한계를 가짐. 비트코인(3-7 TPS), 이더리움(15 TPS) 등 1·2세대 해시체인은 처리량·합의 시간·에너지 효율 측면에서 국가 단위 세무행정에 부적합.</p>
+
+    <h5>⚙️ 핵심 기술</h5>
+    <ul>
+        <li><strong>168바이트 고정 크기 세무거래 블록</strong> – 블록 헤더(46B) + 세무 정보(72B) + 서명 정보(50B)로 구성, 기존 가변 블록 대비 저장/처리 효율 30% 향상.</li>
+        <li><strong>PBFT 비잔틴 합의 알고리즘</strong> – 3f+1 노드 구성, f개 비잔틴 노드 허용, Pre-prepare→Prepare→Commit 3단계 메시지 교환으로 99.97% 안전성, AWS 검증 300,129 TPS, 합의 시간 0.01ms 미만.</li>
+        <li><strong>4계층 세무행정 아키텍처</strong> – Layer1(세무서, 1.79M TPS), Layer2(지방청, 1.62M TPS), Layer3(본청, 1.78M TPS), Layer4(국제협력, 2,500+ TPS).</li>
+        <li><strong>물리적 분산 저장 시스템</strong> – 주 저장소(세무서), 보조 저장소(지방청), 클라우드 백업(정부 전용 클라우드), 오프라인 백업(물리 매체)에 AES-256 암호화. 3단계 인증(생체+PIN+하드웨어 토큰)으로 개별 해킹 확률 8.71×10^-16.</li>
+        <li><strong>AI 기반 탈세위험 실시간 탐지</strong> – 9개 핵심 지표(급속 신고, 업무시간 외 신고, 세액 분포 이상, 로그인 실패 패턴, 대량 거래, 세션 이상, 신고 속도, 네트워크 의심, 종합 위험 점수) 융합, 앙상블 모델로 정확도 99.5%, 탐지 시간 0.050ms, 4단계 선별적 대응(실시간 탐지→위험도별 대응→상세 분석→복구 및 학습).</li>
+        <li><strong>다차원 납세 신뢰도 평가</strong> – 학력(30%), 경력(35%), 자격증(20%), 연구활동(10%), 사회기여(5%) 가중치로 전문성 평가, 거래 투명성 지수(상호검증완료율 등) 반영, 신뢰도에 따른 차등 세무관리(간소 신고~전수조사).</li>
+        <li><strong>전국 사업자 재무제표 상호 연동</strong> – 거래 쌍방향 실시간 검증(0.05ms 내 확인), 분식회계 탐지율 97%, 순환거래·가공거래 자동 탐지, 세무조사 우선순위 자동 산정.</li>
+        <li><strong>해시 전용 전송 시스템</strong> – 원본 세무서류는 로컬 AES-256 암호화, 네트워크에는 137바이트 해시 패킷만 전송(대역폭 90% 절감, 개인정보 유출 99.9% 차단).</li>
+        <li><strong>영지식 증명 기반 세무증빙 검증</strong> – zk-SNARK(Groth16)으로 증빙 유효성·금액 범위·거래처 실존 증명, 검증 시간 0.1초, 프라이버시 보호 99.99%.</li>
+        <li><strong>FPGA 가속</strong> – 83,627 TPS, 0.050ms 처리 시간, GPU 대비 전력 효율 88% 절감(18.2W).</li>
+        <li><strong>양자 내성 하이브리드 전환</strong> – CRYSTALS-Dilithium 기반 4단계 전환 계획(2027-2032), NIST Security Level 3 확보.</li>
+    </ul>
+
+    <h5>📊 주요 성능 지표 (AWS 실증)</h5>
+    <table style="width:100%; border-collapse: collapse;">
+        <tr style="background:#0047a0; color:white;"><th>항목</th><th>수치</th></tr>
+        <tr><td>PBFT 합의 처리량</td><td><strong>300,129 TPS</strong> (목표 대비 193% 초과)</td></tr>
+        <tr><td>합의 시간</td><td><strong>0.01ms 미만</strong></td></tr>
+        <tr><td>FPGA 세무거래 처리</td><td><strong>83,627 TPS</strong> (223배 초과)</td></tr>
+        <tr><td>AI 탈세 탐지 정확도</td><td><strong>99.5%</strong> (정밀도 100%, 재현율 98%, F1 99%)</td></tr>
+        <tr><td>탐지 시간</td><td><strong>0.050ms</strong></td></tr>
+        <tr><td>내부자 공격 방어 확률</td><td><strong>10^-32,170</strong> (실질적 불가능)</td></tr>
+        <tr><td>3단계 인증 해킹 확률</td><td><strong>8.71×10^-16</strong></td></tr>
+        <tr><td>분식회계 탐지율</td><td><strong>97%</strong> (기존 15% 대비 547% 향상)</td></tr>
+        <tr><td>전력 효율</td><td><strong>18.2W</strong> (GPU 160.3W 대비 88% 절감)</td></tr>
+        <tr><td>운영비 절감</td><td><strong>연간 1,044억 원</strong> (64% 절감)</td></tr>
+        <tr><td>세수 증대</td><td><strong>연간 500억 원</strong> (탈세 탐지율 167% 향상)</td></tr>
+        <tr><td>투자 회수 기간</td><td><strong>5.4개월</strong> (목표 14개월 대비 61% 단축)</td></tr>
+        <tr><td>납세자 만족도</td><td><strong>87%</strong></td></tr>
+        <tr><td>시스템 가용성</td><td><strong>99.97%</strong></td></tr>
+    </table>
+
+    <h5>🌐 적용 분야</h5>
+    <ul>
+        <li>국세청, 지방자치단체 세무행정 완전 자동화</li>
+        <li>관세청 통관·관세 부과 자동화</li>
+        <li>다국적 기업의 글로벌 세무관리</li>
+        <li>금융기관 세무 컴플라이언스</li>
+        <li>회계법인 세무자문 및 감사</li>
+        <li>OECD 국제조세 정보 자동교환 플랫폼</li>
+    </ul>
+</div>

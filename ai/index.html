@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고팡(Gopang) - AI 비서 + PDV + OpenHash</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #f5f7fb 0%, #eef2f7 100%);
+            color: #1e2b3c;
+            line-height: 1.5;
+            padding: 1.5rem;
+            font-size: 0.85rem;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .main-header {
+            background: white;
+            border-radius: 32px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 30px -10px rgba(0,40,80,0.15);
+            border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(5px);
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 400;
+            background: linear-gradient(135deg, #003876, #1e5f9e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.02em;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: #4a5b6f;
+            max-width: 800px;
+        }
+
+        /* 통합 설명 카드 (상단 문구) - 이제 좌측 컬럼으로 사용 */
+        .unified-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.8rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            height: 100%;
+        }
+        .unified-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 30px -8px rgba(0,56,118,0.15);
+        }
+        .unified-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #1e3a5f;
+        }
+        .unified-text p {
+            margin-bottom: 0.8rem;
+        }
+        .unified-text p:last-child {
+            margin-bottom: 0;
+        }
+        .unified-text ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .unified-text li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* 두 열 레이아웃 */
+        .split-layout {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .split-layout > * {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* 왼쪽 패널 스타일 (일반 패널) */
+        .left-panel {
+            background: white;
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 20px 30px -10px rgba(0,40,80,0.1);
+        }
+        .left-panel ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .left-panel li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* 오른쪽 패널 스타일 */
+        .right-panel {
+            background: #fafcff;
+            border-radius: 32px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 30px -10px rgba(0,40,80,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 애니메이션 iframe 스타일 */
+        .animation-iframe {
+            width: 100%;
+            border: none;
+            border-radius: 24px;
+            background: white;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .iframe-animation1 {
+            height: 700px;
+        }
+        .iframe-animation2 {
+            height: 800px;
+        }
+        .iframe-gopang {
+            height: 780px;
+        }
+
+        /* 분류표 아이템 */
+        .stat-item {
+            background: #f0f4fa;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* EGCT 애니메이션 컨테이너 */
+        #egct-animation-container {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7f8f;
+        }
+
+        /* 플레이스홀더 스타일 */
+        .placeholder-box {
+            background: #f0f4fa;
+            border-radius: 32px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #4a5b6f;
+            border: 2px dashed #a0b8cc;
+            height: 100%;
+            min-height: 200px;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #7f8fa4;
+            font-size: 0.9rem;
+        }
+    </style>
+    <script src="/js/nav.js" defer></script>
+</head>
+<body>
+<div class="container">
+    <!-- 헤더 -->
+    <div class="main-header">
+        <h1>Gopang</h1>
+        <div class="subtitle">PDV(Private Data Vault)는 <strong>내가 나를 입증하는 수단</strong>이며, 고팡은 사람 · 기관 · 사물이 각자의  PDV와 AI 비서를 기반으로 소통하는 사회입니다.</div>
+    </div>
+
+    <!-- 새로운 첫 번째 행: unified-card (좌) + ai-animation1 (우) -->
+    <div class="split-layout">
+        <div class="unified-card">
+            <div class="unified-text">
+                <p>사람, 기관 및 사물은 자신의 AI 비서(Exaone 16B 모델을 Fine-tuning)를 중개자로 하여, 서로 소통합니다. 사람은 자연 지능을 가진 사용자이며, 기관과 사물은 인공 지능(AI)을 가진 사용자입니다.</p>
+                <ul>
+                    <li>사람과 기관이 소통합니다. 가령, 홍길동(사람)과 국세청(AI) 소통할 때, 홍길동과 마찬가지로, 기관(국세청)도 지능(AI)을 가지며, 자신의 AI 비서를 갖습니다. 즉, AI가 다른 AI를 자신의 비서로 활용합니다.</li>
+                    <li>사람과 사물이 소통합니다. 가령, 홍길동이 그의 집이나 자동차와 소통하며,  홍길동과 마찬가지로, 사물(주택, 자동차 등)도 지능(AI)을 갖고, 자신의 AI 비서를 갖습니다.</li>
+                    <li>기관과 사물이 갖는 지능은  대형 LLM으로 구현합니다. 가령, DeepSeek R1 671B 모델을 Fine-tuning하여, 현재 국세청 직원들의 업무를 AI가 대신할 수 있습니다.</li>
+                    <li>AI 비서는 사람 뿐 아니라, 기관과 사물을 위해서도 봉사합니다. AI 비서의 주된 역할은 다른 사용자들과 소통 채널을 열고, 대화 내용을 각 사용자의 PDV(Private Data Vault)에 기록하며, Openhash 네트워크로 PDV 데이터의 위변조를 방지하는 것입니다.</li>
+                    <li>모든 사용자가 동일한 "AI 비서" 모델을 공유함으로써, 수천만 혹은 수십 억 사용자가 AI 비서의 기능을 일괄 갱신할 수 있습니다.</li>
+                </ul>
+                <p> Openhash 기술로 그 기록의 진실성을 보장하는 PDV는 '내가 나를 입증하는 수단'입니다.</p>
+                <ul>
+                    <li>오늘날, 내 은행 잔고는 해당 은행이 보관 및 갱신합니다. 고팡은 내 은행 잔고를 나만 기록하는 것으로 충분합니다. 즉, 은행이라는 사회적 장치가 필요하지 않습니다.</li>
+                    <li>오늘날, 내 여권 정보는 외교부가 보관합니다. 고팡은 내 여권을 나만 기록하는 것으로 충분합니다.</li>
+                    <li>오늘날, 내 주민등록 정보를 행정안전부가 보관합니다. 고팡은 내 주민등록 정보를 내가 기록하는 것으로 충분합니다.</li>
+                    <li>오늘날, 내 졸업증명서와 성적증명서를 내 출신 학교가 보관합니다. 고팡은 내 학사 정보를 내가 보관하는 것으로 충분합니다.</li>
+                    <li>오늘날, 내 부동산 소유권을 대법원 등기소가 보관합니다. 고팡은 내 자산 정보를 내가 보관하는 것으로 충분합니다.</li>
+                </ul>
+                <p>  PDV 기반의 고팡 시스템은 국가 및 사회 체제를 전면 재구성합니다.</p>
+            </div>
+        </div>
+        <div>
+            <iframe class="animation-iframe iframe-animation1" src="ai-animation1.html" title="AI 비서 ↔ PDV 데이터 흐름"></iframe>
+        </div>
+    </div>
+
+    <!-- 두 번째 행: placeholder (좌) + ai-animation2 (우) -->
+    <div class="split-layout">
+        <div class="placeholder-box">
+            이 곳에 Openhash 알고리즘을 설명합니다.
+        </div>
+        <iframe class="animation-iframe iframe-animation2" src="ai-animation2.html" title="Openhash 계층 선택 애니메이션"></iframe>
+    </div>
+
+    <!-- 세 번째 행: PDV 설명 (왼쪽) + gopang.net iframe (오른쪽) -->
+    <div class="split-layout">
+        <div class="left-panel">
+            <h2 style="color:#1e3a5f; margin-bottom:1rem; font-size:1.6rem;">🔷 PDV - 내가 나를 증명하는 수단</h2>
+            <p>사용자(사람/기관/사물)는 자신의 AI 비서(Exaone 16B)를 통해 상대방의 AI 비서와 소통합니다. AI 비서는 두 가지 임무만 수행합니다.</p>
+            <ul style="margin:1.5rem 0 2rem 1.5rem;">
+                <li><strong>📦 개인 볼트(PDV) 기록</strong> – 모든 대화, 거래, 업무를 저장하고 OpenHash에 해시 전송 (무결성 보장).</li>
+                <li><strong>📞 외부 AI 호출</strong> – 사용자 요청에 따라 적절한 기관/사물 AI를 찾아 연결.</li>
+            </ul>
+            <div style="background:#f0f4fa; border-radius:20px; padding:1.5rem; margin:1.5rem 0;">
+                <p style="margin-bottom:1rem;">사람, 기관 및 사물 간의 대화를 각자의 AI 비서가 중개/중재함으로써, 보이스피싱같은 사기성 대화가 원천 차단되거나, 곧바로 파악됩니다. AI 비서는 사용자의 모든 대화를 PDV에 저장하고, 필요 시, 적절한 데이터를 인출하여, 이용합니다. 가령, 여권을 인출하여 출입국사무소에 제시하고, 대학 성적증명서를 인출하여, 취업 지원 기업에 제출하며, 계약서를 인출하여 법원에 제출합니다. 사용자는 자신의 PDV에 저장된 특정 데이터가 참(true)임 Openhash 네트워크를 통해 입증할 수 있습니다. 즉, PDV는 내가 나를 증명하는 수단입니다.</p>
+                <p>한국의 모든 사람, 기관 및 사물이 태어나는(혹은 만들어진) 순간부터 소멸 시점까지 그 일상과 업무를 Openhash PDV에 기록하고, 각자가 자신을 증명할 수단으로 이용할 수 있는 세상을 상상해 보십시오. 모든 사람과 기관이 자신의 AI 비서를 통해 소통하는 세상을 상상해 보십시오. 그것이 고팡 시스템입니다.</p>
+            </div>
+            <h3 style="color:#1e3a5f;">🏛️ 기관 AI (DeepSeek 기반)</h3>
+            <p>국세청, 병원, 특허청, 자율주행차 등은 DeepSeek 등 대형 LLM으로 본연의 업무를 수행하며, 별도의 AI 비서(Exaone)가 외부와의 통신을 담당합니다.</p>
+            <div style="background:#f0f4fa; border-radius:24px; padding:1.5rem; margin:2rem 0;">
+                <h4 style="display:flex; align-items:center; gap:0.5rem;">📊 10,000개 대화 예시 분류 (주요 분야)</h4>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem;">
+                    <span class="stat-item">행정 15%</span>
+                    <span class="stat-item">금융 15%</span>
+                    <span class="stat-item">의료 12%</span>
+                    <span class="stat-item">교육 10%</span>
+                    <span class="stat-item">법률 10%</span>
+                    <span class="stat-item">부동산 8%</span>
+                    <span class="stat-item">교통 8%</span>
+                    <span class="stat-item">쇼핑 8%</span>
+                    <span class="stat-item">여가 8%</span>
+                    <span class="stat-item">기업 6%</span>
+                </div>
+                <p style="margin-top:1rem; font-size:0.9rem;">→ <a href="#" style="color:#003876;">전체 분류표 보기</a> (100개 소분류, 10,000개 대화)</p>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span style="background:#003876; color:white; border-radius:20px; padding:0.2rem 1rem;">💬 고팡 AI 플랫폼</span>
+                <span style="color:#7f8fa4;">(실시간 체험)</span>
+            </div>
+            <iframe class="animation-iframe iframe-gopang" src="gopang-chat.html" title="고팡 AI 플랫폼"></iframe>
+        </div>
+    </div>
+
+    <!-- 네 번째 행: EGCT 설명 (왼쪽) + ai-animation3 (오른쪽) -->
+    <div class="split-layout">
+        <div class="left-panel">
+            <h3 style="color:#1e3a5f;">💰 EGCT 디지털 화폐</h3>
+            <p>1T = 1,000원</p>
+            <ul>
+                <li>Openhash & PDV(Private Data Vault)의 주요한 활용 사례 중 하나는 글로벌 디지털 화폐입니다.</li>
+                <li>Openhash와 PDV는 추가 모듈없이, 그 자체로 자연스레 글로벌 디지털 통화를 구현합니다.</li>
+                <li>모든 사용자(개인/기관/사물)는 AI 비서를 가지며, AI 비서의 역할 중 하나는 사용자의 경제 활동을 표준화된 재무제표 형식으로 기록하고, Openhash로 무결성을 보장하는 것입니다.</li>
+                <li>한편, 사용자의 주소지를 기준으로, 읍면동(L1)→시군구(L2)→광역시도(L3)→국가(L4)→세계(L5)의 5단계 계층으로 결합 재무제표를 구성합니다. 가령, 제주시 한림읍의 재무제표는 한림읍에 주소지를 둔 모든 개인, 기관, 사물의 재무제표를 결합한 결합 재무제표입니다.</li>
+                <li>개별 사용자의 재무제표 갱신 시, 사용자·거래 상대방·주소지 노드의 다중 서명으로 무결성을 보장합니다. 즉, 계층적 결합 재무제표를 통해, 개별 재무제표의 위변조 시, 즉시 탐지되며, 거래 당사자의 디지털 서명, 이중 지출 방지, 보이스피싱이나 사기 방지 등 3중, 4중의 안전 장치가 작동합니다.</li>
+                <li>오픈해시 네트워크와 연동하여, 작업증명 없이 무결성을 검증합니다 (Layer1 60%, L2 30%, L3 9%, L4 1%).</li>
+                <li>사용자가 통신 불가 지역에 소재한 경우, 로컬 체인 후 배치 전송합니다.</li>
+                <li>모든 국가에서 디지털 화폐 EGCT 1T의 가치는 동일합니다. 즉, 별도 환전 없는 글로벌 통화를 구현합니다.</li>
+            </ul>
+            <p>모든 대화 해시는 읍면동→시군구→광역시도→국가 계층에 확률적으로 저장(60%,30%,9%,1%). 통신 불가 시 로컬 체인 구축 후 배치 전송 (오프라인 배치 모듈).</p>
+        </div>
+        <div class="right-panel">
+            <div id="egct-animation-container" class="loading">EGCT 애니메이션 로딩 중...</div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div class="footer">
+        ⓒ 2026 GoPang · OpenHash 기반 AI 비서 플랫폼 · <a href="https://github.com/team-jupeter/gopang" target="_blank">GitHub</a> · 특허 출원 중
+    </div>
+</div>
+
+<!-- EGCT 애니메이션 동적 로딩 스크립트 (ai-animation3) -->
+<script>
+    (function() {
+        const container = document.getElementById('egct-animation-container');
+        fetch('ai-animation3.html')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load ai-animation3.html');
+                }
+                return response.text();
+            })
+            .then(html => {
+                container.innerHTML = html;
+                container.classList.remove('loading');
+                const scripts = container.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    if (oldScript.src) {
+                        newScript.src = oldScript.src;
+                    } else {
+                        newScript.textContent = oldScript.textContent;
+                    }
+                    document.body.appendChild(newScript);
+                    oldScript.remove();
+                });
+            })
+            .catch(error => {
+                container.innerHTML = `<div class="loading" style="color:red;">EGCT 애니메이션을 불러오지 못했습니다. (${error.message})</div>`;
+            });
+    })();
+</script>
+</body>
+</html>

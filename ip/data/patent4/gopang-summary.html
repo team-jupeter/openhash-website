@@ -1,0 +1,37 @@
+<div class="patent-detail">
+    <h4>🤖 다중 LLM 자율 협업 기반 의사결정 지원 시스템</h4>
+
+    <div style="background: #f5f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+        <p style="margin:0; font-size:1.1rem;">조력-방해-중재-승인 4단계 역할 분화로 <strong>단일 LLM의 환각·편향을 자가 교정</strong>, 전문 분야 의사결정 품질 혁신</p>
+    </div>
+
+    <h5>🔍 배경</h5>
+    <p>단일 LLM은 환각, 편향, 논리 오류 위험이 있으며, 고도의 전문성(특허, 의료, 법률) 요구 분야에 적용 시 치명적 결함 가능. 종래 다중 에이전트 연구는 동등한 역할의 토론에 그쳐 구조화된 품질 검증이 어려움.</p>
+
+    <h5>⚙️ 핵심 기술</h5>
+    <ul>
+        <li><strong>4단계 고정 역할 분화</strong> – 조력 LLM(A, 개인 이익 대변), 방해 LLM(B, 사회/국가/대립 요소 대변), 중재 LLM(C), 승인 모듈(D, 인간 주도)</li>
+        <li><strong>반복적 개선 사이클 + 정량적 수렴 판단</strong> – 코사인 유사도 기반 결과물 변동 점수(Delta_R)와 신규 지적 점수(Delta_C)로 수렴 판단 (theta_R, theta_C, theta_n, W)</li>
+        <li><strong>Private Data Vault(PDV) 연동</strong> – 원본 데이터는 사용자 로컬 암호화 저장, 해시값만 확률적 계층 분산(읍면동~글로벌)으로 무결성 검증, 증거 진위 검증 비용 대폭 절감</li>
+        <li><strong>도메인별 프롬프트 템플릿 & 역할 매핑</strong> – 특허, 소송, 세무, 의료 등에 즉시 적용 가능</li>
+        <li><strong>병합 모듈 + 적응적 모델 선택</strong> – 병렬 인스턴스 최적 출력 선택, 초기엔 경량 모델, 후기엔 고성능 모델로 전환해 비용 절감</li>
+    </ul>
+
+    <h5>📊 시뮬레이션 결과 (특허 출원 기준)</h5>
+    <table style="width:100%; border-collapse: collapse;">
+        <tr style="background:#0047a0; color:white;"><th>항목</th><th>수치</th></tr>
+        <tr><td>품질 향상률</td><td>초기 대비 <strong>41.2%</strong> (인간 전문가 5인 평가)</td></tr>
+        <tr><td>시간 효율</td><td>40~80시간 → <strong>47분</strong> (50~100배 단축)</td></tr>
+        <tr><td>평균 수렴 라운드</td><td><strong>7.3</strong> (theta_R=0.05, theta_C=0.1)</td></tr>
+        <tr><td>지적 사항 반영률</td><td>평균 <strong>82%</strong></td></tr>
+    </table>
+
+    <h5>🌐 적용 분야</h5>
+    <ul>
+        <li>특허 출원 (변리사-심사관-심판관 구조)</li>
+        <li>민형사 소송 (원고-피고-판사)</li>
+        <li>국세 행정 (납세자-국세청-심판관)</li>
+        <li>의료 진단·치료 (주치의-질병 에이전트-평가관)</li>
+        <li>기업 의사결정, 학술 검증, 규제 준수 등</li>
+    </ul>
+</div>

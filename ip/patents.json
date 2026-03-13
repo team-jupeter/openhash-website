@@ -1,0 +1,55 @@
+
+{
+  "patents": [
+    {
+      "no": 1,
+      "appNo": "10-2026-002XXXX",
+      "date": "2026-02-18",
+      "title": "거래의 지역성을 활용한 행정구역 기반 샤딩 및 계층적 무결성 검증 시스템",
+      "summaryFile": "data/patent1/openhash-summary.html",
+      "valuationFile": "data/patent1/openhash-valuation.html",
+      "strategyFile": "data/patent1/openhash-strategy.html",
+      "marketFile": "data/patent1/openhash-market.html"
+    },
+    {
+      "no": 2,
+      "appNo": "10-2026-003YYYY",
+      "date": "2026-02-20",
+      "title": "오픈해시 기반 전국 의료 자원 통합 제어 및 상호 독립적 다중 AI 에이전트 협업에 의한 실시간 의료 진단 자동화 시스템 및 방법",
+      "summaryFile": "data/patent2/medical-summary.html",
+      "valuationFile": "data/patent2/medical-svaluation.html",
+      "strategyFile": "data/patent2/medical-sstrategy.html",
+      "marketFile": "data/patent2/medical-smarket.html"
+    },
+    {
+      "no": 3,
+      "appNo": "10-2026-004ZZZZ",
+      "date": "2026-02-22",
+      "title": "다중 독립 법률 AI 에이전트를 이용한 법적 분쟁 해결 시스템 및 방법",
+      "summaryFile": "data/patent3/law-summary.html",
+      "valuationFile": "data/patent3/law-valuation.html",
+      "strategyFile": "data/patent3/law-strategy.html",
+      "marketFile": "data/patent3/law-market.html"
+    },
+    {
+      "no": 4,
+      "appNo": "10-2026-005ZZZZ",
+      "date": "2026-02-28",
+      "title": "다중 대규모 언어 모델 간 자율 협업 시스템 및 그 운영 방법",
+      "summaryFile": "data/patent4/gopang-summary.html",
+      "valuationFile": "data/patent4/gopang-valuation.html",
+      "strategyFile": "data/patent4/gopang-strategy.html",
+      "marketFile": "data/patent4/gopang-market.html"
+    },
+    {
+      "no": 5,
+      "appNo": "10-2026-006AAAA",
+      "date": "2026-03-02",
+      "title": "7단계 전공별 개인-사회 통합 최적화 AI 교육 시스템",
+      "summaryFile": "data/patent5/summary.html",
+      "valuationFile": "data/patent5/valuation.html",
+      "strategyFile": "data/patent5/strategy.html",
+      "marketFile": "data/patent5/market.html"
+    }
+  ]
+}

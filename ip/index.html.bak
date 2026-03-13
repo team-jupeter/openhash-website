@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지적재산권 특허 포트폴리오 - OpenHash</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary: #0047a0;
+            --primary-light: #e8f0fe;
+            --primary-dark: #00337a;
+            --secondary: #e9ecef;
+            --text: #212529;
+            --text-light: #6c757d;
+            --border: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fa;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+        .ip-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            border-left: 6px solid var(--primary);
+            padding-left: 1rem;
+        }
+        .subtitle {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .patent-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .patent-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            padding: 1rem;
+            text-align: center;
+        }
+        .patent-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .patent-table tr:last-child td {
+            border-bottom: none;
+        }
+        .patent-table tr:hover {
+            background: #f1f5f9;
+        }
+        .patent-title {
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-sm:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,71,160,0.2);
+        }
+        .btn-sm.active {
+            background: var(--primary);
+            color: white;
+        }
+        .detail-panel {
+            background: #f1f5f9;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            border-bottom: 1px solid var(--border);
+        }
+        .detail-panel.open {
+            padding: 1.5rem 2rem;
+            max-height: 800px; /* 적절히 크게 */
+            overflow-y: auto;
+        }
+        .panel-content {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <main class="ip-container">
+        <h1>지적재산권 포트폴리오</h1>
+        <div class="subtitle">OpenHash 핵심 특허 (출원 진행 중)</div>
+
+        <table class="patent-table">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>출원번호</th>
+                    <th>출원일</th>
+                    <th>발명의 명칭</th>
+                    <th>상세 정보</th>
+                </tr>
+            </thead>
+            <tbody id="patent-tbody">
+                <!-- JavaScript로 렌더링 -->
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        let patentsData = [];
+
+        // 특허 메타데이터 로드
+        fetch('/ip/data/patents.json')
+            .then(res => res.json())
+            .then(data => {
+                patentsData = data.patents;
+                renderTable(patentsData);
+            })
+            .catch(err => {
+                console.error('특허 데이터 로딩 실패:', err);
+                document.getElementById('patent-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:2rem;">❌ 데이터를 불러올 수 없습니다.</td></tr>';
+            });
+
+        function renderTable(patents) {
+            const tbody = document.getElementById('patent-tbody');
+            tbody.innerHTML = '';
+
+            patents.forEach((patent, index) => {
+                // 메인 행
+                const row = document.createElement('tr');
+                row.dataset.id = patent.no;
+                row.innerHTML = `
+                    <td>${patent.no}</td>
+                    <td>${patent.appNo}</td>
+                    <td>${patent.date}</td>
+                    <td class="patent-title">${patent.title}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn-sm" data-type="summary">요약</button>
+                            <button class="btn-sm" data-type="valuation">기술가치평가</button>
+                            <button class="btn-sm" data-type="strategy">사업화 전략</button>
+                            <button class="btn-sm" data-type="market">시장 규모</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+
+                // 상세 패널 행
+                const panelRow = document.createElement('tr');
+                panelRow.id = `panel-${patent.no}`;
+                panelRow.classList.add('detail-panel');
+                panelRow.innerHTML = `
+                    <td colspan="5">
+                        <div class="panel-content" id="content-${patent.no}">
+                            <div class="loading">🔍 버튼을 클릭하면 내용이 표시됩니다.</div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(panelRow);
+            });
+
+            // 버튼 이벤트 등록
+            document.querySelectorAll('.btn-sm').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const row = this.closest('tr');
+                    const patentNo = row.dataset.id;
+                    const type = this.dataset.type;
+                    const panel = document.getElementById(`panel-${patentNo}`);
+                    const contentDiv = document.getElementById(`content-${patentNo}`);
+
+                    // 모든 패널 닫기 (열린 패널이 있다면)
+                    document.querySelectorAll('.detail-panel').forEach(p => {
+                        if (p.id !== panel.id) p.classList.remove('open');
+                    });
+
+                    // 이미 열린 패널에서 같은 버튼을 다시 클릭하면 닫기 (toggle)
+                    if (panel.classList.contains('open') && panel.dataset.activeType === type) {
+                        panel.classList.remove('open');
+                        panel.dataset.activeType = '';
+                        return;
+                    }
+
+                    // 패널 열기 (아직 안 열렸거나 다른 타입)
+                    panel.classList.add('open');
+                    panel.dataset.activeType = type;
+
+                    // 로딩 표시
+                    contentDiv.innerHTML = '<div class="loading">⏳ 불러오는 중...</div>';
+
+                    // 특허 정보에서 파일 경로 가져오기
+                    const patent = patentsData.find(p => p.no == patentNo);
+                    if (!patent) return;
+
+                    let filePath;
+                    switch(type) {
+                        case 'summary': filePath = patent.summaryFile; break;
+                        case 'valuation': filePath = patent.valuationFile; break;
+                        case 'strategy': filePath = patent.strategyFile; break;
+                        case 'market': filePath = patent.marketFile; break;
+                        default: return;
+                    }
+
+                    // 파일 fetch
+                    fetch(`/ip/${filePath}`)
+                        .then(res => {
+                            if (!res.ok) throw new Error('파일 없음');
+                            return res.text();
+                        })
+                        .then(html => {
+                            contentDiv.innerHTML = html;
+                        })
+                        .catch(err => {
+                            contentDiv.innerHTML = `<div class="loading" style="color:red;">❌ 내용을 불러오지 못했습니다. (${err.message})</div>`;
+                        });
+                });
+            });
+        }
+    </script>
+    <script src="/js/nav.js"></script>
+</body>
+</html>

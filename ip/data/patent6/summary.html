@@ -1,0 +1,42 @@
+<div class="patent-detail">
+    <h4>💰 금융 산업 자동화 시스템</h4>
+
+    <div style="background: #f5f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+        <p style="margin:0; font-size:1.1rem;">담보 기반 디지털 화폐(EGCT) 동적 발행·회수 + 계층적 무결성 검증으로 <strong>인플레이션 방지, 실시간 결제, 금융 포용성 구현</strong></p>
+    </div>
+
+    <h5>🔍 배경</h5>
+    <p>기존 담보 기반 디지털 화폐는 담보 가치 하락 시 회수 메커니즘 부재로 과잉 통화 위험 존재. 블록체인은 PoW/PoS로 인한 에너지 비효율(비트코인 연간 121TWh), 낮은 확장성(7~30 TPS), 규제 충돌(GDPR 삭제권 vs 불변성) 문제. 본 발명은 물리적 행정 계층 기반 경량 검증으로 해결.</p>
+
+    <h5>⚙️ 핵심 기술</h5>
+    <ul>
+        <li><strong>동적 담보 조정 모듈(100)</strong> – 담보 건전성 비율(CHR) 실시간 모니터링, 5단계 대응(안전·정상·경고·위험·지급불능), 자동 마진콜·강제 청산, 준비금 운영(총 공급량 5%)</li>
+        <li><strong>반복적 가치 수렴 엔진(200)</strong> – DCF 순환 참조 해결, 초기값→반복계산→수렴판정(0.1% 오차), 댐핑계수(0.7) 적용, 개인 가치 평가(NAV+소득배수+평판)</li>
+        <li><strong>5단계 행정 계층 구조</strong> – 읍면동(L1)~글로벌(L5), 확률적 계층 선택(중요도별 차등), 계층 간 상호 검증(하향식·상향식), LPBFT 합의(비상시만, 평균 16.87ms)</li>
+        <li><strong>계층별 잔액 불변성 검증(360)</strong> – 공통 계층 이상 델타 합계 0 검증, 부정 거래 실시간 차단</li>
+        <li><strong>ZK-증명 프라이버시 모듈(400)</strong> – 잔액 범위 증명, 신원 검증 증명, 선택적 공개(국세청·금감원 차등)</li>
+        <li><strong>규제 적응형 컴플라이언스(500)</strong> – GDPR 삭제권(해시만 저장), 데이터 격리(관할권별 저장)</li>
+        <li><strong>LLM 기반 신용·보험 모듈(900~1300)</strong> – 공정 거래 검증, 신용 등급 자동화, 실시간 환전, 구간별 대출, 개인 증권 거래소, 보험 계리</li>
+    </ul>
+
+    <h5>📊 성능 지표 (AWS 실증)</h5>
+    <table style="width:100%; border-collapse: collapse;">
+        <tr style="background:#0047a0; color:white;"><th>항목</th><th>수치</th></tr>
+        <tr><td>E2E 거래 처리 시간</td><td>평균 <strong>3.09ms</strong> (중앙값 3.02ms)</td></tr>
+        <tr><td>단일 노드 TPS</td><td><strong>5,354</strong> (Ed25519)</td></tr>
+        <tr><td>계층 검증 시간</td><td>평균 1.47ms</td></tr>
+        <tr><td>LPBFT 합의 시간</td><td>평균 16.87ms (비상시)</td></tr>
+        <tr><td>에너지 효율</td><td>비트코인 대비 <strong>700만 배</strong> (7,000노드 기준 연간 17.3MWh)</td></tr>
+        <tr><td>대역폭</td><td>거래당 128바이트, 머클 요약 시 99% 절감</td></tr>
+        <tr><td>확장성</td><td>7,000노드 기준 <strong>3,750만 TPS</strong> (대한민국 전체 인구 동시 거래 가능)</td></tr>
+    </table>
+
+    <h5>🌐 적용 분야</h5>
+    <ul>
+        <li>중앙은행 디지털화폐(CBDC) 인프라</li>
+        <li>실시간 외환 환전 및 국제 송금 (3초 이내)</li>
+        <li>개인 증권 거래소 (주식·채권 발행·거래)</li>
+        <li>AI 기반 신용 평가·대출·보험 계리</li>
+        <li>공정 거래 검증 (바가지·사기·불법 거래 차단)</li>
+    </ul>
+</div>

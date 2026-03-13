@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고팡 AI 플랫폼 · 대화 데모</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #f5f7fb 0%, #eef2f7 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* 주제 탭 (화면 밖 상단) */
+        .topic-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 12px 0;
+            margin-bottom: 20px;
+            max-width: 400px; /* 스마트폰과 동일한 너비 */
+            width: 100%;
+            background-color: transparent;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+        .topic-tabs::-webkit-scrollbar {
+            height: 3px;
+        }
+        .topic-tabs::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .topic-btn {
+            background: white;
+            border: 1px solid #dde3ed;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .topic-btn.active {
+            background: #003876;
+            border-color: #003876;
+            color: white;
+        }
+        .topic-btn:hover {
+            background: #e6edf8;
+        }
+
+        /* 스마트폰 프레임 */
+        .phone-frame {
+            width: 100%;
+            max-width: 400px;
+            background-color: #ffffff;
+            border-radius: 42px;
+            box-shadow: 0 30px 50px -20px rgba(0, 40, 80, 0.3), 0 0 0 8px #e8ecf2;
+            overflow: hidden;
+            position: relative;
+            height: 750px;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 화면 내용 */
+        .screen {
+            flex: 1;
+            background-color: #f8fafd;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 0 16px 16px 16px;
+            scrollbar-width: thin;
+        }
+        .screen::-webkit-scrollbar {
+            width: 4px;
+        }
+        .screen::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* 상태바 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 4px 8px 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #1e2b3c;
+            background-color: #f8fafd;
+        }
+
+        /* 프로필 헤더 */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 28px;
+            box-shadow: 0 4px 12px rgba(0, 40, 80, 0.05);
+            border: 1px solid #e9edf3;
+        }
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #003876, #1e5f9e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .user-info {
+            flex: 1;
+        }
+        .user-name {
+            font-weight: 600;
+            color: #1e3a5f;
+            font-size: 1rem;
+        }
+        .user-balance {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            background: #eef2f7;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        .user-balance strong {
+            color: #003876;
+        }
+
+        /* 대화 카드 */
+        .conversation-card {
+            background: white;
+            border-radius: 24px;
+            padding: 16px 14px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid #eef2f7;
+        }
+        .conv-title {
+            font-size: 0.7rem;
+            color: #6b7f8f;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #dde3ed;
+            display: flex;
+            justify-content: space-between;
+        }
+        .conv-category {
+            background: #eef2f9;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+        }
+
+        /* 말풍선 스타일 */
+        .message-bubble {
+            max-width: 85%;
+            margin-bottom: 10px;
+            clear: both;
+        }
+        .message-left {
+            float: left;
+        }
+        .message-right {
+            float: right;
+        }
+        .bubble {
+            padding: 10px 14px;
+            border-radius: 20px;
+            background-color: #f1f3f8;
+            color: #1e2b3c;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            word-break: break-word;
+            display: inline-block;
+        }
+        .message-right .bubble {
+            background-color: #003876;
+            color: white;
+        }
+        .sender-name {
+            font-size: 0.65rem;
+            margin-bottom: 2px;
+            margin-left: 4px;
+            color: #6b7f8f;
+            font-weight: 500;
+        }
+        .message-right .sender-name {
+            text-align: right;
+            margin-right: 4px;
+        }
+        /* 시스템 액션 (Handshake, PDV 접근 등) */
+        .system-action-bubble {
+            background-color: #e6f0e6;
+            color: #1f5f1f;
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 6px 12px;
+            border-radius: 30px;
+            max-width: 90%;
+            margin: 8px auto;
+            clear: both;
+        }
+        .user-response-bubble {
+            background-color: #fef3e0;
+            color: #d97706;
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 6px 12px;
+            border-radius: 30px;
+            max-width: 60%;
+            margin: 8px auto;
+            clear: both;
+            font-style: italic;
+        }
+
+        /* clearfix */
+        .conv-lines::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <!-- 주제 탭 (스마트폰 외부 상단) -->
+    <div class="topic-tabs" id="topicTabs">
+        <button class="topic-btn active" data-topic="admin">🏛️ 행정</button>
+        <button class="topic-btn" data-topic="tax">💰 세금</button>
+        <button class="topic-btn" data-topic="market">🛒 시장</button>
+        <button class="topic-btn" data-topic="medical">🏥 의료</button>
+        <button class="topic-btn" data-topic="court">⚖️ 법원</button>
+        <button class="topic-btn" data-topic="patent">📄 특허</button>
+        <button class="topic-btn" data-topic="traffic">🚗 교통</button>
+        <button class="topic-btn" data-topic="food">🍜 음식</button>
+        <button class="topic-btn" data-topic="edu">📚 교육</button>
+        <button class="topic-btn" data-topic="leisure">🎉 여가</button>
+    </div>
+
+    <!-- 스마트폰 프레임 -->
+    <div class="phone-frame">
+        <div class="screen">
+            <!-- 상태바 -->
+            <div class="status-bar">
+                <span class="time">9:41</span>
+                <span>📶 📶 📶 🔋 100%</span>
+            </div>
+
+            <!-- 프로필 영역 -->
+            <div class="profile-header">
+                <div class="avatar">홍</div>
+                <div class="user-info">
+                    <div class="user-name">홍길동 · 한림읍</div>
+                    <div class="user-balance">잔액 <strong>10,000 T</strong> (1T=1,000원)</div>
+                </div>
+                <div style="font-size: 1.2rem;">⚙️</div>
+            </div>
+
+            <!-- 대화 표시 영역 -->
+            <div id="conversationContainer"></div>
+        </div>
+    </div>
+
+<script>
+    (function() {
+        // 대화 데이터 (전체 생략 없음 - 이전과 동일)
+        const conversations = {
+            admin: [
+                {
+                    title: '주민등록증 재발급',
+                    category: '행정/주민등록-재발급',
+                    lines: [
+                        { sender: '사용자', text: '주민등록증을 잃어버렸어. 재발급 받으려면 어떻게 해야 해?' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 본인 인증 정보 조회. [에이전트 DB 조회] 행정안전부_AI 호출합니다.', system: true },
+                        { sender: '행정안전부_AI', text: '[Handshake 완료: 국가기관 인증] 주민등록증 재발급을 위해 주민등록번호, 사진, 발급 사유가 필요합니다.', system: true },
+                        { sender: 'AI 비서', text: '행정안전부에 주민등록번호와 사진을 제공하시겠습니까?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[PDV 접근] 주민등록번호와 최근 사진을 인출하여 전송합니다.', system: true },
+                        { sender: '행정안전부_AI', text: '신청이 완료되었습니다. 수수료 3T입니다.' },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 3T 결제 승인 → 결제 완료] [재무제표 기록: 행정/주민등록-발급수수료]', system: true },
+                        { sender: '행정안전부_AI', text: '완료. 접수번호: MOI-2026-123456. 발급까지 3일 소요됩니다.' },
+                        { sender: 'AI 비서', text: '[행정/주민등록-재발급] [중요도: 등급 3] [저장 완료] [Hash → Layer 2 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                },
+                {
+                    title: '전입신고',
+                    category: '행정/주민등록-전입신고',
+                    lines: [
+                        { sender: '사용자', text: '이사해서 전입신고 하려고 해.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 주민등록번호, 기존 주소, 신규 주소 인출. [에이전트 DB 조회] 강남구청_AI 호출합니다.', system: true },
+                        { sender: '강남구청_AI', text: '[Handshake 완료: 지방자치단체 인증] 전입신고를 위해 임대차계약서가 필요합니다.', system: true },
+                        { sender: 'AI 비서', text: '강남구청에 임대차계약서를 제공하시겠습니까?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[PDV 접근] 임대차계약서 파일을 인출하여 전송합니다.', system: true },
+                        { sender: '강남구청_AI', text: '신고 완료. 접수번호: GANG-2026-789012. 세대주 변경 내역이 갱신되었습니다.' },
+                        { sender: 'AI 비서', text: '[행정/주민등록-전입신고] [중요도: 등급 3] [저장 완료] [Hash → Layer 2 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            tax: [
+                {
+                    title: '연말정산 환급 조회',
+                    category: '세무/연말정산-환급',
+                    lines: [
+                        { sender: '사용자', text: '연말정산 환급금 얼마야?' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 소득공제 자료 조회. [에이전트 DB 조회] 국세청_AI 호출.', system: true },
+                        { sender: '국세청_AI', text: '[Handshake 완료: 국가기관 인증] 조회를 위해 주민등록번호와 소득 내역이 필요합니다.', system: true },
+                        { sender: 'AI 비서', text: '국세청에 주민등록번호를 제공하시겠습니까?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[PDV 접근] 주민등록번호를 인출하여 전송.', system: true },
+                        { sender: '국세청_AI', text: '환급 예정 금액은 120,000T(12만원)입니다. 2월 말 지급 예정.' },
+                        { sender: 'AI 비서', text: '[세무/연말정산-환급] [중요도: 등급 2] [저장 완료] [Hash → Layer 2 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                },
+                {
+                    title: '종합소득세 신고',
+                    category: '세무/종합소득세-신고',
+                    lines: [
+                        { sender: '사용자', text: '프리랜서인데 종합소득세 신고 도와줘.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 수입내역, 필요경비 내역 조회. [에이전트 DB 조회] 국세청_AI 호출.', system: true },
+                        { sender: '국세청_AI', text: '[Handshake 완료: 국가기관 인증] 신고를 위해 수입금액, 소득공제 자료가 필요합니다.', system: true },
+                        { sender: 'AI 비서', text: '국세청에 필요 서류를 전송할까요?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[PDV 접근] 수입 및 경비 내역 인출하여 전송.', system: true },
+                        { sender: '국세청_AI', text: '신고 완료. 납부할 세액은 450,000T입니다. 접수번호: NTS-2026-334455.' },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 450,000T 결제 승인 → 완료]', system: true },
+                        { sender: 'AI 비서', text: '[세무/종합소득세-신고] [중요도: 등급 3] [저장 완료] [Hash → Layer 3 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            market: [
+                {
+                    title: '노트북 구매 (시장_AI 중개)',
+                    category: '시장/전자제품-구매',
+                    lines: [
+                        { sender: '사용자', text: '노트북 하나 사려고 하는데 추천해 줘.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 예산, 주 사용 용도(개발) 인출. [에이전트 DB 조회] 시장_AI 호출.', system: true },
+                        { sender: '시장_AI', text: '[Handshake 완료: 플랫폼 인증] 예산 200만원 내에서 개발용으로 적합한 모델은 그램(202만), 맥북에어(190만) 등입니다.', system: true },
+                        { sender: '사용자', text: '그램으로 선택할게.' },
+                        { sender: 'AI 비서', text: '[에이전트 DB 조회] LG전자_AI 호출합니다.', system: true },
+                        { sender: 'LG전자_AI', text: '[Handshake 완료: 기업 인증] 그램 17ZD90Q 모델 재고 있습니다. 가격 2,020,000T입니다.', system: true },
+                        { sender: 'AI 비서', text: '구매 진행할까요?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 2,020,000T 결제 승인 → 완료]', system: true },
+                        { sender: 'LG전자_AI', text: '주문 완료. 접수번호: LG-2026-778899. 내일 배송 예정.' },
+                        { sender: 'AI 비서', text: '[시장/전자제품-구매] [중요도: 등급 2] [저장 완료] [Hash → Layer 2 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            medical: [
+                {
+                    title: '건강검진 예약',
+                    category: '의료/건강검진-예약',
+                    lines: [
+                        { sender: '사용자', text: '종합건강검진 예약할게.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 건강보험 정보, 과거 검진 이력 조회. [에이전트 DB 조회] 건강보험공단_AI 호출.', system: true },
+                        { sender: '건강보험공단_AI', text: '[Handshake 완료: 공공기관 인증] 검진 대상 여부 확인 결과, 무료 검진 대상입니다. 검진기관을 선택해주세요.', system: true },
+                        { sender: '사용자', text: '강남세브란스로 예약해줘.' },
+                        { sender: 'AI 비서', text: '[에이전트 DB 조회] 강남세브란스병원_AI 호출합니다.', system: true },
+                        { sender: '강남세브란스병원_AI', text: '[Handshake 완료: 의료기관 인증] 예약 가능일은 3월 15일, 22일입니다.', system: true },
+                        { sender: '사용자', text: '15일로 예약할게.' },
+                        { sender: '강남세브란스병원_AI', text: '예약 완료. 접수번호: YONSEI-2026-112233. 검진 당일 신분증 지참하세요.' },
+                        { sender: 'AI 비서', text: '[의료/건강검진-예약] [중요도: 등급 2] [저장 완료] [Hash → Layer 2 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            court: [
+                {
+                    title: '소액 민사 조정 신청',
+                    category: '법원/민사-조정',
+                    lines: [
+                        { sender: '사용자', text: '소액 민사 조정 신청하려고 해.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 사건 관련 계약서, 증거 자료 조회. [에이전트 DB 조회] 법원행정처_AI 호출.', system: true },
+                        { sender: '법원행정처_AI', text: '[Handshake 완료: 국가기관 인증] 소액사건조정 신청을 위해 당사자 정보, 청구 금액이 필요합니다.', system: true },
+                        { sender: 'AI 비서', text: '법원행정처에 관련 정보를 제공하시겠습니까?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[PDV 접근] 당사자 정보, 계약서 사본을 인출하여 전송.', system: true },
+                        { sender: '법원행정처_AI', text: '신청 완료. 접수번호: COURT-2026-556677. 조정 일정은 4월 10일입니다. 수수료 10T입니다.' },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 10T 결제 승인 → 완료]', system: true },
+                        { sender: 'AI 비서', text: '[법원/민사-조정] [중요도: 등급 3] [저장 완료] [Hash → Layer 3 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            patent: [
+                {
+                    title: '특허 출원',
+                    category: '특허/출원-신규',
+                    lines: [
+                        { sender: '사용자', text: '새로 개발한 기술 특허 출원하려고 해.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 발명자의 신상정보, 명세서 초안 인출. [에이전트 DB 조회] 특허청_AI 호출.', system: true },
+                        { sender: '특허청_AI', text: '[Handshake 완료: 국가기관 인증] 특허 출원을 위해 명세서, 도면, 요약서가 필요합니다.', system: true },
+                        { sender: 'AI 비서', text: '특허청에 서류를 전송할까요?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[PDV 접근] 명세서, 도면 파일을 인출하여 전송.', system: true },
+                        { sender: '특허청_AI', text: '출원 완료. 출원번호: PAT-2026-998877. 심사 진행 예정입니다. 수수료 45,000T입니다.' },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 45,000T 결제 승인 → 완료]', system: true },
+                        { sender: 'AI 비서', text: '[특허/출원-신규] [중요도: 등급 4] [저장 완료] [Hash → Layer 4 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            traffic: [
+                {
+                    title: '택시 호출 (비 오는 날)',
+                    category: '교통/택시-호출',
+                    lines: [
+                        { sender: '사용자', text: '비 오는데 택시 불러줘.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 현재 위치(강남구 역삼동), 자주 이용 택시 회사, 선호 차종, 결제 수단 정보 인출. [에이전트 DB 조회] 시장_AI 호출하고, 이 정보를 바탕으로 최적의 택시 서비스를 예약할까요?', system: true },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: '시장_AI', text: '[Handshake 완료: 국가 인증] 전달받은 위치와 선호도 정보를 확인했습니다. 비 오는 날씨를 고려하여 일반 택시(예상 요금 8T, 도착 5분)와 프리미엄 택시(예상 요금 12T, 도착 3분)를 추천합니다. 프리미엄 택시는 우산 서비스가 포함되어 있습니다.', system: true },
+                        { sender: 'AI 비서', text: '날씨 상황과 과거 이용 패턴을 분석하면 프리미엄 택시가 적합합니다. 프리미엄 택시를 호출할까요?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: '프리미엄택시_AI', text: '[Handshake 완료: 기업 인증] 강남구 역삼동에서 프리미엄 택시를 호출하였습니다. 차량번호 123가4568, 기사님 김모씨, 예상 도착 3분, 예상 요금 12T입니다. 호출번호: TAXI-2026-080702.', system: true },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 12T 결제 승인 → 결제 완료] [재무제표 기록: 교통/택시-프리미엄]', system: true },
+                        { sender: 'AI 비서', text: '[교통/택시-호출] [중요도: 등급 1] [저장 완료] [Hash → Layer 1 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            food: [
+                {
+                    title: '짜장면 배달 주문',
+                    category: '음식/배달-중식',
+                    lines: [
+                        { sender: '사용자', text: '짜장면 배달 주문할게.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 자주 주문하는 메뉴, 주소, 결제 수단 조회. [에이전트 DB 조회] 시장_AI 호출.', system: true },
+                        { sender: '시장_AI', text: '[Handshake 완료] 근처 중국집: 북경반점(평점 4.5), 홍콩반점(평점 4.2) 있습니다. 짜장면 가격 6,000T, 최소주문 1개.', system: true },
+                        { sender: '사용자', text: '북경반점으로 주문할게.' },
+                        { sender: 'AI 비서', text: '[에이전트 DB 조회] 북경반점_AI 호출.', system: true },
+                        { sender: '북경반점_AI', text: '[Handshake 완료] 짜장면 1개 주문 가능합니다. 총 6,000T입니다. 배달 예상 시간 30분.', system: true },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 6,000T 결제 승인 → 완료]', system: true },
+                        { sender: '북경반점_AI', text: '주문 완료. 접수번호: FOOD-2026-123987.' },
+                        { sender: 'AI 비서', text: '[음식/배달-중식] [중요도: 등급 1] [저장 완료] [Hash → Layer 1 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            edu: [
+                {
+                    title: '국가장학금 신청',
+                    category: '교육/장학금-국가장학금',
+                    lines: [
+                        { sender: '사용자', text: '국가장학금 신청하려고 해.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 학적 정보, 소득 인증 자료 조회. [에이전트 DB 조회] 한국장학재단_AI 호출.', system: true },
+                        { sender: '한국장학재단_AI', text: '[Handshake 완료: 공공기관 인증] 신청을 위해 가구원 동의가 필요합니다.', system: true },
+                        { sender: 'AI 비서', text: '장학재단에 가구원 정보 제공을 요청할까요?' },
+                        { sender: '사용자', text: '(사용자 승인)', response: true },
+                        { sender: 'AI 비서', text: '[PDV 접근] 가구원 동의 내역 확인 후 전송.', system: true },
+                        { sender: '한국장학재단_AI', text: '신청 완료. 접수번호: KOSAF-2026-445566. 심사 결과는 4월 중 안내.' },
+                        { sender: 'AI 비서', text: '[교육/장학금-신청] [중요도: 등급 2] [저장 완료] [Hash → Layer 2 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ],
+            leisure: [
+                {
+                    title: '영화 예매',
+                    category: '여가/영화-예매',
+                    lines: [
+                        { sender: '사용자', text: '이번 주말에 영화 보려고 해.' },
+                        { sender: 'AI 비서', text: '[PDV 접근] 선호 장르(액션), 지역(강남) 조회. [에이전트 DB 조회] CGV_AI 호출.', system: true },
+                        { sender: 'CGV_AI', text: '[Handshake 완료: 기업 인증] 강남점 주말 액션 영화는 <범죄도시4> 10:00, 13:00, 16:00 있습니다.', system: true },
+                        { sender: '사용자', text: '13시 예약해 줘.' },
+                        { sender: 'AI 비서', text: '[Transaction Agent: 15,000T 결제 승인 → 완료]', system: true },
+                        { sender: 'CGV_AI', text: '예약 완료. 접수번호: CGV-2026-990011. 매표소에서 인증하세요.' },
+                        { sender: 'AI 비서', text: '[여가/영화-예매] [중요도: 등급 1] [저장 완료] [Hash → Layer 1 전송 (확률적 선택)] [검색 인덱스 갱신]', system: true }
+                    ]
+                }
+            ]
+        };
+
+        const container = document.getElementById('conversationContainer');
+        const topicButtons = document.querySelectorAll('.topic-btn');
+
+        function renderConversations(topic) {
+            if (!conversations[topic]) return;
+            const convList = conversations[topic];
+            let html = '';
+            convList.forEach(conv => {
+                let linesHtml = '';
+                conv.lines.forEach(item => {
+                    if (item.system) {
+                        linesHtml += `<div class="system-action-bubble">${item.text}</div>`;
+                    } else if (item.response) {
+                        linesHtml += `<div class="user-response-bubble">${item.text}</div>`;
+                    } else {
+                        const isUser = item.sender === '사용자';
+                        const senderName = item.sender;
+                        const bubbleClass = isUser ? 'message-right' : 'message-left';
+                        linesHtml += `
+                            <div class="message-bubble ${bubbleClass}">
+                                <div class="sender-name">${senderName}</div>
+                                <div class="bubble">${item.text}</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                html += `
+                    <div class="conversation-card">
+                        <div class="conv-title">
+                            <span class="conv-category">${conv.category}</span>
+                            <span>${conv.title}</span>
+                        </div>
+                        <div class="conv-lines">
+                            ${linesHtml}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        topicButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topic = btn.dataset.topic;
+                if (!topic) return;
+                topicButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderConversations(topic);
+            });
+        });
+
+        renderConversations('admin');
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    /* body 스타일 제거 (메인 페이지와 충돌 방지) */
+    .card {
+        background: white;
+        border-radius: 28px;
+        box-shadow: 0 20px 30px -12px rgba(0,28,58,0.25);
+        max-width: 1100px;
+        width: 100%;
+        padding: 1.5rem 1.5rem 2rem;
+        border: 1px solid #eaedf4;
+    }
+    h2 {
+        font-size: 1.6rem;
+        font-weight: 450;
+        color: #003876;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    .badge {
+        background: #eef2f9;
+        border-radius: 100px;
+        padding: 0.2rem 1rem;
+        font-size: 0.8rem;
+        color: #1e3a5f;
+        border: 1px solid #d0dbea;
+    }
+    .summary-panel {
+        background: #f0f4fc;
+        border-radius: 20px;
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        border-left: 4px solid #003876;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #1e2b3c;
+        box-shadow: 0 2px 8px rgba(0,56,118,0.05);
+    }
+    .summary-panel p {
+        margin: 0.5rem 0;
+    }
+    .summary-panel p:first-child {
+        margin-top: 0;
+    }
+    .summary-panel p:last-child {
+        margin-bottom: 0;
+    }
+    .openhash-stats {
+        background: white;
+        border-radius: 40px;
+        padding: 0.3rem 1.2rem;
+        border: 1px solid #d8e0ec;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        display: inline-block;
+        margin-bottom: 0.8rem;
+    }
+    .visual {
+        background: #fafcff;
+        border-radius: 24px;
+        padding: 1.2rem 1rem;
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.02), 0 12px 20px -16px #00387630;
+        border: 1px solid #e3e9f2;
+        margin: 1rem 0;
+    }
+    .user-row {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        margin: 1.5rem 0 1rem;
+    }
+    .user-card {
+        background: white;
+        border-radius: 18px;
+        padding: 0.8rem 1.5rem;
+        border: 2px solid #003876;
+        text-align: center;
+        box-shadow: 0 4px 10px -6px #003876;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .user-name {
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+    }
+    .user-balance {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #003876;
+    }
+    .transaction-box {
+        background: #eef2f9;
+        border-radius: 50px;
+        padding: 0.8rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+    }
+    .arrow {
+        font-size: 1.8rem;
+        color: #4a5b6f;
+    }
+    .btn {
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 40px;
+        padding: 0.4rem 1.2rem;
+        font-size: 0.85rem;
+        color: #2c3e50;
+        cursor: pointer;
+        transition: all 0.2s;
+        outline: none;
+    }
+    .btn-primary {
+        background: #003876;
+        border-color: #003876;
+        color: white;
+    }
+    .btn-primary:hover {
+        background: #002b5c;
+    }
+    .btn-primary:active {
+        background: #001f44;
+        color: white;
+        transform: scale(0.98);
+    }
+    .btn-primary:focus {
+        color: white;
+        background: #003876;
+    }
+    .btn:hover {
+        background: #e6edf8;
+    }
+    @keyframes gentlePulse {
+        0% { box-shadow: 0 0 0 0 rgba(0,56,118,0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(0,56,118,0); }
+        100% { box-shadow: 0 0 0 0 rgba(0,56,118,0); }
+    }
+    .btn-primary {
+        animation: gentlePulse 2s infinite;
+    }
+    .btn-primary:hover {
+        animation: none;
+    }
+    input[type=number] {
+        width: 70px;
+        padding: 0.3rem;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        text-align: center;
+        outline: none;
+    }
+    input[type=number]:focus {
+        border-color: #003876;
+        box-shadow: 0 0 0 2px rgba(0,56,118,0.2);
+    }
+    .horizontal-layers {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin: 1.5rem 0;
+        flex-wrap: wrap;
+    }
+    .layer-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 120px;
+    }
+    .layer-column-label {
+        font-weight: 600;
+        color: #1e3a5f;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        background: #eef2f9;
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+    }
+    .layer-inner-row {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .node-card {
+        background: white;
+        border-radius: 14px;
+        padding: 0.5rem 0.8rem;
+        border: 2px solid #cbd5e1;
+        min-width: 100px;
+        text-align: center;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        margin: 0.2rem 0;
+    }
+    .node-name {
+        font-weight: 500;
+        margin-bottom: 0.2rem;
+        font-size: 0.9rem;
+    }
+    .node-balance {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #003876;
+    }
+    .node-balance small {
+        font-size: 0.7rem;
+        font-weight: 400;
+        color: #6b7f8f;
+    }
+    .flash {
+        border-color: #ffaa00 !important;
+        box-shadow: 0 0 0 3px rgba(255,170,0,0.5) !important;
+    }
+    .status {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #1e3a5f;
+        background: #eef2f9;
+        border-radius: 40px;
+        padding: 0.6rem 1.2rem;
+        margin-top: 1rem;
+    }
+    .checkmark {
+        color: #1f5f1f;
+        font-weight: 700;
+        margin-left: 0.5rem;
+    }
+    .footer-note {
+        text-align: center;
+        margin-top: 1rem;
+        color: #5b6e8c;
+        font-size: 0.75rem;
+        border-top: 1px solid #dfe6f0;
+        padding-top: 0.8rem;
+    }
+</style>
+<div class="card">
+    
+    <div class="openhash-stats">
+        🔗 OpenHash: Layer1 60% · Layer2 30% · Layer3 9% · Layer4 1%
+    </div>
+
+    <div class="visual">
+        <div class="user-row">
+            <div class="user-card" id="userA">
+                <div class="user-name">사용자 A (한림읍)</div>
+                <div class="user-balance" id="balanceA">600</div>
+                <div>T</div>
+            </div>
+            <div class="user-card" id="userB">
+                <div class="user-name">사용자 B (안덕면)</div>
+                <div class="user-balance" id="balanceB">900</div>
+                <div>T</div>
+            </div>
+        </div>
+
+        <div class="transaction-box">
+            <span>사용자 A → 사용자 B</span>
+            <span class="arrow">➡️</span>
+            <input type="number" id="amountInput" value="100" min="1" max="600" placeholder="금액"> T
+            <button class="btn btn-primary" id="transferBtn">전송</button>
+        </div>
+
+        <div class="horizontal-layers">
+            <div class="layer-column">
+                <div class="layer-column-label">Layer 4 국가</div>
+                <div class="node-card" id="nodeKorea">
+                    <div class="node-name">한국</div>
+                    <div class="node-balance" id="balanceKorea">1500</div>
+                    <small>T</small>
+                </div>
+            </div>
+            <div class="layer-column">
+                <div class="layer-column-label">Layer 3 광역시도</div>
+                <div class="node-card" id="nodeJeju">
+                    <div class="node-name">제주도</div>
+                    <div class="node-balance" id="balanceJeju">1500</div>
+                    <small>T</small>
+                </div>
+            </div>
+            <div class="layer-column">
+                <div class="layer-column-label">Layer 2 시군구</div>
+                <div class="layer-inner-row">
+                    <div class="node-card" id="nodeJejuCity">
+                        <div class="node-name">제주시</div>
+                        <div class="node-balance" id="balanceJejuCity">600</div>
+                        <small>T</small>
+                    </div>
+                    <div class="node-card" id="nodeSeogwipo">
+                        <div class="node-name">서귀포시</div>
+                        <div class="node-balance" id="balanceSeogwipo">900</div>
+                        <small>T</small>
+                    </div>
+                </div>
+            </div>
+            <div class="layer-column">
+                <div class="layer-column-label">Layer 1 읍면동</div>
+                <div class="layer-inner-row">
+                    <div class="node-card" id="nodeHallim">
+                        <div class="node-name">한림읍</div>
+                        <div class="node-balance" id="balanceHallim">600</div>
+                        <small>T</small>
+                    </div>
+                    <div class="node-card" id="nodeAndeok">
+                        <div class="node-name">안덕면</div>
+                        <div class="node-balance" id="balanceAndeok">900</div>
+                        <small>T</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status" id="statusMsg">
+            💡 금액을 입력하고 전송 버튼을 눌러 거래를 체험해보세요!
+        </div>
+    </div>
+
+    <div class="footer-note">
+        * 계층별 잔액 합계 일치 여부를 통해 거래 승인 (삼중 서명 및 결합 재무제표 무결성 검증)
+    </div>
+</div>
+
+<script>
+    (function() {
+        let balances = {
+            A: 600,
+            B: 900,
+            Hallim: 600,
+            Andeok: 900,
+            JejuCity: 600,
+            Seogwipo: 900,
+            Jeju: 1500,
+            Korea: 1500
+        };
+
+        const balanceA = document.getElementById('balanceA');
+        const balanceB = document.getElementById('balanceB');
+        const balanceHallim = document.getElementById('balanceHallim');
+        const balanceAndeok = document.getElementById('balanceAndeok');
+        const balanceJejuCity = document.getElementById('balanceJejuCity');
+        const balanceSeogwipo = document.getElementById('balanceSeogwipo');
+        const balanceJeju = document.getElementById('balanceJeju');
+        const balanceKorea = document.getElementById('balanceKorea');
+
+        const amountInput = document.getElementById('amountInput');
+        const transferBtn = document.getElementById('transferBtn');
+        const statusMsg = document.getElementById('statusMsg');
+
+        const userA = document.getElementById('userA');
+        const userB = document.getElementById('userB');
+        const nodeHallim = document.getElementById('nodeHallim');
+        const nodeAndeok = document.getElementById('nodeAndeok');
+        const nodeJejuCity = document.getElementById('nodeJejuCity');
+        const nodeSeogwipo = document.getElementById('nodeSeogwipo');
+        const nodeJeju = document.getElementById('nodeJeju');
+        const nodeKorea = document.getElementById('nodeKorea');
+
+        function updateUI() {
+            balanceA.textContent = balances.A;
+            balanceB.textContent = balances.B;
+            balanceHallim.textContent = balances.Hallim;
+            balanceAndeok.textContent = balances.Andeok;
+            balanceJejuCity.textContent = balances.JejuCity;
+            balanceSeogwipo.textContent = balances.Seogwipo;
+            balanceJeju.textContent = balances.Jeju;
+            balanceKorea.textContent = balances.Korea;
+        }
+
+        function validateBalances() {
+            if (balances.Hallim + balances.Andeok !== balances.JejuCity + balances.Seogwipo) return false;
+            if (balances.JejuCity + balances.Seogwipo !== balances.Jeju) return false;
+            if (balances.Jeju !== balances.Korea) return false;
+            return true;
+        }
+
+        function flashElements(elements) {
+            elements.forEach(el => el.classList.add('flash'));
+            setTimeout(() => {
+                elements.forEach(el => el.classList.remove('flash'));
+            }, 300);
+        }
+
+        function transfer(amount) {
+            if (amount <= 0) {
+                statusMsg.textContent = '❌ 0보다 큰 금액을 입력하세요.';
+                return;
+            }
+            if (balances.A < amount) {
+                statusMsg.textContent = '❌ 잔액이 부족합니다. (최대 ' + balances.A + 'T)';
+                return;
+            }
+
+            balances.A -= amount;
+            balances.B += amount;
+            balances.Hallim -= amount;
+            balances.Andeok += amount;
+            balances.JejuCity = balances.Hallim;
+            balances.Seogwipo = balances.Andeok;
+            balances.Jeju = balances.JejuCity + balances.Seogwipo;
+            balances.Korea = balances.Jeju;
+
+            updateUI();
+
+            if (validateBalances()) {
+                statusMsg.innerHTML = '✅ 거래 승인! 계층별 잔액 일치 확인 <span class="checkmark">✓</span>';
+                flashElements([
+                    userA, userB,
+                    nodeHallim, nodeAndeok,
+                    nodeJejuCity, nodeSeogwipo
+                ]);
+            } else {
+                statusMsg.textContent = '❌ 오류: 계층 잔액 불일치! (무결성 위반)';
+            }
+        }
+
+        transferBtn.addEventListener('click', () => {
+            const amount = parseInt(amountInput.value, 10);
+            if (isNaN(amount)) {
+                statusMsg.textContent = '❌ 숫자를 입력하세요.';
+                return;
+            }
+            transfer(amount);
+        });
+
+        updateUI();
+        if (!validateBalances()) {
+            statusMsg.textContent = '⚠️ 초기 잔액 불일치 (설정 오류)';
+        }
+
+        amountInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                transferBtn.click();
+            }
+        });
+
+        amountInput.placeholder = "금액";
+    })();
+</script>

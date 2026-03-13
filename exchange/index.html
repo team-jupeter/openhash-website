@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGCT 거래소 - OpenHash</title>
+    <!-- 공통 스타일 (사이트 전체 CSS가 있다면 링크, 없으면 내부 스타일 사용) -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* 추가 스타일 – 정부 지침 + Material Design 기반 */
+        :root {
+            --primary: #0047a0;      /* 정부 브랜드 블루 */
+            --primary-dark: #00337a;
+            --secondary: #e9ecef;
+            --text: #212529;
+            --border: #dee2e6;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+            color: var(--text);
+            line-height: 1.5;
+        }
+        .exchange-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-left: 6px solid var(--primary);
+            padding-left: 1rem;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.2rem;
+            border: 1px solid var(--border);
+        }
+        .stats-card strong {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-left: 0.5rem;
+        }
+        .login-prompt {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .login-prompt p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.25rem;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,71,160,0.3);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,71,160,0.4);
+        }
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        .btn-secondary:hover {
+            background: #f0f5ff;
+        }
+        .btn-google {
+            background: #fff;
+            color: #444;
+            border: 1px solid #ccc;
+        }
+        .btn-google:hover {
+            background: #f1f1f1;
+        }
+        .btn-phone {
+            background: #25D366;
+            color: white;
+            border: none;
+        }
+        .btn-phone:hover {
+            background: #128C7E;
+        }
+        .trading-panel {
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            border: 1px solid var(--border);
+        }
+        .user-balance {
+            font-size: 1.3rem;
+            padding: 1rem 1.5rem;
+            background: #f1f5f9;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        .user-balance span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .trading-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .buy-card, .sell-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+        .buy-card h2, .sell-card h2 {
+            margin-top: 0;
+            font-weight: 400;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.75rem;
+            color: var(--primary);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,71,160,0.1);
+        }
+        .form-group input[readonly] {
+            background: #f1f5f9;
+            border-color: #ced4da;
+        }
+        .order-book {
+            margin-top: 2rem;
+        }
+        .order-book h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem;
+        }
+        td {
+            padding: 0.75rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .success-message {
+            color: #28a745;
+            font-size: 0.9rem;
+        }
+        .phone-auth-container {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .section-divider {
+            margin: 1.5rem 0;
+            border-top: 1px dashed var(--border);
+            position: relative;
+        }
+        .section-divider span {
+            background: white;
+            padding: 0 1rem;
+            color: #6c757d;
+            position: relative;
+            top: -0.75rem;
+        }
+        /* 비밀번호 설정 영역 스타일 */
+        .password-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        @media (max-width: 768px) {
+            .trading-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <main class="exchange-container">
+        <h1>EGCT 거래소</h1>
+        <div class="stats-card">
+            <div>총 발행량 <strong>100,000,000 T</strong> (1억 T)</div>
+            <div>1T 가격 <strong>1,000 KRW</strong></div>
+        </div>
+
+        <!-- 로그인 영역 -->
+        <div id="loginPrompt" class="login-prompt">
+            <p>🔒 거래소 이용을 위해 로그인하세요.</p>
+
+            <!-- 이메일 링크 로그인 (비밀번호 없음) -->
+            <div style="background: #e3f2fd; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                <h3 style="margin-top:0; color:var(--primary);">📧 이메일 링크 로그인 (비밀번호 필요 없음)</h3>
+                <form id="emailLinkForm">
+                    <div class="form-group">
+                        <input type="email" id="emailForLink" placeholder="이메일 주소" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">로그인 링크 전송</button>
+                </form>
+                <div id="linkMessage" class="success-message" style="margin-top:0.5rem;"></div>
+            </div>
+
+            <div class="section-divider"><span>또는</span></div>
+
+            <!-- 이메일/비밀번호 로그인 -->
+            <form id="emailPasswordForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="이메일" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="비밀번호" required>
+                </div>
+                <button type="submit" class="btn btn-secondary">이메일/비밀번호 로그인</button>
+            </form>
+
+            <div class="section-divider"><span>소셜 로그인</span></div>
+
+            <!-- Google 로그인 버튼 -->
+            <button id="googleLogin" class="btn btn-google">Google로 계속하기</button>
+
+            <!-- 전화 로그인 버튼 -->
+            <button id="phoneLogin" class="btn btn-phone">전화번호로 로그인</button>
+
+            <!-- 전화 인증 UI (초기 숨김) -->
+            <div id="phoneAuthContainer" class="phone-auth-container">
+                <div class="form-group">
+                    <input type="tel" id="phoneNumber" placeholder="전화번호 (예: +821012345678)" value="+82">
+                </div>
+                <button id="sendPhoneCode" class="btn btn-secondary">인증번호 전송</button>
+                <div class="form-group" style="margin-top:1rem;">
+                    <input type="text" id="phoneCode" placeholder="인증번호 6자리">
+                </div>
+                <button id="verifyPhoneCode" class="btn btn-primary">인증 확인</button>
+                <div id="phoneError" class="error-message"></div>
+            </div>
+
+            <p style="margin-top:1.5rem;">아직 회원이 아니신가요? <a href="https://shorturl.at/WRbxu" target="_blank">회원가입</a></p>
+            <div id="loginError" class="error-message"></div>
+        </div>
+
+        <!-- 거래 패널 (로그인 시 표시) -->
+        <div id="tradingPanel" class="trading-panel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="user-balance">
+                    <span id="userEmailDisplay"></span> 님의 EGCT 잔액 <span id="userBalance">0</span> T
+                </div>
+                <button id="logoutBtn" class="btn btn-secondary">로그아웃</button>
+            </div>
+
+            <!-- 비밀번호 설정 영역 (추가된 부분) -->
+            <div style="margin: 1rem 0;">
+                <button id="showSetPasswordBtn" class="btn btn-secondary">🔐 비밀번호 설정</button>
+            </div>
+            <div id="setPasswordSection" class="password-section" style="display: none;">
+                <h4 style="margin-top:0; color:var(--primary);">새 비밀번호 설정</h4>
+                <p style="font-size:0.9rem; margin-bottom:1rem;">이메일/비밀번호 로그인을 위해 비밀번호를 등록합니다.</p>
+                <div class="form-group">
+                    <input type="password" id="newPassword" placeholder="새 비밀번호 (6자 이상)" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required>
+                </div>
+                <button id="setPasswordBtn" class="btn btn-primary">비밀번호 저장</button>
+                <div id="passwordMessage" class="error-message" style="margin-top:0.5rem;"></div>
+            </div>
+
+            <div class="trading-grid">
+                <div class="buy-card">
+                    <h2>구매</h2>
+                    <form id="buyForm">
+                        <div class="form-group">
+                            <label for="buyAmount">구매 수량 (T)</label>
+                            <input type="number" id="buyAmount" min="1" step="1" required placeholder="예: 100">
+                        </div>
+                        <div class="form-group">
+                            <label for="buyTotal">총 금액 (KRW)</label>
+                            <input type="text" id="buyTotal" readonly placeholder="자동 계산">
+                        </div>
+                        <button type="submit" class="btn btn-primary">구매 요청</button>
+                    </form>
+                </div>
+                <div class="sell-card">
+                    <h2>판매</h2>
+                    <form id="sellForm">
+                        <div class="form-group">
+                            <label for="sellAmount">판매 수량 (T)</label>
+                            <input type="number" id="sellAmount" min="1" step="1" required placeholder="예: 50">
+                        </div>
+                        <div class="form-group">
+                            <label for="sellTotal">총 금액 (KRW)</label>
+                            <input type="text" id="sellTotal" readonly placeholder="자동 계산">
+                        </div>
+                        <button type="submit" class="btn btn-secondary">판매 요청</button>
+                    </form>
+                </div>
+            </div>
+            <div class="order-book">
+                <h3>📊 최근 거래 내역</h3>
+                <table>
+                    <thead>
+                        <tr><th>시간</th><th>종류</th><th>수량 (T)</th><th>금액 (KRW)</th></tr>
+                    </thead>
+                    <tbody id="recentTrades">
+                        <!-- JavaScript로 동적 렌더링 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Firebase 구성 (제공된 정보)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_FamZQFTE8u3G0w8Ft_wovRL524LvY5E",
+            authDomain: "openhash-203707.firebaseapp.com",
+            databaseURL: "https://openhash-203707.firebaseio.com",
+            projectId: "openhash-203707",
+            storageBucket: "openhash-203707.firebasestorage.app",
+            messagingSenderId: "1087236096891",
+            appId: "1:1087236096891:web:45182ed3cc70c2a789b3de"
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Google Apps Script 웹 앱 URL (실제 배포된 URL)
+        const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbyJMSWC-Wwk42oRsg6H7gEchyJqOhWrx-IH5QYh6qTFlnaJ_sZskxSQo53a2DpFYVlZug/exec';
+
+        // DOM 요소
+        const loginPrompt = document.getElementById('loginPrompt');
+        const tradingPanel = document.getElementById('tradingPanel');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const userBalanceSpan = document.getElementById('userBalance');
+        const loginError = document.getElementById('loginError');
+        const phoneAuthContainer = document.getElementById('phoneAuthContainer');
+        const phoneError = document.getElementById('phoneError');
+        const linkMessage = document.getElementById('linkMessage');
+
+        // 전화 인증 관련 변수
+        let confirmationResult = null;
+
+        // 중복 API 호출 방지를 위한 현재 사용자 UID 저장
+        let currentUserId = null;
+
+        // ===== 인증 상태 감지 =====
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // 이미 처리된 사용자이면 UI만 보장하고 종료
+                if (currentUserId === user.uid) {
+                    loginPrompt.style.display = 'none';
+                    tradingPanel.style.display = 'block';
+                    return;
+                }
+                currentUserId = user.uid;
+
+                const email = user.email || user.phoneNumber;
+                if (!email) {
+                    console.warn('전화 로그인 사용자:', user.phoneNumber);
+                    showTradingPanel(user.phoneNumber || '전화 사용자');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${SHEETS_API_URL}?email=${encodeURIComponent(email)}`);
+                    const data = await response.json();
+                    if (data.exists) {
+                        showTradingPanel(email);
+                    } else {
+                        alert('등록되지 않은 이메일입니다. 회원가입 후 이용해주세요.');
+                        await auth.signOut();
+                        currentUserId = null;
+                        window.location.href = 'https://shorturl.at/WRbxu';
+                    }
+                } catch (err) {
+                    console.error('Google Sheets API 오류:', err);
+                    loginError.textContent = '인증 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                    await auth.signOut();
+                    currentUserId = null;
+                }
+            } else {
+                // 로그아웃 상태
+                currentUserId = null;
+                loginPrompt.style.display = 'block';
+                tradingPanel.style.display = 'none';
+            }
+        });
+
+        // 로그인 성공 시 UI 전환
+        function showTradingPanel(userIdentifier) {
+            loginPrompt.style.display = 'none';
+            tradingPanel.style.display = 'block';
+            userEmailDisplay.textContent = userIdentifier;
+            // 목업 데이터 표시
+            userBalanceSpan.textContent = '1,250';
+            const trades = [
+                { time: '10:23', type: '매수', amount: 100, price: 100000 },
+                { time: '10:15', type: '매도', amount: 50, price: 50000 },
+                { time: '09:58', type: '매수', amount: 200, price: 200000 },
+                { time: '09:32', type: '매도', amount: 30, price: 30000 }
+            ];
+            document.getElementById('recentTrades').innerHTML = trades.map(t => `
+                <tr>
+                    <td>${t.time}</td>
+                    <td>${t.type}</td>
+                    <td>${t.amount.toLocaleString()}</td>
+                    <td>${t.price.toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ===== 이메일 링크 로그인 =====
+        document.getElementById('emailLinkForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('emailForLink').value;
+            linkMessage.textContent = '';
+
+            const actionCodeSettings = {
+                url: window.location.href,
+                handleCodeInApp: true
+            };
+
+            try {
+                await auth.sendSignInLinkToEmail(email, actionCodeSettings);
+                window.localStorage.setItem('emailForSignIn', email);
+                linkMessage.textContent = '✅ 로그인 링크가 이메일로 전송되었습니다. 확인해주세요.';
+            } catch (error) {
+                linkMessage.textContent = '❌ 오류: ' + error.message;
+            }
+        });
+
+        // 페이지 로드 시 이메일 링크 완료 처리
+        if (auth.isSignInWithEmailLink(window.location.href)) {
+            let email = window.localStorage.getItem('emailForSignIn');
+            if (!email) {
+                email = prompt('확인을 위해 이메일을 다시 입력해주세요.');
+            }
+            auth.signInWithEmailLink(email, window.location.href)
+                .then((result) => {
+                    window.localStorage.removeItem('emailForSignIn');
+                    // onAuthStateChanged에서 처리
+                })
+                .catch((error) => {
+                    alert('로그인 실패: ' + error.message);
+                });
+        }
+
+        // ===== 이메일/비밀번호 로그인 =====
+        document.getElementById('emailPasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            loginError.textContent = '';
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                loginError.textContent = error.message;
+            }
+        });
+
+        // ===== Google 로그인 =====
+        document.getElementById('googleLogin').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                loginError.textContent = error.message;
+            }
+        });
+
+        // ===== 전화 로그인 =====
+        document.getElementById('phoneLogin').addEventListener('click', () => {
+            phoneAuthContainer.style.display = phoneAuthContainer.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('sendPhoneCode').addEventListener('click', async () => {
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const appVerifier = new firebase.auth.RecaptchaVerifier('sendPhoneCode', {
+                size: 'invisible'
+            });
+            try {
+                confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, appVerifier);
+                phoneError.textContent = '인증번호가 전송되었습니다.';
+            } catch (error) {
+                phoneError.textContent = error.message;
+            }
+        });
+
+        document.getElementById('verifyPhoneCode').addEventListener('click', async () => {
+            const code = document.getElementById('phoneCode').value;
+            if (!confirmationResult) {
+                phoneError.textContent = '먼저 인증번호를 전송하세요.';
+                return;
+            }
+            try {
+                await confirmationResult.confirm(code);
+            } catch (error) {
+                phoneError.textContent = error.message;
+            }
+        });
+
+        // ===== 로그아웃 =====
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await auth.signOut();
+        });
+
+        // ===== 비밀번호 설정 기능 (추가된 부분) =====
+        // 토글 버튼
+        document.getElementById('showSetPasswordBtn').addEventListener('click', () => {
+            const section = document.getElementById('setPasswordSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // 비밀번호 저장
+        document.getElementById('setPasswordBtn').addEventListener('click', async () => {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            const messageEl = document.getElementById('passwordMessage');
+            messageEl.style.color = '#dc3545'; // 에러 기본 색상
+
+            if (newPassword.length < 6) {
+                messageEl.textContent = '비밀번호는 최소 6자 이상이어야 합니다.';
+                return;
+            }
+            if (newPassword !== confirm) {
+                messageEl.textContent = '비밀번호가 일치하지 않습니다.';
+                return;
+            }
+
+            const user = auth.currentUser;
+            if (!user) {
+                messageEl.textContent = '로그인 정보가 없습니다. 다시 로그인해주세요.';
+                return;
+            }
+
+            try {
+                await user.updatePassword(newPassword);
+                messageEl.style.color = '#28a745';
+                messageEl.textContent = '✅ 비밀번호가 성공적으로 설정되었습니다. 이제 이메일/비밀번호로 로그인할 수 있습니다.';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                // 3초 후 메시지 자동 제거 (선택)
+                setTimeout(() => {
+                    messageEl.textContent = '';
+                }, 5000);
+            } catch (error) {
+                console.error('비밀번호 설정 오류:', error);
+                if (error.code === 'auth/requires-recent-login') {
+                    messageEl.textContent = '보안을 위해 다시 인증이 필요합니다. 로그아웃 후 이메일 링크로 다시 로그인해주세요.';
+                } else {
+                    messageEl.textContent = '오류: ' + error.message;
+                }
+            }
+        });
+
+        // ===== 거래 폼 계산 및 제출 =====
+        document.getElementById('buyAmount')?.addEventListener('input', function(e) {
+            const amount = parseInt(e.target.value) || 0;
+            document.getElementById('buyTotal').value = (amount * 1000).toLocaleString() + ' 원';
+        });
+
+        document.getElementById('sellAmount')?.addEventListener('input', function(e) {
+            const amount = parseInt(e.target.value) || 0;
+            document.getElementById('sellTotal').value = (amount * 1000).toLocaleString() + ' 원';
+        });
+
+        document.getElementById('buyForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('buyAmount').value;
+            alert(`구매 요청이 접수되었습니다.\n수량: ${amount} T\n(백엔드 미연동)`);
+        });
+
+        document.getElementById('sellForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('sellAmount').value;
+            alert(`판매 요청이 접수되었습니다.\n수량: ${amount} T\n(백엔드 미연동)`);
+        });
+
+        window.testLogout = () => auth.signOut();
+    </script>
+
+    <!-- 공통 푸터 등 필요 시 추가 -->
+    <script src="/js/nav.js"></script>
+</body>
+</html>

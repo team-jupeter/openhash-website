@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지적재산권 특허 포트폴리오 - OpenHash</title>
+    <!-- Google Fonts Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html { font-size: 15px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #0047a0;
+            --primary-dark: #00337a;
+            --primary-light: #e8f0fe;
+            --secondary: #e9ecef;
+            --text: #212529;
+            --text-light: #6c757d;
+            --border: #dee2e6;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02);
+            --hover-shadow: 0 8px 16px rgba(0, 71, 160, 0.08);
+            --font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: #f8f9fa;
+            color: var(--text);
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .ip-container {
+            max-width: 1400px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            border-left: 8px solid var(--primary);
+            padding-left: 1.2rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-left: 1.8rem;
+        }
+
+        .patent-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .patent-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            padding: 1.2rem 1rem;
+            text-align: center;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .patent-table td {
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+            background: white;
+        }
+
+        .patent-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .patent-table tr:hover td {
+            background: #f5f9ff;
+        }
+
+        .patent-title {
+            font-weight: 500;
+            color: var(--primary-dark);
+            line-height: 1.4;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .btn-sm {
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0, 71, 160, 0.1);
+            letter-spacing: 0.01em;
+        }
+
+        .btn-sm:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 71, 160, 0.15);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-sm:active {
+            transform: translateY(0);
+            background: #d4e2ff;
+        }
+
+        .btn-sm.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .detail-panel {
+            background: #f1f5f9;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-panel.open {
+            padding: 2rem 2.5rem;
+            max-height: 1000px;
+            overflow-y: auto;
+        }
+
+        .panel-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .ip-container {
+                padding: 0 1rem;
+            }
+            h1 {
+                font-size: 1.8rem;
+                padding-left: 1rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+                margin-left: 1rem;
+            }
+            .patent-table th,
+            .patent-table td {
+                padding: 1rem 0.5rem;
+                font-size: 0.85rem;
+            }
+            .btn-group {
+                gap: 0.5rem;
+            }
+            .btn-sm {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            .detail-panel.open {
+                padding: 1rem;
+            }
+            .panel-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-sm {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+        }
+        .patent-detail, .patent-detail * { line-height: 1.5 !important; }
+        .patent-detail, .patent-detail * { line-height: 1.5 !important; }
+        .patent-detail h4 { font-size: 1.4rem; margin-top: 1.5rem; margin-bottom: 0.8rem; }
+        .patent-detail h5 { font-size: 1.2rem; margin-top: 1.2rem; margin-bottom: 0.6rem; }
+        .patent-detail p, .patent-detail li { font-size: 1rem; line-height: 1.6; }
+        .patent-detail table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .patent-detail th { background: #0047a0; color: white; padding: 0.75rem; }
+        .patent-detail td { padding: 0.75rem; border-bottom: 1px solid #dee2e6; }
+        .patent-detail tr:last-child td { border-bottom: none; }
+        .patent-detail tr:hover td { background: #f5f9ff; }
+        .patent-detail > div[style*="display: flex"] { gap: 1rem; margin-bottom: 1.5rem; }
+        @media (max-width: 600px) { .patent-detail > div[style*="display: flex"] { flex-direction: column; } }
+        .patent-detail .stat-card { background: #f5f9ff; padding: 1rem; border-radius: 12px; }
+        .patent-detail, .patent-detail * { font-size: 0.9rem !important; }
+    </style>
+</head>
+<body>
+    <main class="ip-container">
+        <h1>지적재산권 포트폴리오</h1>
+        <div class="subtitle">OpenHash 핵심 특허 (출원 진행 중)</div>
+
+        <table class="patent-table">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>출원일</th>
+                    <th>발명의 명칭</th>
+                    <th>상세 정보</th>
+                </tr>
+            </thead>
+            <tbody id="patent-tbody">
+                <!-- JavaScript로 렌더링 -->
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        let patentsData = [];
+
+        fetch('/ip/data/patents.json')
+            .then(res => res.json())
+            .then(data => {
+                patentsData = data.patents;
+                renderTable(patentsData);
+            })
+            .catch(err => {
+                console.error('특허 데이터 로딩 실패:', err);
+                document.getElementById('patent-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:2rem;">❌ 데이터를 불러올 수 없습니다.</td></tr>';
+            });
+
+        function renderTable(patents) {
+            const tbody = document.getElementById('patent-tbody');
+            tbody.innerHTML = '';
+
+            patents.forEach((patent) => {
+                const row = document.createElement('tr');
+                row.dataset.id = patent.no;
+                row.innerHTML = `
+                    <td>${patent.no}</td>
+                    <td>${patent.date}</td>
+                    <td class="patent-title">${patent.title}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn-sm" data-type="summary">요약</button>
+                            <button class="btn-sm" data-type="valuation">기술가치평가</button>
+                            <button class="btn-sm" data-type="strategy">사업화 전략</button>
+                            <button class="btn-sm" data-type="market">시장 규모</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.querySelectorAll('.btn-sm').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const row = this.closest('tr');
+                    const patentNo = row.dataset.id;
+                    const type = this.dataset.type;
+                    const patent = patentsData.find(p => p.no == patentNo);
+                    if (!patent) return;
+
+                    let panel = document.getElementById(`panel-${patentNo}`);
+                    if (!panel) {
+                        panel = document.createElement('tr');
+                        panel.id = `panel-${patentNo}`;
+                        panel.classList.add('detail-panel');
+                        panel.innerHTML = `
+                            <td colspan="4">
+                                <div class="panel-content" id="content-${patentNo}">
+                                    <div class="loading">⏳ 불러오는 중...</div>
+                                </div>
+                            </td>
+                        `;
+                        row.parentNode.insertBefore(panel, row.nextSibling);
+                    }
+
+                    const contentDiv = document.getElementById(`content-${patentNo}`);
+
+                    document.querySelectorAll('.detail-panel').forEach(p => {
+                        if (p.id !== panel.id) p.classList.remove('open');
+                    });
+
+                    if (panel.classList.contains('open') && panel.dataset.activeType === type) {
+                        panel.classList.remove('open');
+                        panel.dataset.activeType = '';
+                        return;
+                    }
+
+                    panel.classList.add('open');
+                    panel.dataset.activeType = type;
+
+                    if (!contentDiv.dataset.loadedType || contentDiv.dataset.loadedType !== type) {
+                        contentDiv.innerHTML = '<div class="loading">⏳ 불러오는 중...</div>';
+
+                        let filePath;
+                        switch(type) {
+                            case 'summary': filePath = patent.summaryFile; break;
+                            case 'valuation': filePath = patent.valuationFile; break;
+                            case 'strategy': filePath = patent.strategyFile; break;
+                            case 'market': filePath = patent.marketFile; break;
+                            default: return;
+                        }
+
+                        fetch(`/ip/${filePath}`)
+                            .then(res => {
+                                if (!res.ok) throw new Error('파일 없음');
+                                return res.text();
+                            })
+                            .then(html => {
+                                contentDiv.innerHTML = html;
+                                contentDiv.dataset.loadedType = type;
+                            })
+                            .catch(err => {
+                                contentDiv.innerHTML = `<div class="loading" style="color:red;">❌ 내용을 불러오지 못했습니다. (${err.message})</div>`;
+                            });
+                    }
+                });
+            });
+        }
+    </script>
+    <script src="/js/nav.js"></script>
+</body>
+</html>

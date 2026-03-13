@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Openhash 계층별 랜덤 노드 선택 애니메이션</title>
+    <style>
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,40,80,0.1);
+            padding: 20px 20px 25px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 12px;
+        }
+        .title strong {
+            color: #003876;
+        }
+        .rotating-quote {
+            background: #eef2f9;
+            border-left: 4px solid #003876;
+            border-radius: 0 20px 20px 0;
+            padding: 10px 15px;
+            margin: 8px 0 15px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #1e3a5f;
+            min-height: auto;
+            transition: background-color 0.5s ease, border-left-color 0.5s ease;
+            box-shadow: 0 2px 6px rgba(0,56,118,0.08);
+            word-break: keep-all;
+            text-align: left;
+        }
+        .rotating-quote p {
+            margin: 0;
+        }
+        .svg-wrapper {
+            display: flex;
+            justify-content: center;
+            background: #fafcff;
+            border-radius: 16px;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 8px 0 5px;
+            font-size: 0.9rem;
+            color: #4a5b6f;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot-blue {
+            width: 14px;
+            height: 14px;
+            background-color: #003876;
+            border-radius: 50%;
+        }
+        .dot-red {
+            width: 14px;
+            height: 14px;
+            background-color: #cc7f6e;
+            border-radius: 50%;
+        }
+        .probability {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 10px 0 8px;
+            flex-wrap: wrap;
+            font-size: 1rem;
+        }
+        .prob-item {
+            padding: 6px 18px;
+            background: #eef2f7;
+            border-radius: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .prob-highlight {
+            background: #d4e0f0;
+            font-weight: 500;
+            border: 1px solid #003876;
+        }
+        .message-box {
+            background-color: #eef2f7;
+            border-left: 5px solid #003876;
+            padding: 12px 18px;
+            margin: 10px 0 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #1e2b3c;
+            font-weight: 400;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            word-break: keep-all;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .stage-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .stage-btn.active {
+            background-color: #003876;
+            border-color: #003876;
+            color: white;
+        }
+        .stage-btn:hover {
+            background-color: #e6edf8;
+        }
+        .note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #7f8fa4;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        <strong>확률적 계층 선택 + 2차 노드 랜덤 선택</strong>
+    </div>
+    <div class="rotating-quote" id="rotating-quote">
+        <p id="quote-text">사용자는 사람, 기관 또는 사물입니다.</p>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><span class="dot-blue"></span> 사용자 → 노드 (해시 전송)</div>
+        <div class="legend-item"><span class="dot-red"></span> 노드 → 사용자 (최종 해시 반환)</div>
+    </div>
+    <div class="svg-wrapper">
+        <svg width="900" height="500" viewBox="0 0 900 500" id="main-svg">
+            <!-- 배경 계층 띠 -->
+            <rect x="50" y="60" width="800" height="60" fill="#f4f7fc" rx="4" />
+            <rect x="50" y="160" width="800" height="60" fill="#f4f7fc" rx="4" />
+            <rect x="50" y="260" width="800" height="60" fill="#f4f7fc" rx="4" />
+            <rect x="50" y="360" width="800" height="60" fill="#f4f7fc" rx="4" />
+
+            <!-- 계층 라벨 (13 → 18) -->
+            <text x="820" y="95" fill="#4a5b6f" font-size="18" font-weight="500">Layer 4 국가 (한국)</text>
+            <text x="820" y="195" fill="#4a5b6f" font-size="18" font-weight="500">Layer 3 광역시도 (제주)</text>
+            <text x="820" y="295" fill="#4a5b6f" font-size="18" font-weight="500">Layer 2 시군구 (제주시, 서귀포시)</text>
+            <text x="820" y="395" fill="#4a5b6f" font-size="18" font-weight="500">Layer 1 읍면동 (한림읍, 안덕면)</text>
+
+            <!-- Layer 4 국가 노드 3개 (국가1,2,3: 12 → 16, (2차): 9 → 14) -->
+            <circle id="L4_node1" cx="200" cy="90" r="12" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="200" y="70" text-anchor="middle" fill="#2c3e50" font-size="16">국가1</text>
+            <circle id="L4_node2" cx="400" cy="90" r="12" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="400" y="70" text-anchor="middle" fill="#2c3e50" font-size="16">국가2</text>
+            <circle id="L4_node3" cx="600" cy="90" r="12" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="600" y="70" text-anchor="middle" fill="#2c3e50" font-size="16">국가3</text>
+            <text x="200" y="115" text-anchor="middle" fill="#2c3e50" font-size="14">(2차)</text>
+            <text x="400" y="115" text-anchor="middle" fill="#2c3e50" font-size="14">(2차)</text>
+            <text x="600" y="115" text-anchor="middle" fill="#2c3e50" font-size="14">(2차)</text>
+
+            <!-- Layer 3 광역시도 (제주) 노드 3개 (제주1,2,3: 12 → 16, (2차): 9 → 14) -->
+            <circle id="L3_node1" cx="200" cy="190" r="12" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="200" y="170" text-anchor="middle" fill="#2c3e50" font-size="16">제주1</text>
+            <circle id="L3_node2" cx="400" cy="190" r="12" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="400" y="170" text-anchor="middle" fill="#2c3e50" font-size="16">제주2</text>
+            <circle id="L3_node3" cx="600" cy="190" r="12" fill="white" stroke="#4a6572" stroke-width="2" />
+            <text x="600" y="170" text-anchor="middle" fill="#2c3e50" font-size="16">제주3</text>
+            <text x="200" y="215" text-anchor="middle" fill="#2c3e50" font-size="14">(2차)</text>
+            <text x="400" y="215" text-anchor="middle" fill="#2c3e50" font-size="14">(2차)</text>
+            <text x="600" y="215" text-anchor="middle" fill="#2c3e50" font-size="14">(2차)</text>
+
+            <!-- Layer 2 시군구 (표시용) (제주시,서귀포시: 11 → 16) -->
+            <circle cx="300" cy="290" r="8" fill="white" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="3 2" />
+            <text x="300" y="275" text-anchor="middle" fill="#5f6f82" font-size="16">제주시</text>
+            <circle cx="600" cy="290" r="8" fill="white" stroke="#a0b8cc" stroke-width="1.5" stroke-dasharray="3 2" />
+            <text x="600" y="275" text-anchor="middle" fill="#5f6f82" font-size="16">서귀포시</text>
+
+            <!-- Layer 1 사용자 A, B (A (한림읍), B (안덕면): 12 → 16) -->
+            <circle id="userA" cx="200" cy="390" r="14" fill="white" stroke="#003876" stroke-width="2.5" />
+            <text x="200" y="420" text-anchor="middle" fill="#2c3e50" font-size="16">A (한림읍)</text>
+            <circle id="userB" cx="600" cy="390" r="14" fill="white" stroke="#003876" stroke-width="2.5" />
+            <text x="600" y="420" text-anchor="middle" fill="#2c3e50" font-size="16">B (안덕면)</text>
+
+            <!-- 파란 점 (전송) -->
+            <circle id="blueA" cx="200" cy="390" r="7" fill="#003876" opacity="0.9" visibility="hidden" />
+            <circle id="blueB" cx="600" cy="390" r="7" fill="#003876" opacity="0.9" visibility="hidden" />
+            <!-- 빨간 점 (반환) -->
+            <circle id="redA" cx="200" cy="390" r="7" fill="#cc7f6e" opacity="0.9" visibility="hidden" />
+            <circle id="redB" cx="600" cy="390" r="7" fill="#cc7f6e" opacity="0.9" visibility="hidden" />
+            <!-- 선택된 노드 강조 -->
+            <circle id="selectedNodeGlow" cx="0" cy="0" r="18" fill="none" stroke="#ffaa00" stroke-width="3" stroke-dasharray="5 3" visibility="hidden" />
+        </svg>
+    </div>
+
+    <div class="probability">
+        <span class="prob-item" id="probLayer3">Layer 3 (제주도) 70%</span>
+        <span class="prob-item" id="probLayer4">Layer 4 (한국) 30%</span>
+    </div>
+    <div id="selectionInfo" style="text-align:center; margin:8px 0; font-weight:500; color:#1e3a5f;">계층 선택 중...</div>
+    <div id="message" class="message-box">사용자 A와 B가 거래를 시작합니다. 최하위 공통 계층은 Layer 3 (제주도)입니다.</div>
+    <div class="controls">
+        <button class="stage-btn active" data-stage="0">1. 공통 계층</button>
+        <button class="stage-btn" data-stage="1">2. 확률 선택</button>
+        <button class="stage-btn" data-stage="2">3. 2차 노드 선택</button>
+        <button class="stage-btn" data-stage="3">4. 해시 전송</button>
+        <button class="stage-btn" data-stage="4">5. 해시 반환</button>
+    </div>
+    <div class="note">
+        ※ 자동으로 5초마다 다음 단계로 전환됩니다. 버튼을 눌러 수동으로도 진행할 수 있습니다.
+    </div>
+</div>
+
+<script>
+    (function() {
+        const layer3Nodes = [
+            { id: 'L3_node1', x: 200, y: 190 },
+            { id: 'L3_node2', x: 400, y: 190 },
+            { id: 'L3_node3', x: 600, y: 190 }
+        ];
+        const layer4Nodes = [
+            { id: 'L4_node1', x: 200, y: 90 },
+            { id: 'L4_node2', x: 400, y: 90 },
+            { id: 'L4_node3', x: 600, y: 90 }
+        ];
+        const userA = { x: 200, y: 390 };
+        const userB = { x: 600, y: 390 };
+
+        let selectedLayer = null;
+        let selectedNode = null;
+
+        const blueA = document.getElementById('blueA');
+        const blueB = document.getElementById('blueB');
+        const redA = document.getElementById('redA');
+        const redB = document.getElementById('redB');
+        const glow = document.getElementById('selectedNodeGlow');
+        const msgDiv = document.getElementById('message');
+        const selectionInfo = document.getElementById('selectionInfo');
+        const probLayer3 = document.getElementById('probLayer3');
+        const probLayer4 = document.getElementById('probLayer4');
+
+        const stageBtns = document.querySelectorAll('.stage-btn');
+        let currentStage = 0;
+        let autoTimer = null;
+        const stageMessages = [
+            "사용자 A(한림읍)와 B(안덕면)가 거래합니다. 두 사용자의 최하위 공통 계층은 Layer 3 (제주특별자치도)입니다.",
+            "이제 거래 데이터의 해시를 기록할 계층을 확률적으로 선택합니다: Layer 3 (제주도) 70%, Layer 4 (한국) 30%.",
+            "계층이 선택되었습니다. 선택된 계층 내에서 다시 3개의 2차 노드 중 하나를 무작위로 선택합니다.",
+            "선택된 노드로 사용자 A와 B가 해시(파란색)를 전송합니다.",
+            "노드는 해시를 확인하고, 최종 해시(빨간색)를 두 사용자에게 반환합니다. 해시 체인이 상호 연동됩니다."
+        ];
+
+        function updateProbHighlight(layer) {
+            probLayer3.classList.remove('prob-highlight');
+            probLayer4.classList.remove('prob-highlight');
+            if (layer === 'L3') probLayer3.classList.add('prob-highlight');
+            else if (layer === 'L4') probLayer4.classList.add('prob-highlight');
+        }
+
+        function selectLayerRandom() {
+            const r = Math.random() * 100;
+            return r < 70 ? 'L3' : 'L4';
+        }
+
+        function selectRandomNode(nodes) {
+            const idx = Math.floor(Math.random() * nodes.length);
+            return nodes[idx];
+        }
+
+        function animateDot(dot, fromX, fromY, toX, toY, duration, onComplete) {
+            const startTime = performance.now();
+            dot.setAttribute('visibility', 'visible');
+            dot.setAttribute('cx', fromX);
+            dot.setAttribute('cy', fromY);
+
+            function step(now) {
+                const elapsed = now - startTime;
+                const t = Math.min(elapsed / duration, 1);
+                const x = fromX + (toX - fromX) * t;
+                const y = fromY + (toY - fromY) * t;
+                dot.setAttribute('cx', x);
+                dot.setAttribute('cy', y);
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    if (onComplete) onComplete();
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function hideAllDots() {
+            blueA.setAttribute('visibility', 'hidden');
+            blueB.setAttribute('visibility', 'hidden');
+            redA.setAttribute('visibility', 'hidden');
+            redB.setAttribute('visibility', 'hidden');
+            glow.setAttribute('visibility', 'hidden');
+        }
+
+        function runStage(stage) {
+            currentStage = stage;
+            stageBtns.forEach((btn, i) => {
+                if (i === stage) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            msgDiv.textContent = stageMessages[stage];
+            hideAllDots();
+
+            if (stage === 0) {
+                selectionInfo.textContent = '최하위 공통 계층: Layer 3 (제주도)';
+                updateProbHighlight(null);
+            }
+            else if (stage === 1) {
+                selectedLayer = selectLayerRandom();
+                updateProbHighlight(selectedLayer);
+                selectionInfo.textContent = `선택된 계층: ${selectedLayer === 'L3' ? 'Layer 3 (제주도) 70% 확률로 당첨' : 'Layer 4 (한국) 30% 확률로 당첨'}`;
+                msgDiv.textContent = stageMessages[1] + ' ' + (selectedLayer === 'L3' ? '제주도가 선택되었습니다.' : '한국이 선택되었습니다.');
+            }
+            else if (stage === 2) {
+                if (!selectedLayer) selectedLayer = selectLayerRandom();
+                const nodes = selectedLayer === 'L3' ? layer3Nodes : layer4Nodes;
+                selectedNode = selectRandomNode(nodes);
+                glow.setAttribute('cx', selectedNode.x);
+                glow.setAttribute('cy', selectedNode.y);
+                glow.setAttribute('visibility', 'visible');
+                selectionInfo.textContent = `선택된 2차 노드: ${selectedNode.id} (${selectedLayer === 'L3' ? '제주도' : '한국'} 내)`;
+                msgDiv.textContent = stageMessages[2] + ` ${selectedLayer === 'L3' ? '제주도' : '한국'}의 ${selectedNode.id} 노드가 선택되었습니다.`;
+            }
+            else if (stage === 3) {
+                if (!selectedNode) {
+                    selectedLayer = selectLayerRandom();
+                    const nodes = selectedLayer === 'L3' ? layer3Nodes : layer4Nodes;
+                    selectedNode = selectRandomNode(nodes);
+                }
+                animateDot(blueA, userA.x, userA.y, selectedNode.x, selectedNode.y, 1000, null);
+                animateDot(blueB, userB.x, userB.y, selectedNode.x, selectedNode.y, 1000, null);
+                selectionInfo.textContent = `해시 전송 중... 대상 노드: ${selectedNode.id}`;
+                msgDiv.textContent = stageMessages[3];
+            }
+            else if (stage === 4) {
+                if (!selectedNode) {
+                    selectedLayer = selectLayerRandom();
+                    const nodes = selectedLayer === 'L3' ? layer3Nodes : layer4Nodes;
+                    selectedNode = selectRandomNode(nodes);
+                }
+                blueA.setAttribute('visibility', 'hidden');
+                blueB.setAttribute('visibility', 'hidden');
+                animateDot(redA, selectedNode.x, selectedNode.y, userA.x, userA.y, 1000, null);
+                animateDot(redB, selectedNode.x, selectedNode.y, userB.x, userB.y, 1000, null);
+                selectionInfo.textContent = `최종 해시 반환 중... 노드 ${selectedNode.id} → 사용자 A, B`;
+                msgDiv.textContent = stageMessages[4];
+            }
+        }
+
+        function startAutoCycle() {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(() => {
+                let next = (currentStage + 1) % 5;
+                runStage(next);
+            }, 5000);
+        }
+
+        stageBtns.forEach((btn, idx) => {
+            btn.addEventListener('click', () => {
+                clearInterval(autoTimer);
+                runStage(idx);
+                startAutoCycle();
+            });
+        });
+
+        runStage(0);
+        startAutoCycle();
+
+        const sentences = [
+            "사용자는 사람, 기관 또는 사물입니다.",
+            "예를 들어, 제주시 한림읍에 소재한 사용자(사람)이 서귀포시 안덕면에 위치한 자율주행 화물차량(사물)을 고팡 앱으로 호출합니다.",
+            "대화 상대자는 사람과 사물이며, 각자 자신의 PDV에 대화 내용을 기록합니다.",
+            "사람은 물론, 자율주행차량도 지능(AI)을 갖습니다.",
+            "두 사용자는 각기 대화 내용의 Hash를 Openhash Network에 기록합니다.",
+            "이처럼 두 사용자의 PDV에 기록된 일상과 업무는 위변조될 수 없습니다."
+        ];
+        const bgColors = [
+            '#f0f4fc', '#e6f0fa', '#d9e8f5', '#f0f0e0',
+            '#f5e6e6', '#e6f5e6'
+        ];
+        let sentenceIdx = 0;
+        const quoteEl = document.getElementById('quote-text');
+        const quoteDiv = document.getElementById('rotating-quote');
+        function rotateSentence() {
+            sentenceIdx = (sentenceIdx + 1) % sentences.length;
+            quoteEl.textContent = sentences[sentenceIdx];
+            quoteDiv.style.backgroundColor = bgColors[sentenceIdx];
+            const borderColor = ['#003876', '#1f5f1f', '#d97706', '#8e5f9e', '#b36b5e', '#2f7a7a'][sentenceIdx];
+            quoteDiv.style.borderLeftColor = borderColor;
+        }
+        setInterval(rotateSentence, 5000);
+    })();
+</script>
+</body>
+</html>

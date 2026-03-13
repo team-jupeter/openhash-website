@@ -1,0 +1,36 @@
+<div class="patent-detail" style="line-height:1.5;">
+    <h4>📄 OpenHash: 확률 기반 분산원장 시스템</h4>
+
+    <div style="background: #f5f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+        <p style="margin:0; font-size:1.1rem;">SHA-256 이중 해싱 + 계층적 검증으로 <strong>데이터 무결성과 진실성</strong>을 동시에 보장하는 차세대 분산원장 기술</p>
+    </div>
+
+    <h5>🔍 배경</h5>
+    <p>기존 블록체인은 에너지 비효율(PoW), 확장성 부재, 주권 이양 문제로 국가 단위 시스템에 적용 어려움. OpenHash는 행정구역 기반 샤딩으로 이를 해결.</p>
+
+    <h5>⚙️ 핵심 기술</h5>
+    <ul>
+        <li><strong>5계층 행정구역 샤딩</strong> (읍면동→시군구→광역시도→국가→글로벌) – 거래의 70%를 로컬에서 처리, 크로스‑샤드 거래 최소화</li>
+        <li><strong>최하위 공통 계층 처리</strong> – 복잡한 2PC 없이 공통 상위 노드가 직접 처리</li>
+        <li><strong>계층적 해시 체인</strong> – 머클 루트를 상위에 전파, 무결성 검증 시간복잡도 O(1)</li>
+        <li><strong>다중 서명</strong> – 거래 당사자 + 처리 노드 서명, 단독/공모 위변조 차단</li>
+    </ul>
+
+    <h5>📊 성능 지표 (AWS 실증)</h5>
+    <table style="width:100%; border-collapse: collapse;">
+        <tr style="background:#0047a0; color:white;"><th>항목</th><th>수치</th></tr>
+        <tr><td>E2E 응답 시간</td><td><strong>3.1ms</strong> (평균)</td></tr>
+        <tr><td>단일 노드 TPS</td><td><strong>5,354</strong> (Ed25519)</td></tr>
+        <tr><td>에너지 효율</td><td>비트코인 대비 <strong>700만 배</strong></td></tr>
+        <tr><td>확장성</td><td>7,000노드 기준 <strong>수천만 TPS</strong></td></tr>
+    </table>
+
+    <h5>🌐 적용 분야</h5>
+    <ul>
+        <li>전자세금계산서 / 국세청</li>
+        <li>CBDC 인프라</li>
+        <li>공급망 금융</li>
+        <li>탄소배출권 거래</li>
+        <li>AI 기반 사법·행정·의료 자동화 (고팡)</li>
+    </ul>
+</div>

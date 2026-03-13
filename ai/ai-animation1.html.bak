@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고팡 · AI 비서 + PDV 데이터 흐름</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans KR', 'Roboto', sans-serif;
+            background: #f5f7fc;
+            color: #1a2b3e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px -12px rgba(0,28,58,0.25);
+            max-width: 1000px;
+            width: 100%;
+            padding: 2rem 2rem 2.5rem;
+            border: 1px solid #eaedf4;
+        }
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 450;
+            color: #003876;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .badge {
+            background: #eef2f9;
+            border-radius: 100px;
+            padding: 0.3rem 1.2rem;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            border: 1px solid #d0dbea;
+        }
+        .rotating-quote {
+            background: #eef2f9;
+            border-left: 4px solid #003876;
+            border-radius: 0 20px 20px 0;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #1e3a5f;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.5s ease, border-left-color 0.5s ease;
+            box-shadow: 0 4px 8px rgba(0,56,118,0.08);
+        }
+        .rotating-quote p {
+            margin: 0;
+            width: 100%;
+        }
+        .visual {
+            background: #fafcff;
+            border-radius: 32px;
+            padding: 1.8rem 1.2rem;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02), 0 12px 20px -16px #00387630;
+            border: 1px solid #e3e9f2;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>
+        <span>📦 AI 비서 + PDV</span>
+        <span class="badge">문서 데이터 흐름</span>
+    </h2>
+
+    <div class="rotating-quote" id="rotating-quote">
+        <p id="quote-text">사람, 기관, 사물은 각기 자신의 일상과 업무를 PDV(Private Data Vault)에 기록합니다.</p>
+    </div>
+
+    <div class="visual">
+        <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+            <!-- 상단 중앙 라벨 -->
+            <text id="pair-label" x="400" y="30" text-anchor="middle" font-size="26" font-weight="500" fill="#003876">🧑 사람  ↔  🧑 사람</text>
+
+            <!-- 왼쪽 그룹: 유형 박스 + AI 비서 + PDV (1.5배 확대) -->
+            <g id="left-group">
+                <!-- 유형 박스 (사람/AI) -->
+                <rect id="left-type-rect" x="10" y="80" width="90" height="60" rx="12" fill="white" stroke="#003876" stroke-width="2.5" />
+                <text id="left-type-text" x="55" y="110" text-anchor="middle" fill="#003876" font-weight="500" font-size="30">사람</text>
+                <!-- AI 비서 -->
+                <rect id="left-ai-rect" x="120" y="80" width="120" height="60" rx="12" fill="white" stroke="#003876" stroke-width="2.5" />
+                <text id="left-ai-text" x="180" y="110" text-anchor="middle" fill="#003876" font-weight="500" font-size="30">AI 비서</text>
+                <!-- PDV -->
+                <rect id="left-pdv-rect" x="135" y="180" width="90" height="60" rx="12" fill="white" stroke="#003876" stroke-width="2.5" />
+                <text id="left-pdv-text" x="180" y="210" text-anchor="middle" fill="#003876" font-weight="500" font-size="30">PDV</text>
+                <!-- 연결선: 유형 ↔ AI 비서 -->
+                <line id="left-type-connector" x1="100" y1="110" x2="120" y2="110" stroke="#003876" stroke-width="2" />
+                <!-- 연결선: AI 비서 ↔ PDV -->
+                <line id="left-ai-pdv-connector" x1="180" y1="140" x2="180" y2="180" stroke="#003876" stroke-width="2" />
+            </g>
+
+            <!-- 오른쪽 그룹: AI 비서 + 유형 박스 + PDV (1.5배 확대) -->
+            <g id="right-group">
+                <!-- AI 비서 -->
+                <rect id="right-ai-rect" x="550" y="80" width="120" height="60" rx="12" fill="white" stroke="#1f5f1f" stroke-width="2.5" />
+                <text id="right-ai-text" x="610" y="110" text-anchor="middle" fill="#1f5f1f" font-weight="500" font-size="30">AI 비서</text>
+                <!-- 유형 박스 (사람/AI) -->
+                <rect id="right-type-rect" x="680" y="80" width="90" height="60" rx="12" fill="white" stroke="#1f5f1f" stroke-width="2.5" />
+                <text id="right-type-text" x="725" y="110" text-anchor="middle" fill="#1f5f1f" font-weight="500" font-size="30">사람</text>
+                <!-- PDV -->
+                <rect id="right-pdv-rect" x="565" y="180" width="90" height="60" rx="12" fill="white" stroke="#1f5f1f" stroke-width="2.5" />
+                <text id="right-pdv-text" x="610" y="210" text-anchor="middle" fill="#1f5f1f" font-weight="500" font-size="30">PDV</text>
+                <!-- 연결선: AI 비서 ↔ 유형 -->
+                <line id="right-type-connector" x1="670" y1="110" x2="680" y2="110" stroke="#1f5f1f" stroke-width="2" />
+                <!-- 연결선: AI 비서 ↔ PDV -->
+                <line id="right-ai-pdv-connector" x1="610" y1="140" x2="610" y2="180" stroke="#1f5f1f" stroke-width="2" />
+            </g>
+
+            <!-- AI 사이 점선 (대화) - 길이 축소됨 -->
+            <line id="ai-connection" x1="240" y1="110" x2="550" y2="110" stroke="#8899bb" stroke-width="1.3" stroke-dasharray="6 6" />
+
+            <!-- 문서 아이콘 (왼→오) - 1.5배 확대 -->
+            <g id="doc-left-to-right" opacity="0">
+                <rect x="-30" y="-24" width="60" height="48" rx="6" fill="white" stroke="currentColor" stroke-width="2.5" />
+                <line x1="-20" y1="-9" x2="20" y2="-9" stroke="currentColor" stroke-width="2" />
+                <line x1="-20" y1="0" x2="20" y2="0" stroke="currentColor" stroke-width="2" />
+                <line x1="-20" y1="9" x2="20" y2="9" stroke="currentColor" stroke-width="2" />
+                <animateMotion id="motion-ltr" begin="indefinite" dur="4s" repeatCount="indefinite" />
+            </g>
+
+            <!-- 문서 아이콘 (오→왼) - 1.5배 확대 -->
+            <g id="doc-right-to-left" opacity="0">
+                <rect x="-30" y="-24" width="60" height="48" rx="6" fill="white" stroke="currentColor" stroke-width="2.5" />
+                <line x1="-20" y1="-9" x2="20" y2="-9" stroke="currentColor" stroke-width="2" />
+                <line x1="-20" y1="0" x2="20" y2="0" stroke="currentColor" stroke-width="2" />
+                <line x1="-20" y1="9" x2="20" y2="9" stroke="currentColor" stroke-width="2" />
+                <animateMotion id="motion-rtl" begin="indefinite" dur="4s" repeatCount="indefinite" />
+            </g>
+        </svg>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const leftTypes = ['person', 'institution', 'object'];
+        const rightTypes = ['person', 'institution', 'object'];
+        const typeNames = { person: '사람', institution: '기관', object: '사물' };
+        const typeEmoji = { person: '🧑', institution: '🏛️', object: '🚗' };
+        const typeColors = { person: '#003876', institution: '#1f5f1f', object: '#d97706' };
+
+        let leftIdx = 0, rightIdx = 0;
+
+        // 왼쪽 요소들
+        const leftTypeRect = document.getElementById('left-type-rect');
+        const leftTypeText = document.getElementById('left-type-text');
+        const leftTypeConnector = document.getElementById('left-type-connector');
+        const leftAIRect = document.getElementById('left-ai-rect');
+        const leftAIText = document.getElementById('left-ai-text');
+        const leftPDVRect = document.getElementById('left-pdv-rect');
+        const leftPDVText = document.getElementById('left-pdv-text');
+        const leftAIPDVConnector = document.getElementById('left-ai-pdv-connector');
+
+        // 오른쪽 요소들
+        const rightTypeRect = document.getElementById('right-type-rect');
+        const rightTypeText = document.getElementById('right-type-text');
+        const rightTypeConnector = document.getElementById('right-type-connector');
+        const rightAIRect = document.getElementById('right-ai-rect');
+        const rightAIText = document.getElementById('right-ai-text');
+        const rightPDVRect = document.getElementById('right-pdv-rect');
+        const rightPDVText = document.getElementById('right-pdv-text');
+        const rightAIPDVConnector = document.getElementById('right-ai-pdv-connector');
+
+        const pairLabel = document.getElementById('pair-label');
+
+        const docLTR = document.getElementById('doc-left-to-right');
+        const docRTL = document.getElementById('doc-right-to-left');
+        const motionLTR = document.getElementById('motion-ltr');
+        const motionRTL = document.getElementById('motion-rtl');
+
+        // 업데이트된 경로 (좌표 변경 반영)
+        const pathLTR = 'M180,210 L180,110 L610,110 L610,210';
+        const pathRTL = 'M610,210 L610,110 L180,110 L180,210';
+
+        motionLTR.setAttribute('path', pathLTR);
+        motionRTL.setAttribute('path', pathRTL);
+
+        function hideDocs() {
+            docLTR.setAttribute('opacity', '0');
+            docRTL.setAttribute('opacity', '0');
+            motionLTR.endElement();
+            motionRTL.endElement();
+        }
+
+        function showCombo(leftType, rightType) {
+            hideDocs();
+
+            const leftColor = typeColors[leftType];
+            const rightColor = typeColors[rightType];
+
+            // 왼쪽 유형 업데이트
+            leftTypeRect.setAttribute('stroke', leftColor);
+            leftTypeText.setAttribute('fill', leftColor);
+            leftTypeConnector.setAttribute('stroke', leftColor);
+            leftTypeText.textContent = (leftType === 'person') ? '사람' : 'AI';
+
+            // 왼쪽 AI, PDV 업데이트
+            leftAIRect.setAttribute('stroke', leftColor);
+            leftAIText.setAttribute('fill', leftColor);
+            leftPDVRect.setAttribute('stroke', leftColor);
+            leftPDVText.setAttribute('fill', leftColor);
+            leftAIPDVConnector.setAttribute('stroke', leftColor);
+
+            // 오른쪽 유형 업데이트
+            rightTypeRect.setAttribute('stroke', rightColor);
+            rightTypeText.setAttribute('fill', rightColor);
+            rightTypeConnector.setAttribute('stroke', rightColor);
+            rightTypeText.textContent = (rightType === 'person') ? '사람' : 'AI';
+
+            // 오른쪽 AI, PDV 업데이트
+            rightAIRect.setAttribute('stroke', rightColor);
+            rightAIText.setAttribute('fill', rightColor);
+            rightPDVRect.setAttribute('stroke', rightColor);
+            rightPDVText.setAttribute('fill', rightColor);
+            rightAIPDVConnector.setAttribute('stroke', rightColor);
+
+            // 상단 라벨
+            pairLabel.textContent = `${typeEmoji[leftType]} ${typeNames[leftType]}  ↔  ${typeEmoji[rightType]} ${typeNames[rightType]}`;
+
+            // 문서 아이콘 색상 및 표시
+            docLTR.style.color = leftColor;
+            docRTL.style.color = rightColor;
+            docLTR.setAttribute('opacity', '1');
+            docRTL.setAttribute('opacity', '1');
+            motionLTR.beginElement();
+            motionRTL.beginElement();
+        }
+
+        function nextCombo() {
+            rightIdx++;
+            if (rightIdx >= rightTypes.length) {
+                rightIdx = 0;
+                leftIdx++;
+                if (leftIdx >= leftTypes.length) leftIdx = 0;
+            }
+            showCombo(leftTypes[leftIdx], rightTypes[rightIdx]);
+        }
+
+        // 초기값: 사람 ↔ 사람
+        showCombo('person', 'person');
+        setInterval(nextCombo, 4000);
+
+        // 하단 순환 문장
+        const sentences = [
+            "사람, 기관, 사물은 각기 자신의 일상과 업무를 PDV(Private Data Vault)에 기록합니다.",
+            "사람, 기관, 및 사물은 각기 자신의 AI 비서를 갖습니다.",
+            "사람은 자연 지능을 갖고, 기관과 사물은 인공지능(AI)를 갖습니다.",
+            "기관과 사물의 인공지능은 DeepSeek 등 대형 LLM입니다.",
+            "AI 비서는 Exaone 16B 등 소형 LLM입니다.",
+            "사람 등이 다른 사람, 기관, 사물과 소통할 때, 자신의 PDV 내 정보를 인출하여 제공합니다.",
+            "환자(사람)는 병원(기관)에 신체 정보를 전달하고, 승객(사람)은 차량(사물)에게 현재 위치를 전달하며, 자율주행차량(사물)은 정비소(기관)에 차량 스펙을 전달합니다.",
+            "Openhash 기반인 PDV의 데이터는 위변조될 수 없으며, 오직 참(True)입니다."
+        ];
+
+        const bgColors = [
+            '#f0f4fc', '#e6f0fa', '#d9e8f5', '#f0f0e0',
+            '#f5e6e6', '#e6f5e6', '#f5f0d9', '#f0e6f5'
+        ];
+
+        let sentenceIdx = 0;
+        const quoteEl = document.getElementById('quote-text');
+        const quoteDiv = document.getElementById('rotating-quote');
+        function rotateSentence() {
+            sentenceIdx = (sentenceIdx + 1) % sentences.length;
+            quoteEl.textContent = sentences[sentenceIdx];
+            quoteDiv.style.backgroundColor = bgColors[sentenceIdx];
+            const borderColor = typeColors[ ['person','institution','object'][sentenceIdx % 3] ] || '#003876';
+            quoteDiv.style.borderLeftColor = borderColor;
+        }
+        setInterval(rotateSentence, 5000);
+    })();
+</script>
+</body>
+</html>
