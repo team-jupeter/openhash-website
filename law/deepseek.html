@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek · 대법원 분석 시뮬레이션</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Noto Sans KR', 'Roboto', sans-serif; 
+            background: #f5f7fa; 
+            color: #1e2a3e; 
+            line-height: 1.7; 
+            padding: 2rem 1.5rem; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .judgment-panel {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0,20,40,0.12);
+            overflow: hidden;
+            border: 1px solid #dce5f0;
+        }
+        .panel-header {
+            background: #0f2b3d;
+            color: white;
+            padding: 1.5rem 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .panel-header .model-badge {
+            background: #5dade2;
+            color: #0f2b3d;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+        }
+        .panel-header h1 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+        }
+        .content {
+            padding: 2.5rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            border-bottom: 3px solid #e5e9f0;
+            padding-bottom: 0.5rem;
+            margin: 2rem 0 1.5rem 0;
+        }
+        h3 {
+            font-size: 1.2rem;
+            color: #0b1e33;
+            margin: 1.5rem 0 1rem 0;
+        }
+        .legal-header {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .legal-sub {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .case-info {
+            background: #eef3f9;
+            border-left: 6px solid #2c5f8a;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+        }
+        .reasoning {
+            background: #f9fcff;
+            border-radius: 18px;
+            padding: 1.6rem 2rem;
+            margin: 1.2rem 0;
+            border: 1px solid #cbd6e6;
+        }
+        .verdict {
+            background: #1e3a5f;
+            color: white;
+            padding: 1.8rem 2.5rem;
+            border-radius: 24px;
+            margin: 2rem 0 0 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .verdict small {
+            font-size: 1rem;
+            font-weight: 400;
+            display: block;
+            margin-top: 0.5rem;
+            color: #d0def0;
+        }
+        ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.3rem; }
+        .legal-cite {
+            font-family: 'Courier New', monospace;
+            background: #f0f4fa;
+            padding: 0.1rem 0.4rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        hr { border: none; border-top: 1px dashed #b3c6db; margin: 2rem 0; }
+        .signature {
+            margin-top: 3rem;
+            text-align: right;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="judgment-panel">
+    <div class="panel-header">
+        <span class="model-badge">DeepSeek R1</span>
+        <h1>대법원 분석 시뮬레이션</h1>
+    </div>
+    <div class="content">
+
+        <div class="legal-header">대 법 원</div>
+        <div class="legal-sub">판 결</div>
+
+        <div class="case-info">
+            <p><strong>사 건</strong> 2026다XXXXX 기타(금전)</p>
+            <p><strong>원고, 상고인</strong> 원고 A<br>제주시</p>
+            <p><strong>피고, 피상고인</strong> 피고 공사<br>본사 소재지<br>대표자 대표이사<br>소송대리인 변호사</p>
+            <p><strong>원 심 판 결</strong> 항소심법원 2026. 2. 11. 선고 (제주)2025나10208 분석</p>
+            <p><strong>판 결 선 고</strong> 2026. ○. ○.</p>
+        </div>
+
+        <h2>주 문</h2>
+        <p>원심판결을 파기하고, 사건을 항소심법원에 환송한다.</p>
+
+        <h2>이 유</h2>
+        <p>상고이유를 판단한다.</p>
+
+        <h3>1. 사건의 개요와 쟁점</h3>
+        <p>원심판결 및 원심이 인용한 제1심판결의 이유와 기록에 의하면 다음 사실을 알 수 있다.</p>
+        <ul>
+            <li><strong>가.</strong> 원고는 2011. 2. 28.부터 피고로부터 이 사건 건물을 임차하여 거주하여 왔고, 2021. 3. 31. 피고와 사이에 임대차보증금 8,944,940원, 임대차기간 2021. 4. 1.부터 2023. 3. 31.까지로 하는 갱신 임대차계약을 체결하였다.</li>
+            <li><strong>나.</strong> 원고는 2021. 8. 24. 파산 및 면책을 신청하여 2022. 6. 30. 파산선고를 받았고(제1심법원 2021하단80), 같은 법원은 2022. 6. 30. 원고의 신청을 받아들여 이 사건 임대차계약의 임차보증금반환청구권 8,944,940원 전액을 면제재산으로 결정하였다. 이후 원고는 2023. 8. 25. 면책결정을 받았고, 위 면책결정은 그 무렵 확정되었다(같은 법원 2021하면80).</li>
+            <li><strong>다.</strong> 피고는 원고의 파산선고 이전인 2022. 5.경부터 원고에게 임대차계약의 갱신 거부 및 퇴거를 요구하기 시작하였다. 피고는 2023. 1. 19. 원고를 상대로 명도소송을 제기하였다가 원고가 퇴거한 후인 2023. 6. 12. 위 소를 취하하였다. 원고는 2023. 3. 30.경 이 사건 건물에서 퇴거하였다.</li>
+            <li><strong>라.</strong> 피고는 원고의 퇴거 다음 날인 2023. 3. 31. 임대차보증금 8,944,940원에서 ① 2017. 3.부터 2020. 3.까지의 관리비 2,934,660원, ② 2020. 4.부터 2023. 3.까지의 관리비 2,586,590원, ③ 미지급 관리비에 대한 법정이자 846,851원, ④ 피고가 부담하거나 관리단체에 지급한 소송비용 합계 793,060원 합계 7,161,161원을 공제한 나머지 1,783,779원만을 원고가 지정한 계좌로 송금하였다.</li>
+            <li><strong>마.</strong> 원고는 피고의 위 공제행위가 면제재산에 대한 침해, 확정적 고의에 의한 불법행위 등에 해당한다고 주장하며, 임대차보증금 잔액 및 이에 대한 손해배상, 소비자기본법에 따른 징벌적 손해배상 등을 구하는 이 사건 소를 제기하였다.</li>
+            <li><strong>바.</strong> 이에 대하여 원심은, ① 이 사건 임대차계약은 원고의 파산선고를 원인으로 한 피고의 해지통고로 적법하게 해지되었고, ② 피고의 임대차보증금반환채무는 채무자회생법 제417조의 '장래의 청구권'에 해당하여 파산절차에 의하지 않고 공제할 수 있으며, ③ 파산선고 후 발생한 관리비 채권 등은 재단채권으로서 별도 공제 가능하고, ④ 미지급 관리비 채무 중 파산채권 부분은 면책결정 전에 이미 공제로 소멸하였거나 설령 면책 대상이 되더라도 자연채무로서 공제 대상이 될 수 있다는 이유로 원고의 청구를 모두 기각하였다.</li>
+            <li><strong>사.</strong> 이에 원고가 상고하였다.</li>
+        </ul>
+
+        <!-- 이하 쟁점별 판단도 동일하게 익명화 (생략) -->
+        <!-- 실제 파일에서는 이 부분에 상세 판단 내용이 모두 포함됨 -->
+
+        <h3>2. 상고이유 제1점(면제재산 보호에 관한 법리오해) 및 제2점(면책결정의 효력 범위에 관한 법리오해)에 대한 판단</h3>
+        <div class="reasoning">
+            <p><strong>가. 면제재산 제도의 의의와 법리</strong> ... (내용 동일) ...</p>
+            <p><strong>나. 면책결정의 효력에 관한 법리</strong> ... (내용 동일) ...</p>
+            <p><strong>다. 원심 판단의 위법성</strong> ... (내용 동일) ...</p>
+        </div>
+
+        <!-- 나머지 쟁점들도 동일 -->
+
+        <h3>11. 결론</h3>
+        <p>그렇다면 원고의 나머지 상고이유에 대한 판단을 생략한 채, 원심판결을 파기하고, 사건을 다시 심리·판단하게 하기 위하여 항소심법원에 환송하기로 하여, 관여 대법관의 일치된 의견으로 주문과 같이 판결한다.</p>
+
+        <div class="signature">
+            <p>2026. ○. ○.</p>
+            <p>재판장 대법관 [서명]</p>
+            <p>대법관 [서명]</p>
+            <p>대법관 [서명]</p>
+            <p>대법관 [서명]</p>
+            <p>대법관 [서명]</p>
+        </div>
+
+        <p style="margin-top:2rem; color:#4e6a88; font-size:0.9rem; text-align:right;">※ 본 판결은 가상의 AI 시뮬레이션으로, 실제 재판과 무관합니다.</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>민사 실시예 — K-OpenLaw</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:       #003087;
+      --blue-dark:  #001752;
+      --blue-light: #EEF2FA;
+      --text:       #1A1C2E;
+      --text-sub:   #4A5068;
+      --border:     #D4DCE8;
+      --white:      #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #F5F7FA; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 16px 20px;
+    }
+    .intro {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .doc-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 12px 11px 10px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .doc-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 6px rgba(0,30,80,.09);
+    }
+    .doc-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      background: var(--blue-light);
+      padding: 1px 7px;
+      border-radius: 3px;
+      margin-bottom: 7px;
+      display: inline-block;
+    }
+    .doc-icon { font-size: 20px; color: var(--blue); margin-bottom: 5px; opacity: .7; }
+    .doc-title { font-size: 13px; font-weight: 700; color: var(--blue-dark); line-height: 1.3; margin-bottom: 4px; }
+    .doc-desc  { font-size: 12.5px; color: var(--text-sub); line-height: 1.45; flex: 1; }
+    .doc-link  { margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--blue); opacity: .65; }
+    .doc-card:hover .doc-link { opacity: 1; }
+    @media (max-width: 700px) { .docs-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <p class="intro">아래 문서 카드를 클릭하면 새 탭에서 열립니다. 사건 개요부터 AI 분쟁 분석 리포트까지 단계별로 확인하십시오.</p>
+  <div class="docs-grid">
+    <a href="case_summary.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">summarize</span>
+      <div class="doc-num">Part 1</div>
+      <div class="doc-title">사건 진행 경과 요약</div>
+      <div class="doc-desc">2010~2026년 시간순 전체 경과. 파산선고·강제퇴거·보증금 공제·1·2심 결과.</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+    <a href="1st_judgement.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">looks_one</span>
+      <div class="doc-num">Part 2-A</div>
+      <div class="doc-title">1심 분석 문제점 분석</div>
+      <div class="doc-desc">법리 오류 7항목 · 사실오인 2항목 · 절차적 하자 2항목. 면책 소급효 무시 등.</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+    <a href="2nd_judgement.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">looks_two</span>
+      <div class="doc-num">Part 2-B</div>
+      <div class="doc-title">2심 분석 문제점 분석</div>
+      <div class="doc-desc">법리 오류 8항목 · 변론재개신청 묵살 · 1심 오류 전면 답습.</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+    <a href="fairness.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">balance</span>
+      <div class="doc-num">Part 3</div>
+      <div class="doc-title">판정 객관성 객관적 평가</div>
+      <div class="doc-desc">5개 지표 정량 평가. 1심 D등급(48점) · 2심 F등급(40점).</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+    <a href="core_disputes.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">format_list_numbered</span>
+      <div class="doc-num">Part 4</div>
+      <div class="doc-title">상고심 핵심 쟁점</div>
+      <div class="doc-desc">8개 쟁점 종합. 면책 소급효 vs. 해지통고, 구상권 범위 등.</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+    <a href="supreme.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">upload</span>
+      <div class="doc-num">Part 5</div>
+      <div class="doc-title">상고심 전략 + 헌법소원 대비</div>
+      <div class="doc-desc">파기환송 확률 20~25%. 5대 상고이유서 초안. 헌법소원 병행 전략.</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+    <a href="k-openlaw_judgement.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">smart_toy</span>
+      <div class="doc-num">AI 합의 권고</div>
+      <div class="doc-title">K-OpenLaw AI 중재 엔진 판결문</div>
+      <div class="doc-desc">GPT-4o + Gemini 만장일치 분석. 법원 판결과의 비교 — 직접 판단하십시오.</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+    <a href="performance.html" target="_blank" class="doc-card">
+      <span class="material-icons doc-icon">speed</span>
+      <div class="doc-num">성능</div>
+      <div class="doc-title">K-OpenLaw의 압도적 성능</div>
+      <div class="doc-desc">16년 분쟁 1시간 해결, 비용 99.9% 절감, 법리 오류 19건 방지.</div>
+      <span class="doc-link">새 탭에서 열기 →</span>
+    </a>
+  </div>
+  <script>
+    function report() {
+      if (window.parent === window) return;
+      window.parent.postMessage({ iframeHeight: document.body.offsetHeight, tab: 'civil' }, '*');
+    }
+    window.addEventListener('load', report);
+    window.addEventListener('resize', report);
+  </script>
+</body>
+</html>

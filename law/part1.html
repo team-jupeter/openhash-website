@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사건 개요 (1/13) - 디자인 개선</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans KR', 'Roboto', sans-serif; background: #f5f7fa; color: #1e2a3e; line-height: 1.7; padding: 2rem 1rem; display: flex; justify-content: center; }
+        .case-part { max-width: 1200px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 30px rgba(0,20,40,0.06); overflow: hidden; border: 1px solid #e5e9f0; }
+        .case-header { background: #f0f4fa; padding: 2rem 2.5rem; border-bottom: 1px solid #dce5f0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .case-badge { background: #1e3a5f; color: white; font-size: 0.8rem; font-weight: 600; padding: 0.3rem 1rem; border-radius: 30px; }
+        .case-title { font-size: 1.8rem; font-weight: 500; color: #0b1e33; margin: 0; }
+        .case-content { padding: 2.5rem; }
+        .info-row { display: flex; margin-bottom: 0.5rem; }
+        .info-label { font-weight: 600; width: 100px; color: #1e3a5f; }
+        .info-value { flex: 1; }
+        .timeline { margin: 1.5rem 0; padding-left: 1.5rem; border-left: 3px solid #d4a017; }
+        .timeline-item { margin-bottom: 1rem; }
+        .timeline-date { font-weight: 700; color: #1e3a5f; display: inline-block; min-width: 140px; }
+        h3 { margin: 2rem 0 1rem; color: #1e3a5f; font-size: 1.3rem; border-bottom: 2px solid #e5e9f0; padding-bottom: 0.5rem; }
+        h4 { margin: 1.5rem 0 0.5rem; color: #1e3a5f; font-size: 1.1rem; }
+        .plaintiff-arg { color: #1f5f1f; font-weight: 600; margin-top: 0.8rem; }
+        .defendant-arg { color: #b22222; font-weight: 600; margin-top: 0.8rem; }
+        .citation { font-size: 0.9rem; color: #4e6a88; font-style: italic; margin-top: 0.3rem; border-top: 1px dashed #cbd5e3; padding-top: 0.3rem; }
+        strong.important { background: #fff3cd; padding: 0.1rem 0.3rem; border-radius: 4px; }
+        ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.3rem; }
+        hr { border: none; border-top: 1px solid #e5e9f0; margin: 1.5rem 0; }
+    </style>
+</head>
+<body>
+    <div class="case-part">
+        <div class="case-header">
+            <span class="case-badge">Part 1/13</span>
+            <h1 class="case-title">⚖️ 사건 개요 (소송 발단)</h1>
+        </div>
+        <div class="case-content">
+            <!-- 원본 part1 내용 모두 유지 -->
+            <div class="info-row">
+                <div class="info-label">사건번호</div>
+                <div class="info-value">2024가단***** (본안) → (****)2025나***** (항소심) → 2026다***** (상고심)</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">사건명</div>
+                <div class="info-value">손해배상(기타)</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">원고</div>
+                <div class="info-value">익명 A (특징: 전직 정밀기계 설계 엔지니어, 중대 질환 환자, 이하 ‘원고’)</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">피고</div>
+                <div class="info-value">모 공기업 (이하 ‘피고’)</div>
+            </div>
+
+            <h3>📌 다툼이 없는 사실 (보강됨)</h3>
+            <div class="timeline">
+                <div class="timeline-item"><span class="timeline-date">2011. 2. 28.</span> - 원고가 피고로부터 **** 소재 공동주택(이하 ‘이 사건 건물’)을 임차하여 거주 시작. 이후 2년마다 임대차계약을 갱신함.</div>
+                <div class="timeline-item"><span class="timeline-date">2021. 3. 31.</span> - 마지막 임대차계약 갱신. 임대차보증금 일정 금액, 임대차기간 2021. 4. 1.부터 2023. 3. 31.까지.</div>
+                <div class="timeline-item"><span class="timeline-date">2021년경부터</span> - 관리사무소 설립과 운영을 둘러싸고, 원고를 포함한 일부 공동주택 임차인과 일부 주택 소유자 간 법적 분쟁 발생. 원고 등이 패소하여, 상기 일부 공동주택 소유자 모임(대표 최말자(가명). 이하, 제3자)에 소송비용 채무가 발생함. 법적 판단: 원고 등이 상기 공동 주택의 10년차 거주자라해도 관리사무소 설립과 운영을 결정할 입주민 회의에 참여할 자격이 없음.</div>
+                <div class="timeline-item"><span class="timeline-date">2021. 8. 24.</span> - 원고가 파산 및 면책 신청. 상기 제3자에 대한 소송 비용 채무, 공동주택 수선 유지비, 관리사무소 설립 및 운영비 중 원고 부담분(이하, '파산 채무')을 파산 채권에 포함.</div>
+                <div class="timeline-item"><span class="timeline-date">2022. 6. 30.</span> - ****법원으로부터 파산선고 결정. 원고의 임차보증금은 법원의 결정으로 면제재산이 됨. 상기 원고의 파산 채무는 파산 채권에 포함.</div>
+                <div class="timeline-item"><span class="timeline-date">2022년 중</span> - 피고가 상기 제3자에게 원고의 파산 채무를 대신 변제하고, 구상권 행사를 위해, 원고에게 임대차계약 해지와 임차보증금 압류 예고.</div>
+                <div class="timeline-item"><span class="timeline-date">2022년 중순 ~ 2023년 초</span> - 피고는 원고에게 수 차례에 걸쳐 퇴거 및 임대차계약 갱신 거부 의사를 전달하였으며, 원고에 대한 퇴거 명도소송을 예고함. 또한, 임대차보증금 압류 및 처분을 예고함. 이에 원고는 거듭된 피고의 퇴거 요청, 명도소송 제기, 임대차보증금 압류 예고 등이 명백한 파산법 위반이며, 이에 대해 법적 소송을 제기할 의사를 전달함. (원고, 피고에게 면제재산임을 고지하고 파산관재인 확인 요청)</div>
+                <div class="timeline-item"><span class="timeline-date">2023. 1. 19.</span> - 피고가 원고를 상대로 명도소송 제기(****지방법원 2023가단*****).</div>
+                <div class="timeline-item"><span class="timeline-date">2023. 3. 30.경</span> - 원고가 이 사건 건물에서 퇴거. 피고는 이후 명도소송을 취하함. 퇴거 시점에 피고는 원고의 자발적 퇴거 문서에 서명을 요구. 원고가 거절.</div>
+                <div class="timeline-item"><span class="timeline-date">2023. 8. 25.</span> - 원고에 대한 면책결정 확정.</div>
+                <div class="timeline-item"><span class="timeline-date">2023. 3. 31.</span> - 피고가 원고의 임차보증금에서 상기 파산 채무 및 명도 소송 비용 등을 공제한 잔액을 원고의 임차보증금 반환채권 양수인(농협)에게 지급.</div>
+                <div class="timeline-item"><span class="timeline-date">2024. .</span> - 원고가 피고를 상대로 손해배상 소송 제기.</div>
+                <div class="timeline-item"><span class="timeline-date">2024. 7.</span> - 원고 건강 회복, 새로운 주거지 마련.</div>
+                <div class="timeline-item"><span class="timeline-date">2026. 3. 1.</span> - 원고 상고이유서 제출 (12개 쟁점).</div>
+            </div>
+
+            <h3>⚡ 당사자의 주장 요지</h3>
+            <p><strong>원고 주장 (상고이유 12개 쟁점 반영):</strong></p>
+            <ul>
+                <li>원고와 제3자(입주자회의 대표 최말자) 간의 소송비용은 피고와 무관한 채무임에도 피고가 이를 <strong>관리비 명목으로 대신 변제하고, 구상권을 주장하는 것은 부당하다</strong>. 즉, 피고가 주장하는 구상권이 애초 성립하지 않는다 (제9점).</li>
+                <li>원고의 파산 채권에 파산 채무를 면책 결정 전에 피고가 임의로 처분한 것은 파산법 위반이다. <strong class="important">중요: 향후 2심 판결의 핵심 요소</strong> (제1점).</li>
+                <li>피고가 파산관재인과 협의 없이 면제재산인 임차보증금을 임의로 압류 및 공제한 것은 채무자회생법을 위반한 불법행위이다 (제1,3점).</li>
+                <li>피고는 원고의 퇴거 수개월 전부터 10여 차례에 걸쳐 퇴거 요구와 임대차계약 갱신 거부 의사를 전달하였으며, 실제로 명도소송을 제기하고, 임대차보증금 압류 및 처분을 예고하였다. 이러한 정황에 따라, 피고의 유일한 증거인 "원고와 피고의 협의에 의한 퇴거 문서"는 원고의 자발적 퇴거를 입증할 수 없다. 또한, 강압에 의한 합의는 선의에 의한 합의로 인정될 수 없다 (제6,7점).</li>
+                <li>특히, 원고는 피고의 거듭된 퇴거 요청, 명도소송, 임대차보증금 압류 등에 대해 법적 소송을 제기할 의사를 명백히 전달하였다. 이는 피고가 주장하는 ‘협의에 의한 자발적 퇴거’의 진실성을 명확히 부정한다 (제3점).</li>
+                <li>피고의 유일한 증거인 '자발적 퇴거 문서'는 원고가 퇴거 시, 임대 주택의 시설물에 이상이 없다는 문서에 서명한 것이다. 이 문서를 피고가 자발적 퇴거 문서로 변조하고, 그 내용을 피고가 임의로 기재한 것으로 명백한 문서 위변조이다. 심지어 날짜와 금액도 오류 투성이이다. (제7점).</li>
+                <li>원고는 피고의 불법 행위에 의해, 헌법상 생존권과 주거권이 침해되었으며, 원고의 정밀 기계 엔지니어 현업 복귀가 현저히 방해되었다 (제11점).</li>
+                <li>임대차 관계는 소비자 기본법의 적용 대상이며, 피고는 소비자기본법 제55조에 따라 3배 배상해야 한다 (제12점).</li>
+            </ul>
+            <p><strong>피고 주장 (part12 답변서 반영):</strong></p>
+            <ul>
+                <li>증거로 제출한 원고의 자발적 퇴거 문서에서 보듯, 원고의 퇴거는 협의에 따라 이루어졌고, 관리비 및 제3자 소송비용 등을 대위변제한 구상권이 있으므로 보증금 공제는 적법하다. <strong class="important">중요: 1심 판결의 핵심 요소</strong></li>
+                <li>임대차관계는 소비자기본법의 적용 대상이 아니므로 손해배상책임이 없다.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

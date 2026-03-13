@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사업성 보고서 (통합 갱신판) — OpenHash + 고팡 + 사법 자동화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#003087;--blue:#1659a8;--light:#e8eef7;--text:#1a1a1a;--sub:#444;--border:#c8d3e4;--bg:#fff;--alt:#f6f8fb;--green:#0a6640;--amber:#7a5500;--red:#9b1c1c}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.75;color:var(--text);background:var(--bg)}
+  @media print{.cover-footer{display:none}body{font-size:12px}}
+  .cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(160deg,#001845 0%,#003087 40%,#1659a8 100%);color:#fff;text-align:center;padding:60px 40px;position:relative}
+  .cover::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.03) 39px,rgba(255,255,255,.03) 40px);pointer-events:none}
+  .cl0{font-size:13px;letter-spacing:6px;opacity:.7;margin-bottom:24px;font-weight:300}
+  .ct{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:600;line-height:1.4;margin-bottom:12px}
+  .cs{font-size:15px;font-weight:300;opacity:.85;margin-bottom:48px}
+  .cm{display:grid;grid-template-columns:repeat(3,auto);gap:32px;font-size:13px;opacity:.8}
+  .cm dt{font-weight:300;opacity:.7;margin-bottom:2px}.cm dd{font-weight:500}
+  .ckpi{margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:760px;width:100%}
+  .ck{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:14px 8px;text-align:center}
+  .ck .cv{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;color:#8bb8ff}
+  .ck .cl{font-size:11px;opacity:.7;margin-top:4px}
+  .cover-footer{position:absolute;bottom:24px;font-size:11px;opacity:.4}
+  .w{max-width:920px;margin:0 auto;padding:48px 32px 80px}
+  .sh{display:flex;align-items:flex-start;gap:16px;margin:56px 0 28px;padding-bottom:14px;border-bottom:2px solid var(--navy)}
+  .sn{flex-shrink:0;background:var(--navy);color:#fff;font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;width:56px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:4px}
+  .st{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;color:var(--navy);line-height:1.35}
+  .st small{display:block;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:400;color:var(--sub);margin-top:2px}
+  .sub{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;color:var(--blue);margin:32px 0 12px;padding-left:12px;border-left:3px solid var(--blue)}
+  p{margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:13px}
+  thead th{background:var(--navy);color:#fff;padding:10px 12px;font-weight:500;text-align:left;white-space:nowrap}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  tbody tr:nth-child(even){background:var(--alt)}
+  .nr{text-align:right;font-variant-numeric:tabular-nums}
+  .total-row{font-weight:700;background:var(--light)!important}
+  .hl{background:var(--light);border-left:4px solid var(--navy);padding:16px 20px;margin:20px 0 24px;border-radius:0 6px 6px 0;font-size:13px}
+  .hl strong{color:var(--navy)}
+  .kr{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0 28px}
+  .kc{text-align:center;padding:16px 8px;border:1px solid var(--border);border-radius:6px;background:var(--alt)}
+  .kc .kv{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--navy)}
+  .kc .kl{font-size:11px;color:var(--sub);margin-top:4px}
+  .sd{border:none;border-top:1px solid var(--border);margin:40px 0}
+  .fn{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--sub);line-height:1.7}
+  .pn{text-align:center;font-size:12px;color:var(--sub);margin-top:40px;opacity:.6}
+  .ub{display:inline-block;background:#d32f2f;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:12px;margin-left:8px;vertical-align:middle}
+  @media(max-width:640px){.ct{font-size:22px}.ckpi,.kr{grid-template-columns:repeat(2,1fr)}.cm{grid-template-columns:1fr;gap:12px}.w{padding:24px 16px 48px}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cl0">사업성 및 사업화 보고서 <span style="background:rgba(255,80,80,.3);padding:2px 10px;border-radius:10px;margin-left:8px">통합 갱신판 v2.0</span></div>
+  <h1 class="ct">OpenHash + 고팡(Gopang) +<br>사법 자동화 통합 시스템</h1>
+  <p class="cs">Business Feasibility & Commercialization Report — Integrated Technology</p>
+  <div class="ckpi">
+    <div class="ck"><div class="cv">₩9조</div><div class="cl">한국 SAM (v1.0: 3,920억)</div></div>
+    <div class="ck"><div class="cv">23배</div><div class="cl">시장 규모 상향 배수</div></div>
+    <div class="ck"><div class="cv">1/14,400</div><div class="cl">재판 소요 시간 단축</div></div>
+    <div class="ck"><div class="cv">44,000명</div><div class="cl">대체 가능 법조 인력</div></div>
+  </div>
+  <dl class="cm" style="margin-top:40px">
+    <div><dt>발행일</dt><dd>2026년 3월 11일 (v2.0)</dd></div>
+    <div><dt>문서분류</dt><dd>대외비 — 사업화 검토용</dd></div>
+    <div><dt>기술분류</dt><dd>분산원장·AI·사법자동화</dd></div>
+  </dl>
+  <div class="cover-footer">v1.0: AI 모듈 단독 분석 → v2.0: OpenHash+고팡 통합 기술 기반 전면 갱신</div>
+</div>
+
+<div class="w">
+
+  <hr class="sd">
+
+  <!-- ══ I. 시장 규모 재산정 ══ -->
+  <div class="sh"><span class="sn">I</span><div><div class="st">시장 규모 재산정<small>Market Size Reassessment</small></div></div></div>
+
+  <div class="sub">1.1 v1.0 대비 시장 재산정</div>
+  <table>
+    <thead><tr><th>구분</th><th class="nr">v1.0 (AI 단독)</th><th class="nr">v2.0 (통합 기술)</th><th class="nr">배수</th><th>변동 근거</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TAM</strong><br>전체시장</td><td class="nr">2.9조 원</td><td class="nr"><strong>13조 원 이상</strong></td><td class="nr">4.5배</td><td>한국 법률서비스 시장 전체. 변호사 보수+법원 비용+ADR+기업 법무+고팡 플랫폼 부가가치</td></tr>
+      <tr><td><strong>SAM</strong><br>유효시장</td><td class="nr">3,920억 원</td><td class="nr"><strong>약 9조 원</strong></td><td class="nr">23배</td><td>정형 사건(70%)의 자동화. OpenHash 증거 보전+AI 판정으로 대체 가능한 법률서비스 전영역</td></tr>
+      <tr><td><strong>SOM</strong><br>확보가능시장</td><td class="nr">196억 원</td><td class="nr"><strong>4,500억 원</strong></td><td class="nr">23배</td><td>SAM의 5% 점유. 고팡 플랫폼 확산(300만 사용자 기준)에 연동</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub">1.2 수익원 재구성</div>
+  <p>v1.0의 수익 모델은 SaaS 구독+API+컨설팅의 3원 구조였다. v2.0에서는 고팡 플랫폼 수익까지 포함한 <strong>5원 구조</strong>로 확장한다.</p>
+
+  <table>
+    <thead><tr><th>수익원</th><th>내용</th><th>v1.0 비중</th><th>v2.0 비중</th></tr></thead>
+    <tbody>
+      <tr><td><strong>① 사법 자동화 SaaS</strong></td><td>법무법인·기업·ADR기관 대상 월정액 구독</td><td>70%</td><td>25%</td></tr>
+      <tr><td><strong>② 고팡 플랫폼 수수료</strong></td><td>EGCT 거래 수수료 (건당 0.1~0.5%), 전자상거래 중개 수수료</td><td>—</td><td>35%</td></tr>
+      <tr><td><strong>③ ODR 분쟁 해결 수수료</strong></td><td>자동 분쟁 해결 건당 과금 (소비자·금융·전자상거래)</td><td>—</td><td>20%</td></tr>
+      <tr><td><strong>④ OpenHash 인프라 라이선스</strong></td><td>금융기관·공공기관·해외 정부 대상 기술 라이선스</td><td>—</td><td>12%</td></tr>
+      <tr><td><strong>⑤ API·컨설팅</strong></td><td>리걸테크 플랫폼 API, 기관 커스터마이징</td><td>30%</td><td>8%</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="sd">
+
+  <!-- ══ II. 5개년 추정 재무제표 ══ -->
+  <div class="sh"><span class="sn">II</span><div><div class="st">5개년 추정 재무제표 (2027–2031)<small>5-Year Pro Forma Financial Statements — Revised</small></div></div></div>
+
+  <div class="sub">2.1 추정 전제 조건 갱신</div>
+  <table>
+    <thead><tr><th>항목</th><th>v1.0</th><th>v2.0 (갱신)</th></tr></thead>
+    <tbody>
+      <tr><td>플랫폼 사용자</td><td>(미고려)</td><td>1년차 30만 → 5년차 300만 (고팡 사용자)</td></tr>
+      <tr><td>EGCT 거래 규모</td><td>(미고려)</td><td>1년차 월 10억T → 5년차 월 500억T</td></tr>
+      <tr><td>ODR 분쟁 처리 건수</td><td>(미고려)</td><td>1년차 1만 건/년 → 5년차 50만 건/년</td></tr>
+      <tr><td>OpenHash 라이선스</td><td>(미고려)</td><td>2년차부터 금융기관·공공기관 납품 시작</td></tr>
+      <tr><td>인건비</td><td>15명→45명</td><td>20명→80명 (OpenHash+고팡 운영 포함)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub">2.2 갱신 추정 손익계산서</div>
+  <table>
+    <thead>
+      <tr><th>항목 (억 원)</th><th class="nr">2027</th><th class="nr">2028</th><th class="nr">2029</th><th class="nr">2030</th><th class="nr">2031</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>매출액</strong></td><td class="nr">85</td><td class="nr">450</td><td class="nr">1,800</td><td class="nr">4,500</td><td class="nr">9,500</td></tr>
+      <tr><td style="padding-left:16px">사법 자동화 SaaS</td><td class="nr">30</td><td class="nr">120</td><td class="nr">420</td><td class="nr">1,080</td><td class="nr">2,375</td></tr>
+      <tr><td style="padding-left:16px">고팡 플랫폼 수수료</td><td class="nr">20</td><td class="nr">160</td><td class="nr">680</td><td class="nr">1,620</td><td class="nr">3,325</td></tr>
+      <tr><td style="padding-left:16px">ODR 분쟁 해결 수수료</td><td class="nr">15</td><td class="nr">90</td><td class="nr">360</td><td class="nr">900</td><td class="nr">1,900</td></tr>
+      <tr><td style="padding-left:16px">OpenHash 라이선스</td><td class="nr">10</td><td class="nr">50</td><td class="nr">220</td><td class="nr">540</td><td class="nr">1,140</td></tr>
+      <tr><td style="padding-left:16px">API·컨설팅</td><td class="nr">10</td><td class="nr">30</td><td class="nr">120</td><td class="nr">360</td><td class="nr">760</td></tr>
+      <tr style="border-top:2px solid var(--border)"><td><strong>매출원가</strong></td><td class="nr">51</td><td class="nr">203</td><td class="nr">666</td><td class="nr">1,440</td><td class="nr">2,660</td></tr>
+      <tr style="background:var(--light)"><td><strong>매출총이익</strong></td><td class="nr">34</td><td class="nr">247</td><td class="nr">1,134</td><td class="nr">3,060</td><td class="nr">6,840</td></tr>
+      <tr><td><em>매출총이익률</em></td><td class="nr"><em>40%</em></td><td class="nr"><em>55%</em></td><td class="nr"><em>63%</em></td><td class="nr"><em>68%</em></td><td class="nr"><em>72%</em></td></tr>
+      <tr style="border-top:2px solid var(--border)"><td><strong>판관비</strong></td><td class="nr">110</td><td class="nr">290</td><td class="nr">720</td><td class="nr">1,350</td><td class="nr">2,280</td></tr>
+      <tr style="background:var(--light);font-weight:700"><td><strong>영업이익</strong></td><td class="nr" style="color:var(--red)">-76</td><td class="nr" style="color:var(--red)">-43</td><td class="nr" style="color:var(--green)">414</td><td class="nr" style="color:var(--green)">1,710</td><td class="nr" style="color:var(--green)">4,560</td></tr>
+      <tr><td><em>영업이익률</em></td><td class="nr" style="color:var(--red)"><em>-89%</em></td><td class="nr" style="color:var(--red)"><em>-10%</em></td><td class="nr" style="color:var(--green)"><em>23%</em></td><td class="nr" style="color:var(--green)"><em>38%</em></td><td class="nr" style="color:var(--green)"><em>48%</em></td></tr>
+      <tr class="total-row"><td><strong>당기순이익</strong></td><td class="nr" style="color:var(--red)">-76</td><td class="nr" style="color:var(--red)">-43</td><td class="nr" style="color:var(--green)">311</td><td class="nr" style="color:var(--green)">1,283</td><td class="nr" style="color:var(--green)">3,420</td></tr>
+    </tbody>
+  </table>
+
+  <div class="kr">
+    <div class="kc"><div class="kv">₩9,500억</div><div class="kl">5년차 매출 (v1.0: 312억)</div></div>
+    <div class="kc"><div class="kv">48%</div><div class="kl">5년차 영업이익률</div></div>
+    <div class="kc"><div class="kv">3년차</div><div class="kl">BEP 달성</div></div>
+    <div class="kc"><div class="kv">₩4,895억</div><div class="kl">5년 누적 순이익</div></div>
+  </div>
+
+  <div class="sub">2.3 v1.0 대비 재무 비교</div>
+  <table>
+    <thead><tr><th>지표</th><th class="nr">v1.0 (AI 단독)</th><th class="nr">v2.0 (통합)</th><th class="nr">배수</th></tr></thead>
+    <tbody>
+      <tr><td>5년차 매출</td><td class="nr">312억 원</td><td class="nr">9,500억 원</td><td class="nr" style="color:var(--green);font-weight:700">30배</td></tr>
+      <tr><td>5년차 영업이익</td><td class="nr">119억 원</td><td class="nr">4,560억 원</td><td class="nr" style="color:var(--green);font-weight:700">38배</td></tr>
+      <tr><td>5년 누적 순이익</td><td class="nr">133억 원</td><td class="nr">4,895억 원</td><td class="nr" style="color:var(--green);font-weight:700">37배</td></tr>
+      <tr><td>5년차 추정 기업가치</td><td class="nr">780~1,200억 원</td><td class="nr">2.4~3.8조 원</td><td class="nr" style="color:var(--green);font-weight:700">30배</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="sd">
+
+  <!-- ══ III. 사업화 핵심 전략 ══ -->
+  <div class="sh"><span class="sn">III</span><div><div class="st">사업화 핵심 전략<small>Core Commercialization Strategy</small></div></div></div>
+
+  <div class="sub">3.1 "고팡 먼저" 전략</div>
+  <div class="hl" style="border-left-color:var(--green)">
+    <strong>핵심 전략 변경:</strong> v1.0에서는 법무법인 PoC → SaaS → 공공 납품 순서였으나, v2.0에서는 <strong>고팡 플랫폼 확산을 최우선</strong>으로 한다. 고팡 사용자가 증가하면 OpenHash에 보전되는 증거의 양이 비례하여 증가하고, 이에 따라 사법 자동화의 활용 범위도 자연스럽게 확장된다. 즉, 고팡이 사법 자동화의 시장 자체를 창출한다.
+  </div>
+
+  <table>
+    <thead><tr><th>단계</th><th>시기</th><th>핵심 목표</th><th>주요 활동</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Phase 0</strong></td><td>2026.H2~2027.H1</td><td>고팡 β 런칭 + OpenHash 인프라 구축</td><td>고팡 앱 출시(제주 시범), OpenHash 읍면동 노드 배치, 초기 사용자 5만 명 확보, 정부 R&D 수주</td></tr>
+      <tr><td><strong>Phase 1</strong></td><td>2027.H2~2028.H2</td><td>고팡 전국 확장 + 사법 자동화 β</td><td>고팡 30만 사용자, EGCT 결제 활성화, ODR 분쟁 해결 서비스 시작, 법무법인 β 테스트</td></tr>
+      <tr><td><strong>Phase 2</strong></td><td>2029</td><td>수익화 + 공공 시장 진입</td><td>고팡 100만 사용자, 공공 ADR 납품, OpenHash 금융기관 라이선스, 정식 유료 전환</td></tr>
+      <tr><td><strong>Phase 3</strong></td><td>2030~2031</td><td>글로벌 확장 + IPO</td><td>일본·싱가포르 진출, 고팡 300만 사용자, 기술특례상장 또는 코스닥 IPO</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub">3.2 사법부·법률시장 진입 전략 (갱신)</div>
+  <p>v1.0에서는 법무법인 → 기업법무 → 공공 ADR → 법원 순서로 제안했으나, v2.0에서는 <strong>고팡 사용자 기반의 분쟁 해결 수요</strong>가 시장 진입의 출발점이 된다.</p>
+
+  <table>
+    <thead><tr><th>우선순위</th><th>시장</th><th>진입 방식</th><th>고팡 연동</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>전자상거래 ODR</strong></td><td>고팡 내 전자상거래 분쟁 자동 해결</td><td>고팡 쇼핑몰의 모든 거래 기록이 OpenHash에 보전 → 분쟁 시 즉시 자동 판정</td></tr>
+      <tr><td>2</td><td><strong>소비자 분쟁</strong></td><td>고팡 사용자 간 분쟁 자동 조정</td><td>대화·약속·결제 기록이 모두 보전 → 증거 다툼 없이 즉시 조정</td></tr>
+      <tr><td>3</td><td><strong>금융·보험 분쟁</strong></td><td>EGCT 거래 분쟁 자동 해결</td><td>모든 금융 거래가 5단계 검증 + 해시 체인 기록 → 분쟁 원인 즉시 확정</td></tr>
+      <tr><td>4</td><td><strong>공공 ADR</strong></td><td>대한상사중재원, 분쟁조정위 납품</td><td>고팡 기록을 공공 ADR에 증거로 제출 가능</td></tr>
+      <tr><td>5</td><td><strong>법무법인·기업법무</strong></td><td>SaaS 구독, 소송 전략 검증</td><td>고팡 기록의 증거 능력을 활용한 소송 지원</td></tr>
+      <tr><td>6</td><td><strong>법원·검찰</strong></td><td>사법부 디지털 전환 파트너</td><td>장기 목표. 고팡 증거의 법적 효력 인정 후 확산</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="sd">
+
+  <!-- ══ IV. 종합 ══ -->
+  <div class="sh"><span class="sn">IV</span><div><div class="st">종합 판정<small>Comprehensive Assessment</small></div></div></div>
+
+  <div class="hl" style="border-left-color:var(--green)">
+    <strong>사업성 종합 판정: A+ (사업화 추진 최적합)</strong><br><br>
+    본 통합 기술(OpenHash + 고팡 + 사법 자동화)의 사업성은 v1.0에서 평가한 AI 단독 사업성 대비 <strong>시장 규모 23배, 5년차 매출 30배, 기업가치 30배</strong>로 재산정된다.<br><br>
+    핵심 전략은 "고팡 먼저"이다. 고팡 플랫폼이 확산되면 OpenHash에 보전되는 증거량이 비례 증가하고, 사법 자동화의 시장이 자연스럽게 창출된다. 고팡은 메신저이자 쇼핑몰이자 결제 플랫폼이자 증거 보전 시스템이자 AI 사법 서비스의 입구이다.<br><br>
+    5년차(2031) 매출 ₩9,500억 원, 영업이익률 48%, 추정 기업가치 ₩2.4~3.8조 원은 한국 사법 체계 대체라는 전례 없는 사업 기회의 보수적 추정이다.
+  </div>
+
+  <div class="fn">
+    본 보고서의 재무 추정치는 통합 기술 체계 분석에 기반한 합리적 추정이며, 확정된 사업 결과를 보장하지 않습니다. v1.0(2026.3.11) AI 단독 분석 → v2.0(2026.3.11) OpenHash+고팡 통합 전면 갱신.<br>
+    보고서 작성일: 2026년 3월 11일
+  </div>
+  <div class="pn">— 끝 —</div>
+</div>
+</body>
+</html>

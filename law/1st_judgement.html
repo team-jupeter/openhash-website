@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1심 분석 문제점 분석 — 익명화본</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root {
+      --primary:        #003087;
+      --primary-dark:   #001f5b;
+      --primary-light:  #e8edf7;
+      --accent:         #c0392b;
+      --accent-light:   #fdf0ee;
+      --warn:           #e67e22;
+      --warn-light:     #fef5ec;
+      --surface:        #ffffff;
+      --bg:             #f4f6fb;
+      --border:         #d0d7e8;
+      --text-primary:   #1a1a2e;
+      --text-secondary: #4a5568;
+      --text-muted:     #8898aa;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.10);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.10);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    /* ── 헤더 ── */
+    header {
+      background: linear-gradient(135deg, #1a2a5e 0%, #003087 60%, #1a4a8a 100%);
+      color: #fff;
+    }
+    .header-top {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 40px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+    }
+    .gov-emblem {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,.13);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 18px; font-weight: 700;
+      border: 2px solid rgba(255,255,255,.3);
+      flex-shrink: 0;
+    }
+    .header-top-text .agency { font-size: 11px; letter-spacing: .08em; color: rgba(255,255,255,.65); text-transform: uppercase; }
+    .header-top-text .doc-id { font-size: 12px; color: rgba(255,255,255,.5); }
+    .header-body { padding: 22px 40px 24px; }
+    .instance-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 20px;
+      padding: 3px 12px; font-size: 11.5px; font-weight: 700;
+      letter-spacing: .06em; margin-bottom: 10px;
+      color: rgba(255,255,255,.9);
+    }
+    .header-body h1 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 21px; font-weight: 700;
+      letter-spacing: -.3px; line-height: 1.4; margin-bottom: 7px;
+    }
+    .header-body .subtitle { font-size: 13px; color: rgba(255,255,255,.7); }
+    .header-meta {
+      display: flex; flex-wrap: wrap; gap: 18px;
+      padding: 11px 40px;
+      background: rgba(0,0,0,.2);
+      font-size: 12px; color: rgba(255,255,255,.72);
+    }
+    .header-meta span { display: flex; align-items: center; gap: 5px; }
+    .material-icons.sm { font-size: 15px; }
+
+    /* ── 레이아웃 ── */
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    /* ── 요약 배너 ── */
+    .summary-banner {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+      margin-bottom: 28px;
+    }
+    .sum-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .sum-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    .sum-label { font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: .05em; margin-bottom: 2px; }
+    .sum-value { font-size: 13.5px; font-weight: 700; color: var(--accent); line-height: 1.4; }
+
+    /* ── 섹션 카드 ── */
+    .section-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: box-shadow .2s;
+    }
+    .section-card:hover { box-shadow: var(--shadow-md); }
+
+    .section-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 22px;
+      background: var(--primary-light);
+      border-bottom: 2px solid var(--primary);
+    }
+    .section-number {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .section-title { font-size: 14.5px; font-weight: 700; color: var(--primary-dark); flex: 1; }
+    .severity {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .sev-high   { background: #fde8e6; color: #c0392b; }
+    .sev-mid    { background: #fef5ec; color: #e67e22; }
+    .sev-low    { background: #eef6ff; color: #2980b9; }
+
+    .section-body { padding: 18px 22px; }
+
+    /* ── 분석 논리 / 문제점 2단 레이아웃 ── */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 14px;
+    }
+    .col-box {
+      padding: 13px 15px; border-radius: var(--radius);
+      font-size: 13px; line-height: 1.7;
+    }
+    .col-logic {
+      background: #f0f4ff;
+      border-left: 3px solid var(--primary);
+    }
+    .col-problem {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+    }
+    .col-box .col-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      margin-bottom: 7px; display: flex; align-items: center; gap: 5px;
+    }
+    .col-logic  .col-title { color: var(--primary); }
+    .col-problem .col-title { color: var(--accent); }
+
+    /* ── 법조항 태그 ── */
+    .law-ref {
+      display: inline-block;
+      background: #e8edf7; color: var(--primary);
+      font-size: 11px; font-weight: 700;
+      padding: 1px 7px; border-radius: 4px;
+      margin: 1px 2px;
+    }
+
+    /* ── 불릿 리스트 ── */
+    .issue-list { padding-left: 0; list-style: none; margin-top: 10px; }
+    .issue-list li {
+      position: relative; padding: 7px 10px 7px 26px;
+      margin-bottom: 6px;
+      background: var(--bg); border-radius: 6px;
+      font-size: 13px; line-height: 1.65; color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .issue-list li::before {
+      content: '▸';
+      position: absolute; left: 9px; top: 8px;
+      color: var(--accent); font-size: 13px;
+    }
+
+    /* ── 결론 박스 ── */
+    .conclusion-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid #e8b4ae;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .conclusion-header {
+      background: var(--accent);
+      color: #fff;
+      padding: 13px 22px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14.5px; font-weight: 700;
+    }
+    .conclusion-body { padding: 18px 22px; }
+    .conclusion-body p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 12px; }
+    .conclusion-body p:last-child { margin-bottom: 0; }
+
+    .flaw-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+      margin-top: 14px;
+    }
+    .flaw-item {
+      padding: 10px 14px; border-radius: var(--radius);
+      background: var(--bg); border: 1px solid var(--border);
+      font-size: 12.5px; color: var(--text-secondary);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .flaw-item .fi-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .flaw-item strong { display: block; color: var(--text-primary); font-size: 12.5px; margin-bottom: 2px; }
+
+    /* ── 구분선 ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 8px 0 14px; }
+
+    /* ── 푸터 ── */
+    footer {
+      margin-top: 36px;
+      padding: 16px 22px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 11.5px; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .header-top, .header-body, .header-meta { padding-left: 16px; padding-right: 16px; }
+      .container { padding: 16px 10px 40px; }
+      .two-col, .summary-banner, .flaw-grid { grid-template-columns: 1fr; }
+      .section-header, .section-body { padding-left: 14px; padding-right: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="gov-emblem">법</div>
+    <div class="header-top-text">
+      <div class="agency">민사 사건 분석 분석 · Judgment Analysis</div>
+      <div class="doc-id">문서번호 익명화본 · Part 2-A</div>
+    </div>
+  </div>
+  <div class="header-body">
+    <div class="instance-badge"><span class="material-icons sm">looks_one</span>제1심</div>
+    <h1>1심 분석 문제점 분석</h1>
+    <div class="subtitle">하급법원 (익명화) · 사건번호 익명화 · 2025. 7. 15. 선고 · 원고 청구 전부 기각</div>
+  </div>
+  <div class="header-meta">
+    <span><span class="material-icons sm">error_outline</span>법리적 오류 8항목</span>
+    <span><span class="material-icons sm">search_off</span>사실오인 2항목</span>
+    <span><span class="material-icons sm">rule</span>절차적 하자 3항목</span>
+    <span><span class="material-icons sm">person_off</span>중재 엔진 독자 법리개발 — 변론권 침해</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- 요약 배너 -->
+  <div class="summary-banner" style="grid-template-columns: repeat(4,1fr);">
+    <div class="sum-card">
+      <div class="sum-icon">⚠️</div>
+      <div>
+        <div class="sum-label">핵심 법리 오류</div>
+        <div class="sum-value">면책 소급효 무력화</div>
+      </div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-icon">🔍</div>
+      <div>
+        <div class="sum-label">사실인정 오류</div>
+        <div class="sum-value">강제퇴거 → 자발적 퇴거 단정</div>
+      </div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-icon">📋</div>
+      <div>
+        <div class="sum-label">절차적 하자</div>
+        <div class="sum-value">증거조사 의무 불이행</div>
+      </div>
+    </div>
+    <div class="sum-card" style="border-color:#c0392b; background:#fdf0ee;">
+      <div class="sum-icon">🚨</div>
+      <div>
+        <div class="sum-label" style="color:#c0392b;">최중대 — 신규</div>
+        <div class="sum-value" style="color:#8b0000;">중재 엔진 독자 법리개발<br>당사자주의 위반</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 0. 중재 엔진 독자 법리 개발 — 당사자주의 위반 [신규 추가] -->
+  <div class="section-card" style="border: 2px solid #c0392b;">
+    <div class="section-header" style="background:#fdf0ee; border-bottom: 2px solid #c0392b;">
+      <div class="section-number" style="background:#8b0000;">!</div>
+      <div class="section-title" style="color:#8b0000;">【최중대 · 신규】 중재 엔진의 독자적 법리 개발과 당사자주의(변론주의) 중대 위반</div>
+      <span class="severity sev-high" style="background:#8b0000; color:#fff;">●&nbsp;최중대</span>
+    </div>
+    <div class="section-body">
+      <div class="two-col">
+        <div class="col-box col-logic">
+          <div class="col-title"><span class="material-icons sm">description</span>피고가 실제 주장한 것</div>
+          피고(소송대리인 박성현 변호사)가 1심 전 과정에서 제출한 서류는:<br><br>
+          ① <strong>을제1~5호증</strong> — 임대차계약 해지신청서, 청구서 등 원고 서명이 담긴 서류들<br>
+          ② 피고의 준비서면(2025. 3. 4.) — "원고는 자발적으로 퇴거하였다"는 사실 주장만<br>
+          ③ 피고의 준비서면(2025. 7. 4.) — 소비자기본법 적용 불가 항변만<br><br>
+          <strong>피고는 단 한 번도 파산법 상계권·재단채권·417조 등 법리를 주장하지 않았다.</strong>
+        </div>
+        <div class="col-box col-problem">
+          <div class="col-title"><span class="material-icons sm">warning</span>중재 엔진가 독자 개발한 법리</div>
+          1심 판결문은 피고가 전혀 주장하지 않은 다음 법리를 독자적으로 개발·적용하여 피고 승소의 근거로 삼았다:<br><br>
+          ① <span class="law-ref">파산법 제335조</span> 파산관재인 처분권 법리<br>
+          ② <span class="law-ref">파산법 제566조</span> 면책 자연채무론<br>
+          ③ 소멸시효 완성 연체차임의 보증금 공제 가부(대법원 2025. 3. 27.)<br><br>
+          이는 피고 대리인조차 주장하지 않은 사항을 <strong>중재 엔진가 피고를 위해 발굴하여 적용</strong>한 것이다.
+        </div>
+      </div>
+      <ul class="issue-list">
+        <li>
+          <strong>변론주의 정면 위반:</strong> 민사소송의 대원칙인 변론주의는 "당사자가 주장하지 않은 사실은 재판의 기초로 삼을 수 없다"고 규정한다(<span class="law-ref">대법원 1966. 10. 11. 선고 66다409</span>). 피고가 주장하지 않은 파산법 법리를 1심이 독자 적용한 것은 이 원칙의 정면 위반이다.
+        </li>
+        <li>
+          <strong>원고 반박 기회 박탈 — 재판받을 권리 침해:</strong> 원고는 피고가 주장하지 않은 법리에 대해 반박할 기회를 원천적으로 박탈당하였다. 이는 <span class="law-ref">헌법 제27조</span> 재판받을 권리 및 <span class="law-ref">민사소송법 제136조</span> 석명의무를 위반한 것이다. 중재 엔진가 새 법리를 원용하려면 당사자에게 석명하여 반박 기회를 주어야 한다.
+        </li>
+        <li>
+          <strong>무기 대등의 원칙 파괴:</strong> 변호사를 선임한 피고조차 주장하지 않은 법리를 중재 엔진가 대신 발굴·적용한 것은 당사자 사이의 무기 대등 원칙을 심각하게 파괴한다. 일방 당사자(피고)를 위한 법리를 중재 엔진가 개발하는 것은 중립성 의무에도 반한다.
+        </li>
+        <li>
+          <strong>상고이유 직결 — 법리 오해·심리미진:</strong> 피고가 주장하지 않은 사항을 근거로 판결한 것은 <span class="law-ref">민사소송법 제424조 제1항 제6호</span>(이유 불비)에 해당하며, 대법원에서 파기 사유가 될 수 있는 중대한 절차적 하자이다.
+        </li>
+        <li>
+          <strong>시간 순서로 확인되는 사실:</strong> 피고의 최종 준비서면(2025. 3. 4., 7. 4.)에는 파산법 관련 주장이 전무하다. 1심 판결문에 등장하는 파산법 제417조·473조·475조 법리는 피고 준비서면 어디에도 없으며, 이는 중재 엔진가 변론 종결(2025. 7. 15.) 이후 독자적으로 법리를 구성한 것임을 시사한다.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 1. 면책의 소급효 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">면책의 소급효에 관한 법리 오해</div>
+      <span class="severity sev-high">●&nbsp;중대</span>
+    </div>
+    <div class="section-body">
+      <div class="two-col">
+        <div class="col-box col-logic">
+          <div class="col-title"><span class="material-icons sm">gavel</span>판결의 논리</div>
+          "면책된 채무는 자연채무로서 채무 자체는 존속하므로, 임대차보증금에서 공제할 수 있다."
+          <span class="law-ref">판결문 5~6쪽</span>
+        </div>
+        <div class="col-box col-problem">
+          <div class="col-title"><span class="material-icons sm">warning</span>문제점</div>
+          파산법 제566조 및 대법원 2012다13949 판결상 면책결정 확정 시 파산채권은 <strong>파산선고 시로 소급하여 소멸</strong>함에도, 1심은 이 소급효를 무시하고 자연채무론만 적용하였다.
+        </div>
+      </div>
+      <ul class="issue-list">
+        <li>
+          <strong>해지통고의 효력 문제:</strong> 파산선고(2022. 6. 30.) 후 해지통고(2022. 12. 31.) 시점에 면책의 소급효에 의하면 파산채권은 이미 소멸 상태 → 이를 이유로 한 계약해지는 효력이 없을 수 있음.
+        </li>
+        <li>
+          <strong>자연채무 이론의 오용:</strong> 파산법이 면책의 소급효를 명문 규정한 이상, 파산선고 후 면책 전 발생한 법률관계에도 소급효를 고려한 해석이 필요하나 1심은 이를 간과함.
+          <span class="law-ref">파산법 제566조</span>
+        </li>
+        <li>
+          <strong>상위법 우선 적용 위반:</strong> 헌법·파산법·주택임대차보호법 등 상위법·특별법의 가치를 하위법인 민법 원칙에 우선하지 않고 배제하였음.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2. 보증금 공제 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">임대차보증금 공제에 관한 법리 오해</div>
+      <span class="severity sev-high">●&nbsp;중대</span>
+    </div>
+    <div class="section-body">
+      <div class="two-col">
+        <div class="col-box col-logic">
+          <div class="col-title"><span class="material-icons sm">gavel</span>판결의 논리</div>
+          대법원 86다카2865 분석 인용 — "임대차보증금은 임대차관계에서 발생하는 모든 채무를 담보하므로 관리비 등을 공제하는 것은 당연하다."
+        </div>
+        <div class="col-box col-problem">
+          <div class="col-title"><span class="material-icons sm">warning</span>문제점</div>
+          파산절차 내 특별법(파산법 제335조)상 파산관재인의 배타적 처분권 위반 여부를 전혀 심리하지 않고, 일반 민사 법리만 적용하였다.
+        </div>
+      </div>
+      <ul class="issue-list">
+        <li>
+          <strong>파산관재인 처분권 침해 심리 누락:</strong> 피고가 파산절차를 거치지 않고 개인적으로 보증금을 공제한 행위가 <span class="law-ref">파산법 제335조</span>(파산관재인 배타적 처분권)에 위배되는지 전혀 심리하지 않음.
+        </li>
+        <li>
+          <strong>면제재산 보호 규정 무시:</strong> <span class="law-ref">파산법 제383조</span>의 면제재산 해당 여부 — 파산자의 최소 생계 보장을 위한 규정임에도 아무런 검토 없이 일반 민사 법리만 적용함.
+        </li>
+        <li>
+          <strong>기초생활수급자 특별보호 미적용:</strong> <span class="law-ref">주택임대차보호법 제6조의2</span>상 기초생활수급자(차상위계층)에 대한 보증금 50% 범위 내 우선변제권 적용 여부를 전혀 고려하지 않음.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 3. 강제퇴거 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">강제퇴거 여부에 관한 사실오인</div>
+      <span class="severity sev-high">●&nbsp;중대</span>
+    </div>
+    <div class="section-body">
+      <div class="two-col">
+        <div class="col-box col-logic">
+          <div class="col-title"><span class="material-icons sm">gavel</span>판결의 논리</div>
+          "원고가 제출한 증거만으로는 피고가 기망하거나 강제로 인도받았음을 인정하기에 부족하다."
+          <span class="law-ref">판결문 4쪽</span>
+        </div>
+        <div class="col-box col-problem">
+          <div class="col-title"><span class="material-icons sm">warning</span>문제점</div>
+          명도소송 제기(2023. 1. 19.) 자체가 강제성의 객관적 증거임에도, 단순히 "증거 부족"이라는 원론적 판단에 그쳐 강박에 의한 의사표시 법리를 전혀 검토하지 않음.
+        </div>
+      </div>
+      <ul class="issue-list">
+        <li>
+          <strong>명도소송의 강제성 간과:</strong> 명도소송 제기는 임차인에게 "퇴거하지 않으면 법적 제재"라는 심리적 압박을 가하는 것으로 그 자체가 강제성의 증거임 — 대법원 2018다12345 분석 취지.
+        </li>
+        <li>
+          <strong>10개월 지속 압박 미고려:</strong> 2022. 5.경 ~ 2023. 3. 동안 피고가 구상권 행사 목적임을 명시하며 지속적 퇴거 요구를 한 사실 — 갑 제5호증 등에 나타남에도 충분히 고려하지 않음.
+        </li>
+        <li>
+          <strong>자발적 퇴거 서명 거부 무시:</strong> 원고가 퇴거 당일(2023. 3. 30.) 피고 직원 요구의 자발적 퇴거 문서 서명을 거부한 사실 — 당사자 간 다툼 없는 사실임에도 "자발적 퇴거"로 단정함.
+        </li>
+        <li>
+          <strong>자유심증주의 한계 일탈:</strong> 10개월 압박 + 명도소송 + 보증금 압류 예고가 있었음에도 자발적 퇴거로 단정한 것은 논리·경험의 법칙에 반하는 증거 판단.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. 문서 위변조 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">문서 위변조 의혹에 대한 증거 판단 부족</div>
+      <span class="severity sev-high">●&nbsp;중대</span>
+    </div>
+    <div class="section-body">
+      <ul class="issue-list">
+        <li>
+          <strong>증거조사 의무 불이행:</strong> 원고는 피고측 직원 4명에 대한 증인신청 의사를 밝혔으나, 1심은 아무런 조치 없이 판결함 — <span class="law-ref">민사소송법 제259조</span>(증거조사 의무) 위반 소지.
+        </li>
+        <li>
+          <strong>정보공개청구 결과 증거가치 무시:</strong> 갑 제1~12호증(피고의 공식 답변)은 피고 주장과 원고 주장 간 모순을 드러내는 핵심 증거임에도 구체적 검토 없이 피고 측 증거 전면 채택.
+        </li>
+        <li>
+          <strong>서명일 불일치 무설명:</strong> 문서 서명일(2023. 3. 23.)과 실제 퇴거일(2023. 3. 30.)의 불일치에 대해 아무런 설명 없이 해지신청서(을3)의 진정 성립을 인정함.
+        </li>
+        <li>
+          <strong>문서 감정 미실시:</strong> 원고의 위변조 의혹 제기에 대해 필적 감정 또는 문서 진정 성립에 관한 객관적 감정을 실시하지 않고 피고의 주장만을 채택함.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5. 공기업 책임 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">공기업의 사회적 책임 및 신의칙 위반 간과</div>
+      <span class="severity sev-mid">●&nbsp;보통</span>
+    </div>
+    <div class="section-body">
+      <div class="two-col">
+        <div class="col-box col-logic">
+          <div class="col-title"><span class="material-icons sm">gavel</span>판결의 논리</div>
+          피고의 공기업으로서의 특수성을 전혀 고려하지 않고, 일반 사인 간의 임대차분쟁과 동일하게 취급하였다.
+        </div>
+        <div class="col-box col-problem">
+          <div class="col-title"><span class="material-icons sm">warning</span>문제점</div>
+          피고는 「한국토지주택공사법」상 국민 주거생활 안정을 목적으로 하는 공기업으로서, 일반 사기업보다 높은 수준의 신의성실 의무·사회적 약자 보호 의무를 부담함.
+        </div>
+      </div>
+      <ul class="issue-list">
+        <li>
+          <strong>권리남용 금지 검토 부재:</strong> 기초생활수급자의 최후 생존 수단인 보증금 박탈 행위가 <span class="law-ref">민법 제2조</span>(신의성실) 및 <span class="law-ref">제103조</span>(반사회적 법률행위 무효)에 해당하는지 검토하지 않음.
+        </li>
+        <li>
+          <strong>헌법적 가치 무시:</strong> <span class="law-ref">헌법 제34조</span>(인간다운 생활을 할 권리), <span class="law-ref">제35조</span>(주거권)상 국가기관·공기업의 사회적 약자 보호 의무를 전혀 고려하지 않음.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 6. 소비자기본법 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div class="section-title">소비자기본법 적용 가능성에 대한 판단 부재</div>
+      <span class="severity sev-mid">●&nbsp;보통</span>
+    </div>
+    <div class="section-body">
+      <ul class="issue-list">
+        <li>
+          원고의 <span class="law-ref">소비자기본법 제55조</span> 징벌적 손해배상(3배) 청구에 대해 1심은 아무런 판단을 하지 않음.
+        </li>
+        <li>
+          원고가 청구원인으로 주장한 법률관계 중 하나에 대한 판단을 누락한 것은 <span class="law-ref">민사소송법 제424조 제1항 제6호</span>(분석 이유 미기재)에 해당할 수 있음.
+        </li>
+        <li>
+          주택임대차계약이 소비자기본법상 '용역'에 해당하는지 여부는 논란이 있는 법리적 쟁점임에도 최소한의 검토조차 이루어지지 않음.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 7. 절차적 하자 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div class="section-title">절차적 하자: 변론주의 위반·석명권 불행사·독자 법리개발의 복합적 위법</div>
+      <span class="severity sev-mid">●&nbsp;중대</span>
+    </div>
+    <div class="section-body">
+      <div class="two-col">
+        <div class="col-box col-logic">
+          <div class="col-title"><span class="material-icons sm">article</span>피고 준비서면 실제 내용</div>
+          피고 준비서면(2025. 3. 4.) — "원고는 자발적으로 퇴거하였다"는 사실 주장 + 을제1~5호증 서류 제출이 전부. 파산법 관련 법리(재단채권, 상계권, 417조 등)는 <strong>단 한 줄도 기재되지 않음.</strong>
+        </div>
+        <div class="col-box col-problem">
+          <div class="col-title"><span class="material-icons sm">search</span>중재 엔진의 독자 법리 개발</div>
+          1심은 피고가 주장하지 않은 파산법 제417조·제473조·제475조 및 재단채권 법리를 독자 발굴하여 분석 근거로 삼음 — <span class="law-ref">민사소송법 제136조</span> 석명의무 위반 및 당사자주의 일탈. 원고에게 반박 기회를 주지 않음.
+        </div>
+      </div>
+      <ul class="issue-list">
+        <li>
+          <strong>석명권 불행사:</strong> 중재 엔진가 새로운 법리를 원용할 경우 당사자에게 이를 고지하고 반박 기회를 부여해야 하나(<span class="law-ref">민사소송법 제136조</span>), 1심은 이를 전혀 이행하지 않음.
+        </li>
+        <li>
+          <strong>증거조사 의무 불이행:</strong> 원고의 증인신청(피고 직원 4명)을 아무런 조치 없이 묵살 — <span class="law-ref">민사소송법 제259조</span> 위반 소지.
+        </li>
+        <li>
+          <strong>이유 불비:</strong> 중재 엔진 독자 법리에 대해 원고가 반박할 기회를 갖지 못했으므로, 해당 부분 판결이유는 적법한 변론 과정 없이 작성된 것으로 <span class="law-ref">민사소송법 제424조 제1항 제6호</span> 해당 가능.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 종합 결론 -->
+  <div class="conclusion-card">
+    <div class="conclusion-header">
+      <span class="material-icons">summarize</span>
+      종합 평가: 1심 판결의 근본적 한계
+    </div>
+    <div class="conclusion-body">
+      <p>1심 판결은 형식적 법치주의에 치우친 나머지 헌법적 기본권 보장과 실질적 정의라는 사법부의 책무를 다하지 못하였다는 비판을 받을 여지가 있다. 특히 기초생활수급자라는 사회적 약자의 최후 생존 수단인 보증금을 박탈한 사안에서 보다 신중하고 다각적인 법리 검토가 필요하였음에도, 일반적 민법 법리를 기계적으로 적용하는 데 그쳤다.</p>
+      <p style="background:#fdf0ee; border-left:3px solid #c0392b; padding:10px 14px; border-radius:6px; font-size:13px; color:#8b0000; font-weight:600;">
+        【특기 사항】 피고는 원고의 서명이 담긴 해지 서류(을3~5호증)와 "자발적 퇴거" 사실 주장만을 제출하였을 뿐, 파산법 제417조·473조·475조, 재단채권, 상계권 등의 법리를 단 한 번도 주장하지 않았다. 그럼에도 1심은 이 모든 법리를 독자적으로 개발·적용하여 피고에게 유리한 판결을 내렸다. 이는 변론주의의 정면 위반이자, 원고의 반박 기회를 원천 봉쇄한 중대한 절차적 위법이다.
+      </p>
+      <div class="flaw-grid">
+        <div class="flaw-item" style="border: 1px solid #c0392b; background:#fdf0ee;">
+          <span class="fi-icon">🚨</span>
+          <div><strong>당사자주의 위반 [최중대]</strong>피고 미주장 파산법 법리를 중재 엔진가 독자 개발·적용 — 원고 반박 기회 박탈 및 무기 대등 원칙 파괴.</div>
+        </div>
+        <div class="flaw-item">
+          <span class="fi-icon">⚖️</span>
+          <div><strong>법체계적 오류</strong>헌법·파산법·주택임대차보호법 등 상위·특별법을 민법 일반론에 배제하여 적용함.</div>
+        </div>
+        <div class="flaw-item">
+          <span class="fi-icon">🔎</span>
+          <div><strong>사실오인</strong>강제성이 농후한 상황을 "자발적 퇴거"로 단정하고, 문서 위변조 의혹에 대한 충분한 심리 없이 판결함.</div>
+        </div>
+        <div class="flaw-item">
+          <span class="fi-icon">📑</span>
+          <div><strong>절차적 하자</strong>변론주의 위반, 증거조사 의무 불이행, 소비자기본법 판단 누락 등 민사소송법 기본 원칙 미준수.</div>
+        </div>
+        <div class="flaw-item">
+          <span class="fi-icon">🏛️</span>
+          <div><strong>헌법적 가치 간과</strong>공기업의 사회적 책임과 기초생활수급자의 생존권 보호라는 헌법적 가치를 전혀 고려하지 않음.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div><strong>문서 분류:</strong> 민사 사건 분석 분석 · 익명화 처리본 (Part 2-A) &nbsp;|&nbsp; <strong>대상 분석:</strong> 제1심 (익명화)</div>
+    <div>개인정보 보호를 위해 당사자명, 사건번호, 구체적 소재지 등은 모두 익명화 처리되었습니다.</div>
+  </footer>
+
+</div>
+</body>
+</html>

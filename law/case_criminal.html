@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>형사 실시예 — K-OpenLaw</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:      #003087;
+      --blue-dark: #001752;
+      --red:       #7A1515;
+      --red-light: #FDF0EE;
+      --text:      #1A1C2E;
+      --text-sub:  #4A5068;
+      --border:    #D4DCE8;
+      --white:     #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #F5F7FA; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 16px 20px;
+    }
+    .placeholder {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      border-radius: 5px;
+      padding: 20px 20px 18px;
+    }
+    .ph-head {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
+    }
+    .ph-head .material-icons { font-size: 18px; color: var(--red); }
+    .ph-head h3 { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+    .ph-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 14px; line-height: 1.55; }
+    .outline { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 16px; }
+    .outline li {
+      font-size: 13px; color: var(--text-sub);
+      padding: 4px 0; border-bottom: 1px solid #EEF0F5;
+      display: flex; align-items: flex-start; gap: 6px;
+    }
+    .outline li:nth-last-child(-n+2) { border-bottom: none; }
+    .outline li .material-icons { font-size: 13px; color: #B0B8CC; margin-top: 1px; flex-shrink: 0; }
+    .status {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 14px; font-size: 12.5px; font-weight: 700;
+      color: #7A5800; background: #FFF7E0;
+      border: 1px solid #D4A020; border-radius: 3px;
+      padding: 3px 10px;
+    }
+    .status .material-icons { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="placeholder">
+    <div class="ph-head">
+      <span class="material-icons">policy</span>
+      <h3>형사 실시예 — 증거 위변조 형사 고발 · 작성 예정</h3>
+    </div>
+    <p class="ph-desc">피고 제출 증거의 사후 위변조를 Openhash 기술로 입증하고, K-OpenLaw가 검사를 보조하여 형사 고발 및 분석 및 서면 작성을 지원하는 실시예입니다.</p>
+    <ul class="outline">
+      <li><span class="material-icons">radio_button_unchecked</span>형사 고발 배경 및 사건 개요</li>
+      <li><span class="material-icons">radio_button_unchecked</span>Openhash 기반 위변조 탐지 분석서</li>
+      <li><span class="material-icons">radio_button_unchecked</span>디지털 포렌식 증거 무결성 검증 보고서</li>
+      <li><span class="material-icons">radio_button_unchecked</span>K-OpenLaw 형사 고발장 초안</li>
+      <li><span class="material-icons">radio_button_unchecked</span>검사 보조 AI 분석 — 공소 유지 전략</li>
+      <li><span class="material-icons">radio_button_unchecked</span>K-OpenLaw AI 형사 쟁점 분석 리포트</li>
+      <li><span class="material-icons">radio_button_unchecked</span>법원 분석 vs. K-OpenLaw 비교 평가</li>
+    </ul>
+    <div class="status"><span class="material-icons">pending</span>준비 중</div>
+  </div>
+  <script>
+    function report() {
+      if (window.parent === window) return;
+      window.parent.postMessage({ iframeHeight: document.body.offsetHeight, tab: 'criminal' }, '*');
+    }
+    window.addEventListener('load', report);
+    window.addEventListener('resize', report);
+  </script>
+</body>
+</html>

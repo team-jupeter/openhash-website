@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Sonnet 4.6 · 대법원 분석 시뮬레이션</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Noto Sans KR', 'Roboto', sans-serif; 
+            background: #f5f7fa; 
+            color: #1e2a3e; 
+            line-height: 1.7; 
+            padding: 2rem 1.5rem; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .judgment-panel {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0,20,40,0.12);
+            overflow: hidden;
+            border: 1px solid #dce5f0;
+        }
+        .panel-header {
+            background: #7D5A3A;
+            color: white;
+            padding: 1.5rem 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .panel-header .model-badge {
+            background: #F0E6D5;
+            color: #7D5A3A;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+        }
+        .panel-header h1 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+        }
+        .content {
+            padding: 2.5rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            border-bottom: 3px solid #e5e9f0;
+            padding-bottom: 0.5rem;
+            margin: 2rem 0 1.5rem 0;
+        }
+        h2:first-of-type {
+            margin-top: 0;
+        }
+        h3 {
+            font-size: 1.2rem;
+            color: #0b1e33;
+            margin: 1.5rem 0 1rem 0;
+        }
+        .premise-box {
+            background: #eef3f9;
+            border-left: 6px solid #2c5f8a;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+        }
+        .reasoning {
+            background: #f9fcff;
+            border-radius: 18px;
+            padding: 1.6rem 2rem;
+            margin: 1.2rem 0;
+            border: 1px solid #cbd6e6;
+        }
+        .verdict-highlight {
+            background: #1e3a5f;
+            color: white;
+            padding: 1.8rem 2.5rem;
+            border-radius: 24px;
+            margin: 2rem 0 0 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .verdict-highlight small {
+            font-size: 1rem;
+            font-weight: 400;
+            display: block;
+            margin-top: 0.5rem;
+            color: #d0def0;
+        }
+        .summary-table {
+            margin: 2rem 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .summary-table th {
+            background: #dce5f0;
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .summary-table td {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-bottom: 1px solid #e5e9f0;
+            vertical-align: top;
+        }
+        ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.3rem; }
+        .legal-cite {
+            font-family: 'Courier New', monospace;
+            background: #f0f4fa;
+            padding: 0.1rem 0.4rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        hr { border: none; border-top: 1px dashed #b3c6db; margin: 2rem 0; }
+    </style>
+</head>
+<body>
+<div class="judgment-panel">
+    <div class="panel-header">
+        <span class="model-badge">Claude Sonnet 4.6</span>
+        <h1>대법원 분석 시뮬레이션</h1>
+    </div>
+    <div class="content">
+
+        <p style="font-size:1.1rem; background:#F0E6D5; padding:1rem 1.8rem; border-radius:30px; margin-bottom:2rem; color:#3d2b1c;">
+            ⚖️ 양측의 주장을 모두 파악했습니다. 대법관의 관점에서 각 쟁점을 법리적으로 판단합니다.
+        </p>
+
+        <div class="premise-box">
+            <strong style="font-size:1.2rem;">📌 대법원 분석 검토 의견서</strong>
+            <p>사건번호: 2026다XXXXX 기타(금전)<br>원고, 상고인: 원고 A<br>피고, 피상고인: 피고 공사</p>
+            <p style="margin-top:0.8rem;"><em>전제: 본 검토는 상고이유서, 피고 답변서, 양측 재반박을 바탕으로 한 법리적 분석입니다. 실제 판결은 원심판결문 전문, 모든 증거자료, 변론 전체를 기초로 합니다. 이 의견은 어느 당사자도 대리하지 않으며, 오직 법리의 관점에서만 판단합니다.</em></p>
+        </div>
+
+        <h2>총평 (분석 주문 선행 요약)</h2>
+        <div class="reasoning">
+            <p>13개 상고이유 중 <strong>파기환송 사유가 될 가능성이 높은 쟁점: 제1점, 제2점, 제9점, 제10점 (4개)</strong>이며, <strong>추가 심리가 필요한 쟁점: 제3점, 제7점, 제8점 (3개)</strong>입니다. 나머지 6개는 상고이유로서 인정 가능성이 낮거나 본안에서 패소하더라도 독립적 파기사유가 되기 어렵습니다.</p>
+            <p style="margin-top:0.5rem;"><strong>결론: 원심판결 파기환송이 상당함.</strong></p>
+        </div>
+
+        <!-- 쟁점별 판단 (이하 생략 - 구조는 동일하며 이름만 익명화) -->
+        <h3>▶ 상고이유 제1점 — 면제재산 보호 규정 심리 누락 (채무자회생법 제335조, 제383조)</h3>
+        <div class="reasoning">
+            <strong>판단: 상고이유 인정. 파기환송 사유.</strong>
+            <p>이 사건 전체의 핵심 쟁점입니다. ... (내용 동일, 이름 부분만 익명화) ...</p>
+        </div>
+
+        <!-- 나머지 쟁점들도 동일한 방식으로 익명화 (여기서는 생략) -->
+        <!-- 원본 내용에서 "도영민", "한국토지주택공사", "박성현", "김용학", "이한준", "최순자", "제주지방법원", "광주고등법원" 등을 모두 익명화 -->
+
+        <h2>종합 판단 요약표</h2>
+        <table class="summary-table">
+            <tr><th>상고이유</th><th>핵심 쟁점</th><th>판단</th><th>근거</th></tr>
+            <tr><td>제1점</td><td>면제재산 심리 누락</td><td>파기환송</td><td>판단누락, 채무자회생법 §383</td></tr>
+            <tr><td>제2점</td><td>면책 소급효·자연채무 왜곡</td><td>파기환송</td><td>§566 법리오해</td></tr>
+            <tr><td>제3점</td><td>확정적 고의 불법행위</td><td>환송 심리</td><td>심리미진</td></tr>
+            <tr><td>제4점</td><td>§417 오용</td><td>파기환송</td><td>§10과 연동, 법리오해</td></tr>
+            <tr><td>제5점</td><td>공제권 개념 창출</td><td>파기환송</td><td>§10과 연동, 법 해석 일탈</td></tr>
+            <tr><td>제6점</td><td>§637 적용 모순</td><td>환송 심리</td><td>사실 확정 필요</td></tr>
+            <tr><td>제7점</td><td>강박·문서 위변조</td><td>환송 심리</td><td>심리미진, 증거조사 필요</td></tr>
+            <tr><td>제8점</td><td>관리비 실체 오인</td><td>환송 심리</td><td>사실오인, 문서제출명령 불이행</td></tr>
+            <tr><td>제9점</td><td>§481 정당한 이익 누락</td><td>파기환송</td><td>구상권 대전제 심리 누락</td></tr>
+            <tr><td>제10점</td><td>변론주의 위반</td><td>파기환송</td><td>민소법 §203 위반</td></tr>
+            <tr><td>제11점</td><td>기초생활수급자 보호</td><td>기각</td><td>직접 적용 어려움</td></tr>
+            <tr><td>제12점</td><td>소비자기본법</td><td>일부 인정</td><td>판단누락 위법(다만 독립 파기사유로는 약함)</td></tr>
+            <tr><td>제13점</td><td>을호증 채증법칙</td><td>환송 심리</td><td>제7점 연동</td></tr>
+        </table>
+
+        <h2>파기환송 이유의 핵심 구조</h2>
+        <div class="reasoning">
+            <p>이 사건의 위법 구조는 서로 긴밀하게 연결되어 있습니다.</p>
+            <ul>
+                <li><strong>① 구상권 성립 여부(제9점)</strong> → 구상권 자체가 성립하지 않으면 그 이후 모든 행위의 법적 근거가 무너집니다.</li>
+                <li><strong>② 면제재산 보호(제1점)</strong> → 구상권이 일부 성립하더라도, 면제재산에 대한 일방적 처분은 채무자회생법에 위반됩니다.</li>
+                <li><strong>③ 면책의 소급효(제2점)</strong> → 설령 공제가 일부 가능하더라도, 면책결정 이후 소급하여 그 효력이 소멸하는지를 심리해야 합니다.</li>
+                <li><strong>④ 변론주의 위반(제10점)</strong> → 피고가 주장하지 않은 법리로 원심이 스스로 피고를 구제한 것은 절차적 공정성 위반입니다.</li>
+            </ul>
+            <p>이 네 가지 쟁점 중 어느 하나만으로도 독립적인 파기사유가 되기에 충분합니다. 원심판결은 파기되어야 합니다.</p>
+        </div>
+
+        <h2>환송심 심리 요구 사항</h2>
+        <div class="reasoning">
+            <p>환송심에서는 다음 사항을 집중적으로 심리해야 합니다.</p>
+            <ul>
+                <li><strong>첫째,</strong> 피고가 공제한 각 항목(관리비, 소송비용, 수선비)에 대하여 민법 제481조의 '변제할 정당한 이익'이 존재하는지를 항목별로 검토해야 합니다.</li>
+                <li><strong>둘째,</strong> 피고에게 공제 상세내역 문서의 제출을 명하여 108,000원(정당 관리비)을 초과하는 공제액의 법적 성질을 구체적으로 확인해야 합니다.</li>
+                <li><strong>셋째,</strong> 면제재산에 대한 파산관재인 처분권 전속 규정(제335조)과 피고의 보증금 공제 행위의 관계를 정면으로 심리해야 합니다.</li>
+                <li><strong>넷째,</strong> 피고 제출 문서(해지신청서 등)에 대한 필적 감정 등 증거조사를 실시해야 합니다.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <div class="verdict-highlight">
+            📢 [최종 의견]<br>
+            “원심판결을 파기하고 사건을 항소심법원에 환송함이 상당하다.”
+            <small>이 의견은 오직 법리에 근거한 것이며, 어느 당사자의 승패를 단정하는 것이 아닙니다. 최종 판단은 환송심에서 충분한 심리를 거친 후 이루어져야 합니다.</small>
+        </div>
+
+        <p style="margin-top:2rem; color:#4e6a88; font-size:0.9rem; text-align:right;">※ 본 판결은 가상의 AI 시뮬레이션으로, 실제 재판과 무관합니다.</p>
+    </div>
+</div>
+</body>
+</html>

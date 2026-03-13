@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사건 개요 및 종합 요약 (Part 0/13)</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans KR', 'Roboto', sans-serif; background: #f5f7fa; color: #1e2a3e; line-height: 1.7; padding: 2rem 1rem; display: flex; justify-content: center; }
+        .case-part { max-width: 1200px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 30px rgba(0,20,40,0.06); overflow: hidden; border: 1px solid #e5e9f0; }
+        .case-header { background: #f0f4fa; padding: 2rem 2.5rem; border-bottom: 1px solid #dce5f0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .case-badge { background: #1e3a5f; color: white; font-size: 0.8rem; font-weight: 600; padding: 0.3rem 1rem; border-radius: 30px; }
+        .case-title { font-size: 1.8rem; font-weight: 500; color: #0b1e33; margin: 0; }
+        .case-content { padding: 2.5rem; }
+        .action-bar { display: flex; gap: 0.75rem; justify-content: flex-end; margin-bottom: 2rem; }
+        .action-btn { background: white; border: 1px solid #ccd7e6; border-radius: 30px; padding: 0.4rem 1.2rem; font-size: 0.9rem; color: #1e3a5f; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; transition: 0.2s; }
+        .action-btn:hover { background: #e9eff7; }
+        .action-btn .material-icons { font-size: 1.1rem; }
+        hr { border: none; border-top: 1px solid #e5e9f0; margin: 2rem 0; }
+        h2 { margin: 2rem 0 1rem; color: #1e3a5f; font-size: 1.5rem; border-bottom: 2px solid #e5e9f0; padding-bottom: 0.5rem; }
+        h3 { margin: 1.5rem 0 1rem; color: #0b1e33; font-size: 1.2rem; }
+        .summary-card { background: #f8fafd; border-left: 4px solid #1e3a5f; padding: 1.5rem; border-radius: 16px; margin: 1.5rem 0; }
+        .info-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1rem 0; }
+        .info-item { flex: 1 1 200px; }
+        .info-label { font-size: 0.85rem; font-weight: 600; color: #1e3a5f; text-transform: uppercase; }
+        .info-value { font-size: 1.1rem; font-weight: 500; }
+        .badge { display: inline-block; background: #eef3f9; color: #1e3a5f; font-size: 0.8rem; font-weight: 600; padding: 0.2rem 0.8rem; border-radius: 30px; margin-right: 0.5rem; }
+        .row { display: flex; margin-bottom: 0.5rem; }
+        .row .label { font-weight: 600; width: 130px; color: #1e3a5f; }
+        .source { font-size: 0.85rem; color: #4e6a88; margin-top: 0.5rem; border-top: 1px dashed #cbd5e3; padding-top: 0.5rem; text-align: right; }
+        ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.3rem; }
+        .warning-box { background: #fef1f0; border-left: 4px solid #b22222; padding: 1.5rem; border-radius: 16px; margin: 1.5rem 0; }
+        .warning-title { font-weight: 700; color: #b22222; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .intro-card { background: #e8f0fe; border-left: 4px solid #2c5f8a; padding: 1.8rem; border-radius: 20px; margin-bottom: 2rem; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,20,40,0.03); }
+        .intro-card p { margin-bottom: 1rem; }
+        .intro-card ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+        .intro-card li { margin-bottom: 0.3rem; }
+        .intro-highlight { background: #ffffffb0; padding: 0.5rem 1rem; border-radius: 12px; margin: 1rem 0 0.5rem 0; font-weight: 500; border: 1px solid #b3c9e0; }
+        .issue-box { background: #f0f4fa; border-left: 4px solid #1e3a5f; padding: 1.5rem; border-radius: 16px; margin: 1.5rem 0; }
+        .issue-title { font-size: 1.2rem; font-weight: 700; color: #1e3a5f; margin-bottom: 0.5rem; }
+        .argument-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .argument-table th { background: #dce5f0; padding: 0.75rem; text-align: center; font-weight: 600; }
+        .argument-table td { background: #f8fafd; padding: 0.75rem; border-bottom: 1px solid #e5e9f0; vertical-align: top; }
+        .argument-table td:first-child { font-weight: 600; width: 30%; }
+    </style>
+</head>
+<body>
+    <div class="case-part">
+        <div class="case-header">
+            <span class="case-badge">Part 0/13</span>
+            <h1 class="case-title">사건 개요 및 종합 요약 (익명화)</h1>
+        </div>
+        <div class="case-content">
+
+            <!-- 서문: 프로젝트 설명 -->
+            <div class="intro-card">
+                <p>본 예시는 AI와 Openhash 기술에 기반한 <strong>K-OpenLaw</strong>를 실제 소송 사례에 적용한 최초의 사례로써, K-OpenLaw가 사법부의 업무와 기능을 어느 수준까지 보완할 수 있는지, 그리고 기존 사법 서비스를 어느 수준까지 자동화할 수 있을지에 대한 생각의 단편을 제공할 것이다. 예시는 단순한 소액 민사 사건이 지방법원, 고등법원, 대법원을 거쳐 헌법소원(또는 재판소원)으로 이어지는 과정과 K-OpenLaw를 투입한 시점과 그 결과를 상세히 기술한다.</p><br>
+  <p>본 예시는 변호사와 판사 등 법적 소양을 갖춘 전문가들을 독자로 상정하며, K-OpenLaw의 압도적 성능을 체감할 수 있을 것이다.</p><br>
+
+                <p><strong>등장 인물</strong></p>
+                <ul>
+                    <li>K-OpenLaw 개발팀</li>
+                    <li>원고</li>
+                    <li>피고, 피고의 법무 전담 인력(1명), 피고의 변호사(2명)</li>
+                    <li>1심 중재 엔진(단독 판사 1명), 2심 중재 엔진(합의부 판사 3명), 3심 중재 엔진(대법관 5명), 헌법재판소 재판관(인원 미정)</li>
+                </ul>
+                <p>원고는 변호사 조력없이 재판에 임하였으며, 1심과 2심에서 패소한 뒤에도 변호사 조력없이 오직 AI 전문가의 도움으로 K-OpenLaw를 활용하여 상고심과 헌법재판에 임한다. 즉, 아래 세 주체 간의 공방이다.</p>
+                <ul>
+                    <li>원고</li>
+                    <li>피고 + 변호인단</li>
+                    <li>중재 엔진(판사들)</li>
+                </ul>
+                <p>소송의 초기 단계에서는 원고와 피고 간의 다툼이, 2심, 3심 및 헌법소원으로 진행되면서 원고와 사법부 간의 공방으로 그 양상이 변화한다.</p>
+                <div class="intro-highlight">
+                    지방법원: 원고 대 (피고 + 변호인단)<br>
+                    고등법원: 원고 대 (피고 + 변호인단 + 1심 중재 엔진 판결문)<br>
+                    대법원: 원고 대 (피고 + 변호인단 + 1심 중재 엔진 판결문 + 2심 중재 엔진 판결문)<br>
+                    헌재: 원고 대 (피고 + 변호인단 + 1심 중재 엔진 + 2심 중재 엔진 + 3심 중재 엔진)
+                </div>
+                <p>본 예시는 문자 그대로 AI와 법조인들(사람) 간의 다툼이며, 그 승부는 독자 제현이 판단할 것이다.</p>
+            </div>
+
+            <!-- 상단 액션 버튼 -->
+            <div class="action-bar">
+                <button class="action-btn" id="runBtn"><span class="material-icons">refresh</span> RUN</button>
+                <button class="action-btn" id="copyBtn"><span class="material-icons">content_copy</span> COPY</button>
+                <button class="action-btn" id="downloadBtn"><span class="material-icons">download</span> DOWNLOAD</button>
+            </div>
+
+            <!-- 1. 사건 배경 (간략) -->
+            <h2>1. 사건 배경</h2>
+            <div class="info-grid">
+                <div class="info-item"><span class="info-label">원고</span><div class="info-value">익명 A (전직 엔지니어, 중대 질환자)</div></div>
+                <div class="info-item"><span class="info-label">피고</span><div class="info-value">모 공기업 (공공임대사업자)</div></div>
+                <div class="info-item"><span class="info-label">사건번호</span><div class="info-value">2024가단**** (1심) / 2025나**** (항소심) / 2026다**** (상고심)</div></div>
+            </div>
+
+            <!-- 2. 다툼이 없는 사실 (객관적 사실관계) -->
+            <h2>2. 다툼이 없는 사실</h2>
+            <ul>
+                <li><strong>2011. 2. 28.</strong> – 원고, 피고로부터 이 사건 주택을 임차하여 거주 시작. 이후 매 2년마다  계약 갱신.</li>
+                <li><strong>2021년 중</strong> – 원고를 포함한 LH 임차인들과 제3자(일부 공동주택 소유자 모임) 사이에 관리사무소 운영 관련 분쟁 발생. 원고, 이와 관련한 소송비용 채무를 부담하게 됨.</li>
+                <li><strong>2021. 8. 24.</strong> – 원고, 파산 및 면책 신청.</li>
+                <li><strong>2022. 5. 초순경</strong> – 피고, 원고의 채무를 제3자 등에게 대신 변제할 의사를 밝히고, 임대차계약 갱신 거부, 원고의 퇴거 요구, 그리고 원고의 임대차보증금에 대한 구상권 행사를 예고함.</li>
+                <li><strong>2022. 6. 30.</strong> – 원고에 대한 파산선고. 이로써 원고의 위 채무는 파산채권으로, 원고의 임차보증금은 면제재산으로 각각 결정됨.</li>
+                <li><strong>2022년 중순~2023년 초</strong> – 피고, 원고의 채권자(제3자)에게 원고의 채무를 대위변제하고, 원고에 대한 구상권을 확보. 피고는 원고에게 지속적으로 퇴거를 요구하고, 명도소송을 제기(후 취하)하였으며, 임대차계약 갱신을 거부함.</li>
+                <li><strong>2022년 중~2023. 3.</strong> – 원고, 피고에게 "면제재산인 임차보증금을 압류·처분하는 것은 파산법 위반이며, 이에 대해 소송으로 대응할 것"이라고 수차례 고지함.</li>
+                <li><strong>2023. 3. 30.</strong> – 피고의 계약 갱신 거부에 따라 원고, 이 사건 주택에서 퇴거. 당시 피고는 원고에게 자발적 퇴거 문서 작성을 요구하였으나, 원고는 서명을 거부함.</li>
+                <li><strong>2023. 3. 31.</strong> – 피고, 원고가 퇴거한 다음 날 원고의 서명이 첨부된 '자발적 퇴거 문서'를 법원에 제출함. 원고는 이 문서가 사후에 위·변조된 것이라고 주장(퇴거 일자와 서명 날짜 불일치 등). 같은 날 피고는 임차보증금에서 상기 채무 등을 공제한 잔액을 원고가 지정한 계좌로 송금함.</li>
+                <li><strong>2023. 8. 25.</strong> – 원고에 대한 면책결정 확정.</li>
+                <li><strong>2024. .</strong> – 원고, 피고를 상대로 손해배상 소송 제기.</li>
+                <li><strong>2025. 8. 6.</strong> – 1심 분석(원고 패소).</li>
+                <li><strong>2026. 2. 11.</strong> – 항소심 분석(원고 패소).</li>
+                <li><strong>2026. 3. 현재</strong> – 대법원 상고심 진행 중.</li>
+            </ul>
+
+            <!-- 3. 핵심 쟁점 (세 가지) -->
+            <h2>3. 핵심 쟁점</h2>
+
+            <div class="issue-box">
+                <div class="issue-title">쟁점 1: 피고의 대위변제 및 구상권 행사의 적법성</div>
+                <p>원고의 파산채권자 중 1인(제3자)에게 피고가 임의로 대위변제하고, 그 구상권을 원고에게 행사할 수 있는가?</p>
+                <p><strong>관련 법리:</strong> 민법 제481조(변제할 정당한 이익), 채무자회생법 제427조(장래의 청구권)</p>
+            </div>
+
+            <div class="issue-box">
+                <div class="issue-title">쟁점 2: 면제재산 처분의 적법성</div>
+                <p>파산선고로 면제재산으로 확정된 임차보증금을 파산관재인의 동의 없이 피고가 임의로 공제·처분할 수 있는가?</p>
+                <p><strong>관련 법리:</strong> 채무자회생법 제335조, 제383조(면제재산 보호), 제417조(장래의 청구권과 상계)</p>
+            </div>
+
+            <div class="issue-box">
+                <div class="issue-title">쟁점 3: 관리비 명목 구상권의 성립 범위</div>
+                <p>피고가 제3자에게 대위변제한 비용 중 통상적 관리비(공과금 등)가 아닌 비용(제3자와의 소송비용, 관리사무소 운영비, 임대인 부담 수선비 등)을 '관리비'라는 명목으로 포괄하여 임차보증금에서 공제할 수 있는가?</p>
+                <p><strong>관련 법리:</strong> 민법 제481조(변제할 정당한 이익), 임대차계약 해석, 언어의 통상적 의미</p>
+            </div>
+
+            <!-- 4. 쟁점별 양측 주장 요약 -->
+            <h2>4. 쟁점별 주요 주장</h2>
+
+            <table class="argument-table">
+                <tr><th>쟁점</th><th>원고 측 주장</th><th>피고 측 주장</th></tr>
+                <tr>
+                    <td><strong>쟁점 1</strong><br>대위변제 및 구상권</td>
+                    <td>피고는 변제할 정당한 이익(민법 제481조)이 없는 자로서, 임의로 대위변제한 채무에 대해 구상권을 취득할 수 없다. 설령 구상권이 인정되더라도 이는 파산법상 '장래의 청구권'에 해당하여 면책의 효력을 받는다.</td>
+                    <td>피고는 임대인으로서 임대차보증금과 직결된 채무를 대위변제할 정당한 이익이 있다. 구상권은 파산선고 전 원인으로 발생한 파산채권이지만, 임대차보증금에서 공제하는 것은 당연공제의 성질에 속한다.</td>
+                </tr>
+                <tr>
+                    <td><strong>쟁점 2</strong><br>면제재산 처분</td>
+                    <td>파산선고로 면제재산이 된 임차보증금은 파산관재인의 관리처분권에 속하므로, 피고가 관재인 동의 없이 임의로 공제한 것은 채무자회생법 제335조, 제383조에 위배되어 무효이다. 면책결정의 소급효를 고려하면 더욱 그러하다.</td>
+                    <td>임대차보증금 반환채무는 '장래의 청구권'에 해당하므로 파산절차에 의하지 않고 상계(공제)할 수 있다. 파산선고 후 발생한 채권은 재단채권으로서 변제가 가능하다. 따라서 면제재산 침해가 아니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>쟁점 3</strong><br>관리비 범위</td>
+                    <td>피고가 공제한 비용 중 제3자 소송비용, 관리사무소 운영비, 임대인 부담 수선비는 '관리비'의 통상적 의미(공용 전기료, 수도료, 청소비 등)에 포함되지 않는다. 따라서 이에 대한 구상권은 성립하지 않는다.</td>
+                    <td>해당 비용은 모두 임대차계약 제4조에서 정한 '관리비' 및 그로 인한 부대비용에 해당한다. 원고의 채무불이행으로 발생한 손해이므로 보증금에서 공제가 정당하다.</td>
+                </tr>
+            </table>
+
+            <!-- 5. 소송 진행 단계별 상세 요약 -->
+            <h2>5. 소송 진행 단계별 요약</h2>
+
+            <h3>5.1. 원고의 1심 소송 및 준비서면</h3>
+            <ul>
+                <li><strong>청구취지:</strong> 피고의 불법행위로 인한 손해배상.</li>
+                <li><strong>쟁점별 주장:</strong>
+                    <ul>
+                        <li>쟁점1: 피고의 대위변제는 정당한 이익 없이 이루어졌으므로 구상권 부존재.</li>
+                        <li>쟁점2: 면제재산을 관재인 동의 없이 처분한 것은 위법.</li>
+                        <li>쟁점3: 공제된 비용 중 대부분은 통상적 관리비가 아니므로 부당 공제.</li>
+                        <li>추가: 피고의 퇴거 요구는 강박에 해당, 퇴거 문서는 위·변조.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>5.2. 피고의 1심 항변</h3>
+            <ul>
+                <li>공제 비용은 모두 임대차계약상 관리비에 해당.</li>
+                <li>퇴거는 자발적, 문서는 진정하게 작성됨.</li>
+            </ul>
+
+            <h3>5.3. 1심 분석 (2025. 8. 6.)</h3>
+            <div class="summary-card">
+                <p><strong>결과:</strong> 원고 청구 기각.</p>
+                <p><strong>판단 논리:</strong></p>
+                <ul>
+                    <li>계약해지 적법 (민법 제637조).</li>
+                    <li>임대차보증금 당연공제 원칙 적용 (대법원 86다카2865).</li>
+                    <li>면책된 채무도 자연채무로서 공제 가능 (대법원 2001다3122).</li>
+                    <li>피고의 공제 내역이 관리비에 해당하는지, 변제할 정당한 이익이 있는지에 대한 심리 없이 전면 수용.</li>
+                    <li>문서 위조 주장 증거 부족.</li>
+                </ul>
+                <p><strong>쟁점별 판단:</strong> 쟁점1,2,3 모두 원고 주장 배척.</p>
+            </div>
+
+            <h3>5.4. 원고의 항소이유서 및 준비서면</h3>
+            <ul>
+                <li><strong>쟁점1 강조:</strong> 피고에게 변제할 정당한 이익이 없으므로 구상권 자체 부존재. 면책결정의 소급효로 피고의 구상권도 면책되어야 함.</li>
+                <li><strong>쟁점2 강조:</strong> 면제재산 보호 원칙, 파산관재인 동의 없는 처분 무효. 1심에서 피고가 주장하지 않은 사실을 법원이 독자적으로 '장래의 청구권' 등 다양한 법리를 개발하고, 적용한 것은 변론주의 위반.</li>
+                <li><strong>쟁점3 강조:</strong> '관리비' 개념 왜곡, 통상적 관리비와 무관한 비용 포함, 이에 대한 심리 누락.</li>
+                <li>문서 위조 의혹 재차 제기 (퇴거일자와 서명날짜 불일치).</li>
+            </ul>
+
+            <h3>5.5. 피고의 2심 항변</h3>
+            <ul>
+                <li>파산선고 후 발생한 채권은 '재단채권'(법 제473조 제8호)으로 변제 가능.</li>
+                <li>공제 비용은 모두 관리비 범주 내.</li>
+            </ul>
+
+            <h3>5.6. 2심 분석 (2026. 2. 11.)</h3>
+            <div class="summary-card">
+                <p><strong>결과:</strong> 원고 항소 기각 (1심 유지).</p>
+                <p><strong>판단 논리:</strong></p>
+                <ul>
+                    <li>1심 분석 인용 + 추가 법리:
+                        <ul>
+                            <li>파산선고 전 관리비 채권: 파산채권이나, 임대차보증금반환채무는 '장래의 청구권'으로서 상계(공제) 허용.</li>
+                            <li>파산선고 후 관리비·소송비용: 재단채권에 해당하여 공제 가능.</li>
+                            <li>면책결정 전 이미 공제 완료 → 면책 대상 아님, 자연채무도 공제 가능.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p><strong>쟁점별 판단:</strong></p>
+                <ul>
+                    <li>쟁점1: 묵시적 인정(피고의 구상권 유효).</li>
+                    <li>쟁점2: '장래의 청구권' 법리로 적법하다고 판단.</li>
+                    <li>쟁점3: 비용이 관리비에 해당하는지 구체적 심리 없이 포괄 인정.</li>
+                </ul>
+            </div>
+
+            <h3>5.7. 원고의 3심(대법원) 상고이유서 요약</h3>
+            <div class="summary-card">
+                <p><strong>상고이유 (12대 쟁점을 3개 핵심 쟁점으로 재구성)</strong></p>
+                <ul>
+                    <li><strong>쟁점 1 관련:</strong> 피고의 대위변제는 변제할 정당한 이익이 없어 구상권 불성립. 설령 구상권이 있더라도 면책결정으로 소멸.</li>
+                    <li><strong>쟁점 2 관련:</strong> 면제재산 보호 법리 오해(채무자회생법 제335조, 제383조). '장래의 청구권' 법리를 당연공제에 유추적용한 오류. 법원의 변론주의 위반.</li>
+                    <li><strong>쟁점 3 관련:</strong> '관리비' 개념 왜곡, 통상적 관리비와 무관한 비용 포함. 구상권 성립의 대전제(변제할 정당한 이익) 심리 누락.</li>
+                    <li>추가: 문서 위조에 대한 심리미진, 강박에 의한 퇴거 등.</li>
+                </ul>
+            </div>
+
+            <!-- 6. 향후 전망 -->
+            <h2>6. 향후 전망</h2>
+            <div class="summary-card">
+                <p><strong>대법원 상고심</strong> (2026년 3월 현재 상고장 제출, K-OpenLaw가 상고이유서 작성 완료)</p>
+                <p><strong>헌법소원(재판소원) 가능성:</strong> 2026년 2월 국회 통과된 재판소원법에 따라, 대법원 패소 시 30일 이내 헌법소원 제기 가능. 원고는 다음과 같은 기본권 침해를 주장할 예정:</p>
+                <ul>
+                    <li>헌법 제23조 재산권 침해 (면제재산 몰수)</li>
+                    <li>헌법 제27조 재판청구권 침해 (변론주의 위반, 증거조사 거부)</li>
+                    <li>헌법 제34조 생존권, 제35조 주거권 침해 (기초생활수급자 주거 상실)</li>
+                </ul>
+            </div>
+
+            <div class="source">※ 본 요약은 모든 개인식별정보를 익명화하였으며, 금액 등 구체적 수치는 생략하였음. 2026년 3월 기준 상고심 및 헌법소원 진행 상황 포함.</div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            document.getElementById('runBtn').addEventListener('click', function() { location.reload(); });
+            document.getElementById('copyBtn').addEventListener('click', function() {
+                const content = document.querySelector('.case-content').innerText;
+                navigator.clipboard.writeText(content).then(() => alert('복사 완료'));
+            });
+            document.getElementById('downloadBtn').addEventListener('click', function() {
+                const htmlContent = document.documentElement.outerHTML;
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'part0_updated.html';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        })();
+    </script>
+</body>
+</html>

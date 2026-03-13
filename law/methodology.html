@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>분석 평가 방법론 — K-OpenLaw</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root {
+      --primary:       #003087;
+      --primary-dark:  #001f5b;
+      --primary-light: #e8edf7;
+      --accent:        #c0392b;
+      --accent-light:  #fdf0ee;
+      --green:         #1a7a3c;
+      --green-light:   #e8f7ed;
+      --yellow:        #b7791f;
+      --yellow-light:  #fef9e7;
+      --teal:          #0e6e7e;
+      --teal-light:    #e0f5f8;
+      --red:           #9b1c1c;
+      --red-light:     #fde8e8;
+      --surface:       #ffffff;
+      --bg:            #f4f6fb;
+      --border:        #d0d7e8;
+      --text-primary:  #1a1a2e;
+      --text-secondary:#4a5568;
+      --text-muted:    #8898aa;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.09);
+      --shadow-md: 0 4px 14px rgba(0,0,0,.10);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.75; font-size: 14px; }
+
+    /* ── 헤더 ── */
+    header { background: linear-gradient(135deg, #0d1f4a 0%, var(--primary) 55%, #1a4a8a 100%); color: #fff; }
+    .header-top { display: flex; align-items: center; gap: 14px; padding: 18px 40px 14px; border-bottom: 1px solid rgba(255,255,255,.13); }
+    .gov-emblem { width: 46px; height: 46px; border-radius: 4px; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif KR', serif; font-size: 14px; font-weight: 700; border: 2px solid rgba(255,255,255,.28); flex-shrink: 0; line-height: 1.3; text-align: center; }
+    .header-top-text .agency { font-size: 11px; letter-spacing: .08em; color: rgba(255,255,255,.62); text-transform: uppercase; }
+    .header-top-text .doc-id { font-size: 12px; color: rgba(255,255,255,.48); }
+    .header-body { padding: 20px 40px 22px; }
+    .header-body h1 { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 7px; }
+    .header-body .subtitle { font-size: 13px; color: rgba(255,255,255,.7); }
+    .header-meta { display: flex; flex-wrap: wrap; gap: 18px; padding: 11px 40px; background: rgba(0,0,0,.2); font-size: 12px; color: rgba(255,255,255,.72); }
+    .header-meta span { display: flex; align-items: center; gap: 5px; }
+    .material-icons.sm { font-size: 15px; }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── 개요 카드 바 ── */
+    .criteria-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 30px; }
+    .crit-item { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 12px 13px; box-shadow: var(--shadow-sm); text-align: center; }
+    .crit-icon { font-size: 20px; margin-bottom: 5px; }
+    .crit-name { font-size: 12.5px; font-weight: 700; color: var(--primary-dark); margin-bottom: 2px; }
+    .crit-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── 섹션 카드 ── */
+    .method-section { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 28px; }
+    .method-header { display: flex; align-items: stretch; }
+    .method-num-block { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 18px; background: var(--primary); color: #fff; min-width: 64px; flex-shrink: 0; }
+    .mn-label { font-size: 10px; letter-spacing: .06em; opacity: .75; margin-bottom: 2px; }
+    .mn-num { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; line-height: 1; }
+    .method-title-block { flex: 1; padding: 14px 20px; background: var(--primary-light); border-bottom: 2px solid var(--primary); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .method-title { font-size: 15px; font-weight: 700; color: var(--primary-dark); line-height: 1.4; }
+    .method-badge { flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge-legal   { background: var(--primary-light); color: var(--primary-dark); border: 1px solid var(--primary); }
+    .badge-intl    { background: var(--teal-light); color: var(--teal); border: 1px solid var(--teal); }
+    .badge-proc    { background: var(--yellow-light); color: var(--yellow); border: 1px solid var(--yellow); }
+    .badge-fact    { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
+    .badge-const   { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+    .method-body { padding: 20px 24px; }
+
+    /* ── 세부 평가 테이블 ── */
+    .eval-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 16px; }
+    .eval-table th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; }
+    .eval-table td { padding: 10px 14px; vertical-align: top; border-bottom: 1px solid var(--border); line-height: 1.65; }
+    .eval-table tr:last-child td { border-bottom: none; }
+    .eval-table tr:nth-child(even) td { background: #f8fafd; }
+    .eval-table .cat { font-weight: 700; color: var(--primary-dark); font-size: 12.5px; white-space: nowrap; }
+    .eval-table .wt { font-weight: 700; color: var(--teal); font-size: 12.5px; text-align: center; }
+
+    /* ── 칩 ── */
+    .chip { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .chip-pass    { background: var(--green-light);  color: var(--green); }
+    .chip-warn    { background: var(--yellow-light);  color: var(--yellow); }
+    .chip-fail    { background: var(--red-light);     color: var(--red); }
+    .chip-info    { background: var(--primary-light); color: var(--primary-dark); }
+    .chip-teal    { background: var(--teal-light);    color: var(--teal); }
+
+    /* ── 기준 상자 ── */
+    .ref-box { margin-top: 14px; padding: 13px 16px; border-radius: var(--radius); font-size: 13px; line-height: 1.72; }
+    .ref-box.blue  { background: var(--primary-light); border-left: 3px solid var(--primary); color: var(--text-secondary); }
+    .ref-box.teal  { background: var(--teal-light);    border-left: 3px solid var(--teal);    color: var(--text-secondary); }
+    .ref-box.gold  { background: var(--yellow-light);  border-left: 3px solid var(--yellow);  color: var(--text-secondary); }
+    .ref-box.red   { background: var(--red-light);     border-left: 3px solid var(--red);     color: var(--text-secondary); }
+    .ref-box.green { background: var(--green-light);   border-left: 3px solid var(--green);   color: var(--text-secondary); }
+    .ref-box .rb-title { font-size: 11.5px; font-weight: 700; margin-bottom: 5px; letter-spacing: .04em; }
+
+    /* ── 점수 등급표 ── */
+    .grade-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; }
+    .grade-table th { background: var(--primary-dark); color: #fff; padding: 9px 14px; font-size: 12px; font-weight: 600; text-align: center; }
+    .grade-table td { padding: 9px 14px; text-align: center; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .grade-table tr:last-child td { border-bottom: none; }
+    .grade-table td:first-child { font-weight: 700; font-size: 18px; }
+    .grade-a { color: var(--green); }
+    .grade-b { color: #2980b9; }
+    .grade-c { color: var(--yellow); }
+    .grade-d { color: #d35400; }
+    .grade-f { color: var(--red); }
+    .grade-table td.desc { text-align: left; color: var(--text-secondary); font-size: 12.5px; }
+
+    /* ── 비교 섹션 ── */
+    .compare-section { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 28px; }
+    .compare-header { display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: var(--primary-light); border-bottom: 2px solid var(--primary); font-size: 15px; font-weight: 700; color: var(--primary-dark); }
+    .compare-body { padding: 18px 22px; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .compare-table th { background: #f0f4fb; padding: 9px 13px; text-align: center; font-weight: 700; font-size: 12px; color: var(--primary-dark); border-bottom: 2px solid var(--border); }
+    .compare-table th:first-child { text-align: left; }
+    .compare-table td { padding: 9px 13px; border-bottom: 1px solid var(--border); text-align: center; font-size: 12.5px; vertical-align: middle; }
+    .compare-table td:first-child { text-align: left; font-weight: 600; color: var(--text-primary); }
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    /* ── 두 컬럼 그리드 ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .col-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-size: 13px; line-height: 1.72; color: var(--text-secondary); }
+    .col-box .cb-title { font-size: 12px; font-weight: 700; color: var(--primary-dark); margin-bottom: 7px; display: flex; align-items: center; gap: 5px; letter-spacing: .04em; }
+
+    /* ── 결론 박스 ── */
+    .final-box { background: var(--surface); border-radius: var(--radius-lg); border: 1.5px solid #c9a0a0; overflow: hidden; box-shadow: var(--shadow-sm); }
+    .final-header { background: var(--accent); color: #fff; padding: 13px 22px; display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 700; }
+    .final-body { padding: 18px 22px; }
+    .final-body p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 12px; }
+    .final-body p:last-child { margin-bottom: 0; }
+    .final-note { margin-top: 14px; padding: 12px 16px; background: var(--yellow-light); border-left: 3px solid var(--yellow); border-radius: 0 6px 6px 0; font-size: 13px; color: var(--text-secondary); }
+
+    /* ── 인용 출처 태그 ── */
+    .law-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .law-tag { display: inline-block; background: #eef2fb; color: var(--primary); font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 4px; border: 1px solid #c5d0ec; }
+    .law-tag.teal  { background: var(--teal-light);   color: var(--teal);   border-color: #a0d4dc; }
+    .law-tag.gold  { background: var(--yellow-light);  color: var(--yellow); border-color: #d4a017; }
+    .law-tag.red   { background: var(--red-light);    color: var(--red);   border-color: #f0b8b2; }
+    .law-tag.green { background: var(--green-light);  color: var(--green); border-color: #8ecfa8; }
+
+    footer { margin-top: 40px; padding: 16px 22px; background: var(--surface); border-top: 1px solid var(--border); border-radius: var(--radius); font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+    @media (max-width: 680px) {
+      .header-top, .header-body, .header-meta { padding-left: 16px; padding-right: 16px; }
+      .container { padding: 16px 10px 40px; }
+      .criteria-bar { grid-template-columns: repeat(2, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="gov-emblem">방법<br>론</div>
+    <div class="header-top-text">
+      <div class="agency">분석 평가 방법론 · Judicial Evaluation Methodology</div>
+      <div class="doc-id">K-OpenLaw 평가 기준서 · Methodology Reference</div>
+    </div>
+  </div>
+  <div class="header-body">
+    <h1>분석 평가 방법론 및 채점 기준</h1>
+    <div class="subtitle">공정성 · 객관성 · 합리성 · 정확성 · 법적 정당성 — 5개 영역 세부 평가 기준 및 국내외 사법 평가 방법론 종합</div>
+  </div>
+  <div class="header-meta">
+    <span><span class="material-icons sm">library_books</span>평가 영역: 5개 범주 · 25개 세부 지표</span>
+    <span><span class="material-icons sm">public</span>참조 기준: 한국·미국·EU·UN·ICCPR</span>
+    <span><span class="material-icons sm">gavel</span>적용 규범: 헌법·민사소송법·파산법</span>
+    <span><span class="material-icons sm">verified</span>만점: 100점 (영역별 20점)</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ══ 5개 평가 영역 개요 ══ -->
+  <div class="criteria-bar">
+    <div class="crit-item">
+      <div class="crit-icon">⚖️</div>
+      <div class="crit-name">공정성</div>
+      <div class="crit-desc">양 당사자 주장의 균형 있는 검토</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">🔍</div>
+      <div class="crit-name">객관성</div>
+      <div class="crit-desc">증거의 편견 없는 평가와 사실 확정</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">🧩</div>
+      <div class="crit-name">합리성</div>
+      <div class="crit-desc">논리·경험 법칙에 부합한 판단</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">📐</div>
+      <div class="crit-name">정확성</div>
+      <div class="crit-desc">법령·판례의 정확한 적용</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">🏛️</div>
+      <div class="crit-name">법적 정당성</div>
+      <div class="crit-desc">헌법·소송법 원칙의 준수</div>
+    </div>
+  </div>
+
+  <!-- ══ 방법론 서론 ══ -->
+  <div class="compare-section">
+    <div class="compare-header">
+      <span class="material-icons sm">info</span>
+      평가 방법론의 이론적 근거 및 설계 원칙
+    </div>
+    <div class="compare-body">
+      <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.8; margin-bottom:14px;">
+        본 방법론은 대한민국 헌법(제27조 재판청구권, 제103조 법관의 독립), 민사소송법의 기본 원칙(변론주의·처분권주의·적법절차), 채무자회생법, 그리고 국제 사법 기준인 <strong>유엔 시민·정치적 권리에 관한 국제 규약(ICCPR) 제14조</strong>, <strong>유엔 사법 독립 기본 원칙(Basic Principles on the Independence of the Judiciary, 1985)</strong>, <strong>미국 연방사법센터(FJC) 분석 품질 평가 기준</strong>, <strong>유럽 인권협약(ECHR) 제6조(공정한 재판을 받을 권리)</strong>, <strong>유럽 사법 효율성 위원회(CEPEJ) 평가 프레임워크</strong>를 통합하여 설계하였다.
+      </p>
+      <div class="two-col">
+        <div class="col-box">
+          <div class="cb-title"><span class="material-icons sm">flag</span>설계 원칙</div>
+          ① 당사자 중립성 — 원고·피고 어느 쪽도 구조적 유리를 갖지 않도록 설계<br>
+          ② 규범 위계 존중 — 헌법 → 조약 → 특별법 → 일반법 → 시행령 → 판례<br>
+          ③ 절차적 정의 우선 — 결과의 정당성은 절차의 정당성을 전제<br>
+          ④ 취약계층 보호 — 사회적 약자의 법적 접근성과 보호 법리 우선 검토<br>
+          ⑤ 재현 가능성 — 동일 사안에서 누가 평가해도 유사한 점수를 산출
+        </div>
+        <div class="col-box">
+          <div class="cb-title"><span class="material-icons sm">public</span>주요 참조 기준</div>
+          <strong>국내:</strong> 대법원 분석 이유 기재 요령, 법관 윤리강령, 민사소송법 제136조·제202조·제203조·제424조<br>
+          <strong>국제:</strong> ICCPR 제14조, ECHR 제6조, UN 방갈로르 사법 행동 원칙(2002), CEPEJ 사법 품질 관리 지침(2016), 미국 ALI 사법 품질 원칙(Principles of the Law: Court Administration), 일본 재판소법 제76조·민사소송규칙
+        </div>
+      </div>
+      <div class="law-tags">
+        <span class="law-tag">대한민국 헌법 제27조·제103조</span>
+        <span class="law-tag">민사소송법 제136조·제202조·제203조·제424조</span>
+        <span class="law-tag teal">ICCPR 제14조</span>
+        <span class="law-tag teal">ECHR 제6조</span>
+        <span class="law-tag gold">UN 방갈로르 원칙(2002)</span>
+        <span class="law-tag gold">CEPEJ 품질 지침(2016)</span>
+        <span class="law-tag green">미국 FJC 평가 기준</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 점수·등급 체계 ══ -->
+  <div class="compare-section">
+    <div class="compare-header">
+      <span class="material-icons sm">star_rate</span>
+      점수 체계 및 등급 기준
+    </div>
+    <div class="compare-body">
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+        5개 영역 각 20점 만점(총 100점). 각 영역은 5개 세부 지표로 구성되며, 지표별 4점 만점. 절대적 상고이유(민사소송법 제424조 제1항)에 해당하는 하자 발견 시 해당 영역 최대 -8점의 감산을 적용한다.
+      </p>
+      <table class="grade-table">
+        <thead>
+          <tr>
+            <th>등급</th>
+            <th>점수 범위</th>
+            <th>의미</th>
+            <th style="text-align:left;">해석</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="grade-a">A</td>
+            <td>90~100점</td>
+            <td><span class="chip chip-pass">우수</span></td>
+            <td class="desc">국제 기준 충족. 절차·법리 모두 적정. 헌법적 요청을 구현한 분석.</td>
+          </tr>
+          <tr>
+            <td class="grade-b">B</td>
+            <td>80~89점</td>
+            <td><span class="chip chip-pass">양호</span></td>
+            <td class="desc">일부 미흡이 있으나 전반적으로 적정. 상고 가능성 낮음.</td>
+          </tr>
+          <tr>
+            <td class="grade-c">C</td>
+            <td>70~79점</td>
+            <td><span class="chip chip-warn">보통</span></td>
+            <td class="desc">주요 법리 쟁점에서 미흡 다수. 개선 필요. 상고 가능성 존재.</td>
+          </tr>
+          <tr>
+            <td class="grade-d">D</td>
+            <td>60~69점</td>
+            <td><span class="chip chip-warn">미흡</span></td>
+            <td class="desc">법리 오류 또는 절차 위반 확인. 파기환송 논거 성립 가능.</td>
+          </tr>
+          <tr>
+            <td class="grade-f">F</td>
+            <td>0~59점</td>
+            <td><span class="chip chip-fail">불합격</span></td>
+            <td class="desc">중대한 법리 위반·절차 위반·헌법 위반 중 1개 이상 확인. 파기환송 가능성 높음.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ref-box gold">
+        <div class="rb-title">⚠️ 절대적 상고이유 감산 규칙</div>
+        민사소송법 제424조 제1항 각호에 해당하는 하자(분석 이유 불비·이유 모순·변론주의 위반·재판 구성 위법 등)가 확인된 경우, 법적 정당성 영역에서 기본 감산(-5점)에 더해 가중 감산(-3점)을 적용한다. 동일 하자가 2심급 연속으로 확인된 경우 전 영역 -2점 추가 감산을 적용한다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 영역 I: 공정성 ══ -->
+  <div class="method-section">
+    <div class="method-header">
+      <div class="method-num-block">
+        <div class="mn-label">영역</div>
+        <div class="mn-num">I</div>
+      </div>
+      <div class="method-title-block">
+        <div class="method-title">⚖️ 공정성 (Fairness) — 20점 만점</div>
+        <span class="method-badge badge-legal">당사자 균형 · 무기 대등</span>
+      </div>
+    </div>
+    <div class="method-body">
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+        공정성은 재판의 구조적 중립성과 당사자 간 무기 대등 원칙의 준수 여부를 평가한다. ICCPR 제14조 제1항은 "모든 사람은 그에 대한 형사상의 죄의 결정 또는 민사상의 권리·의무의 다툼에 있어서 법률에 의하여 설치된 권한 있는 독립적이고 공평한 법원에 의한 공정한 공개 심리를 받을 권리를 가진다"고 규정하며, 이는 민사재판에도 동등하게 적용된다. 유럽인권재판소(ECtHR)는 <em>Dombo Beheer B.V. v. Netherlands</em>(1993)에서 민사 절차에서의 무기 대등(equality of arms) 원칙이 ECHR 제6조의 핵심 내용임을 확인하였다.
+      </p>
+      <table class="eval-table">
+        <thead>
+          <tr>
+            <th style="width:5%">번호</th>
+            <th style="width:22%">세부 지표</th>
+            <th style="width:8%">배점</th>
+            <th>평가 기준 및 방법</th>
+            <th style="width:18%">참조 규범</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat">F-1</td>
+            <td class="cat">양 당사자 주장의 균형적 검토</td>
+            <td class="wt">4점</td>
+            <td>원고·피고 각각의 주장 전체가 분석 이유에 명시적으로 검토되었는지 확인한다. 어느 일방의 주장이 이유 없이 생략·무시된 경우 감점. 주장의 반영 비율(전체 주장 중 판결에서 다룬 비율)을 0~4점으로 환산: 100% = 4점, 75% 이상 = 3점, 50% 이상 = 2점, 25% 이상 = 1점, 25% 미만 = 0점.</td>
+            <td><span class="law-tag">민사소송법 제208조</span><span class="law-tag teal">ICCPR §14①</span></td>
+          </tr>
+          <tr>
+            <td class="cat">F-2</td>
+            <td class="cat">무기 대등 원칙 준수</td>
+            <td class="wt">4점</td>
+            <td>소송 진행 과정에서 양측에 동등한 증거 제출 기회, 반박 기회, 신문 기회가 보장되었는지 평가한다. 일방에게만 유리한 절차 운영, 또는 중재 엔진가 일방의 법리를 대신 발굴·개발하는 행위(직권 남용)는 무기 대등 원칙 파괴로 본다. 중재 엔진가 피고 미주장 법리를 독자 발굴한 경우 0점.</td>
+            <td><span class="law-tag teal">ECHR §6①</span><span class="law-tag teal">ECtHR Dombo(1993)</span></td>
+          </tr>
+          <tr>
+            <td class="cat">F-3</td>
+            <td class="cat">석명권·석명의무의 적절한 행사</td>
+            <td class="wt">4점</td>
+            <td>법원이 민사소송법 제136조에 따른 석명권을 당사자 쌍방에게 균형 있게 행사하였는지 평가한다. 일방에게만 유리한 방향으로 석명권을 행사하거나, 반드시 석명이 필요한 상황에서 이를 이행하지 않은 경우 감점. 새로운 법리 적용 전 원고에게 반박 기회를 부여했는지 확인.</td>
+            <td><span class="law-tag">민사소송법 제136조</span><span class="law-tag gold">대법원 2014다42484</span></td>
+          </tr>
+          <tr>
+            <td class="cat">F-4</td>
+            <td class="cat">사회적 약자 보호 배려</td>
+            <td class="wt">4점</td>
+            <td>UN 방갈로르 사법 행동 원칙 제4원칙(평등)은 판사가 당사자의 경제적 지위에 관계없이 공정하게 대우해야 함을 규정한다. 기초생활수급자·장애인·미성년자 등 취약계층 당사자의 경우, 관련 보호 법령(주거급여법, 사회보장기본법 등)의 적용 여부를 검토하였는지 평가.</td>
+            <td><span class="law-tag gold">UN 방갈로르 원칙 §4</span><span class="law-tag">헌법 제34조</span></td>
+          </tr>
+          <tr>
+            <td class="cat">F-5</td>
+            <td class="cat">법원의 중립성 유지</td>
+            <td class="wt">4점</td>
+            <td>중재 엔진가 어느 당사자에게도 기울지 않는 구조적 중립을 유지하였는지 평가한다. 분석 이유에서 일방 주장에 대한 근거 없는 폄훼, 또는 일방을 위한 법리 독자 개발이 확인되는 경우 감점. CEPEJ 평가 기준의 "중재 엔진 중립성 지수" 항목에 준한다.</td>
+            <td><span class="law-tag">헌법 제103조</span><span class="law-tag gold">CEPEJ §3.2</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ref-box blue">
+        <div class="rb-title">📌 공정성 평가의 국제 기준 — ECtHR 판례 요약</div>
+        유럽인권재판소는 공정성 위반의 핵심 징표로 ① 당사자 일방이 상대방 주장에 접근·반박할 기회 부재, ② 법원이 직권으로 특정 당사자에게 유리한 증거를 수집하는 행위, ③ 분석 이유 중 일방 주장만 체계적으로 무시하는 행태를 지목한다. 이는 한국 대법원의 "이유 불비" 개념과 구조적으로 일치한다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 영역 II: 객관성 ══ -->
+  <div class="method-section">
+    <div class="method-header">
+      <div class="method-num-block">
+        <div class="mn-label">영역</div>
+        <div class="mn-num">II</div>
+      </div>
+      <div class="method-title-block">
+        <div class="method-title">🔍 객관성 (Objectivity) — 20점 만점</div>
+        <span class="method-badge badge-fact">증거 평가 · 사실 확정</span>
+      </div>
+    </div>
+    <div class="method-body">
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+        객관성은 사실 확정 과정에서 증거를 편견 없이 평가하고 경험 법칙을 준수하였는지를 검토한다. 한국 민사소송법 제202조(자유심증주의)는 법원이 자유심증에 따라 증거를 평가할 수 있음을 규정하지만, 이는 논리 법칙과 경험 법칙의 범위 내에서만 허용된다(대법원 2001다58269). 미국 연방증거규칙(FRE) 및 미국 법원행정처 기준도 사실 확정의 객관성을 재판 품질의 핵심 지표로 규정한다.
+      </p>
+      <table class="eval-table">
+        <thead>
+          <tr>
+            <th style="width:5%">번호</th>
+            <th style="width:22%">세부 지표</th>
+            <th style="width:8%">배점</th>
+            <th>평가 기준 및 방법</th>
+            <th style="width:18%">참조 규범</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat">O-1</td>
+            <td class="cat">증거 평가의 논리 법칙 준수</td>
+            <td class="wt">4점</td>
+            <td>채택된 증거로부터 도출된 사실 인정이 논리적 연역 또는 귀납의 오류를 범하고 있지 않은지 검토한다. "피고가 소송을 제기하였으므로 원고가 자발적으로 퇴거하였을 것"과 같이 논리적 비약이 있는 추론은 0~1점. 증거와 결론 간 논리적 연결고리가 명확한 경우 4점.</td>
+            <td><span class="law-tag">민사소송법 제202조</span><span class="law-tag gold">대법원 2001다58269</span></td>
+          </tr>
+          <tr>
+            <td class="cat">O-2</td>
+            <td class="cat">경험 법칙의 올바른 적용</td>
+            <td class="wt">4점</td>
+            <td>일반적인 생활 경험에서 도출되는 경험 법칙을 일탈하지 않았는지 평가한다. 사회 통념에 반하는 사실 추인, 특히 불리한 사실에 대한 경험 법칙의 선택적 적용은 감점 대상. 일반인의 합리적 기대에서 크게 벗어나는 사실 인정: -2점 이상.</td>
+            <td><span class="law-tag">민사소송법 제202조</span><span class="law-tag green">미국 FRE Rule 201</span></td>
+          </tr>
+          <tr>
+            <td class="cat">O-3</td>
+            <td class="cat">증거조사 의무의 이행</td>
+            <td class="wt">4점</td>
+            <td>당사자가 신청한 증거조사(증인신문·감정·문서제출명령 등)가 정당한 이유 없이 거부되지 않았는지 평가한다. 특히 사건의 핵심 쟁점에 관련된 증거 신청이 이유 없이 기각된 경우 감점. 법원의 직권 증거조사 필요성이 있는 경우 이를 이행했는지도 평가.</td>
+            <td><span class="law-tag">민사소송법 제292조</span><span class="law-tag teal">ICCPR §14③(e)</span></td>
+          </tr>
+          <tr>
+            <td class="cat">O-4</td>
+            <td class="cat">문서·서증의 진정성립 심리</td>
+            <td class="wt">4점</td>
+            <td>제출된 문서의 진정성립(민사소송법 제356조·제358조)에 대해 다툼이 있는 경우 적절히 심리하였는지 평가한다. 서명·날인의 일치 여부, 작성 일자의 신뢰성 등에 관한 주장이 있을 때 이를 적극 심리하지 않은 경우 감점.</td>
+            <td><span class="law-tag">민사소송법 제356조·제358조</span></td>
+          </tr>
+          <tr>
+            <td class="cat">O-5</td>
+            <td class="cat">상충 증거의 합리적 취사선택</td>
+            <td class="wt">4점</td>
+            <td>상반된 내용의 증거가 있을 때 어느 증거를 채택하고 다른 증거를 배척하는지에 대해 합리적 이유를 제시하였는지 평가한다. 채택·배척의 이유가 판결문에 전혀 기재되지 않거나 이유 자체가 불합리한 경우 0~1점. CEPEJ는 이를 "증거 취사 이유 공개 의무"로 규정한다.</td>
+            <td><span class="law-tag gold">CEPEJ 품질지침 §4.3</span><span class="law-tag">민사소송법 제208조</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ref-box teal">
+        <div class="rb-title">📌 객관성 평가의 비교법적 기준 — 미국·일본</div>
+        미국 연방사법센터(FJC)의 판사 평가 기준(Judicial Performance Evaluation, 2005)은 "사실 관계 확정의 명확성과 증거에 의한 충분한 지지(clear findings of fact adequately supported by evidence)"를 재판 품질의 첫 번째 지표로 제시한다. 일본 재판소법 제75조와 민사소송규칙 제185조는 증거의 취사 이유를 판결문에 명시할 것을 요구하며, 대법원 조사관 실무는 이유 기재 흠결을 절대적 상고이유(일본 민사소송법 제312조 제2항 제6호)로 취급한다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 영역 III: 합리성 ══ -->
+  <div class="method-section">
+    <div class="method-header">
+      <div class="method-num-block">
+        <div class="mn-label">영역</div>
+        <div class="mn-num">III</div>
+      </div>
+      <div class="method-title-block">
+        <div class="method-title">🧩 합리성 (Rationality) — 20점 만점</div>
+        <span class="method-badge badge-proc">논리 구조 · 이유 제시</span>
+      </div>
+    </div>
+    <div class="method-body">
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+        합리성은 판결의 이유 구조가 논리적으로 일관되고, 결론에 이르는 추론 과정이 당사자와 사회 일반이 이해하고 수용할 수 있는 수준으로 서술되었는지를 평가한다. 유럽인권재판소는 <em>Ruiz Torija v. Spain</em>(1994)에서 "국내 법원은 당사자가 제출한 주요 논거에 대해 적절한 이유를 제시할 의무가 있다"고 판시하였다. 이는 UN 방갈로르 원칙 제6원칙(능력·성실·근면)과 함께 분석 이유 기재의 국제 기준을 형성한다.
+      </p>
+      <table class="eval-table">
+        <thead>
+          <tr>
+            <th style="width:5%">번호</th>
+            <th style="width:22%">세부 지표</th>
+            <th style="width:8%">배점</th>
+            <th>평가 기준 및 방법</th>
+            <th style="width:18%">참조 규범</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat">R-1</td>
+            <td class="cat">분석 이유의 내적 일관성</td>
+            <td class="wt">4점</td>
+            <td>판결문 내에서 전제, 논거, 결론이 모순 없이 일관되게 이어지는지 평가한다. 앞부분에서 인정한 사실을 뒷부분에서 이유 없이 번복하거나, 동일 쟁점에 대해 다른 기준을 적용한 경우 감점. 이유 불비(이유와 결론의 불일치)는 0점.</td>
+            <td><span class="law-tag">민사소송법 제424조①⑥</span><span class="law-tag teal">ECtHR Ruiz Torija(1994)</span></td>
+          </tr>
+          <tr>
+            <td class="cat">R-2</td>
+            <td class="cat">주요 쟁점 전체의 판단</td>
+            <td class="wt">4점</td>
+            <td>당사자가 주장한 주요 법적·사실적 쟁점이 분석 이유에 망라되어 있는지 평가한다. 한국 민사소송법 제208조 제2항은 분석 이유에 청구 취지·청구 원인·항변에 대한 판단을 기재해야 한다고 규정한다. 판결에서 다룬 쟁점의 비율을 100%(4점)~0%(0점)으로 산정.</td>
+            <td><span class="law-tag">민사소송법 제208조②</span><span class="law-tag gold">CEPEJ 품질지침 §4.1</span></td>
+          </tr>
+          <tr>
+            <td class="cat">R-3</td>
+            <td class="cat">결론과 이유의 균형성</td>
+            <td class="wt">4점</td>
+            <td>판결의 결론(주문)이 이유에서 제시된 논거와 비례하는지 평가한다. 이유에서 원고 주장의 상당 부분을 인정하면서도 결론에서 전부 기각하는 경우처럼, 이유와 결론이 비례하지 않으면 감점. "총 기각"의 경우 기각 근거가 청구 항목 전체를 포괄하는지 확인.</td>
+            <td><span class="law-tag">민사소송법 제208조①</span><span class="law-tag gold">대법원 2020다275286</span></td>
+          </tr>
+          <tr>
+            <td class="cat">R-4</td>
+            <td class="cat">법리 적용 논리의 명확성</td>
+            <td class="wt">4점</td>
+            <td>특정 법리를 적용하는 이유가 명확하게 서술되어 있는지, 그 법리가 이 사건의 구체적 사실관계에 어떻게 연결되는지를 설명하였는지 평가한다. 법률 조문만 인용하고 해당 조문이 왜 이 사건에 적용되는지에 대한 설명이 없으면 감점.</td>
+            <td><span class="law-tag gold">UN 방갈로르 원칙 §6</span><span class="law-tag teal">ECtHR Van de Hurk(1994)</span></td>
+          </tr>
+          <tr>
+            <td class="cat">R-5</td>
+            <td class="cat">반론 주장에 대한 논리적 반박</td>
+            <td class="wt">4점</td>
+            <td>패소한 당사자의 주요 주장에 대해 단순히 "이유 없다"로 기각하지 않고, 왜 이유 없는지 논리적으로 반박하였는지 평가한다. "원고의 위 주장은 이유 없어 받아들이지 않는다"와 같이 이유 없이 기각하는 것은 실질적 이유 불비에 해당. 유럽인권재판소는 이를 공정한 재판 위반으로 본다.</td>
+            <td><span class="law-tag teal">ECtHR Ruiz Torija(1994)</span><span class="law-tag teal">ECtHR Hiro Balani(1994)</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ref-box green">
+        <div class="rb-title">📌 합리성 평가의 비교법적 기준 — 독일·프랑스</div>
+        독일 기본법(Grundgesetz) 제103조 제1항은 "모든 사람은 법원에서 법적 청문을 받을 권리를 가진다(Anspruch auf rechtliches Gehör)"고 규정하며, 연방헌법재판소는 이를 법원이 당사자의 주요 주장을 인식하고 판결에 반영해야 할 의무로 해석한다. 프랑스 민사소송법 제455조는 판결에 이유를 기재해야 하며 이유가 불충분하면 파기 사유가 된다고 규정한다. 한국 대법원도 "당사자의 주장을 전혀 판단하지 않은 것은 이유 불비에 해당한다"고 일관되게 판시한다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 영역 IV: 정확성 ══ -->
+  <div class="method-section">
+    <div class="method-header">
+      <div class="method-num-block">
+        <div class="mn-label">영역</div>
+        <div class="mn-num">IV</div>
+      </div>
+      <div class="method-title-block">
+        <div class="method-title">📐 정확성 (Accuracy) — 20점 만점</div>
+        <span class="method-badge badge-intl">법령 적용 · 판례 해석</span>
+      </div>
+    </div>
+    <div class="method-body">
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+        정확성은 관련 법령과 대법원 판례를 사건의 구체적 사실관계에 정확히 적용하였는지를 평가한다. 규범 위계(헌법 > 특별법 > 일반법 > 시행령 > 판례)를 준수하였는지, 사안에 적용 가능한 복수의 법령이 있을 때 우선 적용 법령을 올바르게 선택하였는지를 포함한다. 미국 알렉산더 해밀턴 연구소의 법관 평가 기준 및 일본 최고재판소 조사관 실무도 "법령 해석의 정확성"을 최우선 평가 지표로 제시한다.
+      </p>
+      <table class="eval-table">
+        <thead>
+          <tr>
+            <th style="width:5%">번호</th>
+            <th style="width:22%">세부 지표</th>
+            <th style="width:8%">배점</th>
+            <th>평가 기준 및 방법</th>
+            <th style="width:18%">참조 규범</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat">A-1</td>
+            <td class="cat">적용 법령의 정확한 선택</td>
+            <td class="wt">4점</td>
+            <td>사안의 법적 성질(계약·불법행위·파산 등)에 따른 적용 법령을 올바르게 특정하였는지 평가한다. 일반법보다 특별법이 우선 적용되어야 하는 경우 이를 준수하였는지(예: 채무자회생법 > 민법), 시간적으로 유효한 법령을 적용하였는지(법령 소급 여부) 검토.</td>
+            <td><span class="law-tag">법령의 일반 원칙(특별법 우선)</span><span class="law-tag gold">대법원 2015다248342</span></td>
+          </tr>
+          <tr>
+            <td class="cat">A-2</td>
+            <td class="cat">판례 법리의 정확한 인용</td>
+            <td class="wt">4점</td>
+            <td>인용된 대법원 판례의 사실관계가 이 사건과 본질적으로 유사한지, 판례에서 선언한 법리를 정확하게 이해하고 적용하였는지 평가한다. 판례의 판시 취지를 왜곡하거나 사실관계가 현저히 다른 판례를 유추 적용하는 경우 감점. 이 사건에 더 직접적으로 적용 가능한 대법원 판례가 존재하는데도 이를 무시한 경우 0~1점.</td>
+            <td><span class="law-tag gold">대법원 판례 법리 준수 의무</span></td>
+          </tr>
+          <tr>
+            <td class="cat">A-3</td>
+            <td class="cat">규범 위계의 준수</td>
+            <td class="wt">4점</td>
+            <td>헌법 → 조약 → 법률 → 시행령 → 시행규칙의 규범 위계를 준수하였는지 평가한다. 하위 규범이 상위 규범에 반하는 결론을 도출하는 근거로 사용되거나, 위헌적 법률 해석이 이루어진 경우 0~1점. 특히 파산법 등 채무자 보호 특별 규정이 일반 민법 규정보다 우선 적용되어야 하는 경우 이를 확인.</td>
+            <td><span class="law-tag">헌법 제107조</span><span class="law-tag teal">CEPEJ 품질지침 §3.1</span></td>
+          </tr>
+          <tr>
+            <td class="cat">A-4</td>
+            <td class="cat">수치·금액 계산의 정확성</td>
+            <td class="wt">4점</td>
+            <td>판결에서 인정·확정된 금액(보증금·공제액·이자·지연손해금 등)의 산정이 적용 법령의 계산 방식에 따라 정확하게 이루어졌는지 검토한다. 공제 항목별로 법적 근거가 존재하는지, 산정 기준 시점이 올바른지, 법정 이자율을 정확히 적용하였는지 평가.</td>
+            <td><span class="law-tag">민법 제379조(법정이자율)</span><span class="law-tag">소송촉진법 제3조</span></td>
+          </tr>
+          <tr>
+            <td class="cat">A-5</td>
+            <td class="cat">법률 개념의 정확한 사용</td>
+            <td class="wt">4점</td>
+            <td>판결문에서 사용된 법률 용어(파산채권·재단채권·면책·상계·변론주의·처분권주의 등)가 법령상 정의와 일치하게 사용되었는지 평가한다. 개념의 혼동(예: 파산채권과 재단채권의 혼동)은 법리 적용의 오류로 이어지므로 중요 감점 사유. 개념 오용 1건당 -1점.</td>
+            <td><span class="law-tag">채무자회생법 제423조·제473조</span><span class="law-tag gold">대법원 2004다46915</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ref-box blue">
+        <div class="rb-title">📌 정확성 평가의 비교법적 기준 — 영국·캐나다</div>
+        영국 항소법원은 <em>English v. Emery Reimbold &amp; Strick Ltd</em>(2002)에서 "판결은 법령과 판례에 기반한 정확한 법적 분석을 포함해야 하며, 항소법원이 이를 검토할 수 있을 만큼 충분히 서술되어야 한다"고 판시하였다. 캐나다 대법원도 <em>R. v. Sheppard</em>(2002)에서 이유의 정확성과 충분성이 결합하여 판결의 적법성을 구성한다는 원칙을 천명하였다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 영역 V: 법적 정당성 ══ -->
+  <div class="method-section">
+    <div class="method-header">
+      <div class="method-num-block">
+        <div class="mn-label">영역</div>
+        <div class="mn-num">V</div>
+      </div>
+      <div class="method-title-block">
+        <div class="method-title">🏛️ 법적 정당성 (Legal Legitimacy) — 20점 만점</div>
+        <span class="method-badge badge-const">헌법·소송법 원칙 준수</span>
+      </div>
+    </div>
+    <div class="method-body">
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.75; margin-bottom:16px;">
+        법적 정당성은 재판 과정 전반이 헌법적 요청과 민사소송의 기본 원칙을 준수하였는지를 평가하는 영역으로, 5개 영역 중 가중치가 가장 높다. 당사자주의(변론주의·처분권주의)의 준수, 적법절차(due process), 재판받을 권리의 실질적 보장 등 헌법적 가치를 재판이 구현하고 있는지를 종합적으로 검토한다. 미국 연방대법원의 <em>Mathews v. Eldridge</em>(1976) 기준, 유럽인권재판소의 적법절차 판례법 및 ICCPR 제14조를 준거로 삼는다.
+      </p>
+      <table class="eval-table">
+        <thead>
+          <tr>
+            <th style="width:5%">번호</th>
+            <th style="width:22%">세부 지표</th>
+            <th style="width:8%">배점</th>
+            <th>평가 기준 및 방법</th>
+            <th style="width:18%">참조 규범</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat" style="color:var(--red)">L-1</td>
+            <td class="cat" style="color:var(--red)">변론주의·당사자주의 준수</td>
+            <td class="wt">4점</td>
+            <td>판결이 당사자가 주장한 사실과 증거만을 기초로 하였는지 평가한다(민사소송법 제203조). 중재 엔진가 당사자 미주장 사실·법리를 독자적으로 발굴하여 분석 근거로 삼은 경우 0점. 특히 일방 당사자(피고)가 주장하지 않은 법리를 중재 엔진가 그 당사자를 위해 개발·적용한 경우는 변론주의 정면 위반으로 최대 감산(-4점 + 가중 -4점)을 적용한다.</td>
+            <td><span class="law-tag red">민사소송법 제203조</span><span class="law-tag red">대법원 1966. 10. 11. 66다409</span></td>
+          </tr>
+          <tr>
+            <td class="cat">L-2</td>
+            <td class="cat">재판청구권의 실질적 보장</td>
+            <td class="wt">4점</td>
+            <td>헌법 제27조가 보장하는 재판청구권이 형식뿐 아니라 실질적으로 보장되었는지 평가한다. 변론재개신청·증거신청·항변 등 당사자의 절차적 권리 행사 시도에 대해 적절한 처리가 이루어졌는지 확인. 변론재개신청에 대한 판결문 내 언급 부재 = 0점. ICCPR 제14조의 "공정한 재판을 받을 권리" 기준 적용.</td>
+            <td><span class="law-tag red">헌법 제27조</span><span class="law-tag teal">ICCPR §14①</span></td>
+          </tr>
+          <tr>
+            <td class="cat">L-3</td>
+            <td class="cat">절대적 상고이유 해당 여부</td>
+            <td class="wt">4점</td>
+            <td>민사소송법 제424조 제1항 각호에 열거된 절대적 상고이유(분석 이유 불비, 이유 모순, 비밀 심리, 재판 구성 위법 등)에 해당하는 하자가 없는지 확인한다. 해당 하자가 1개 발견될 때마다 0점 처리. 이는 심리불속행 기각 대상에서 제외되는 상고이유로서, 하급심 판결의 중대한 절차 위반을 의미한다.</td>
+            <td><span class="law-tag red">민사소송법 제424조①</span><span class="law-tag red">민사소송법 제429조</span></td>
+          </tr>
+          <tr>
+            <td class="cat">L-4</td>
+            <td class="cat">특별법 우선 적용 원칙 준수</td>
+            <td class="wt">4점</td>
+            <td>파산법·주택임대차보호법·소비자기본법 등 취약계층 보호 특별법이 일반 민법보다 우선 적용되어야 하는 경우에 이를 적용하였는지 평가한다. 특별법의 적용 가능성을 검토조차 하지 않은 경우 1점 이하. 취약계층의 존재가 명백한 사건에서 보호 특별법을 간과한 경우 헌법 제34조(사회보장권) 침해로도 평가.</td>
+            <td><span class="law-tag">채무자회생법 제383조·제335조</span><span class="law-tag">헌법 제34조</span></td>
+          </tr>
+          <tr>
+            <td class="cat">L-5</td>
+            <td class="cat">적법절차 원칙(Due Process) 준수</td>
+            <td class="wt">4점</td>
+            <td>재판의 전 과정이 법령이 정한 절차를 준수하였는지, 당사자에게 예측 가능한 방식으로 진행되었는지 평가한다. 불고불리의 원칙 위반, 기습적 법리 적용(당사자가 예상할 수 없는 새로운 법리의 돌연한 적용), 심리 기간 중 당사자에게 불리한 절차 변경 등을 감점 대상으로 본다. 미국 연방대법원 Mathews v. Eldridge 기준 준용.</td>
+            <td><span class="law-tag teal">미국 Mathews v. Eldridge(1976)</span><span class="law-tag teal">ECHR §6①</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ref-box red">
+        <div class="rb-title">⚠️ 법적 정당성 영역 — 변론주의 위반의 중대성</div>
+        변론주의(Verhandlungsmaxime, 독일법 기원) 위반은 단순한 절차 흠결이 아니라 민사재판의 구조적 전제를 무너뜨리는 중대한 하자다. 한국 대법원 1966. 10. 11. 선고 66다409 판결은 "당사자가 주장하지 않은 사실은 재판의 기초로 삼을 수 없다"는 원칙을 천명하였다. 독일 민사소송법(ZPO) 제308조, 일본 민사소송법 제246조, 프랑스 민사소송법 제5조도 동일한 원칙을 규정한다. 특히 피고를 위해 피고 미주장 법리를 중재 엔진가 대신 개발하는 행위는 ① 변론주의 위반(L-1), ② 무기 대등 원칙 파괴(F-2), ③ 원고의 반박 기회 박탈(L-2)의 3중 위반으로 평가된다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 종합 채점 방법 ══ -->
+  <div class="compare-section">
+    <div class="compare-header">
+      <span class="material-icons sm">calculate</span>
+      종합 채점 방법 및 보정 규칙
+    </div>
+    <div class="compare-body">
+      <div class="two-col">
+        <div>
+          <p style="font-size:13px;font-weight:700;color:var(--primary-dark);margin-bottom:10px;">① 기본 채점 절차</p>
+          <table class="eval-table">
+            <thead>
+              <tr><th>단계</th><th>내용</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="cat">Step 1</td><td>각 영역별 5개 세부 지표를 0~4점으로 채점 (영역별 소계 0~20점)</td></tr>
+              <tr><td class="cat">Step 2</td><td>절대적 상고이유(§424①) 해당 하자 확인 → L-3 0점 처리, 전 영역 -1점 적용</td></tr>
+              <tr><td class="cat">Step 3</td><td>변론주의 위반(F-2 + L-1) 중복 확인 시: 법적 정당성 영역 가중 감산 -4점</td></tr>
+              <tr><td class="cat">Step 4</td><td>동일 하자가 2개 심급 연속 확인 시: 전 영역 추가 -1점씩 적용</td></tr>
+              <tr><td class="cat">Step 5</td><td>5개 영역 소계 합산 → 총점(0~100점) 산출 → 등급 부여</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <p style="font-size:13px;font-weight:700;color:var(--primary-dark);margin-bottom:10px;">② 영역별 가중치 설명</p>
+          <table class="eval-table">
+            <thead>
+              <tr><th>영역</th><th>기본 배점</th><th>최대 감산</th><th>비고</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="cat">공정성</td><td style="text-align:center;">20점</td><td style="text-align:center;color:var(--red);">-20점</td><td style="font-size:12px;">무기 대등 위반 시 0점 가능</td></tr>
+              <tr><td class="cat">객관성</td><td style="text-align:center;">20점</td><td style="text-align:center;color:var(--red);">-20점</td><td style="font-size:12px;">증거조사 거부 시 대폭 감점</td></tr>
+              <tr><td class="cat">합리성</td><td style="text-align:center;">20점</td><td style="text-align:center;color:var(--red);">-20점</td><td style="font-size:12px;">이유 불비는 0점 처리</td></tr>
+              <tr><td class="cat">정확성</td><td style="text-align:center;">20점</td><td style="text-align:center;color:var(--red);">-20점</td><td style="font-size:12px;">개념 오용 1건 = -1점</td></tr>
+              <tr><td class="cat" style="color:var(--red);">법적 정당성</td><td style="text-align:center;">20점</td><td style="text-align:center;color:var(--red);">-28점*</td><td style="font-size:12px;">*가중 감산 적용 시 음수 가능 → 0점 처리</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ref-box gold" style="margin-top:4px;">
+        <div class="rb-title">📎 복수 심급 평가 시 원칙</div>
+        동일 사건의 1심·2심을 각각 평가할 때, 상급심이 하급심의 위반을 발견하고도 시정하지 않은 경우 상급심 점수에 추가 감산(-2점)을 적용한다. 상급심이 하급심의 위반을 확장하거나 새로운 위반을 추가한 경우에는 해당 영역에서 별도 채점 후 더 낮은 점수를 부여한다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 국내외 방법론 비교표 ══ -->
+  <div class="compare-section">
+    <div class="compare-header">
+      <span class="material-icons sm">public</span>
+      국내외 사법부 분석 평가 방법론 비교
+    </div>
+    <div class="compare-body">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>국가·기관</th>
+            <th>평가 체계명</th>
+            <th>핵심 평가 지표</th>
+            <th>K-OpenLaw 반영</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🇰🇷 대한민국</strong><br>대법원·법원행정처</td>
+            <td>사법연감 품질 지표<br>판결서 기재 요령</td>
+            <td>이유 기재의 명확성, 판례 법리 준수, 절차 적정성</td>
+            <td><span class="chip chip-pass">A-2, R-1~5, L-3 반영</span></td>
+          </tr>
+          <tr>
+            <td><strong>🇺🇸 미국</strong><br>연방사법센터(FJC)</td>
+            <td>Judicial Performance<br>Evaluation Program</td>
+            <td>법률 지식, 절차 관리, 이유 명확성, 당사자 대우</td>
+            <td><span class="chip chip-pass">F-1~5, A-1~5 반영</span></td>
+          </tr>
+          <tr>
+            <td><strong>🇬🇧 영국</strong><br>항소법원·JCIO</td>
+            <td>Judicial Appointment<br>Commission (JAC) 기준</td>
+            <td>법적 분석의 정확성, 분석 이유의 충분성, 당사자 공정 대우</td>
+            <td><span class="chip chip-pass">A-1~5, R-4, F-1 반영</span></td>
+          </tr>
+          <tr>
+            <td><strong>🇪🇺 유럽</strong><br>CEPEJ</td>
+            <td>Checklist for Promoting<br>Quality of Justice (2016)</td>
+            <td>접근성, 심리의 공정성, 이유 제시, 합리적 기간, 집행 가능성</td>
+            <td><span class="chip chip-pass">F-2, O-5, R-2 반영</span></td>
+          </tr>
+          <tr>
+            <td><strong>🌐 유엔(UN)</strong><br>인권이사회</td>
+            <td>ICCPR §14<br>방갈로르 원칙(2002)</td>
+            <td>독립성, 공정성, 청렴성, 적절성, 평등, 능력, 근면</td>
+            <td><span class="chip chip-pass">전 영역 기초 원칙</span></td>
+          </tr>
+          <tr>
+            <td><strong>🇩🇪 독일</strong><br>연방헌법재판소</td>
+            <td>GG §103①<br>ZPO §308</td>
+            <td>법적 청문권(rechtliches Gehör), 변론주의, 쟁점 망라 판단</td>
+            <td><span class="chip chip-pass">F-3, L-1, R-2 반영</span></td>
+          </tr>
+          <tr>
+            <td><strong>🇯🇵 일본</strong><br>최고재판소</td>
+            <td>민사소송규칙 제185조<br>조사관 실무 기준</td>
+            <td>이유 기재의 충분성, 증거 취사 이유 명시, 법리 준수</td>
+            <td><span class="chip chip-pass">O-5, R-1, A-2 반영</span></td>
+          </tr>
+          <tr>
+            <td><strong>🇫🇷 프랑스</strong><br>파기원(Cour de cassation)</td>
+            <td>민사소송법 제455조<br>이유 불비 파기 이론</td>
+            <td>이유의 충분성·명확성, 주요 주장 판단 의무, 법리 일관성</td>
+            <td><span class="chip chip-pass">R-1, R-3, R-5 반영</span></td>
+          </tr>
+          <tr>
+            <td><strong>🇨🇦 캐나다</strong><br>연방대법원</td>
+            <td>R. v. Sheppard(2002)<br>이유 적절성 기준</td>
+            <td>이유의 정확성과 충분성의 결합, 항소심 검토 가능성</td>
+            <td><span class="chip chip-pass">R-4, A-1, L-3 반영</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ 결론 및 유의사항 ══ -->
+  <div class="final-box">
+    <div class="final-header">
+      <span class="material-icons">gavel</span>
+      평가 방법론의 적용 원칙 및 한계
+    </div>
+    <div class="final-body">
+      <p>
+        본 방법론은 판결의 절차적·법리적 품질을 객관적으로 수치화하기 위한 도구로서, 결과의 정당성(판결이 옳은가)이 아니라 <strong>과정의 정당성(절차와 법리가 올바르게 적용되었는가)</strong>을 평가한다. 동일한 사실관계에서도 판사의 심증에 따라 결론이 달라질 수 있으나, 그 과정에서 헌법·소송법이 정한 원칙을 준수하는 것은 선택이 아닌 의무다.
+      </p>
+      <p>
+        특히 <strong>변론주의(L-1)와 공정성(F-2)의 교차 위반</strong>은 단순히 점수를 낮추는 것에 그치지 않고, 민사소송법 제424조 제1항의 절대적 상고이유를 구성하여 상고심에서의 파기환송 가능성을 직접 높인다. 이 방법론은 당사자가 판결의 어느 부분이 상고이유로 다툴 수 있는지를 식별하는 데 실질적 도움을 제공하도록 설계되었다.
+      </p>
+      <p>
+        본 방법론에서 사용되는 점수는 <strong>규범적 기대치(normative expectation)</strong>와 <strong>실제 분석 내용의 괴리</strong>를 정량화한 것이다. 100점은 현실적으로 달성하기 어려운 이상적 기준이며, 80점 이상이면 절차적으로 충분히 정당한 판결로 본다. 60점 미만은 법리적·절차적 위반이 다수 확인된 상태로, 상고심의 파기 가능성이 통계적으로 유의미하게 높아지는 구간이다.
+      </p>
+      <div class="final-note">
+        ※ 본 방법론은 K-OpenLaw 시스템의 분석 평가 기준서로서, 법률 전문가의 검토를 전제로 활용되어야 합니다. 본 방법론에 따른 평가 결과는 법원의 공식 판단을 대체하지 않으며, 법적 조언으로 해석될 수 없습니다. 실제 상고 전략 수립은 반드시 전문 변호사와 협의하여 결정하시기 바랍니다.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div><strong>K-OpenLaw</strong> · 분석 평가 방법론 기준서 · Judicial Evaluation Methodology Reference</div>
+    <div>참조 규범: 대한민국 헌법 · 민사소송법 · ICCPR · ECHR · UN 방갈로르 원칙 · CEPEJ · 미국 FJC · 독일 GG</div>
+  </footer>
+
+</div>
+</body>
+</html>

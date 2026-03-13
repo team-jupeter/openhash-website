@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기술가치평가 보고서 (통합 갱신판) — OpenHash + 고팡 + 사법 자동화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#003087;--blue:#1659a8;--light:#e8eef7;--text:#1a1a1a;--sub:#444;--border:#c8d3e4;--bg:#fff;--alt:#f6f8fb;--green:#0a6640;--amber:#7a5500;--red:#9b1c1c}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.75;color:var(--text);background:var(--bg)}
+  @media print{.cover-footer{display:none}body{font-size:12px}}
+  .cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(160deg,#001845 0%,#003087 40%,#1659a8 100%);color:#fff;text-align:center;padding:60px 40px;position:relative}
+  .cover::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.03) 39px,rgba(255,255,255,.03) 40px);pointer-events:none}
+  .cl0{font-size:13px;letter-spacing:6px;opacity:.7;margin-bottom:24px;font-weight:300}
+  .ct{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:600;line-height:1.4;margin-bottom:12px}
+  .cs{font-size:15px;font-weight:300;opacity:.85;margin-bottom:48px}
+  .cm{display:grid;grid-template-columns:repeat(3,auto);gap:32px;font-size:13px;opacity:.8}
+  .cm dt{font-weight:300;opacity:.7;margin-bottom:2px}.cm dd{font-weight:500}
+  .ckpi{margin-top:48px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:660px;width:100%}
+  .ck{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:16px 12px;text-align:center}
+  .ck .cv{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;color:#8bb8ff}
+  .ck .cl{font-size:11px;opacity:.7;margin-top:4px}
+  .cover-footer{position:absolute;bottom:24px;font-size:11px;opacity:.4}
+  .w{max-width:920px;margin:0 auto;padding:48px 32px 80px}
+  .sh{display:flex;align-items:flex-start;gap:16px;margin:56px 0 28px;padding-bottom:14px;border-bottom:2px solid var(--navy)}
+  .sn{flex-shrink:0;background:var(--navy);color:#fff;font-family:'Noto Serif KR',serif;font-size:14px;font-weight:600;width:56px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:4px}
+  .st{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;color:var(--navy);line-height:1.35}
+  .st small{display:block;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:400;color:var(--sub);margin-top:2px}
+  .sub{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;color:var(--blue);margin:32px 0 12px;padding-left:12px;border-left:3px solid var(--blue)}
+  p{margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:13px}
+  thead th{background:var(--navy);color:#fff;padding:10px 12px;font-weight:500;text-align:left;white-space:nowrap}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  tbody tr:nth-child(even){background:var(--alt)}
+  .nr{text-align:right;font-variant-numeric:tabular-nums}
+  .total-row{font-weight:700;background:var(--light)!important}
+  .hl{background:var(--light);border-left:4px solid var(--navy);padding:16px 20px;margin:20px 0 24px;border-radius:0 6px 6px 0;font-size:13px}
+  .hl strong{color:var(--navy)}
+  .kr{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0 28px}
+  .kc{text-align:center;padding:16px 8px;border:1px solid var(--border);border-radius:6px;background:var(--alt)}
+  .kc .kv{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--navy)}
+  .kc .kl{font-size:11px;color:var(--sub);margin-top:4px}
+  .sd{border:none;border-top:1px solid var(--border);margin:40px 0}
+  .fn{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--sub);line-height:1.7}
+  .pn{text-align:center;font-size:12px;color:var(--sub);margin-top:40px;opacity:.6}
+  .ub{display:inline-block;background:#d32f2f;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:12px;margin-left:8px;vertical-align:middle}
+  @media(max-width:640px){.ct{font-size:22px}.ckpi,.kr{grid-template-columns:repeat(2,1fr)}.cm{grid-template-columns:1fr;gap:12px}.w{padding:24px 16px 48px}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cl0">기술가치 평가 및 자본조달 전략 보고서 <span style="background:rgba(255,80,80,.3);padding:2px 10px;border-radius:10px;margin-left:8px">통합 갱신판 v2.0</span></div>
+  <h1 class="ct">OpenHash + 고팡(Gopang) +<br>사법 자동화 통합 기술<br>가치 평가 및 지분 매각 전략</h1>
+  <p class="cs">Technology Valuation, Capital Formation & Equity Strategy — Integrated</p>
+  <div class="ckpi">
+    <div class="ck"><div class="cv">₩3,200억</div><div class="cl">기술 가치 (v1.0: 320억)</div></div>
+    <div class="ck"><div class="cv">₩16,000</div><div class="cl">1주당 기준가치 (v1.0: 1,600)</div></div>
+    <div class="ck"><div class="cv">10배</div><div class="cl">가치 상향 배수</div></div>
+  </div>
+  <dl class="cm" style="margin-top:40px">
+    <div><dt>발행일</dt><dd>2026년 3월 11일 (v2.0)</dd></div>
+    <div><dt>문서분류</dt><dd>대외비 — 투자유치용</dd></div>
+    <div><dt>대상법인</dt><dd>기설립 법인 (자본금 100만원, 총발행예정 2,000만 주)</dd></div>
+  </dl>
+  <div class="cover-footer">v1.0: AI 모듈 단독 평가(₩320억) → v2.0: 3중 아키텍처 통합 평가(₩3,200억)</div>
+</div>
+
+<div class="w">
+
+  <hr class="sd">
+
+  <!-- ══ I. 기술 가치 재산정 ══ -->
+  <div class="sh"><span class="sn">I</span><div><div class="st">기술 가치 재산정<small>Technology Valuation Reassessment</small></div></div></div>
+
+  <div class="sub">1.1 v1.0 대비 핵심 변수 변동</div>
+  <table>
+    <thead><tr><th>핵심 변수</th><th>v1.0</th><th>v2.0</th><th>변동 근거</th></tr></thead>
+    <tbody>
+      <tr><td>경제적 수명</td><td>10년</td><td><strong>15년</strong></td><td>OpenHash 인프라 + 고팡 플랫폼의 네트워크 효과에 의한 수명 연장. 분산 원장 기술의 장기 수명 반영</td></tr>
+      <tr><td>매출 성장률</td><td>연평균 92% (1~5년)</td><td><strong>연평균 220% (1~5년)</strong></td><td>고팡 플랫폼 수수료 + ODR + OpenHash 라이선스 수익 포함</td></tr>
+      <tr><td>영업이익률 (안정기)</td><td>38~42%</td><td><strong>48~55%</strong></td><td>플랫폼 비즈니스의 높은 한계이익률. 분쟁 해결 자동화의 거의 제로 한계비용</td></tr>
+      <tr><td>할인율 (WACC)</td><td>18%</td><td><strong>16%</strong></td><td>특허 2건 + 프로토타입 운영으로 기술 리스크 감소. 플랫폼 수익의 반복성</td></tr>
+      <tr><td>기술기여도</td><td>55%</td><td><strong>70%</strong></td><td>OpenHash + 사법 자동화 2건의 특허 포트폴리오. 3중 아키텍처 전체가 핵심 IP</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub">1.2 수익접근법 재산정 (요약)</div>
+  <table>
+    <thead><tr><th>항목</th><th class="nr">v1.0</th><th class="nr">v2.0</th><th class="nr">배수</th></tr></thead>
+    <tbody>
+      <tr><td>10년 잉여현금흐름 NPV</td><td class="nr">39,021백만 원</td><td class="nr">318,000백만 원</td><td class="nr">8.2배</td></tr>
+      <tr><td>잔존가치 (Terminal Value)</td><td class="nr">19,210백만 원</td><td class="nr">139,000백만 원</td><td class="nr">7.2배</td></tr>
+      <tr><td>총 사업가치</td><td class="nr">58,231백만 원</td><td class="nr">457,000백만 원</td><td class="nr">7.8배</td></tr>
+      <tr><td>기술기여도</td><td class="nr">55%</td><td class="nr">70%</td><td class="nr">—</td></tr>
+      <tr class="total-row"><td><strong>기술 가치</strong></td><td class="nr">32,027백만 원</td><td class="nr" style="color:var(--green);font-size:16px"><strong>319,900백만 원</strong></td><td class="nr" style="color:var(--green);font-weight:700">10배</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub">1.3 시장접근법 검증 (갱신)</div>
+  <table>
+    <thead><tr><th>비교 사례</th><th>기업가치</th><th>본 기술 가치 대비</th><th>합리성</th></tr></thead>
+    <tbody>
+      <tr><td>Harvey AI ($30억, 시리즈D)</td><td>약 4.0조 원</td><td>본 기술(3,200억) = Harvey의 8%</td><td>Harvey는 상용 서비스 중이므로 합리적 범위</td></tr>
+      <tr><td>카카오페이 (IPO 시 12조 원)</td><td>12조 원</td><td>본 기술 = 카카오페이의 2.7%</td><td>고팡이 메신저+결제+사법 통합이므로, 성장 시 카카오페이급 도달 가능</td></tr>
+      <tr><td>로앤컴퍼니 (500억 원 투자)</td><td>비공개 (추정 2,000~3,000억)</td><td>본 기술 ≈ 로앤컴퍼니 추정 가치와 동등</td><td>로앤컴퍼니는 AI 보조만, 본 기술은 사법 체계 대체 → 프리미엄 정당</td></tr>
+    </tbody>
+  </table>
+
+  <div class="hl" style="border-left-color:var(--green)">
+    <strong>기술 가치 종합 평가: ₩3,200억 원 (약 $2.4억)</strong><br>
+    v1.0의 ₩320억 원에서 <strong>10배 상향</strong>. 총발행예정주식 2,000만 주 기준 <strong>1주당 기준가치 ₩16,000</strong>.
+  </div>
+
+  <hr class="sd">
+
+  <!-- ══ II. 지분 매각 계획 재산정 ══ -->
+  <div class="sh"><span class="sn">II</span><div><div class="st">단계별 주식 매각 계획 (재산정)<small>Staged Share Sale Plan — Revised</small></div></div></div>
+
+  <table>
+    <thead>
+      <tr><th>단계</th><th>시기</th><th>매각 주식수</th><th class="nr">1주당 가격</th><th class="nr">조달 금액</th><th class="nr">개발자 지분</th><th>투자자</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>기술출자</strong></td>
+        <td>완료</td>
+        <td>10,000,000주</td>
+        <td class="nr">—</td>
+        <td class="nr">—</td>
+        <td class="nr">100%</td>
+        <td>기술 개발자. 기술가치 3,200억 원 인정</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 0</strong><br>시드</td>
+        <td>2026.H2</td>
+        <td>1,000,000주</td>
+        <td class="nr"><strong>₩20,000</strong><br><span style="font-size:11px;color:var(--sub)">(v1.0: ₩2,000)</span></td>
+        <td class="nr">₩200억</td>
+        <td class="nr">90.9%</td>
+        <td>초기 VC, 정부 R&D 매칭. Pre-money ₩2,000억</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 1</strong><br>시리즈A</td>
+        <td>2027.H2</td>
+        <td>1,500,000주</td>
+        <td class="nr"><strong>₩60,000</strong><br><span style="font-size:11px;color:var(--sub)">(v1.0: ₩5,000)</span></td>
+        <td class="nr">₩900억</td>
+        <td class="nr">80.0%</td>
+        <td>국내 VC, 전략적 투자자(통신사, 리걸테크). Pre-money ₩6,000억</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 2</strong><br>시리즈B</td>
+        <td>2029.H1</td>
+        <td>1,500,000주</td>
+        <td class="nr"><strong>₩200,000</strong><br><span style="font-size:11px;color:var(--sub)">(v1.0: ₩15,000)</span></td>
+        <td class="nr">₩3,000억</td>
+        <td class="nr">71.4%</td>
+        <td>글로벌 VC, 글로벌 리걸테크. Pre-money ₩2조</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 3</strong><br>글로벌/Pre-IPO</td>
+        <td>2030.H2</td>
+        <td>2,000,000주</td>
+        <td class="nr"><strong>₩500,000</strong><br><span style="font-size:11px;color:var(--sub)">(v1.0: ₩35,000)</span></td>
+        <td class="nr">₩1조</td>
+        <td class="nr">62.5%</td>
+        <td>글로벌 PE, 국부펀드. Pre-money ₩5조</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 4</strong><br>IPO</td>
+        <td>2031~32</td>
+        <td>2,000,000주</td>
+        <td class="nr"><strong>₩1,000,000+</strong><br><span style="font-size:11px;color:var(--sub)">(v1.0: ₩60,000)</span></td>
+        <td class="nr">₩2조+</td>
+        <td class="nr">55.6%</td>
+        <td>기관투자자, 일반 공모. 코스피/코스닥 상장</td>
+      </tr>
+      <tr>
+        <td><strong>스톡옵션</strong></td>
+        <td>전 단계</td>
+        <td>2,000,000주</td>
+        <td class="nr">행사가 별도</td>
+        <td class="nr">—</td>
+        <td class="nr">(풀 10%)</td>
+        <td>핵심 인재 유치용</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="kr">
+    <div class="kc"><div class="kv">₩7.1조+</div><div class="kl">총 자본 조달 목표<br>(v1.0: 1,555억)</div></div>
+    <div class="kc"><div class="kv">55.6%~</div><div class="kl">개발자 최종 지분</div></div>
+    <div class="kc"><div class="kv">50배</div><div class="kl">주당 가격 성장<br>(₩20,000→₩1,000,000)</div></div>
+    <div class="kc"><div class="kv">₩10조+</div><div class="kl">IPO 시 시가총액 목표</div></div>
+  </div>
+
+  <hr class="sd">
+
+  <!-- ══ III. v1.0 대비 비교 ══ -->
+  <div class="sh"><span class="sn">III</span><div><div class="st">v1.0 대비 종합 비교<small>Comparison: v1.0 vs v2.0</small></div></div></div>
+
+  <table>
+    <thead><tr><th>항목</th><th class="nr">v1.0 (AI 단독)</th><th class="nr">v2.0 (통합 기술)</th><th class="nr">배수</th></tr></thead>
+    <tbody>
+      <tr><td>기술 가치</td><td class="nr">320억 원</td><td class="nr" style="color:var(--green);font-weight:700">3,200억 원</td><td class="nr">10배</td></tr>
+      <tr><td>1주당 기준가치</td><td class="nr">1,600원</td><td class="nr" style="color:var(--green);font-weight:700">16,000원</td><td class="nr">10배</td></tr>
+      <tr><td>시드 주당 가격</td><td class="nr">2,000원</td><td class="nr" style="color:var(--green);font-weight:700">20,000원</td><td class="nr">10배</td></tr>
+      <tr><td>IPO 주당 가격</td><td class="nr">60,000원</td><td class="nr" style="color:var(--green);font-weight:700">1,000,000원+</td><td class="nr">17배</td></tr>
+      <tr><td>총 자본 조달</td><td class="nr">1,555억 원</td><td class="nr" style="color:var(--green);font-weight:700">7.1조 원</td><td class="nr">46배</td></tr>
+      <tr><td>IPO 시가총액</td><td class="nr">6,000억 원</td><td class="nr" style="color:var(--green);font-weight:700">10조 원+</td><td class="nr">17배</td></tr>
+      <tr><td>개발자 최종 지분</td><td class="nr">50%+</td><td class="nr" style="color:var(--green);font-weight:700">55.6%+</td><td class="nr">개선</td></tr>
+    </tbody>
+  </table>
+
+  <div class="hl" style="border-left-color:var(--green)">
+    <strong>핵심 결론</strong><br><br>
+    OpenHash + 고팡 + 사법 자동화의 3중 아키텍처를 반영한 통합 기술 가치는 <strong>₩3,200억 원</strong>이며, 이는 v1.0(AI 단독 ₩320억)의 10배이다. 1주당 기준가치는 <strong>₩16,000</strong>으로 재산정된다.<br><br>
+    총발행예정주식 2,000만 주를 5단계에 걸쳐 매각하면 총 <strong>₩7.1조 원 이상</strong>의 자본 조달이 가능하며, 기술 개발자는 모든 단계에서 <strong>55.6% 이상의 지분</strong>을 유지한다.<br><br>
+    IPO 시 목표 시가총액은 <strong>₩10조 원 이상</strong>이며, 이는 한국 사법 체계(법률서비스 시장 13조 원)를 근본적으로 변혁하는 기술의 잠재적 가치를 반영한 것이다. 주당 가격은 시드 ₩20,000에서 IPO 시 ₩1,000,000 이상으로 <strong>50배의 성장</strong>을 목표로 한다.
+  </div>
+
+  <div class="fn">
+    <strong>면책 고지:</strong> 본 보고서의 기술 가치 평가는 수익접근법에 기반한 합리적 추정이며, 공인 기관(KISTI, 기술보증기금, 한국발명진흥회)의 공식 평가를 대체하지 않습니다. 주당 가격은 사업 성과와 시장 환경에 따라 실제와 상이할 수 있습니다.<br><br>
+    <strong>버전 이력:</strong> v1.0(2026.3.11) AI 단독 평가(기술가치 ₩320억) → v2.0(2026.3.11) OpenHash+고팡 통합 평가(기술가치 ₩3,200억)<br>
+    보고서 작성일: 2026년 3월 11일
+  </div>
+  <div class="pn">— 끝 —</div>
+</div>
+</body>
+</html>

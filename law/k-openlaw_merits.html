@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K-OpenLaw 적용 효과 분석 — 본 사건 기준</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── 변수 ── */
+    :root {
+      --gov-navy:   #003366;
+      --gov-blue:   #1756A9;
+      --gov-light:  #E8F0FA;
+      --gov-border: #C8D8EE;
+      --accent:     #C9A000;
+      --accent-lt:  #FFF8E1;
+      --red:        #C0392B;
+      --green:      #0D7A41;
+      --text:       #1A2535;
+      --text-sub:   #4A5E78;
+      --bg:         #F5F7FA;
+      --white:      #FFFFFF;
+      --shadow-sm:  0 2px 8px rgba(0,30,70,.07);
+      --shadow-md:  0 6px 20px rgba(0,30,70,.11);
+      --r:          12px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    /* ── 상단 헤더 바 (정부 공식 스타일) ── */
+    .gov-topbar {
+      background: var(--gov-navy);
+      color: #fff;
+      font-size: .82rem;
+      letter-spacing: .04em;
+      padding: 6px 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gov-topbar .material-icons { font-size: 16px; opacity: .8; }
+
+    /* ── 페이지 헤더 ── */
+    .page-header {
+      background: var(--gov-blue);
+      color: #fff;
+      padding: 48px 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute;
+      right: -60px; bottom: -60px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+    }
+    .page-header .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: .8rem;
+      letter-spacing: .05em;
+      margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .page-header .subtitle {
+      font-size: .95rem;
+      opacity: .85;
+      max-width: 720px;
+      position: relative;
+    }
+    .page-header .meta {
+      margin-top: 24px;
+      display: flex;
+      gap: 24px;
+      font-size: .82rem;
+      opacity: .75;
+      flex-wrap: wrap;
+    }
+    .page-header .meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── 본문 레이아웃 ── */
+    .body-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── 개요 요약 배너 ── */
+    .summary-banner {
+      background: var(--gov-light);
+      border: 1px solid var(--gov-border);
+      border-left: 5px solid var(--gov-blue);
+      border-radius: var(--r);
+      padding: 28px 32px;
+      margin-bottom: 48px;
+    }
+    .summary-banner h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--gov-navy);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .summary-banner p {
+      font-size: .95rem;
+      color: var(--text-sub);
+      line-height: 1.8;
+    }
+
+    /* ── 섹션 헤더 ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gov-blue);
+    }
+    .section-head .num {
+      background: var(--gov-blue);
+      color: #fff;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-head h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gov-navy);
+    }
+    .section-head .material-icons {
+      font-size: 22px;
+      color: var(--gov-blue);
+    }
+
+    /* ── 지표 카드 행 ── */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .kpi-card {
+      background: var(--white);
+      border: 1px solid var(--gov-border);
+      border-top: 4px solid var(--gov-blue);
+      border-radius: var(--r);
+      padding: 24px 20px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+    .kpi-card.accent { border-top-color: var(--accent); }
+    .kpi-card.green  { border-top-color: var(--green); }
+    .kpi-card.red    { border-top-color: var(--red); }
+    .kpi-card .kpi-num {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gov-navy);
+      line-height: 1.1;
+    }
+    .kpi-card.accent .kpi-num { color: #8a6800; }
+    .kpi-card.green  .kpi-num { color: var(--green); }
+    .kpi-card.red    .kpi-num { color: var(--red); }
+    .kpi-card .kpi-label {
+      font-size: .82rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
+    .kpi-card .kpi-sub {
+      font-size: .75rem;
+      color: var(--text-sub);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--gov-border);
+    }
+
+    /* ── 섹션 카드 컨테이너 ── */
+    .section-block {
+      background: var(--white);
+      border: 1px solid var(--gov-border);
+      border-radius: var(--r);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 40px;
+    }
+
+    /* ── 장점 테이블 ── */
+    .merit-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .92rem;
+    }
+    .merit-table thead tr {
+      background: var(--gov-navy);
+      color: #fff;
+    }
+    .merit-table thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 500;
+      letter-spacing: .02em;
+    }
+    .merit-table tbody tr { border-bottom: 1px solid var(--gov-border); }
+    .merit-table tbody tr:last-child { border-bottom: none; }
+    .merit-table tbody tr:nth-child(even) { background: var(--bg); }
+    .merit-table td {
+      padding: 14px 16px;
+      vertical-align: top;
+      color: var(--text);
+    }
+    .merit-table td:first-child {
+      font-weight: 600;
+      color: var(--gov-navy);
+      white-space: nowrap;
+    }
+    .merit-table .tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .tag-time  { background: #E3F2FD; color: #1565C0; }
+    .tag-cost  { background: #E8F5E9; color: #2E7D32; }
+    .tag-legal { background: #FFF3E0; color: #E65100; }
+    .tag-trust { background: #F3E5F5; color: #6A1B9A; }
+    .tag-tech  { background: #E0F2F1; color: #00695C; }
+
+    /* ── 비교 그리드 ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .compare-panel {
+      border-radius: var(--r);
+      padding: 28px;
+      border: 1px solid var(--gov-border);
+    }
+    .compare-panel.court {
+      background: #FFF5F5;
+      border-color: #F5C6C6;
+    }
+    .compare-panel.openlaw {
+      background: #F0F7FF;
+      border-color: var(--gov-border);
+    }
+    .compare-panel h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .compare-panel.court  h3 { color: var(--red); border-color: var(--red); }
+    .compare-panel.openlaw h3 { color: var(--gov-blue); border-color: var(--gov-blue); }
+    .compare-panel ul {
+      list-style: none;
+      padding: 0;
+    }
+    .compare-panel li {
+      font-size: .9rem;
+      color: var(--text-sub);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .compare-panel li:last-child { border-bottom: none; }
+    .compare-panel li .material-icons {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .compare-panel.court  li .material-icons { color: var(--red); }
+    .compare-panel.openlaw li .material-icons { color: var(--green); }
+
+    /* ── 점수 카드 ── */
+    .score-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 28px 0;
+    }
+    .score-card {
+      background: var(--bg);
+      border: 1px solid var(--gov-border);
+      border-radius: 8px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .score-card .metric { font-size: .8rem; color: var(--text-sub); margin-bottom: 8px; }
+    .score-row-labels {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gov-border);
+      font-size: .88rem;
+    }
+    .score-row-labels:first-child { font-weight: 600; color: var(--gov-navy); }
+    .court-score  { color: var(--red); font-weight: 700; font-size: 1.05rem; text-align:center; }
+    .openlaw-score{ color: var(--green); font-weight: 700; font-size: 1.05rem; text-align:center; }
+    .metric-name  { color: var(--text); font-size: .88rem; }
+
+    /* ── 타임라인 ── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--gov-border);
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -26px;
+      top: 4px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--gov-blue);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--gov-blue);
+    }
+    .tl-item.red::before  { background: var(--red);   box-shadow: 0 0 0 2px var(--red); }
+    .tl-item.green::before{ background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+    .tl-item .tl-year {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      color: var(--gov-blue);
+      margin-bottom: 2px;
+    }
+    .tl-item.red   .tl-year { color: var(--red); }
+    .tl-item.green .tl-year { color: var(--green); }
+    .tl-item .tl-desc {
+      font-size: .9rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── 특허 장점 그리드 ── */
+    .merit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .merit-card {
+      background: var(--bg);
+      border: 1px solid var(--gov-border);
+      border-radius: var(--r);
+      padding: 24px 20px;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .merit-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--gov-blue);
+    }
+    .merit-card .m-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
+    .merit-card .m-icon .material-icons { font-size: 24px; color: #fff; }
+    .merit-card h4 {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--gov-navy);
+      margin-bottom: 8px;
+    }
+    .merit-card p {
+      font-size: .85rem;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+    .merit-card .evidence {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--gov-border);
+      font-size: .78rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── 결론 박스 ── */
+    .conclusion-box {
+      background: var(--gov-navy);
+      color: #fff;
+      border-radius: var(--r);
+      padding: 40px 40px;
+      margin-top: 48px;
+    }
+    .conclusion-box h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .conclusion-box p {
+      font-size: .95rem;
+      opacity: .88;
+      line-height: 1.85;
+      margin-bottom: 12px;
+      max-width: 900px;
+    }
+    .conclusion-box strong { color: #FFD966; }
+    .conclusion-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .chip {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: .82rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chip .material-icons { font-size: 15px; }
+
+    /* ── 푸터 ── */
+    .footer {
+      text-align: center;
+      padding: 32px 0;
+      border-top: 1px solid var(--gov-border);
+      color: var(--text-sub);
+      font-size: .82rem;
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 900px) {
+      .kpi-row       { grid-template-columns: repeat(2,1fr); }
+      .compare-grid  { grid-template-columns: 1fr; }
+      .merit-grid    { grid-template-columns: 1fr 1fr; }
+      .score-row     { grid-template-columns: repeat(3,1fr); }
+    }
+    @media (max-width: 600px) {
+      .page-header   { padding: 32px 20px; }
+      .page-header h1 { font-size: 1.5rem; }
+      .body-wrap     { padding: 24px 16px 60px; }
+      .kpi-row       { grid-template-columns: 1fr 1fr; }
+      .merit-grid    { grid-template-columns: 1fr; }
+      .score-row     { grid-template-columns: 1fr 1fr; }
+      .section-block { padding: 20px 16px; }
+      .conclusion-box{ padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 정부 기관 스타일 상단 바 -->
+<div class="gov-topbar">
+  <span class="material-icons">account_balance</span>
+  K-OpenLaw · AI 법률 분석 자동화 시스템 · 특허출원 제10-2026-0039504호
+</div>
+
+<!-- 페이지 헤더 -->
+<div class="page-header">
+  <div class="label">
+    <span class="material-icons" style="font-size:14px;">smart_toy</span>
+    K-OpenLaw 적용 효과 분석
+  </div>
+  <h1>본 사건에 K-OpenLaw 적용 시 장점 분석</h1>
+  <p class="subtitle">
+    2010년 발생하여 2026년 현재 대법원 상고심이 진행 중인 민사사건을 기준으로,
+    K-OpenLaw를 적용하였을 때의 시간적·경제적·법적 효용을 정량적으로 분석합니다.
+  </p>
+  <div class="meta">
+    <span><span class="material-icons">calendar_today</span> 분석 기준일: 2026년 3월</span>
+    <span><span class="material-icons">gavel</span> 사건 단계: 1심 기각 → 2심 기각 → 대법원 상고 계류</span>
+    <span><span class="material-icons">auto_awesome</span> AI 중재 엔진: GPT-4o + Gemini 1.5 Pro (만장일치)</span>
+  </div>
+</div>
+
+<div class="body-wrap">
+
+  <!-- 개요 요약 -->
+  <div class="summary-banner">
+    <h2><span class="material-icons">info</span> 사건 개요</h2>
+    <p>
+      원고는 기초생활수급자 신분으로, 2010년 임대보증금 반환 및 관련 민사 분쟁을 제기하였습니다.
+      2023년 1심에서 원고 청구가 기각(D등급·48점)되었고, 2024년 항소심에서도 기각(F등급·40점)되었습니다.
+      2026년 현재 대법원 상고심이 진행 중입니다.
+      K-OpenLaw AI 중재 엔진(GPT-4o + Gemini 만장일치)는 동일 사안에서 법원과 <strong>정반대의 결론</strong>을 도출하였습니다.
+      이 문서는 최초 분쟁 발생 시점부터 K-OpenLaw를 적용하였을 경우의 효용을 항목별로 정량화합니다.
+    </p>
+  </div>
+
+  <!-- KPI 요약 지표 -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-num">16년 → 1시간</div>
+      <div class="kpi-label">분쟁 해결 기간 단축</div>
+      <div class="kpi-sub">2010년 분쟁 발생 → 2026년 미해결 vs. K-OpenLaw 1시간 처리</div>
+    </div>
+    <div class="kpi-card accent">
+      <div class="kpi-num">99.9% 절감</div>
+      <div class="kpi-label">사법 비용 절감</div>
+      <div class="kpi-sub">3심 누적 수천만~수억 원 → ₩10만 원 수준</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-num">D·F → A</div>
+      <div class="kpi-label">판정 객관성 등급 향상</div>
+      <div class="kpi-sub">1심 D(48점), 2심 F(40점) → K-OpenLaw 상위등급</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-num">15개+ 오류 제거</div>
+      <div class="kpi-label">법리·사실오인 오류</div>
+      <div class="kpi-sub">1심 11항목 + 2심 8항목 법리·절차 오류 사전 방지</div>
+    </div>
+  </div>
+
+  <!-- ① 시간적 효용 -->
+  <div class="section-block">
+    <div class="section-head">
+      <div class="num">1</div>
+      <span class="material-icons">schedule</span>
+      <h2>시간적 효용 — 16년 지연의 즉각적 해소</h2>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-panel court">
+        <h3><span class="material-icons">gavel</span> 기존 법원 (실제 진행)</h3>
+        <ul>
+          <li><span class="material-icons">close</span> 2010년 분쟁 발생 → 2026년 현재 미해결 (16년 경과)</li>
+          <li><span class="material-icons">close</span> 1심 진행 기간: 수년</li>
+          <li><span class="material-icons">close</span> 2심 진행 기간: 추가 수개월~1년</li>
+          <li><span class="material-icons">close</span> 상고심 대기: 현재 진행 중, 평균 1년 이상 잔여</li>
+          <li><span class="material-icons">close</span> 기초생활수급자로서 장기 법적 불안정 상태 지속</li>
+          <li><span class="material-icons">close</span> 변론재개신청 묵살로 추가 지연</li>
+        </ul>
+      </div>
+      <div class="compare-panel openlaw">
+        <h3><span class="material-icons">auto_awesome</span> K-OpenLaw 적용 시</h3>
+        <ul>
+          <li><span class="material-icons">check</span> 분쟁 접수 후 1시간 이내 AI 합의 권고안 생성</li>
+          <li><span class="material-icons">check</span> PDV 증거 자동 검증: 수초~수분 내 사실 확인 완료</li>
+          <li><span class="material-icons">check</span> 모든 쟁점 자동 망라·분석: 인간 법관의 쟁점 누락 구조적 방지</li>
+          <li><span class="material-icons">check</span> 당사자 모두 납득 가능한 추론 과정 제시 → 항소 동기 현저히 감소</li>
+          <li><span class="material-icons">check</span> 최초 분쟁 발생 시(2010년) 적용 시 16년 분쟁 비용 전액 절약</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">2010</div>
+        <div class="tl-desc">임대차 계약 관련 분쟁 발생 — K-OpenLaw 적용 시 이 시점에서 1시간 내 해결 가능</div>
+      </div>
+      <div class="tl-item red">
+        <div class="tl-year">2023 (1심)</div>
+        <div class="tl-desc">원고 청구 기각 — 법리 오류 7개, 사실오인 2개, 절차 하자 2개 (공정성 D등급, 48/100)</div>
+      </div>
+      <div class="tl-item red">
+        <div class="tl-year">2024 (2심)</div>
+        <div class="tl-desc">항소 기각 — 법리 오류 8개, 변론재개신청 묵살, 1심 오류 전면 답습 (공정성 F등급, 40/100)</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2026 (3심 계류)</div>
+        <div class="tl-desc">대법원 상고심 진행 중 — 파기환송 확률 20~25% 분석. 판결까지 추가 1년 이상 대기 예상</div>
+      </div>
+      <div class="tl-item green">
+        <div class="tl-year">K-OpenLaw 가상 시나리오</div>
+        <div class="tl-desc">2010년 분쟁 발생 시점 → 접수 후 1시간 이내 GPT-4o + Gemini 만장일치 분석 → 16년 분쟁 원천 방지</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 경제적 효용 -->
+  <div class="section-block">
+    <div class="section-head">
+      <div class="num">2</div>
+      <span class="material-icons">payments</span>
+      <h2>경제적 효용 — 비용의 1/1,000 수준으로 절감</h2>
+    </div>
+    <table class="merit-table">
+      <thead>
+        <tr>
+          <th>비용 항목</th>
+          <th>기존 법원 (3심 누적)</th>
+          <th>K-OpenLaw 적용 시</th>
+          <th>절감률</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>변호사 선임료</td>
+          <td>1심 수백만~수천만 원 × 3회</td>
+          <td>AI 에이전트 자동 대변 (포함)</td>
+          <td>약 99% 이상</td>
+        </tr>
+        <tr>
+          <td>인지대·송달료</td>
+          <td>소가 기준 수십만~수백만 원</td>
+          <td>전자 접수 최소화</td>
+          <td>약 95% 이상</td>
+        </tr>
+        <tr>
+          <td>증거 제출·감정 비용</td>
+          <td>감정비·문서 발급비 등 수십만~수백만 원</td>
+          <td>PDV 해시 검증: 수초 내 자동 완료</td>
+          <td>약 99% 이상</td>
+        </tr>
+        <tr>
+          <td>기회비용·정신적 손실</td>
+          <td>16년간 기초생활수급자 법적 불안정 상태</td>
+          <td>1시간 내 해결로 정상적 사회·경제 활동 복귀</td>
+          <td>정량화 불가 (매우 큼)</td>
+        </tr>
+        <tr>
+          <td>법원 행정 비용 (사회적)</td>
+          <td>1~3심 법관·직원·시설 운영 비용 전액 부담</td>
+          <td>법원 관여 없이 민간 서비스로 해결</td>
+          <td>사회적 비용 약 93% 이상 절감</td>
+        </tr>
+        <tr style="background:#EEF6FF; font-weight:700;">
+          <td>총계 (당사자 직접 비용)</td>
+          <td>수천만 원 ~ 수억 원 추정</td>
+          <td>약 <strong style="color:#0D7A41">₩10만 원</strong></td>
+          <td style="color:#0D7A41; font-weight:700;">약 99.9% 절감</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:16px; font-size:.82rem; color:var(--text-sub);">
+      ※ 특허출원서 및 DeepSeek DCF 평가 기준: 기존 소송 1건 평균 비용 대비 K-OpenLaw 플랫폼 이용료 ₩10만 원 수준 (시범 운용 기준). 
+      실제 비용은 사건 난이도에 따라 상이할 수 있습니다.
+    </p>
+  </div>
+
+  <!-- ③ 법적 정확성 -->
+  <div class="section-block">
+    <div class="section-head">
+      <div class="num">3</div>
+      <span class="material-icons">balance</span>
+      <h2>법적 정확성 — 법리 오류의 구조적 방지</h2>
+    </div>
+    <p style="font-size:.92rem; color:var(--text-sub); margin-bottom:24px; line-height:1.8;">
+      본 사건에서 1심·2심 법원은 총 <strong style="color:var(--red)">19개 이상</strong>의 법리·사실오인·절차적 오류를 범하였습니다.
+      K-OpenLaw는 6단계 규범 위계(헌법 → 조약 → 특별법 → 일반법 → 시행령 → 판례)를 시스템 레벨에서 강제 적용하여,
+      이러한 오류를 구조적으로 방지합니다.
+    </p>
+
+    <!-- 공정성 점수 비교 -->
+    <div style="background:var(--bg); border-radius:var(--r); padding:24px; margin-bottom:28px; border:1px solid var(--gov-border);">
+      <h3 style="font-size:.95rem; font-weight:600; color:var(--gov-navy); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+        <span class="material-icons" style="font-size:20px; color:var(--gov-blue);">assessment</span>
+        판정 객관성 5개 지표 정량 비교
+      </h3>
+      <div class="score-row-labels" style="font-weight:700; border-bottom:2px solid var(--gov-navy); padding-bottom:10px; margin-bottom:4px;">
+        <span>평가 지표</span>
+        <span style="text-align:center; color:var(--red);">▼ 법원 분석</span>
+        <span style="text-align:center; color:var(--green);">▲ K-OpenLaw</span>
+      </div>
+      <div class="score-row-labels">
+        <span class="metric-name">공정성</span>
+        <span class="court-score">D (1심 45점 / 2심 38점)</span>
+        <span class="openlaw-score">A (90점 이상)</span>
+      </div>
+      <div class="score-row-labels">
+        <span class="metric-name">객관성</span>
+        <span class="court-score">D (1심 48점 / 2심 40점)</span>
+        <span class="openlaw-score">A (88점 이상)</span>
+      </div>
+      <div class="score-row-labels">
+        <span class="metric-name">합리성</span>
+        <span class="court-score">D (쟁점 회피·누락 다수)</span>
+        <span class="openlaw-score">A (전 쟁점 명시적 판단)</span>
+      </div>
+      <div class="score-row-labels">
+        <span class="metric-name">사실 정확성</span>
+        <span class="court-score">D (사실오인 2건 확인)</span>
+        <span class="openlaw-score">A (PDV 해시 검증 기반)</span>
+      </div>
+      <div class="score-row-labels" style="border-bottom:none;">
+        <span class="metric-name">법적 정당성</span>
+        <span class="court-score">F (기초생활수급자 보호 법리 무시)</span>
+        <span class="openlaw-score">A (헌법 제27조 기반 처리)</span>
+      </div>
+      <p style="font-size:.78rem; color:var(--text-sub); margin-top:14px;">
+        ※ K-OpenLaw 점수는 본 사건 AI 합의 권고안(GPT-4o + Gemini 만장일치) 분석 기반 추정치입니다.
+      </p>
+    </div>
+
+    <table class="merit-table">
+      <thead>
+        <tr>
+          <th>오류 유형</th>
+          <th>법원 발생 건수</th>
+          <th>K-OpenLaw 방지 메커니즘</th>
+          <th>분류</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>면책 소급효 무시 (파산법 §566)</td>
+          <td>1심·2심 모두 반복</td>
+          <td>6단계 규범 위계: 파산법 우선 적용 강제</td>
+          <td><span class="tag tag-legal">법리 오류</span></td>
+        </tr>
+        <tr>
+          <td>기초생활수급자 보호 법리 미적용</td>
+          <td>2심 추가 확인</td>
+          <td>사회적 약자 보호 법령 자동 감지·적용</td>
+          <td><span class="tag tag-legal">법리 오류</span></td>
+        </tr>
+        <tr>
+          <td>변론재개신청 묵살</td>
+          <td>2심 확인</td>
+          <td>모든 신청·쟁점의 명시적 판단 의무화</td>
+          <td><span class="tag tag-trust">절차 하자</span></td>
+        </tr>
+        <tr>
+          <td>구상권 범위 오산정</td>
+          <td>1심·2심 확인</td>
+          <td>수치 계산 자동 검증 (오산정 불가)</td>
+          <td><span class="tag tag-legal">사실오인</span></td>
+        </tr>
+        <tr>
+          <td>해지통고 효력 vs. 면책 소급효 혼동</td>
+          <td>1심·2심 모두</td>
+          <td>법률 개념 정의 DB 기반 자동 구분</td>
+          <td><span class="tag tag-legal">법리 오류</span></td>
+        </tr>
+        <tr>
+          <td>증거 진위 확인 지연</td>
+          <td>전 심급</td>
+          <td>PDV + OpenHash: 수초 내 자동 무결성 검증</td>
+          <td><span class="tag tag-tech">기술적 해소</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ④ 투명성·신뢰성 -->
+  <div class="section-block">
+    <div class="section-head">
+      <div class="num">4</div>
+      <span class="material-icons">verified_user</span>
+      <h2>투명성 및 신뢰성 — "1+1=2" 수준의 납득 가능한 분석</h2>
+    </div>
+    <div class="merit-grid">
+      <div class="merit-card">
+        <div class="m-icon" style="background:#1756A9;"><span class="material-icons">route</span></div>
+        <h4>단계별 추론 과정 전면 공개</h4>
+        <p>원고·피고 주장 → 쟁점 분류 → 법령 매핑 → 논증·반박 → 합의 도출의 전 과정이 문서화됩니다. 패소한 당사자도 결과를 이해하고 수용할 수 있습니다.</p>
+        <div class="evidence">근거: k-openlaw_judgement.html — 판결문 추론 구조 전문</div>
+      </div>
+      <div class="merit-card">
+        <div class="m-icon" style="background:#8E44AD;"><span class="material-icons">how_to_reg</span></div>
+        <h4>이종 LLM 교차 검증</h4>
+        <p>GPT-4o(원고 측)와 Gemini 1.5 Pro(피고 측)가 상호 독립적으로 논증을 수행하여 단일 LLM의 편향·환각을 구조적으로 방지합니다. 본 사건에서 만장일치 결론 도출.</p>
+        <div class="evidence">근거: 특허출원서 §3.2 다중 LLM 적대적 논증 구조 (PAA/IAA)</div>
+      </div>
+      <div class="merit-card">
+        <div class="m-icon" style="background:#0D7A41;"><span class="material-icons">lock</span></div>
+        <h4>OpenHash 증거 무결성 보장</h4>
+        <p>모든 증거를 PDV에 암호화 저장하고 OpenHash 네트워크에 해시를 등록합니다. 위변조가 기술적으로 불가능하며, 증거 신뢰성 확인이 수초 내 완료됩니다.</p>
+        <div class="evidence">근거: 특허출원서 §2.4 PDV 및 §2.5 OpenHash 네트워크</div>
+      </div>
+      <div class="merit-card">
+        <div class="m-icon" style="background:#C9A000;"><span class="material-icons">menu_book</span></div>
+        <h4>6단계 규범 위계 자동 적용</h4>
+        <p>헌법 → 조약 → 특별법 → 일반법 → 시행령 → 판례 순서의 규범 위계를 시스템 레벨에서 강제 적용. 하위 규범이 상위 규범을 침해하는 오류를 원천 방지.</p>
+        <div class="evidence">근거: 특허출원서 §3.1 규범 위계 처리 모듈</div>
+      </div>
+      <div class="merit-card">
+        <div class="m-icon" style="background:#D35400;"><span class="material-icons">diversity_3</span></div>
+        <h4>사회적 약자 보호 자동 인식</h4>
+        <p>본 사건의 원고는 기초생활수급자입니다. K-OpenLaw는 사회적 약자 보호 관련 법령을 자동으로 감지·적용하며, 법원이 간과한 사회경제적 맥락을 구조적으로 고려합니다.</p>
+        <div class="evidence">근거: 2심 분석 분석 — 기초생활수급자 보호 법리 무적용 확인</div>
+      </div>
+      <div class="merit-card">
+        <div class="m-icon" style="background:#2C3E50;"><span class="material-icons">public</span></div>
+        <h4>헌법 제27조 재판청구권의 실질화</h4>
+        <p>경제적 이유로 법적 접근이 제한되는 상황을 해소합니다. 비용 ₩10만 원, 시간 1시간으로 누구나 공정한 판단을 받을 수 있는 환경을 구현합니다.</p>
+        <div class="evidence">근거: 특허출원서 §1.2 발명의 목적 및 사회적 효용</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 특허 출원서 기재 주요 장점 -->
+  <div class="section-block">
+    <div class="section-head">
+      <div class="num">5</div>
+      <span class="material-icons">description</span>
+      <h2>특허 출원서 기재 주요 장점 — 본 사건 적용 근거</h2>
+    </div>
+    <table class="merit-table">
+      <thead>
+        <tr>
+          <th>특허 청구 장점</th>
+          <th>본 사건 적용 효과</th>
+          <th>분류</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>소송 시간 3년 → 1시간 단축</td>
+          <td>2010년 발생, 16년째 미해결 분쟁을 접수 후 1시간 내 종결</td>
+          <td><span class="tag tag-time">시간</span></td>
+        </tr>
+        <tr>
+          <td>사법 효율성 1,000배 향상</td>
+          <td>3심 누적 수천만~수억 원 → ₩10만 원; 기초생활수급자 경제적 접근성 보장</td>
+          <td><span class="tag tag-cost">비용</span></td>
+        </tr>
+        <tr>
+          <td>증거 무결성 기술적 보장 (PDV+OpenHash)</td>
+          <td>법원에서 수개월 소요된 사실확인을 수초 내 자동 완료; 증거 위변조 불가</td>
+          <td><span class="tag tag-tech">기술</span></td>
+        </tr>
+        <tr>
+          <td>다중 LLM 적대적 논증 (PAA/IAA)</td>
+          <td>원고·피고 대변 LLM이 독립적으로 논증; 편향 없이 만장일치 결론 도출</td>
+          <td><span class="tag tag-legal">공정성</span></td>
+        </tr>
+        <tr>
+          <td>6단계 규범 위계 강제 적용</td>
+          <td>면책 소급효(파산법) 등 19개 이상 법리 오류 구조적 사전 방지</td>
+          <td><span class="tag tag-legal">법적 정확성</span></td>
+        </tr>
+        <tr>
+          <td>전 쟁점 망라 분석</td>
+          <td>법원이 묵살한 변론재개신청, 회피한 쟁점 포함 전 항목 명시적 판단</td>
+          <td><span class="tag tag-legal">완전성</span></td>
+        </tr>
+        <tr>
+          <td>추론 과정 단계별 투명 공개</td>
+          <td>패소 당사자도 수용 가능한 "1+1=2" 수준 판결문 생성; 항소 동기 현저히 감소</td>
+          <td><span class="tag tag-trust">신뢰성</span></td>
+        </tr>
+        <tr>
+          <td>법원 업무 93% 이상 경감</td>
+          <td>본 사건과 같은 민사 분쟁의 99%가 법원 개입 없이 K-OpenLaw로 해소 가능</td>
+          <td><span class="tag tag-cost">사회적 효용</span></td>
+        </tr>
+        <tr>
+          <td>기술가치 글로벌 1조 원 이상 (유니콘)</td>
+          <td>DeepSeek DCF 1.1조 원, Gemini 5,400~7,200억 원, Claude 최상급 혁신성 평가</td>
+          <td><span class="tag tag-tech">시장 가치</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 결론 -->
+  <div class="conclusion-box">
+    <h2>
+      <span class="material-icons">insights</span>
+      종합 결론
+    </h2>
+    <p>
+      본 사건은 K-OpenLaw의 장점을 가장 명확히 보여주는 실증 사례입니다.
+      기초생활수급자인 원고는 <strong>16년이라는 시간</strong>과 <strong>수천만~수억 원의 비용</strong>을 소진하며
+      1심·2심에서 연속 기각 판결을 받았습니다. 두 판결은 합계 <strong>19개 이상의 법리·절차 오류</strong>를 포함하며,
+      공정성 평가에서 각각 D등급(48점)·F등급(40점)을 받았습니다.
+    </p>
+    <p>
+      이 사건에 K-OpenLaw를 적용하였다면 <strong>2010년 분쟁 발생 시점에서 1시간 이내</strong>,
+      <strong>약 10만 원</strong>의 비용으로, 법리적으로 정확하고 당사자 모두가 납득할 수 있는 판결이 가능하였습니다.
+      K-OpenLaw AI 중재 엔진(GPT-4o + Gemini 만장일치)는 법원과 정반대의 결론을 도출하였으며,
+      그 추론 과정은 모든 쟁점을 망라하고 단계별로 투명하게 공개됩니다.
+    </p>
+    <p>
+      이는 단순한 기술적 우위를 넘어, <strong>헌법 제27조 재판청구권의 실질적 구현</strong>이며,
+      분쟁 해결 인프라 전반의 혁신적 전환을 보여주는 구체적 증거입니다.
+    </p>
+    <div class="conclusion-chips">
+      <div class="chip"><span class="material-icons">schedule</span> 16년 → 1시간</div>
+      <div class="chip"><span class="material-icons">payments</span> 비용 99.9% 절감</div>
+      <div class="chip"><span class="material-icons">balance</span> 법리 오류 19개+ 방지</div>
+      <div class="chip"><span class="material-icons">verified</span> 만장일치 AI 합의 권고</div>
+      <div class="chip"><span class="material-icons">lock</span> 증거 무결성 보장</div>
+      <div class="chip"><span class="material-icons">public</span> 헌법 제27조 실현</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>ⓒ 2026 GoPang · K-OpenLaw AI 법률 분석 자동화 시스템 · 특허출원 제10-2026-0039504호</p>
+    <p style="margin-top:6px;">
+      <a href="index.html" style="color:var(--gov-blue);">← 메인으로 돌아가기</a>
+      &nbsp;·&nbsp;
+      <a href="k-openlaw_judgement.html" target="_blank" style="color:var(--gov-blue);">AI 합의 권고안 전문 →</a>
+      &nbsp;·&nbsp;
+      <a href="fairness.html" target="_blank" style="color:var(--gov-blue);">공정성 평가 상세 →</a>
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

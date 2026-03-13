@@ -1,0 +1,650 @@
+/* ----- 한국 정부 디자인 시스템 v2.0 + Material Design 원칙 ----- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* 정부 브랜드 컬러 (행정안전부 가이드라인 기반) */
+    --gov-primary: #0047A0;      /* 정부 대표 블루 */
+    --gov-primary-dark: #00307A;
+    --gov-primary-light: #E6F0FF;
+    --gov-accent: #007A3D;        /* 정부 그린 (강조) */
+    --gov-accent-gold: #8A6E2B;   /* 금색 강조 (법원/법률) */
+    --gov-gray-bg: #F4F6F9;
+    --gov-gray-border: #DCE1E8;
+    --gov-text-dark: #171C24;
+    --gov-text-medium: #3E4A5E;
+    --gov-text-light: #6F7B8C;
+    --white: #FFFFFF;
+
+    /* Material Design Elevation */
+    --shadow-1: 0 2px 4px rgba(0,20,40,0.08), 0 1px 2px rgba(0,0,0,0.03);
+    --shadow-2: 0 4px 8px rgba(0,20,40,0.12), 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-3: 0 8px 16px rgba(0,20,40,0.15), 0 4px 8px rgba(0,0,0,0.08);
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+}
+
+body {
+    font-family: 'Noto Sans KR', 'Roboto', sans-serif;
+    background: var(--gov-gray-bg);
+    color: var(--gov-text-dark);
+    line-height: 1.6;
+    padding: 0;
+}
+
+.container {
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+/* ----- 국가 상단 배너 (정부 스타일) ----- */
+.gov-banner {
+    background-color: var(--gov-primary-light);
+    border-bottom: 2px solid var(--gov-primary);
+    padding: 12px 0;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-1);
+    font-weight: 500;
+    width: 100%;
+}
+.gov-banner .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+.gov-banner .banner-text {
+    color: var(--gov-primary-dark);
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+}
+
+/* ----- 정부 헤더 스타일 (상단 배너) ----- */
+.gov-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--gov-primary);
+    position: relative;
+}
+.gov-header .logo-icon {
+    height: 44px;
+    width: auto;
+}
+.gov-header-watermark {
+    position: absolute;
+    top: -10px;
+    right: 0;
+    opacity: 0.10;
+    pointer-events: none;
+    user-select: none;
+}
+.gov-header-watermark img {
+    height: 90px;
+    width: auto;
+}
+.gov-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    letter-spacing: -0.02em;
+}
+.gov-header .badge {
+    background: var(--gov-primary-light);
+    color: var(--gov-primary-dark);
+    padding: 4px 16px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: auto;
+    border: 1px solid var(--gov-primary);
+}
+
+/* ----- Hero Section (정부 스타일 강화) ----- */
+.hero {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 48px 56px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--gov-gray-border);
+}
+.hero h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    margin-bottom: 24px;
+    line-height: 1.3;
+}
+.hero .subhead {
+    font-size: 1rem;
+    color: var(--gov-text-medium);
+    margin-bottom: 48px;
+}
+.hero .subhead p {
+    margin-bottom: 16px;
+}
+.hero .subhead strong {
+    color: var(--gov-primary);
+}
+
+/* ----- 통계 카드 (Material Design Cards) ----- */
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin: 40px 0 16px;
+}
+.hero-stat {
+    background: var(--white);
+    border: 1px solid var(--gov-gray-border);
+    border-radius: var(--radius-md);
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2,0,0,1);
+    box-shadow: var(--shadow-1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.hero-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--gov-primary);
+}
+.hero-stat .number {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--gov-primary);
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+.hero-stat .label {
+    font-size: 1rem;
+    color: var(--gov-text-medium);
+}
+
+/* ----- 슬라이드 패널 (Material Expansion) ----- */
+.slide-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    background: var(--gov-gray-bg);
+    border-radius: var(--radius-md);
+    margin: 0;
+}
+.slide-panel.open {
+    max-height: 2000px;
+    margin-top: 16px;
+}
+.slide-panel > div {
+    padding: 32px 32px;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gov-gray-border);
+    box-shadow: var(--shadow-1);
+}
+.slide-panel h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    margin-bottom: 20px;
+    border-left: 6px solid var(--gov-accent-gold);
+    padding-left: 20px;
+}
+.slide-panel p {
+    margin-bottom: 12px;
+    color: var(--gov-text-medium);
+    font-size: 0.98rem;
+}
+
+/* ----- 특허 평가 카드 (정부 강조) ----- */
+.eval-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin: 48px 0;
+}
+.eval-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
+    box-shadow: var(--shadow-2);
+    border: 2px solid var(--gov-primary-light);
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    text-align: center;
+}
+.eval-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--gov-primary);
+}
+.eval-card .material-icons {
+    font-size: 56px;
+    color: var(--gov-primary);
+    margin-bottom: 20px;
+}
+.eval-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gov-primary-dark);
+    margin-bottom: 12px;
+}
+.eval-card p {
+    color: var(--gov-text-medium);
+    font-size: 1.1rem;
+}
+
+/* ----- 안내 패널 (정부 공지 스타일) ----- */
+.guide-panel {
+    background: var(--gov-primary-light);
+    border-radius: var(--radius-lg);
+    padding: 48px 56px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow-2);
+    border-left: 12px solid var(--gov-primary);
+}
+.guide-panel h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    margin-bottom: 32px;
+}
+.guide-panel p {
+    font-size: 1.05rem;
+    color: var(--gov-text-dark);
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+.guide-panel strong {
+    color: var(--gov-primary);
+}
+
+/* ----- 철학 패널 ----- */
+.philosophy-panel {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 48px 56px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--gov-gray-border);
+}
+.philosophy-panel h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    margin-bottom: 32px;
+    border-left: 8px solid var(--gov-accent-gold);
+    padding-left: 28px;
+}
+.philosophy-panel p {
+    font-size: 1.05rem;
+    color: var(--gov-text-medium);
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+.philosophy-panel strong {
+    color: var(--gov-primary);
+}
+
+/* ----- 핵심 기술 카드 (4개) Material Design 그리드 ----- */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin: 56px 0;
+}
+.feature-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 0;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--gov-gray-border);
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--gov-primary);
+}
+.feature-icon {
+    font-size: 48px;
+    color: var(--gov-primary);
+    margin-bottom: 24px;
+    display: block;
+}
+.feature-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    margin-bottom: 16px;
+}
+.feature-desc {
+    color: var(--gov-text-medium);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* ----- 사건 문서 카드 (7개) Material Design ----- */
+.case-docs-section {
+    margin: 64px 0;
+}
+.case-docs-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 3px solid var(--gov-primary);
+}
+.case-docs-header .material-icons {
+    font-size: 44px;
+    color: var(--gov-primary);
+}
+.case-docs-header-text h2 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    margin-bottom: 4px;
+}
+.case-docs-header-text p {
+    font-size: 0.98rem;
+    color: var(--gov-text-medium);
+}
+.case-docs-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 16px;
+}
+.case-doc-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gov-gray-border);
+    box-shadow: var(--shadow-1);
+    padding: 24px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+.case-doc-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: var(--gov-primary);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.case-doc-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--gov-primary);
+}
+.case-doc-card:hover::before {
+    opacity: 1;
+}
+.case-doc-card .doc-icon {
+    font-size: 42px;
+    margin-bottom: 16px;
+}
+.case-doc-card.card-summary  .doc-icon { color: #0047A0; }
+.case-doc-card.card-1st      .doc-icon { color: #C0392B; }
+.case-doc-card.card-2nd      .doc-icon { color: #8E44AD; }
+.case-doc-card.card-fairness .doc-icon { color: #007A3D; }
+.case-doc-card.card-disputes .doc-icon { color: #D35400; }
+.case-doc-card.card-supreme  .doc-icon { color: #2C3E50; }
+.case-doc-card.card-ai       .doc-icon { color: #8A6E2B; }
+
+.case-doc-card .doc-number {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--gov-text-light);
+    background: var(--gov-primary-light);
+    padding: 4px 12px;
+    border-radius: 40px;
+    margin-bottom: 12px;
+}
+.case-doc-card .doc-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gov-primary-dark);
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+.case-doc-card .doc-desc {
+    font-size: 0.8rem;
+    color: var(--gov-text-medium);
+    line-height: 1.5;
+    flex: 1;
+}
+.case-doc-card .doc-badge {
+    margin-top: 16px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--gov-primary);
+    background: var(--gov-primary-light);
+    padding: 4px 12px;
+    border-radius: 40px;
+}
+.case-doc-card.card-performance::before { background: #9B59B6; opacity: 1; }
+.case-doc-card.card-performance .doc-icon { color: #9B59B6; }
+
+/* ----- 특허 기술 문서 카드 (7개) ----- */
+.documents-section {
+    margin: 64px 0 40px;
+}
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gov-primary);
+}
+.section-header .material-icons {
+    font-size: 40px;
+    color: var(--gov-primary);
+}
+.section-header h2 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+}
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+.doc-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 28px 24px;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--gov-gray-border);
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.doc-card:hover {
+    box-shadow: var(--shadow-3);
+    border-color: var(--gov-primary);
+    transform: translateY(-2px);
+}
+.doc-card .material-icons {
+    color: var(--gov-primary);
+    font-size: 38px;
+    margin-bottom: 16px;
+}
+.doc-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gov-primary-dark);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--gov-primary-light);
+    padding-bottom: 12px;
+}
+.doc-card ul {
+    list-style: none;
+    padding: 0;
+    flex: 1;
+}
+.doc-card li {
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+    color: var(--gov-text-medium);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+.doc-card li .material-icons {
+    font-size: 20px;
+    color: var(--gov-accent);
+    margin: 0;
+}
+.doc-card .badge {
+    background: var(--gov-primary-light);
+    color: var(--gov-primary-dark);
+    padding: 6px 18px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 20px;
+    align-self: flex-start;
+    border: 1px solid var(--gov-primary);
+}
+
+/* ----- Footer (정부 스타일) ----- */
+.footer {
+    margin-top: 80px;
+    padding: 40px 0 20px;
+    text-align: center;
+    border-top: 2px solid var(--gov-gray-border);
+    color: var(--gov-text-light);
+    font-size: 0.9rem;
+}
+.footer a {
+    color: var(--gov-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* ----- 비교표 스타일 (신규 추가) ----- */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
+    border: 1px solid var(--gov-gray-border);
+}
+.comparison-table th {
+    background: var(--gov-primary);
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+.comparison-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--gov-gray-border);
+    vertical-align: middle;
+    text-align: center;
+}
+.comparison-table tr:last-child td {
+    border-bottom: none;
+}
+.comparison-table tbody tr:nth-child(even) {
+    background: #f9fafc;
+}
+.comparison-table td:first-child {
+    font-weight: 600;
+    color: var(--gov-text-dark);
+    text-align: left;
+    background-color: #f2f5fa;
+}
+.badge-score {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+.badge-score.low {
+    background: #fde8e8;
+    color: #b91c1c;
+    border: 1px solid #f5baba;
+}
+.badge-score.high {
+    background: #e3f7ec;
+    color: #0e6b3e;
+    border: 1px solid #a0d8b5;
+}
+@media (max-width: 600px) {
+    .comparison-table {
+        font-size: 0.75rem;
+    }
+    .comparison-table th,
+    .comparison-table td {
+        padding: 8px 4px;
+    }
+}
+
+/* ----- 반응형 (기존) ----- */
+@media (max-width: 1200px) {
+    .case-docs-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+@media (max-width: 992px) {
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .feature-grid { grid-template-columns: repeat(2, 1fr); }
+    .eval-grid { grid-template-columns: 1fr; }
+    .documents-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .hero h1 { font-size: 1.8rem; }
+    .hero { padding: 0; }
+    .hero-stats { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .case-docs-grid { grid-template-columns: repeat(2, 1fr); }
+    .documents-grid { grid-template-columns: 1fr; }
+    .philosophy-panel { padding: 0; }
+    .philosophy-panel h2 { font-size: 1.6rem; }
+}

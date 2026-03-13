@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시나리오별 헌법·법률상 문제점 분석 (6/13)</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans KR', 'Roboto', sans-serif; background: #f5f7fa; color: #1e2a3e; line-height: 1.7; padding: 2rem 1rem; display: flex; justify-content: center; }
+        .case-part { max-width: 1200px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 30px rgba(0,20,40,0.06); overflow: hidden; border: 1px solid #e5e9f0; }
+        .case-header { background: #f0f4fa; padding: 2rem 2.5rem; border-bottom: 1px solid #dce5f0; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .case-badge { background: #1e3a5f; color: white; font-size: 0.8rem; font-weight: 600; padding: 0.3rem 1rem; border-radius: 30px; }
+        .case-title { font-size: 1.8rem; font-weight: 500; color: #0b1e33; margin: 0; }
+        .case-content { padding: 2.5rem; }
+        h3 { margin: 2rem 0 1rem; color: #1e3a5f; font-size: 1.3rem; border-bottom: 2px solid #e5e9f0; padding-bottom: 0.5rem; }
+        .scenario-box { background: #ffffff; border-radius: 20px; padding: 1.5rem; margin: 2rem 0; border: 1px solid #e9eef3; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .scenario-title { font-size: 1.2rem; font-weight: 700; color: #1e3a5f; margin-bottom: 1rem; padding-left: 0.8rem; border-left: 5px solid; }
+        .scenario-A .scenario-title { border-color: #1f5f1f; }
+        .scenario-B .scenario-title { border-color: #b22222; }
+        .scenario-C .scenario-title { border-color: #d4a017; }
+        .scenario-D .scenario-title { border-color: #003876; }
+        .issue-list { background: #f8fafd; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+        .legal-hierarchy { background: #eef4ff; padding: 1.2rem; border-radius: 16px; margin: 1.5rem 0; border: 1px solid #d0dbea; }
+        .warning { background: #fef1f0; border-left: 4px solid #b22222; padding: 1rem; margin: 1rem 0; border-radius: 8px; }
+        .citation { font-size: 0.9rem; color: #4e6a88; font-style: italic; margin-top: 0.3rem; }
+        .key-point { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 8px; }
+        hr { border: none; border-top: 1px solid #d8e0eb; margin: 1.5rem 0; }
+        .constitution-list { background: #eef2f7; padding: 1rem; border-radius: 12px; margin: 1rem 0; }
+        .deep-dive { background: #e9f0f9; border-left: 4px solid #1e3a5f; padding: 1.5rem; margin: 1.5rem 0; border-radius: 12px; }
+        .deep-dive h4 { color: #1e3a5f; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <div class="case-part">
+        <div class="case-header">
+            <span class="case-badge">Part 6/13</span>
+            <h1 class="case-title">⚖️ K-OpenLaw: 시나리오별 헌법·법률상 문제점 분석</h1>
+        </div>
+        <div class="case-content">
+            <div class="legal-hierarchy">
+                <h4 style="color: #003876; margin-top:0;">📌 대한민국 법령의 위계</h4>
+                <p>대한민국 법령체계는 최고 규범인 <strong>헌법</strong>을 정점으로, 그 아래 <strong>법률</strong>, <strong>대통령령</strong>, <strong>총리령·부령</strong>, <strong>행정규칙·자치법규</strong> 순으로 위계를 형성합니다. 하위법령은 상위법령에 저촉될 수 없으며, 법률이 헌법에 위반될 경우 헌법재판소의 위헌결정을 받을 수 있습니다.</p>
+                <p>이러한 법령 위계는 중재 엔진가 여러 법률 조항을 해석할 때 <strong>어떤 법을 우선할 것인가</strong>의 기준이 됩니다. 아래에서는 part5에서 제시된 네 가지 시나리오(A, B, C, D) 각각에 대해, 해당 법리를 우선 적용할 경우 발생할 수 있는 헌법 및 법률상 문제점을 분석합니다.</p>
+            </div>
+
+            <div class="key-point">
+                <strong>📌 핵심 쟁점 보완: 제3자 채무(최말자) 대위변제의 구상권 성립 여부</strong><br>
+                part4~5에서 지속적으로 다투어진 바, 피고는 원고와 제3자(최말자) 사이의 소송비용 채무를 대신 변제하였습니다. 원고는 이 채무가 피고와 무관한 순수한 사적 채무로서, 피고에게 '변제할 정당한 이익'이 없으므로 민법 제481조에 따른 구상권이 성립하지 않는다고 주장합니다. 아래 시나리오 B에서 이 쟁점을 집중적으로 반영하였습니다.
+            </div>
+
+            <div class="scenario-box scenario-A">
+                <div class="scenario-title">🔹 시나리오 A – 파산법(채무자회생법) 최우선</div>
+                <div class="issue-list"><p><strong>중재 엔진의 가정:</strong> "파산선고 후 면제재산은 파산관재인만이 처분할 수 있으며, 면책결정은 소급효를 가진다(채무자회생법 제335조, 제383조, 제566조). 따라서 피고의 보증금 처분은 무효이다."</p></div>
+                <p><strong>✅ 헌법 및 법률상 정당성 근거:</strong></p>
+                <ul>
+                    <li><strong>헌법 제34조</strong> (인간다운 생활권): "모든 국민은 인간다운 생활을 할 권리를 가진다." – 면제재산 제도는 파산자의 최소한의 생존을 보장하기 위한 헌법적 가치를 구현한 것임.</li>
+                    <li><strong>채무자회생법 제383조</strong> (면제재산): 파산자의 생계유지에 필요한 재산을 보호하여, 파산 후에도 인간다운 생활을 영위할 수 있도록 함.</li>
+                    <li><strong>헌법재판소 2009.4.30. 2007헌바73 결정</strong> – 파산절차에서 채권자와 보증인의 이해조정에 관한 판시(간접적 근거).</li>
+                </ul>
+                <p><strong>⚠️ 문제점 및 한계:</strong></p>
+                <ul>
+                    <li><strong>민법상 구상권과의 충돌</strong>: 피고가 대위변제한 비용(특히 제3자 소송비용)이 '변제할 정당한 이익'에 해당하는지 여부가 불분명할 경우, 민법 제481조와의 해석 충돌 발생. 원고는 피고에게 정당한 이익이 없음을 주장.</li>
+                    <li><strong>헌법 제23조</strong> (재산권 보장)와의 관계: 피고(임대인)의 재산권(구상권 행사 가능성)이 과도하게 침해될 우려.</li>
+                    <li><strong>면책의 소급효에 대한 반론</strong>: 일부 견해는 면책결정이 자연채무로의 전환에 불과하다고 보아, 소급효를 부정하는 해석이 존재함.</li>
+                </ul>
+                <div class="citation">※ 시나리오 A는 원고의 생존권(헌법 제34조)을 최우선으로 보호하나, 피고의 재산권(헌법 제23조)과의 형량이 필요함.</div>
+            </div>
+
+            <div class="scenario-box scenario-B">
+                <div class="scenario-title">🔹 시나리오 B – 민법상 구상권 우선 (제3자 채무 문제 포함)</div>
+                <div class="issue-list"><p><strong>중재 엔진의 가정:</strong> "피고는 원고의 체납 관리비, 공동주택 수선비, 그리고 원고와 제3자(최말자) 간의 소송비용 등을 대위변제하였다. 이는 민법 제481조의 '변제할 정당한 이익'에 해당하므로 구상권이 인정된다. 따라서 보증금 공제는 적법하다."</p></div>
+                <p><strong>✅ 헌법 및 법률상 정당성 근거:</strong></p>
+                <ul>
+                    <li><strong>민법 제481조, 제482조</strong> (변제자대위, 구상권) – 보증인이나 이해관계인이 채무를 대신 변제한 경우 구상권을 인정하여 법률관계의 안정성 도모.</li>
+                    <li><strong>헌법 제23조</strong> (재산권 보장) – 피고의 정당한 구상권 행사를 재산권 행사의 일환으로 보호.</li>
+                    <li><strong>대법원 판례(86다카2865 등)</strong> – 임대인의 관리비 대위변제와 구상권 인정 가능성을 인정한 사례(간접 근거).</li>
+                </ul>
+                <p><strong>⚠️ 문제점 및 한계 (특히 제3자 채무 관련):</strong></p>
+                <ul>
+                    <li><strong>'변제할 정당한 이익' 요건 충족 여부</strong>: 원고는 제3자(최말자)에 대한 소송비용 채무는 피고와 전혀 무관한 사적 채무로서, 피고에게 변제할 정당한 이익이 없으므로 민법 제481조의 요건을 충족하지 못한다고 강력히 주장. 이 부분에 대한 법리 검토가 필수적.</li>
+                    <li><strong>파산법과의 직접 충돌</strong>: 파산선고 후 면제재산에 대한 처분은 파산관재인만이 할 수 있다는 채무자회생법 제335조와 명백히 저촉됨.</li>
+                    <li><strong>헌법 제34조 위반 가능성</strong>: 기초생활수급자인 원고의 생존권(면제재산)을 박탈하는 결과를 초래하여, 인간다운 생활권 침해 논란.</li>
+                    <li><strong>평등원칙 위배 가능성</strong>: 채무자회생법 제566조(면책의 효력)에도 불구하고 구상권을 인정할 경우, 파산채권자 간의 평등을 해칠 우려.</li>
+                </ul>
+
+                <!-- ===== 신규 심층 분석: 파산법상 구상권의 성질 및 재단채권 주장의 타당성 ===== -->
+                <div class="deep-dive">
+                    <h4>📌 K-OpenLaw: 파산법상 쟁점 심층 분석 – 피고의 구상권 및 재단채권 주장</h4>
+                    <p><strong>1. 파산선고 후 파산채권 목록에 기재된 채무를 제3자가 변제한 경우, 그 구상권의 효력</strong><br>
+                    원고에 대한 파산선고 후, 피고는 원고의 파산채권 목록에 포함된 채무(관리비, 수선비 및 최말자 소송비용)를 대위변제하고, 이후 원고에게 구상권을 행사하였습니다. 이때 피고의 변제는 파산채권자(예: 관리비 채권자, 최말자)에 대한 변제로서, 그 채권자들의 채권을 소멸시킵니다. 그러나 피고가 취득하는 구상권은 민법 제481조에 따른 <strong>채권자대위</strong>의 효과로서, 원래 채권자의 권리를 행사할 수 있는 지위를 얻는 것에 불과합니다. 즉, 피고는 원래 채권자가 가졌던 <strong>파산채권</strong>을 그대로 행사하게 됩니다. 따라서 피고의 구상권은 파산선고 전에 성립한 채권(원래 채권)과 동일한 성질을 가지며, 파산채권으로 분류되어야 합니다. 파산채권은 파산절차 내에서 채권신고를 통해 배당에 참여할 수 있을 뿐, 별도의 우선변제권(재단채권)을 갖지 않습니다.</p>
+                    <p><strong>2. 파산선고 후 발생한 구상권이 재단채권에 해당하는지 여부</strong><br>
+                    피고는 “파산선고 후에 변제하였으므로 구상권은 파산재단에 대하여 생긴 청구권, 즉 재단채권(채무자회생법 제473조)에 해당한다”고 주장하며, 원심 중재 엔진는 이를 받아들였습니다. 그러나 이는 다음과 같은 이유로 타당하지 않습니다.</p>
+                    <ul>
+                        <li><strong>재단채권의 정의</strong>: 채무자회생법 제473조는 “파산재단에 관하여 생긴 청구권” 또는 “파산관재인의 행위로 인하여 생긴 청구권” 등을 재단채권으로 규정합니다. 피고의 구상권은 파산관재인의 행위와 무관하게 피고의 자발적인 변제로 인해 발생한 것이므로, 파산재단에 관하여 생긴 것이라고 볼 수 없습니다.</li>
+                        <li><strong>구상권의 발생 원인</strong>: 구상권의 근거는 민법 제481조(변제자대위)로서, 피고가 채무자를 위하여 변제한 행위 자체는 파산재단과 관계없이 피고 개인의 법률행위입니다. 따라서 구상권은 파산재단에 대한 채권이 아니라 채무자 개인에 대한 채권입니다. 파산선고 후에 발생하였다 하더라도, 그 원인이 파산관재인의 업무집행이나 파산재단의 관리와 무관하다면 재단채권이 될 수 없습니다.</li>
+                        <li><strong>대법원 판례의 입장</strong>: 대법원 2005. 4. 15. 선고 2004다46915 분석 등은 “파산선고 후에 보증인이 주채무를 변제한 경우, 보증인의 구상권은 파산채권에 해당한다”고 판시하였습니다. 이는 변제 시점이 파산 후라도 구상권의 원인이 된 주채무가 파산선고 전에 성립한 것이기 때문입니다. 마찬가지로, 피고가 변제한 각 채무(관리비, 소송비용)는 모두 파산선고 전에 발생한 원고의 채무이므로, 그 대위로 인한 구상권은 파산채권의 성질을 그대로 유지합니다.</li>
+                        <li><strong>재단채권으로 인정될 경우의 문제점</strong>: 만약 피고의 구상권을 재단채권으로 인정한다면, 파산선고 후에 제3자가 임의로 파산채권을 변제하고 그 구상권으로 재단으로부터 우선변제를 받는 것이 허용됩니다. 이는 파산절차의 평등배당 원칙을 정면으로 위반하며, 다른 파산채권자들의 희생 아래 특정 채권자(여기서는 피고)에게 부당한 이익을 주는 결과를 초래합니다. 또한 파산관재인이 아닌 제3자가 파산재단의 채무를 소멸시키고 재단에 대한 우선적 청구권을 취득하는 것은 법리적으로도 부당합니다.</li>
+                    </ul>
+                    <p><strong>3. 결론</strong><br>
+                    피고의 구상권은 파산채권에 해당하며, 재단채권으로 볼 수 없습니다. 따라서 원심 중재 엔진의 판단(구상권 = 재단채권)은 채무자회생법 제473조의 해석을 그르친 위법이 있고, 이로 인해 원고의 면제재산(임차보증금)이 부당하게 침탈되었습니다. 이 부분은 헌법 제23조(재산권), 제34조(인간다운 생활권) 및 파산법의 평등원칙에 위배됩니다.</p>
+                </div>
+                <!-- ===== 신규 분석 끝 ===== -->
+
+                <div class="citation">※ 시나리오 B는 민법상 거래 안정성을 중시하나, '정당한 이익' 요건과 파산법이라는 특별법과의 관계에서 상위법 위반 문제가 제기될 수 있음.</div>
+            </div>
+
+            <div class="scenario-box scenario-C">
+                <div class="scenario-title">🔹 시나리오 C – 사회적 약자 보호 법률 우선 (주택임대차보호법 · 소비자기본법)</div>
+                <div class="issue-list"><p><strong>중재 엔진의 가정:</strong> "원고는 중대 질환을 가진 사회적 약자(차상위계층 또는 기초생활수급자)로서 주택임대차보호법 제3조, 제6조의2에 따라 우선변제권 및 특별보호를 받을 권리가 있다. 또한 피고는 사업자, 원고는 소비자로서 소비자기본법 제55조(징벌적 손해배상)가 적용된다."</p></div>
+                <p><strong>✅ 헌법 및 법률상 정당성 근거:</strong></p>
+                <ul>
+                    <li><strong>헌법 제34조</strong> (인간다운 생활권) – 사회적 약자 보호의 헌법적 근거.</li>
+                    <li><strong>헌법 제11조</strong> (평등권) – 사회적 약자에 대한 적극적 보호를 통해 실질적 평등 실현.</li>
+                    <li><strong>주택임대차보호법 제3조, 제6조의2</strong> – 기초생활수급자의 주거 안정을 위한 특별 규정.</li>
+                    <li><strong>소비자기본법 제55조</strong> – 사업자의 고의적 불법행위에 대한 징벌적 손해배상 도입으로 소비자 보호 강화.</li>
+                </ul>
+                <p><strong>⚠️ 문제점 및 한계:</strong></p>
+                <ul>
+                    <li><strong>법률 적용 범위 논란</strong>: 피고는 "제6조의2는 목시적 갱신 규정"이라며 적용 부정. 소비자기본법에 대해서도 "임대차는 용역 제공이 아니다"라는 반론.</li>
+                    <li><strong>민법(구상권)과의 충돌</strong>: 사회보호법을 지나치게 확대 적용할 경우, 민법상 구상권 제도의 취지가 훼손될 가능성.</li>
+                    <li><strong>비례성 원칙 위반 가능성</strong>: 징벌적 손해배상(3배)이 과도할 경우, 피고의 재산권(헌법 제23조) 침해 논란.</li>
+                </ul>
+                <div class="citation">※ 시나리오 C는 헌법의 사회국가 원리를 적극 구현하나, 개별 법률의 적용 범위와 정도의 적정성이 쟁점.</div>
+            </div>
+
+            <div class="scenario-box scenario-D">
+                <div class="scenario-title">🔹 시나리오 D – 증거법 우선 (민사소송법 제358조)</div>
+                <div class="issue-list"><p><strong>중재 엔진의 가정:</strong> "피고가 제출한 문서(퇴거확인서, 해지신청서)는 원고의 서명·날인이 있어 민사소송법 제358조에 따라 진정성립이 추정된다. 따라서 퇴거는 협의에 의한 것으로 인정된다."</p></div>
+                <p><strong>✅ 헌법 및 법률상 정당성 근거:</strong></p>
+                <ul>
+                    <li><strong>민사소송법 제358조</strong> (문서의 진정성립 추정): "문서에 본인 또는 대리인의 서명, 날인 또는 무인이 있는 때에는 그 문서의 진정성립을 추정한다."</li>
+                    <li><strong>대법원 판례(2001다72029, 2002다59122 등)</strong> – 인영의 진정성립이 인정되면 문서 전체의 진정성립이 추정되며, 이를 뒤집으려면 반증이 필요함.</li>
+                    <li><strong>법적 안정성</strong> – 문서의 증명력을 존중하여 거래 안전 도모.</li>
+                </ul>
+                <p><strong>⚠️ 문제점 및 한계:</strong></p>
+                <ul>
+                    <li><strong>실질적 진실 발견 저해</strong>: 원고가 "백지서명 후 사후 내용이 보충되었다"고 주장할 경우, 형식적 추정만으로 판단할 경우 부당한 결과 초래.</li>
+                    <li><strong>입증책임 전환 문제</strong>: 대법원은 "백지문서에 서명·날인한 경우, 그 백지부분이 정당한 권한에 의해 보충되었음은 문서 제출자가 증명해야 한다"고 판시(2001다11406). 이 점을 간과할 경우 위법.</li>
+                    <li><strong>강박에 의한 의사표시(민법 제110조)와의 관계</strong>: 문서가 형식적으로 진정하더라도, 강박 상태에서 작성된 것이라면 효력이 없음. 증거법 우선 시 이러한 실질적 판단이 경시될 우려.</li>
+                </ul>
+                <div class="citation">※ 시나리오 D는 증거법의 형식적 추정을 중시하나, 실질적 진실 및 다른 법률(민법 제110조)과의 조화가 필요.</div>
+            </div>
+
+            <hr>
+
+            <!-- 헌법 위반 사항 구체화 (신규) -->
+            <h3>📌 헌법 위반 사항 구체화 (4대 기본권 침해)</h3>
+            <div class="constitution-list">
+                <ul>
+                    <li><strong>헌법 제10조 (인간의 존엄과 가치)</strong> – 면제재산 박탈로 인한 인간다운 생활의 근간 훼손. 원고는 28개월간 폐가에서 생활하며 인간의 존엄성을 유지하기 어려운 상황에 처함.</li>
+                    <li><strong>헌법 제23조 (재산권)</strong> – 법원이 면제재산으로 결정한 임차보증금을 피고가 임의로 처분하여 재산권 침해.</li>
+                    <li><strong>헌법 제27조 (재판청구권)</strong> – 변론주의 위반, 증거조사 거부, 문서 위변조 의혹에 대한 심리 미진으로 공정한 재판을 받을 권리 침해.</li>
+                    <li><strong>헌법 제34조 (인간다운 생활권)</strong> – 기초생활수급자인 원고의 주거를 박탈하고 28개월간 비인간적 생활을 강요하여 생존권 침해.</li>
+                    <li><strong>헌법 제35조 (주거권)</strong> – 공기업이 사회적 약자의 주거를 강제로 빼앗아 주거의 자유 침해.</li>
+                </ul>
+            </div>
+
+            <!-- 국제 비교 강화 (신규) -->
+            <h3>🌍 국제 비교법적 관점</h3>
+            <div class="scenario-box" style="border-left-color: #1e3a5f;">
+                <ul>
+                    <li><strong>🇺🇸 미국 연방파산법 제522조</strong> – 파산자의 주거용 부동산에 대한 광범위한 면제재산 인정. 파산 후에도 일정 금액의 주택 자산을 보호하여 재기 지원.</li>
+                    <li><strong>🇩🇪 독일 기본법 제1조 (인간의 존엄)</strong> – 모든 국가 권력의 최우선 가치. 파산법(InsO) 제36조에서 면제재산 보호.</li>
+                    <li><strong>🇪🇺 유럽인권재판소 Yordanova v. Bulgaria (2012)</strong> – 공공임대주택에서의 퇴거가 적법한 절차를 따랐더라도, 장기 거주자가 형성한 사회적 관계와 주거 안정성을 침해할 경우 인권침해에 해당할 수 있음.</li>
+                    <li><strong>🇬🇧 영국 Consumer Rights Act 2015</strong> – 주거용 임대차를 소비자 계약의 범주에 포함시켜, 불공정 약관 규제 및 소비자 보호 원칙 적용.</li>
+                    <li><strong>국제인권규약 제11조</strong> – 적절한 주거생활을 영위할 권리. 모든 사람은 자신과 가족을 위해 적절한 주거를 유지할 권리가 있음.</li>
+                </ul>
+                <p>원심의 판단은 이러한 국제적 기준(사람이 빚보다 중요하다)에 역행합니다.</p>
+            </div>
+
+            <!-- 재판소원법 대비 (신규) -->
+            <h3>📋 재판소원법(헌법재판소법 개정, 2026.2. 국회 통과) 대비</h3>
+            <div class="warning">
+                <p><strong>재판소원 청구 사유 (헌법재판소법 제68조 제1항 개정):</strong></p>
+                <ul>
+                    <li>① 헌법재판소의 결정에 반하는 취지로 재판이 이루어진 경우</li>
+                    <li>② 헌법과 법률에서 정한 절차를 거치지 않은 경우</li>
+                    <li>③ 적법 절차를 위반하여 기본권을 침해한 경우</li>
+                </ul>
+                <p>본 사건에서는 <strong>②, ③</strong>이 적용 가능. 원심의 변론주의 위반, 증거조사 거부는 적법 절차 위반이며, 이로 인한 기본권(헌법 제10,23,27,34,35조) 침해가 인정됨.</p>
+                <p>청구 기간: 대법원 분석 확정일로부터 <strong>30일 이내</strong>. 변호사 강제주의, 국선대리인 선임 가능.</p>
+            </div>
+
+            <hr>
+
+            <div style="background: #ffffff; border-radius: 20px; padding: 1.5rem; border: 2px solid #003876; margin-top: 2rem;">
+                <h4 style="color: #003876; margin-top:0;">📢 종합: 헌법을 정점으로 한 통합적 해석의 필요성</h4>
+                <p>위 시나리오들은 각기 다른 법률을 우선함으로써 발생할 수 있는 헌법 및 법률상 문제점을 보여줍니다. 특히 <strong>제3자 채무(최말자) 대위변제</strong>의 경우, 피고에게 '변제할 정당한 이익'이 인정되는지가 핵심 쟁점으로 부각됩니다. 중재 엔진는 다음과 같은 점을 고려하여 판단해야 합니다.</p>
+                <ul>
+                    <li><strong>헌법 우위 원칙</strong>: 모든 법률 해석은 헌법에 부합해야 합니다. 특히 생존권(제34조), 재산권(제23조), 평등권(제11조), 인간의 존엄(제10조) 등 기본권을 최대한 보장하는 방향으로 해석해야 합니다.</li>
+                    <li><strong>법률 간 위계와 충돌 해결</strong>: 파산법(채무자회생법)과 민법, 주택임대차보호법 등은 동등한 법률로서, 상호 충돌 시 <strong>입법 목적</strong>, <strong>특별법 우선 원칙</strong>(파산법은 특별법적 성격), <strong>후법 우선 원칙</strong> 등을 종합적으로 고려해야 합니다.</li>
+                    <li><strong>사회적 약자 보호와 법적 안정성의 조화</strong>: 기초생활수급자 보호라는 헌법적 가치를 실현하면서도, 거래 안전(구상권, 문서의 증명력)을 지나치게 훼손하지 않는 균형점을 찾아야 합니다.</li>
+                    <li><strong>증거법 적용의 한계</strong>: 민사소송법 제358조의 추정은 사실상의 추정에 불과하며, 반증에 의해 깨질 수 있습니다. 문서의 진정성립이 인정되더라도, 다른 사정(강박, 기망, 권한 없는 보충 등)이 입증되면 그 효력이 부정될 수 있습니다.</li>
+                </ul>
+                <p style="margin-top:1rem;">👉 part7 이하에서는 위 시나리오들을 종합적으로 고려하여, 각 쟁점에 대한 심층 법리 평가와 예상 분석 결과를 분석합니다.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

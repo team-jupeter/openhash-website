@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기술가치평가 요약 보고서 | K-OpenLaw</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background: #f4f7f6; }
+        .report-container { max-width: 800px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 8px solid #002D80; }
+        h1 { color: #002D80; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 24px; }
+        .section { margin-bottom: 25px; }
+        .section-title { font-weight: bold; color: #7A6020; font-size: 18px; margin-bottom: 10px; display: flex; align-items: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid #002D80; }
+        .highlight { color: #d32f2f; font-weight: bold; }
+        .footer-note { font-size: 12px; color: #888; margin-top: 30px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <h1>[VC 제출용] 기술 가치 및 시장성 평가 요약</h1>
+        
+        <div class="section">
+            <div class="section-title">1. 핵심 기술 Moat (진입장벽)</div>
+            <div class="grid">
+                <div class="card">
+                    <strong>OpenHash 무결성 검증</strong><br>
+                    디지털 증거의 타임스탬프와 해시를 분산 저장하여 할루시네이션(환각) 0% 목표 구현.
+                </div>
+                <div class="card">
+                    <strong>이종 LLM 대립 논증</strong><br>
+                    복수의 LLM이 상호 검증을 통해 편향성을 제거하고 객관적 합의안 도출.
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">2. 지식재산권 현황</div>
+            <p><strong>특허출원 제10-2026-0039504호:</strong> 이종 대형언어모델 기반 대립 논증·판정 자동화 시스템 및 그 운용 방법</p>
+            <p><strong>주요 청구항:</strong> ADR 모드에서의 준비서면 자동 변환 및 XAI 기반 인과 경로 역추적 기술 포함.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">3. 시장 규모 및 수익 모델</div>
+            <div class="card">
+                <strong>Target Market:</strong> 글로벌 ADR(대안적 분쟁 해결) 시장 및 리걸테크 인프라 시장 (연평균 성장률 15% 이상)<br>
+                <strong>Revenue Stream:</strong> 시스템 API 이용료, B2B 엔터프라이즈 라이선스, 데이터 무결성 인증료.
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">4. 법적 리스크 관리 (Compliance)</div>
+            <p>본 기술은 변호사 업무를 <strong>대체하는 것이 아닌 보조</strong>하며, 자율적 합의를 돕는 기술 인프라로 설계됨. 모든 결과물은 전문가 검토용 리포트로 제공됨.</p>
+        </div>
+
+        <div class="footer-note">ⓒ 2026 GoPang. 본 문서는 기술 실증 PoC 데이터에 기반한 가치 평가 요약본입니다.</div>
+    </div>
+</body>
+</html>

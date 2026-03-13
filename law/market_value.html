@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AI 법률 자동화 시스템 · 사업성 및 시장 가치 평가 보고서</title>
+    <!-- Google Fonts (Noto Sans KR + Material Icons) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #1e3a5f;
+            --primary-dark: #0b1e33;
+            --primary-light: #eef3f9;
+            --accent: #d4a017;
+            --gray-bg: #f8fafd;
+            --gray-border: #e5e9f0;
+            --text-primary: #1e2a3e;
+            --text-secondary: #4e6a88;
+            --white: #ffffff;
+            --shadow-sm: 0 4px 12px rgba(0, 20, 40, 0.06);
+            --shadow-md: 0 8px 24px rgba(0, 20, 40, 0.10);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--gray-bg);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 24px;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        /* 헤더 */
+        .report-header {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 40px 48px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-border);
+        }
+        .report-header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            border-left: 8px solid var(--accent);
+            padding-left: 24px;
+        }
+        .report-header .meta {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .meta span {
+            background: var(--primary-light);
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+        /* 섹션 공통 */
+        .section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 36px 40px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-border);
+        }
+        .section h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 24px;
+            border-left: 6px solid var(--accent);
+            padding-left: 20px;
+        }
+        .section h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 28px 0 16px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 8px;
+        }
+        .section h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 20px 0 10px;
+        }
+        .section p {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        .section ul, .section ol {
+            margin-left: 24px;
+            margin-bottom: 20px;
+        }
+        .section li {
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .section strong {
+            color: var(--primary-dark);
+        }
+        /* 테이블 스타일 */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 24px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        th {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 14px 16px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-border);
+            color: var(--text-primary);
+            text-align: center;
+        }
+        td:first-child, th:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .stat-card {
+            background: var(--primary-light);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            border-left: 6px solid var(--primary);
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        .footnote {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 16px;
+            border-top: 1px dashed var(--gray-border);
+            padding-top: 16px;
+        }
+        @media (max-width: 768px) {
+            .report-header h1 { font-size: 1.8rem; }
+            .section { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 헤더 -->
+    <div class="report-header">
+        <h1>AI 기반 법률 자동화 시스템<br>사업성 및 시장 가치 평가 보고서</h1>
+        <div class="meta">
+            <span>평가 대상: 복수의 이종 LLM으로 구성된 AI 기반 법률 논쟁·합의·분석 자동화 시스템 (v8_final)</span>
+            <span>평가 목적: 벤처캐피털 및 법무법인 대상 투자 유치</span>
+            <span>평가일: 2026년 3월 4일</span>
+        </div>
+    </div>
+
+    <!-- I. 요약 -->
+    <section class="section">
+        <h2>I. 요약 (Executive Summary)</h2>
+        <p>본 발명은 기존 법률 시장의 패러다임을 근본적으로 전환시키는 게임 체인저(Game Changer) 수준의 기술입니다. 전통적인 법률 서비스가 수천만 원의 비용과 최소 3년의 시간을 요구하는 반면, 본 시스템은 1시간 내에 대법원 판결문 수준의 정교한 법률 해결안을 제공하며, 비용은 1/100 수준으로 절감합니다.</p>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>구분</th><th>핵심 가치 제안</th><th>시장 파괴력</th></tr></thead>
+                <tbody>
+                    <tr><td>시간</td><td>3년 → 1시간</td><td>26,280배 단축 (사법 접근성 혁명)</td></tr>
+                    <tr><td>비용</td><td>5,000만원 → 50만원</td><td>99% 비용 절감 (법률 서비스 대중화)</td></tr>
+                    <tr><td>품질</td><td>1심 판결문 → 대법원 수준</td><td>최고 법리 수준의 해결</td></tr>
+                    <tr><td>진실성</td><td>증거 위변조 가능</td><td>OpenHash 블록체인 무결성 보장</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p>본 보고서에서는 글로벌 법률 시장의 성장성, 기술의 차별성, 그리고 구체적인 수익 모델을 바탕으로 산출한 기업가치 평가 결과를 제시합니다.</p>
+    </section>
+
+    <!-- II. 글로벌 법률 시장 분석 -->
+    <section class="section">
+        <h2>II. 글로벌 법률 시장 분석</h2>
+        <h3>2.1 시장 규모 및 성장성</h3>
+        <p>법률 시장은 크게 전통적 법률 서비스 시장과 법률 기술(Legal Tech) 시장으로 구분됩니다.</p>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>시장 구분</th><th>2025년 기준</th><th>2026년 전망</th><th>2032/2035년 전망</th><th>CAGR</th></tr></thead>
+                <tbody>
+                    <tr><td>글로벌 법률 서비스 시장</td><td>USD 7,523억</td><td>-</td><td>2033년 USD 9,510억</td><td>2.3%</td></tr>
+                    <tr><td>글로벌 법률 기술 시장</td><td>USD 303.8억</td><td>USD 331.8억</td><td>2035년 USD 732.6억</td><td>9.2%</td></tr>
+                    <tr><td>AI 법률 어시스턴트 시장</td><td>-</td><td>USD 7.88억</td><td>2032년 USD 17.0억</td><td>13.74%</td></tr>
+                    <tr><td>변호사-의뢰인 소프트웨어 시장</td><td>USD 20.4억</td><td>USD 22.7억</td><td>2032년 USD 52.4억</td><td>14.39%</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h4>시사점:</h4>
+        <ul>
+            <li><strong>고성장 분야 집중:</strong> 법률 기술 시장(9.2%)은 전통 법률 시장(2.3%) 대비 4배 높은 성장률을 보이고 있습니다.</li>
+            <li><strong>AI 중심 이동:</strong> AI 법률 어시스턴트 시장(13.74%)은 법률 기술 내에서도 가장 빠르게 성장하는 세그먼트입니다.</li>
+            <li><strong>기회의 창:</strong> 2026년은 글로벌 법률 기술 시장이 300억 달러에서 700억 달러로 도약하는 결정적 분기점에 해당합니다.</li>
+        </ul>
+
+        <h3>2.2 지역별 시장 분석</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>지역</th><th>시장 점유율</th><th>특징</th></tr></thead>
+                <tbody>
+                    <tr><td>북미</td><td>35.9%</td><td>기술 수용성 최고, AI 기반 전자증거개시(e-discovery) 도입률 52%</td></tr>
+                    <tr><td>유럽</td><td>약 28%</td><td>규제 준수(RegTech) 수요 높음, GDPR 대응 솔루션 필수</td></tr>
+                    <tr><td>아태 지역</td><td>22-24%</td><td>연평균 9.6% 성장, 특히 한국·일본·중국 중심으로 급성장</td></tr>
+                    <tr><td>한국</td><td>별도 산정</td><td>아태 지역 내 법률 디지털화 선도국, 2026년 시장 규모 약 2.5조 원 추정</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h4>한국 시장 특수성:</h4>
+        <ul>
+            <li>세계 최고 수준의 IT 인프라와 브로드밴드 보급률</li>
+            <li>스마트폰 기반 법률 서비스 수용도 높음 (45% 이상)</li>
+            <li>법원의 전자소송 시스템 구축 완료 → 본 시스템과의 연계 용이</li>
+        </ul>
+    </section>
+
+    <!-- III. 기술의 시장 파괴력 -->
+    <section class="section">
+        <h2>III. 기술의 시장 파괴력 (Market Disruption)</h2>
+        <h3>3.1 기존 법률 시스템과의 성능 비교</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>평가 지표</th><th>기존 법률 시스템</th><th>본 발명(v8)</th><th>개선율</th></tr></thead>
+                <tbody>
+                    <tr><td>분쟁 해결 소요 시간</td><td>평균 3년 (대법원까지)</td><td>1시간 내외</td><td>99.996% 단축</td></tr>
+                    <tr><td>평균 법률 비용</td><td>5,000만 원 (1심~3심)</td><td>50만 원 (1/100 수준)</td><td>99% 절감</td></tr>
+                    <tr><td>증거 진위 확인</td><td>감정·변론에 수개월 소요</td><td>4ms 내 OpenHash 검증 [citation:v8]</td><td>무한대 효율</td></tr>
+                    <tr><td>판결문 품질</td><td>1심 분석 (항소 가능)</td><td>대법원 수준 법리 적용</td><td>최고 수준</td></tr>
+                    <tr><td>접근 가능 인구</td><td>변호사 선임 가능한 계층만</td><td>전 국민</td><td>사법 민주화</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>3.2 비용 효율성 분석 (Cost Efficiency)</h3>
+        <p><strong>기존 소송 비용 구조 (민사소송, 소가 1억 원 기준):</strong></p>
+        <ul>
+            <li>변호사 선임료: 3,000만 원 ~ 5,000만 원</li>
+            <li>인지대/송달료: 200만 원 ~ 500만 원</li>
+            <li>시간 기회비용: 3년간 평균 3,000만 원 (연봉 5,000만 원 기준)</li>
+            <li>총 사회적 비용: 약 8,000만 원 ~ 1억 원</li>
+        </ul>
+        <p><strong>본 시스템 이용 비용:</strong></p>
+        <ul>
+            <li>시스템 이용료: 50만 원 (1회 분쟁 해결 기준)</li>
+            <li>증거 검증 비용: OpenHash 네트워크 무료 (블록체인 등록)</li>
+            <li>총 비용: 50만 원</li>
+        </ul>
+        <p><strong>사회적 편익:</strong> 건당 약 7,950만 원의 사회적 비용 절감</p>
+    </section>
+
+    <!-- IV. 시장 가치 평가 -->
+    <section class="section">
+        <h2>IV. 시장 가치 평가 (Market Valuation)</h2>
+        <h3>4.1 평가 방법론</h3>
+        <p>본 평가는 TAM-SAM-SOM 방법론과 할인된 현금흐름(DCF) 분석을 병행하였습니다. 시장 데이터를 기반으로 2026년부터 2032년까지 7년간의 현금흐름을 추정하였습니다.</p>
+
+        <h3>4.2 글로벌 시장 가치 평가 (Global Market Valuation)</h3>
+        <ul>
+            <li><strong>TAM (Total Addressable Market, 전체 시장):</strong> 글로벌 법률 기술 시장 2026년: USD 331.8억 / AI 법률 어시스턴트 시장 2026년: USD 7.88억 → TAM: USD 331.8억</li>
+            <li><strong>SAM (Serviceable Addressable Market, 서비스 가능 시장):</strong> 본 시스템은 법률 기술 시장의 3대 핵심 분야(전자증거개시, 법률 리서치, 계약 관리)를 통합. 해당 3대 분야 시장 점유율: 전체 법률 기술 시장의 약 60% (전자증거개시 42.05% + 법률리서치 + 계약관리) → SAM: USD 331.8억 × 60% = USD 199.1억</li>
+            <li><strong>SOM (Serviceable Obtainable Market, 획득 가능 시장):</strong> 초기 3년간 점유율: 0.5% (신규 진입자 평균), 5년차 이후 점유율: 2.5% (경쟁 우위 확보 시). 2032년 예상 매출: USD 199.1억 × 2.5% = USD 4.98억 (약 6,500억 원)</li>
+        </ul>
+
+        <h3>4.3 한국 시장 가치 평가 (Korea Market Valuation)</h3>
+        <ul>
+            <li><strong>TAM (한국 법률 시장):</strong> 한국 법률 서비스 시장: 약 25조 원 (GDP 대비 추정), 법률 기술 침투율: 10% 가정 → 한국 법률 기술 시장: 약 2.5조 원</li>
+            <li><strong>SAM (서비스 가능 시장):</strong> 민사 분쟁, 계약, 증거 관련 시장: 전체의 70% → SAM: 2.5조 원 × 70% = 1.75조 원</li>
+        </ul>
+        <div class="table-responsive">
+            <table>
+                <caption style="caption-side: bottom; margin-top: 8px;">SOM (획득 가능 시장)</caption>
+                <thead><tr><th>연도</th><th>시장 점유율</th><th>예상 매출 (억 원)</th><th>누적 이용 건수</th></tr></thead>
+                <tbody>
+                    <tr><td>2026</td><td>0.3%</td><td>52.5</td><td>10,500건</td></tr>
+                    <tr><td>2027</td><td>0.8%</td><td>140.0</td><td>28,000건</td></tr>
+                    <tr><td>2028</td><td>1.5%</td><td>262.5</td><td>52,500건</td></tr>
+                    <tr><td>2029</td><td>2.2%</td><td>385.0</td><td>77,000건</td></tr>
+                    <tr><td>2030</td><td>3.0%</td><td>525.0</td><td>105,000건</td></tr>
+                    <tr><td style="font-weight:600;">누적</td><td>-</td><td>1,365억 원</td><td>273,000건</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>4.4 기업가치 산출 (DCF 기반)</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>항목</th><th>보수적 시나리오</th><th>기본 시나리오</th><th>낙관적 시나리오</th></tr></thead>
+                <tbody>
+                    <tr><td>2030년 글로벌 매출</td><td>USD 1.2억</td><td>USD 2.5억</td><td>USD 5.0억</td></tr>
+                    <tr><td>2030년 한국 매출</td><td>300억 원</td><td>525억 원</td><td>800억 원</td></tr>
+                    <tr><td>영업이익률</td><td>25%</td><td>35%</td><td>45%</td></tr>
+                    <tr><td>할인율</td><td>15%</td><td>12%</td><td>10%</td></tr>
+                    <tr><td>2030년 기업가치</td><td>USD 3.5억</td><td>USD 8.2억</td><td>USD 18.5억</td></tr>
+                    <tr><td>한화 환산</td><td>약 4,500억 원</td><td>약 1.1조 원</td><td>약 2.4조 원</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="footnote"><strong>핵심 결론:</strong> 본 발명의 글로벌 기업가치는 1조 원 내외(유니콘) 수준으로 평가됩니다.</p>
+    </section>
+
+    <!-- V. 비즈니스 모델 -->
+    <section class="section">
+        <h2>V. 비즈니스 모델 (사업화 전략)</h2>
+        <h3>5.1 1안: B2C 직접 서비스 모델 (대중 직접 제공) - 권장</h3>
+        <p><strong>대상:</strong> 일반 국민, 중소기업, 소상공인, 프리랜서</p>
+        <p><strong>핵심 가치 제안:</strong> "지금 당신이 5,000만 원과 3년이 없다면, 본 시스템을 이용하십시오. 1시간, 50만 원이면 대법원 수준의 해결책을 드립니다."</p>
+        <p><strong>수익 모델:</strong></p>
+        <ul>
+            <li>건당 이용료: 30만 원 ~ 100만 원 (분쟁 규모별 차등)</li>
+            <li>구독 모델: 월 2만 원 (연간 24만 원) → 무제한 법률 상담 + 연 2회 분쟁 해결</li>
+            <li>증거 검증 서비스: OpenHash 등록 수수료 (건당 5,000원)</li>
+        </ul>
+        <p><strong>시장 규모:</strong> 한국 연간 법률 분쟁 경험 인구: 약 200만 명. 초기 전환율 1% 가정 시 연간 20,000명 → 매출 400억 원</p>
+
+        <h3>5.2 2안: B2B SaaS 모델 (로펌·대기업 법무팀)</h3>
+        <p><strong>대상:</strong> 국내외 로펌, 대기업 법무팀, 공공기관</p>
+        <p><strong>수익 모델:</strong></p>
+        <ul>
+            <li>전문 AI 비서(IAA) 구독료: 월 1,000만 원 ~ 3,000만 원 (기관 규모별)</li>
+            <li>사용량 기반 과금: 증거 검증 건당 1만 원, 판결문 생성 건당 10만 원</li>
+            <li>온프레미스 라이선스: 연 5억 원 ~ 20억 원 (일시불)</li>
+        </ul>
+        <p><strong>시장 규모:</strong> 글로벌 로펌 SaaS 시장: 2026년 USD 108.9억. 본 시스템 차별성: PDV 기반 증거 검증 + AI 중재 엔진 (경쟁사 대비 독보적)</p>
+
+        <h3>5.3 수익 모델 비교</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>지표</th><th>B2C 직접 서비스</th><th>B2B SaaS</th></tr></thead>
+                <tbody>
+                    <tr><td>시장 규모</td><td>대중 5,000만 명</td><td>기관 10만 개</td></tr>
+                    <tr><td>단가</td><td>50만 원/건</td><td>1,000만 원/월</td></tr>
+                    <tr><td>마진율</td><td>60%</td><td>80%</td></tr>
+                    <tr><td>확장 속도</td><td>초기 완만, 이후 폭발적</td><td>초기 급속, 이후 안정적</td></tr>
+                    <tr><td>진입 장벽</td><td>마케팅 비용</td><td>영업 네트워크</td></tr>
+                    <tr><td>추천 전략</td><td>주력 모델</td><td>보조 모델</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- VI. 투자 하이라이트 -->
+    <section class="section">
+        <h2>VI. 투자 하이라이트 (Investment Highlights)</h2>
+        <h3>6.1 압도적 시장 파괴력</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>기존 법률 시장의 문제</th><th>본 시스템의 해결</th></tr></thead>
+                <tbody>
+                    <tr><td>고비용 (5,000만 원 이상)</td><td>1/100 비용 (50만 원)</td></tr>
+                    <tr><td>장기간 (3년 이상)</td><td>1시간 내 해결</td></tr>
+                    <tr><td>증거 위변조 위험</td><td>OpenHash 무결성 보장</td></tr>
+                    <tr><td>변호사 접근성 제한</td><td>AI 비서(PAA)가 모든 국민에게 1:1 배정</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>6.2 독점적 경쟁 우위</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>경쟁사</th><th>제공 기능</th><th>본 시스템 대비 한계</th></tr></thead>
+                <tbody>
+                    <tr><td>Harvey AI, Lexis+ AI</td><td>법률 리서치, 문서 검토</td><td>증거 진실성 검증 불가, 분석 대행 불가</td></tr>
+                    <tr><td>DoNotPay</td><td>교통범칙금 등 단순 업무</td><td>복잡한 민사·형사 분쟁 해결 불가</td></tr>
+                    <tr><td>Clio, MyCase</td><td>사건 관리, 청구</td><td>AI 변호사·재판 기능 부재</td></tr>
+                    <tr><td><strong>본 발명</strong></td><td>전 과정 자동화 + 증거 검증</td><td>유일무이한 통합 플랫폼</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>6.3 글로벌 확장 전략</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>지역</th><th>진입 전략</th><th>예상 매출 (2030년)</th></tr></thead>
+                <tbody>
+                    <tr><td>한국</td><td>법무부·대법원 협업, B2C 직접 서비스</td><td>525억 원</td></tr>
+                    <tr><td>일본</td><td>현지 로펌 파트너십, IAA 공급</td><td>USD 2,500만</td></tr>
+                    <tr><td>북미</td><td>전자증거개시(e-discovery) 전문 기업과 제휴</td><td>USD 1.5억</td></tr>
+                    <tr><td>유럽</td><td>GDPR 컴플라이언스 특화 SaaS</td><td>USD 8,000만</td></tr>
+                    <tr><td>동남아</td><td>스마트폰 기반 B2C 앱 출시</td><td>USD 3,000만</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>6.4 투자 유치 제안</h3>
+        <div class="table-responsive">
+            <table>
+                <thead><tr><th>항목</th><th>내용</th></tr></thead>
+                <tbody>
+                    <tr><td>희망 투자 금액</td><td>300억 원 (Seed Round, 지분 20% 가정)</td></tr>
+                    <tr><td>Pre-money Valuation</td><td>1,200억 원</td></tr>
+                    <tr><td>Post-money Valuation</td><td>1,500억 원</td></tr>
+                    <tr><td>투자금 사용 계획</td><td>시스템 고도화(40%), 마케팅(30%), 해외 법인 설립(20%), 운전자본(10%)</td></tr>
+                    <tr><td>투자자 혜택</td><td>전략적 파트너십, 기술 자문, 후속 라운드 우선 참여권</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- VII. 결론 -->
+    <section class="section">
+        <h2>VII. 결론</h2>
+        <p>본 발명은 단순한 기술 혁신을 넘어 사법 서비스의 패러다임 자체를 전환시키는 혁명적 시스템입니다.</p>
+        <ul>
+            <li><strong>기술적 완성도:</strong> v8_final 기준, PDV·OpenHash·PAA/IAA를 포함한 완전한 종단간 아키텍처 확보</li>
+            <li><strong>시장 적합성:</strong> 글로벌 법률 기술 시장 9.2% 성장, AI 법률 시장 13.74% 성장이라는 폭발적 성장 배경</li>
+            <li><strong>경제적 효과:</strong> 건당 7,950만 원의 사회적 비용 절감, 사법 접근성 완전 민주화</li>
+            <li><strong>투자 가치:</strong> 2030년 기준 1조 원 이상의 유니콘 기업 가치 전망</li>
+        </ul>
+        <p style="font-size:1.2rem; font-weight:500; margin-top:24px; color:var(--primary-dark);">"더 이상 법률 서비스는 특권이 아닙니다. 이제 모든 국민이 1시간 안에 대법원 수준의 정의를 누릴 수 있습니다."</p>
+    </section>
+</div>
+</body>
+</html>

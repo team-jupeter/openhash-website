@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>특허 실시예 — K-OpenLaw</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:       #003087;
+      --blue-dark:  #001752;
+      --gold:       #8A6E2B;
+      --gold-light: #FEF9E7;
+      --text:       #1A1C2E;
+      --text-sub:   #4A5068;
+      --border:     #D4DCE8;
+      --white:      #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #F5F7FA; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 16px 20px;
+    }
+    .placeholder {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 5px;
+      padding: 20px 20px 18px;
+    }
+    .ph-head {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
+    }
+    .ph-head .material-icons { font-size: 18px; color: var(--gold); }
+    .ph-head h3 { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+    .ph-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 14px; line-height: 1.55; }
+    .outline { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 16px; }
+    .outline li {
+      font-size: 13px; color: var(--text-sub);
+      padding: 4px 0; border-bottom: 1px solid #EEF0F5;
+      display: flex; align-items: flex-start; gap: 6px;
+    }
+    .outline li:nth-last-child(-n+2) { border-bottom: none; }
+    .outline li .material-icons { font-size: 13px; color: #B0B8CC; margin-top: 1px; flex-shrink: 0; }
+    .status {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 14px; font-size: 12.5px; font-weight: 700;
+      color: #7A5800; background: #FFF7E0;
+      border: 1px solid #D4A020; border-radius: 3px;
+      padding: 3px 10px;
+    }
+    .status .material-icons { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="placeholder">
+    <div class="ph-head">
+      <span class="material-icons">workspace_premium</span>
+      <h3>특허 실시예 — 출원·심사 전 과정 자동화 · 작성 예정</h3>
+    </div>
+    <p class="ph-desc">K-OpenLaw가 특허 명세서 작성, 도면 구성, 청구항 완성, 출원 및 심사 대응 전 과정을 수행하며, 특허 심사관 판단 지원 도구 제공하는 방법과 절차를 제시하는 실시예입니다.</p>
+    <ul class="outline">
+      <li><span class="material-icons">radio_button_unchecked</span>발명 설명 및 기술 배경 정리</li>
+      <li><span class="material-icons">radio_button_unchecked</span>K-OpenLaw 자동 작성 특허 명세서</li>
+      <li><span class="material-icons">radio_button_unchecked</span>도면 구성 및 도면 부호 자동 생성</li>
+      <li><span class="material-icons">radio_button_unchecked</span>청구항 — 독립항·종속항 자동 분류</li>
+      <li><span class="material-icons">radio_button_unchecked</span>선행기술 조사 및 신규성·진보성 분석</li>
+      <li><span class="material-icons">radio_button_unchecked</span>심사관 역할 대행 — 거절이유 및 의견서</li>
+      <li><span class="material-icons">radio_button_unchecked</span>K-OpenLaw 특허 심판 가상 결정문</li>
+      <li><span class="material-icons">radio_button_unchecked</span>특허청 심사 결과 vs. K-OpenLaw 비교</li>
+    </ul>
+    <div class="status"><span class="material-icons">pending</span>준비 중</div>
+  </div>
+  <script>
+    function report() {
+      if (window.parent === window) return;
+      window.parent.postMessage({ iframeHeight: document.body.offsetHeight, tab: 'patent' }, '*');
+    }
+    window.addEventListener('load', report);
+    window.addEventListener('resize', report);
+  </script>
+</body>
+</html>

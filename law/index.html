@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <title>
+   K-OpenLaw | 고팡 &middot; AI 판결 검증 및 법리 분석 보조 시스템
+  </title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&amp;family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   :root {
+      --blue:       #002D80;
+      --blue-dark:  #001545;
+      --blue-light: #EDF1FA;
+      --gold:       #7A6020;
+      --gold-light: #FAF6EC;
+      --text:       #1A1C2A;
+      --text-sub:   #48506A;
+      --text-light: #6A7290;
+      --border:     #D2DAE8;
+      --border-lt:  #E8EDF5;
+      --bg:         #F4F6FA;
+      --white:      #FFFFFF;
+      --shadow:     0 1px 4px rgba(0,20,60,.08);
+      --shadow-md:  0 3px 10px rgba(0,20,60,.10);
+      --r:          5px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.78;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 28px 72px; }
+    .serif { font-family: 'Noto Serif KR', serif; }
+    p { color: var(--text-sub); margin-bottom: 11px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--text); font-weight: 700; }
+    hr { border: none; border-top: 1px solid var(--border-lt); margin: 32px 0; }
+
+    .gov-header { display: flex; align-items: center; gap: 10px; padding: 18px 0 14px; border-bottom: 2px solid var(--blue); }
+    .gov-header .material-icons { font-size: 28px; color: var(--blue); }
+    .gov-header h1 { font-family: 'Noto Serif KR', serif; font-size: 1.5rem; font-weight: 700; color: var(--blue-dark); letter-spacing: -.02em; }
+    .gov-badge { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--text-light); white-space: nowrap; }
+
+    .toc { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 0 var(--r) var(--r) 0; padding: 20px 24px; margin: 22px 0; }
+    .toc-title { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; }
+    .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; }
+    .toc-item { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border-lt); text-decoration: none; font-size: 13px; color: var(--text-sub); transition: color .13s; }
+    .toc-item:hover { color: var(--blue); }
+    .toc-item:nth-last-child(-n+2) { border-bottom: none; }
+    .toc-n { font-size: 10px; font-weight: 700; color: var(--blue-dark); background: var(--blue-light); border-radius: 3px; padding: 1px 6px; flex-shrink: 0; line-height: 1.6; }
+
+    .hero { background: var(--blue-dark); border-radius: var(--r); padding: 36px 44px 32px; border-left: 4px solid #C8A820; position: relative; overflow: hidden; }
+    .hero::after { content: '法'; position: absolute; right: 20px; bottom: -16px; font-family: 'Noto Serif KR', serif; font-size: 9rem; font-weight: 900; color: rgba(255,255,255,.04); pointer-events: none; user-select: none; }
+    .hero-label { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 12px; }
+    .hero h1 { font-family: 'Noto Serif KR', serif; font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900; color: #fff; line-height: 1.2; letter-spacing: -.02em; margin-bottom: 8px; }
+    .hero h1 em { font-style: normal; color: #F0C840; }
+    .hero h2 { font-size: 1rem; font-weight: 400; color: rgba(255,255,255,.68); margin-bottom: 22px; }
+    .kpi-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .kpi { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 3px; padding: 4px 11px; font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,.82); }
+    .kpi .material-icons { font-size: 13px; }
+    .kpi.gold { background: rgba(240,200,64,.12); border-color: rgba(240,200,64,.28); color: #FFE566; }
+
+    .sec-title { font-family: 'Noto Serif KR', serif; font-size: 1.05rem; font-weight: 700; color: var(--blue-dark); margin: 36px 0 14px; padding-left: 12px; border-left: 3px solid var(--gold); }
+    .sec-header { display: flex; align-items: center; gap: 10px; margin: 36px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .sec-header .material-icons { font-size: 22px; color: var(--blue); }
+    .sec-header h2 { font-family: 'Noto Serif KR', serif; font-size: 1.05rem; font-weight: 700; color: var(--blue-dark); }
+    .sec-header p { font-size: 12px; color: var(--text-light); margin: 2px 0 0; }
+
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 20px 22px; margin-bottom: 10px; box-shadow: var(--shadow); }
+    .callout { background: var(--gold-light); border-left: 3px solid var(--gold); border-radius: 0 var(--r) var(--r) 0; padding: 13px 16px; margin: 14px 0; font-size: 13.5px; color: #3A2E00; line-height: 1.7; }
+
+    .feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .feat-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; }
+    .feat-name { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; color: var(--blue-dark); margin-bottom: 5px; }
+    .feat-icon { width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--blue); }
+    .feat-icon .material-icons { font-size: 13px; color: #fff; }
+    .feat-desc { font-size: 12.5px; color: var(--text-sub); line-height: 1.6; margin: 0; }
+
+    .tech-row { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-top: 14px; background: var(--white); }
+    .tech-cell { padding: 10px 8px; text-align: center; border-right: 1px solid var(--border); }
+    .tech-cell:last-child { border-right: none; }
+.tc-label { font-size: 12px; letter-spacing: .07em; color: var(--text-light); text-transform: uppercase; margin-bottom: 2px; }
+.tc-name  { font-size: 13.5px; font-weight: 700; color: var(--blue-dark); }
+.tc-role  { font-size: 12px; color: var(--text-light); margin-top: 1px; }
+
+    .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin: 14px 0; box-shadow: var(--shadow); }
+    .table-caption { display: flex; align-items: center; gap: 8px; padding: 11px 16px; background: var(--blue-light); border-bottom: 1px solid var(--border); font-size: 12.5px; font-weight: 700; color: var(--blue-dark); }
+    .table-caption .material-icons { font-size: 16px; color: var(--blue); }
+    .table-sub { padding: 6px 16px 8px; font-size: 11.5px; color: var(--text-light); border-bottom: 1px solid var(--border-lt); background: #F8FAFE; }
+    .cmp-table { width: 100%; border-collapse: collapse; }
+    .cmp-table th { background: var(--blue-dark); color: #fff; padding: 9px 14px; font-size: 11.5px; font-weight: 600; text-align: left; white-space: nowrap; }
+    .cmp-table th:last-child { background: #054858; }
+    .cmp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border-lt); font-size: 12.5px; color: var(--text-sub); vertical-align: middle; }
+    .cmp-table tbody tr:last-child td { border-bottom: none; }
+    .cmp-table tbody tr:nth-child(even) td { background: #F8FAFE; }
+    .cmp-table td:first-child { font-weight: 600; color: var(--blue-dark); white-space: nowrap; }
+    .cmp-table td:last-child { background: rgba(5,72,88,.04) !important; font-weight: 600; color: #053848; }
+    .bl { display:inline-block; padding:1px 8px; border-radius:3px; font-size:11px; font-weight:700; background:#FDEAEA; color:#7A1A1A; border:1px solid #F0AAAA; }
+    .bh { display:inline-block; padding:1px 8px; border-radius:3px; font-size:11px; font-weight:700; background:#E6F7EE; color:#0E4E28; border:1px solid #7EC89A; }
+    .table-note { padding: 7px 16px 9px; font-size: 11px; color: var(--text-light); background: #F8FAFE; border-top: 1px solid var(--border-lt); }
+    .table-note a { color: var(--blue); text-decoration: none; font-weight: 600; }
+    .table-note a:hover { text-decoration: underline; }
+
+    .ex-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+    .ex-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+    .ex-head { display: flex; align-items: center; gap: 8px; padding: 10px 13px; border-bottom: 1px solid var(--border-lt); }
+    .ex-head-1 { background: var(--blue-light); }
+    .ex-head-2 { background: #FDF0EE; }
+    .ex-head-3 { background: var(--gold-light); }
+    .ex-num { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .en-1 { background: var(--blue); }
+    .en-2 { background: #8B1A1A; }
+    .en-3 { background: var(--gold); }
+    .ex-title { font-size: 12px; font-weight: 700; line-height: 1.3; }
+    .ex-head-1 .ex-title { color: var(--blue-dark); }
+    .ex-head-2 .ex-title { color: #5A0E0E; }
+    .ex-head-3 .ex-title { color: #4A3200; }
+    .ex-body { padding: 11px 13px 13px; font-size: 12px; color: var(--text-sub); line-height: 1.65; }
+    .ex-role { display: inline-block; margin-top: 8px; background: var(--blue-light); color: var(--blue-dark); border-radius: 3px; padding: 1px 8px; font-size: 10.5px; font-weight: 700; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0 0; }
+    .stat-card { background: var(--white); border: 1px solid var(--border); border-top: 2px solid var(--blue); border-radius: var(--r); padding: 16px 12px 12px; text-align: center; cursor: pointer; transition: border-top-color .15s, background .15s; }
+    .stat-card:hover { background: var(--blue-light); }
+    .stat-card.on { background: var(--blue-light); border-top-color: var(--blue-dark); }
+    .stat-num { display: block; font-family: 'Noto Serif KR', serif; font-size: 1.45rem; font-weight: 900; color: var(--blue); line-height: 1.1; margin-bottom: 6px; }
+    .stat-card.on .stat-num { color: var(--blue-dark); }
+    .stat-lbl { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-sub); line-height: 1.3; }
+    .stat-hint { font-size: 10px; color: var(--blue); margin-top: 6px; opacity: .55; }
+    .stat-card:hover .stat-hint, .stat-card.on .stat-hint { opacity: 1; }
+    .slide-panel { display: none; background: var(--white); border: 1px solid var(--border); border-top: 2px solid var(--blue); border-radius: var(--r); margin-top: 8px; }
+    .slide-panel.on { display: block; animation: reveal 180ms ease both; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    .slide-panel > div { padding: 18px 20px; }
+    .slide-panel h3 { font-family: 'Noto Serif KR', serif; font-size: 13px; font-weight: 700; color: var(--blue-dark); margin-bottom: 11px; }
+    .slide-panel p { font-size: 13px; color: var(--text-sub); line-height: 1.78; margin-bottom: 8px; }
+    .slide-panel p:last-child { margin-bottom: 0; }
+
+    .eval-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 14px 0; }
+    .eval-card { background: var(--white); border: 1px solid var(--border); border-top: 2px solid var(--blue); border-radius: var(--r); padding: 22px 20px; text-align: center; text-decoration: none; color: inherit; display: block; transition: border-top-color .15s, box-shadow .15s; }
+    .eval-card:hover { border-top-color: var(--blue-dark); box-shadow: var(--shadow-md); }
+    .eval-card .material-icons { font-size: 32px; color: var(--blue); display: block; margin-bottom: 10px; }
+    .eval-card h3 { font-family: 'Noto Serif KR', serif; font-size: 1.1rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
+    .eval-card p { font-size: 12.5px; color: var(--text-sub); }
+
+    .info-panel { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 0 var(--r) var(--r) 0; padding: 22px 26px; margin: 10px 0; }
+    .info-panel h2 { font-family: 'Noto Serif KR', serif; font-size: 1rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 13px; }
+    .info-panel p { font-size: 13.5px; color: var(--text-sub); line-height: 1.82; margin-bottom: 10px; }
+    .info-panel p:last-child { margin-bottom: 0; }
+    .info-panel strong { color: var(--blue); }
+    .phil-panel { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: 0 var(--r) var(--r) 0; padding: 22px 26px; margin: 10px 0; }
+    .phil-panel h2 { font-family: 'Noto Serif KR', serif; font-size: 1rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 13px; }
+    .phil-panel p { font-size: 13.5px; color: var(--text-sub); line-height: 1.82; margin-bottom: 10px; }
+    .phil-panel p:last-child { margin-bottom: 0; }
+    .phil-panel strong { color: var(--text); }
+
+    .tech4-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0; }
+    .tech4-card { background: var(--white); border: 1px solid var(--border); border-top: 2px solid var(--blue); border-radius: var(--r); padding: 16px 14px; text-decoration: none; color: inherit; display: block; transition: box-shadow .15s, border-top-color .15s; }
+    .tech4-card:hover { box-shadow: var(--shadow-md); border-top-color: var(--blue-dark); }
+    .tech4-card .material-icons { font-size: 26px; color: var(--blue); display: block; margin-bottom: 10px; }
+    .tech4-title { font-size: 13px; font-weight: 700; color: var(--blue-dark); margin-bottom: 7px; }
+    .tech4-desc  { font-size: 12px; color: var(--text-sub); line-height: 1.6; }
+
+    .tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--blue); margin-bottom: 0; }
+    .tab-btn { display: flex; align-items: center; gap: 6px; padding: 9px 20px; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-sub); background: var(--white); border: 1px solid var(--border); border-bottom: none; border-radius: var(--r) var(--r) 0 0; cursor: pointer; margin-right: 3px; margin-bottom: -2px; transition: color .13s, background .13s; position: relative; }
+    .tab-btn .material-icons { font-size: 16px; }
+    .tab-btn:hover { color: var(--blue); background: var(--blue-light); }
+    .tab-btn.on { color: var(--blue-dark); background: var(--white); border-color: var(--blue); border-bottom-color: var(--white); z-index: 1; }
+    .tab-btn.on::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--white); }
+    .tab-badge { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 3px; }
+    .tab-badge.ready { background: var(--blue-light); color: var(--blue-dark); }
+    .tab-badge.soon  { background: #FFF7E0; color: #7A5800; border: 1px solid #D4A020; }
+    .tab-panel { display: none; background: var(--white); border: 1px solid var(--blue); border-top: none; border-radius: 0 0 var(--r) var(--r); }
+    .tab-panel.on { display: block; }
+    .tab-iframe { width: 100%; border: none; display: block; min-height: 80px; }
+
+    .docs3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; }
+    .doc3-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 16px; text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: border-color .15s, box-shadow .15s; }
+    .doc3-card:hover { border-color: var(--blue); box-shadow: var(--shadow-md); }
+    .doc3-card .material-icons { font-size: 24px; color: var(--blue); margin-bottom: 9px; }
+    .doc3-card h3 { font-size: 13px; font-weight: 700; color: var(--blue-dark); margin-bottom: 12px; padding-bottom: 9px; border-bottom: 1px solid var(--border-lt); }
+    .doc3-card ul { list-style: none; padding: 0; flex: 1; }
+    .doc3-card li { margin-bottom: 7px; font-size: 12px; color: var(--text-sub); display: flex; align-items: flex-start; gap: 6px; }
+    .doc3-card li .material-icons { font-size: 14px; color: #1A7A40; margin: 0; flex-shrink: 0; margin-top: 1px; }
+    .doc3-badge { margin-top: 12px; align-self: flex-start; font-size: 10.5px; font-weight: 700; color: var(--blue); background: var(--blue-light); padding: 2px 10px; border-radius: 3px; }
+
+    .footer { margin-top: 56px; padding: 20px 0 12px; border-top: 1px solid var(--border-lt); text-align: center; font-size: 12px; color: var(--text-light); }
+    .footer a { color: var(--blue); text-decoration: none; font-weight: 500; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 1000px) {
+      .tech4-grid { grid-template-columns: repeat(2, 1fr); }
+      .docs3-grid  { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 800px) {
+      .wrap { padding: 0 16px 56px; }
+      .hero { padding: 26px 24px 24px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .eval-grid { grid-template-columns: 1fr; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .ex-grid { grid-template-columns: 1fr; }
+      .toc-grid { grid-template-columns: 1fr; }
+      .toc-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--border-lt); }
+      .toc-item:last-child { border-bottom: none; }
+      .tech-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .tech4-grid { grid-template-columns: 1fr; }
+      .docs3-grid  { grid-template-columns: 1fr; }
+      .tab-btn { padding: 8px 13px; font-size: 12px; }
+    }
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+  </style>
+ </head>
+ <body>
+  <div class="wrap">
+   <div class="hero" style="position: relative;">
+
+    <h1>
+     K-OpenLaw <br>
+예방 법학 + 증거 무결성 보장 +
+     <em>
+       판결의 법리적 타당성 독립 검증
+     </em>
+    </h1>
+
+    <div class="kpi-row">
+     <span class="kpi gold">
+      <span class="material-icons">
+       lock
+      </span>
+      OpenHash: 증거 위변조 원천 차단
+     </span>
+     <span class="kpi">
+      <span class="material-icons">
+       search
+      </span>
+      판결의 법리 오류 자동 발견
+     </span>
+     <span class="kpi">
+      <span class="material-icons">
+       schedule
+      </span>
+      쟁점 분석 1시간 이내
+     </span>
+     <span class="kpi">
+      <span class="material-icons">
+       health_and_safety
+      </span>
+      고팡 - 분쟁의 90~99%% 사전 예방
+     </span>
+    </div>
+    <a href="law_invest.html" onmouseout="this.style.backgroundColor='#e6f0ff'" onmouseover="this.style.backgroundColor='#d4e4ff'" style="
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #e6f0ff;
+    color: #003366;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    border: 1px solid #b8d1ff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: background 0.2s;
+    animation: pulse 1.5s infinite;
+    z-index: 10;
+" target="_blank">
+     📘 사업 소개서
+    </a>
+   </div>
+   <nav class="toc" id="top">
+    <div class="toc-title">
+     목차 (Table of Contents)
+    </div>
+    <div class="toc-grid">
+     <a class="toc-item" href="#sec-overview">
+      <span class="toc-n">
+       I
+      </span>
+      法治 vs. 人治 &mdash; 개요
+     </a>
+     <a class="toc-item" href="#sec-stack">
+      <span class="toc-n">
+       II
+      </span>
+      Openhash &middot; AI &middot; 고팡 &middot; K-OpenLaw 기술 구조
+     </a>
+     <a class="toc-item" href="#sec-proof">
+      <span class="toc-n">
+       III
+      </span>
+      숫자로 증명 &mdash; 법치도(法治度) 비교
+     </a>
+     <a class="toc-item" href="#sec-examples">
+      <span class="toc-n">
+       IV
+      </span>
+      세 가지 실시예: 민사 &middot; 형사 &middot; 특허
+     </a>
+     <a class="toc-item" href="#sec-ai">
+      <span class="toc-n">
+       V
+      </span>
+      개인 vs. A.I &mdash; 집단 지성과 PDV
+     </a>
+     <a class="toc-item" href="#sec-stats">
+      <span class="toc-n">
+       VI
+      </span>
+      핵심 지표 &mdash; 신뢰도 &middot; 시간 &middot; 비용 &middot; 경감
+     </a>
+     <a class="toc-item" href="#sec-patent-eval">
+      <span class="toc-n">
+       VII
+      </span>
+      특허성 평가 &middot; 기술가치 평가
+     </a>
+     <a class="toc-item" href="#sec-guide">
+      <span class="toc-n">
+       VIII
+      </span>
+      고팡 시스템 &mdash; 사회 전 분야 적용
+     </a>
+     <a class="toc-item" href="#sec-philosophy">
+      <span class="toc-n">
+       IX
+      </span>
+      법리 분석의 체계화
+     </a>
+     <a class="toc-item" href="#sec-core-tech">
+      <span class="toc-n">
+       X
+      </span>
+      핵심 기술 문서 4종
+     </a>
+     <a class="toc-item" href="#sec-cases">
+      <span class="toc-n">
+       XI
+      </span>
+      실시예 문서 &mdash; 민사 &middot; 형사 &middot; 특허
+     </a>
+     <a class="toc-item" href="#sec-methodology">
+      <span class="toc-n">
+       XII
+      </span>
+      법치도 평가 방법론
+     </a>
+     <a class="toc-item" href="#sec-patent-docs">
+      <span class="toc-n">
+       XIII
+      </span>
+      특허 기술 평가 문서 7종
+     </a>
+    </div>
+   </nav>
+   <!-- I -->
+   <section id="sec-overview">
+    <h2 class="sec-title">
+     I. 法治 vs. 人治
+    </h2>
+    <div class="card">
+     <p>
+      동서고금, 어느 한 국가의 사법 체제는 법치와 인치 사이의 어느 한 지점에 있습니다. 법률로 다스린다는 뜻의 法治(법치)와 사람(통치자)이 다스린다는 뜻의 人治(인치)입니다. 인치는 주관과 편향, 그리고 지적 한계를 내재합니다. 법치라 해도, 그 법을 운용하는 존재가 사람인 이상, 나라마다 정도의 차이가 있을 뿐, <strong>법은 만인에게 평등</strong>하다고 말하기는 어렵습니다.
+     </p>
+     <p>
+      법원에 대한 국민의 신뢰가 낮은 이유는 다양하겠지만, 그 중 하나는 부지불식간에 인치를 감지하기 때문입니다. 
+     </p>
+     <p>
+      <strong>
+       K-OpenLaw는 법치를 기술적으로 보강하는 도구
+      </strong>입니다.
+      그 기술은 <strong>Openhash와 AI</strong>이며, 15건의 특허출원서와 System Prompt, 각종 코드와 서버 설정 등 시스템 전체를 오픈소스로 공개합니다(Github).
+     </p>
+    </div>
+    <div class="feat-grid">
+     <div class="feat-item">
+      <div class="feat-name">
+       <div class="feat-icon">
+        <span class="material-icons">
+         account_tree
+        </span>
+       </div>
+       통합 분석
+      </div>
+      <p class="feat-desc">
+       K-OpenLaw는 1심(지방법원)부터 2심(고등법원), 3심(대법원), 헌법재판소에 이르는 사법 체계 전체를 대상으로 판결의 법리적 타당성을 독립 검증합니다.
+      </p>
+     </div>
+     <div class="feat-item">
+      <div class="feat-name">
+       <div class="feat-icon">
+        <span class="material-icons">
+         gavel
+        </span>
+       </div>
+       판결 검증
+      </div>
+      <p class="feat-desc">
+       법원 판결의 법리적 오류를 자동으로 발견합니다. 실시예에서 1심 판결의 11개, 2심 판결의 8개 오류를 식별하였습니다(개발자 자체 분석 결과이며, 외부의 독립 검증을 기대합니다.)
+      </p>
+     </div>
+     <div class="feat-item">
+      <div class="feat-name">
+       <div class="feat-icon" style="background:#0D6E7C;">
+        <span class="material-icons">
+         bolt
+        </span>
+       </div>
+       초고속 분석
+      </div>
+      <p class="feat-desc">
+       OpenHash에 의한 증거 무결성 보장으로 증거 다툼이 제거되어, 법원은 법리 분석에만 집중할 수 있습니다. 3심까지의 쟁점 분석이 1시간 이내에 완료됩니다.
+      </p>
+     </div>
+     <div class="feat-item">
+      <div class="feat-name">
+       <div class="feat-icon" style="background:var(--gold);">
+        <span class="material-icons">
+         health_and_safety
+        </span>
+       </div>
+       예방 법학
+      </div>
+      <p class="feat-desc">
+      마치 예방 의학처럼, <strong>고팡</strong>은 각종 분쟁을 기술적으로 예방합니다. 분쟁 가능성을 조기에 발견하고 사전에 조치합니다(24시간/365일).
+      </p>
+     </div>
+    </div>
+    <div class="callout">
+     <strong>K-OpenLaw의 개발 동기:</strong> K-OpenLaw는 전쟁 등으로 사법부가 정상 기능할 수 없는 천재지변의 사태에서, 기존 사법부 체제를 전면 대행할 수 있도록 개발되었습니다. 즉, 이 시스템은 극한 상황에서 변호사, 판사, 검사 등 45,000여 법조 인력의 역할을 <strong>일정한 범위 내에서</strong> 수행할 수 있도록 설계 및 개발되었으며, 약 3년에 걸쳐 그 성능을 검증하였습니다.
+    </div>
+    <div class="card">
+     <p>
+      K-OpenLaw를 <strong>전시가 아닌 평시에 적용</strong>하면, 사법 서비스의 품질을 현저히 높이고, 비용은 수십 배 낮추며, 재판 소요 시간을 수백 배 줄일 수 있을 것으로 예상합니다. 구체적으로, 법관의 판결에 대한 <strong>독립적 검증 도구</strong>로서, 판결의 법리적 오류를 발견하고, 놓친 쟁점과 판례를 제시하며, 당사자의 논증을 보강합니다.
+     </p>
+     <p>
+      어떤 기술이든 말로써 자랑하기는 쉽지만, 그 성능을 정량적이고 객관적으로 입증하기는 어렵습니다. 이 페이지는 입증을 위한 제반 자료와 데이터를 제공하며, 특히, 15건의 특허출원서, 판결 시뮬레이션, 실제 법원 판결에 적용한 결과 등 그 성능을 실증하는 각종 데이터를 제시합니다. 
+     </p>
+    </div>
+   </section>
+   <hr/>
+   <!-- II -->
+   <section id="sec-stack">
+    <h2 class="sec-title">
+     II. 기술 구조:  K-OpenLaw = Openhash +AI +고팡 
+    </h2>
+    <div class="card">
+     <p>
+     <strong>고팡</strong>은 카톡같은 채팅앱입니다. 그런데, 이 채팅앱에는 묘한 존재가 하나 들어있습니다. 바로, 나의 AI 비서입니다. 
+<ul>
+<li> 나와 남 간의 대화는 각기 자신의 AI 비서를 통해 진행합니다. 
+<li> 나의 AI 비서는 나의 일상과 업무를 하루 24시간 보조합니다. 
+<li> 나는 자연인이거나, 법인이거나, 사물입니다.
+<li> 나의 AI 비서는 세상의 모든 지식을 갖췄습니다. 
+</ul> </p>
+<p>
+그러므로, 고팡은 입법, 사법, 행정, 의료, 교육, 교통, 금융 등 우리 사회의 제반 인프라를 카톡이나 OpenClaw같은 채팅 앱에 통합한 것입니다. 즉, 고팡은 <strong>체제를 채팅 앱에 녹여 넣은 것</strong>이고, K-OpenLaw는 그 중 사법 체제입니다. </p>
+<p>체제를 녹여넣는다는 표현은, AI Agent 혹은 AI 비서를 상상하십시오. 나에게 비서가 하나 있는데, 이 비서는 의학, 법학, 공학, 철학 등 박사 학위 수백 개를 보유하고, 24시간/365일 오직 나를 위해 복무합니다. 그게 AI 비서입니다. 비유하자면, K-OpenLaw는 이 AI 비서의 법학 박사 능력인 셈입니다. 나의 AI 비서는 경영학 박사 능력으로 내 사업체를 관리하고, 금융공학 박사 능력으로 내 금융 자산을 관리하며, 의학 박사 능력으로 내 건강을 챙기고, 법학 박사 능력으로 내 일상과 사업을 지키며, 행정학 박사 능력으로 공공기관 업무를 대행합니다. 국민 개개인이 박사 학위 수백 개를 보유한 듯한 자신의 AI 비서를 통해, 다른 사람 및 기관과 소통하는 것이 <strong>체제를 녹여넣는다</strong>는 표현의 대략적인 의미입니다.</p>
+
+<p>고팡의 핵심 기술, 즉, 체제를 채팅앱에 녹여 넣는 핵심 기술은 Openhash와 AI이며, <strong>전자는 데이터 무결성을 보장하고, 후자는 집단 지성을 대변</strong>합니다(AI와 집단 지성의 관계는 후술). K-OpenLaw는 <strong>사법 지성</strong>입니다. 제 아무리 뛰어난 AI라 해도, 입력 데이터인 증거와 증언이 오염되면, 출력 데이터인 판결 역시 오염될 수 밖에 없습니다(Garbage In, Garbage Out). 오염된 판결은 그 어떤 범행 도구보다 위험하므로, 증거와 증언의 무결성을 보장하는 Openhash가 K-OpenLaw의 핵심 기술이며, 고팡의 여타 모듈(입법, 행정, 금융 등)도 마찬가지입니다. </p>
+<p>사법 서비스의 실용적인 측면에서도, AI는 사람(법조인)의 지능을 보강하며, Openhash는 증거의 무결성을 보장하므로, 재판 시간을 수천 배 혹은 수만 배 줄일 수 있습니다. 
+         </p>
+     <p>
+      AI는 남이 개발했지만, <strong>Openhash는 우리가 개발</strong>했습니다. 50인승 버스에 비유하면, AI는 엔진이고, Openhash는 바퀴이며, 고팡은 차체입니다. 고팡의 사법 모듈인 K-OpenLaw는 이 차체의 50개 시트 중 하나이며,
+      <strong>
+       기존 사법부를 대체하는 것이 아니라 보완하고 검증하는 도구</strong>로 설계되었습니다. 실제 그 효용이 어느 수준인지, 이 페이지의 실시예를 통해 여러분 스스로 판단해 보십시오.
+     </p>
+     <div class="tech-row">
+      <div class="tech-cell">
+       <div class="tc-label">
+        엔진
+       </div>
+       <div class="tc-name">
+        AI / LLM
+       </div>
+       <div class="tc-role">
+        집단 지성 &middot; 추론
+       </div>
+      </div>
+      <div class="tech-cell">
+       <div class="tc-label">
+        바퀴
+       </div>
+       <div class="tc-name">
+        Openhash
+       </div>
+       <div class="tc-role">
+        증거 무결성
+       </div>
+      </div>
+      <div class="tech-cell">
+       <div class="tc-label">
+        차체
+       </div>
+       <div class="tc-name">
+        고팡 (PDV)
+       </div>
+       <div class="tc-role">
+        국가 자동화
+       </div>
+      </div>
+      <div class="tech-cell">
+       <div class="tc-label">
+        시트
+       </div>
+       <div class="tc-name">
+        K-OpenLaw
+       </div>
+       <div class="tc-role">
+        법률 분석 자동화
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <hr/>
+   <!-- III -->
+   <section id="sec-proof">
+    <h2 class="sec-title">
+     III. 숫자로 증명 &mdash; 법치도(法治度)/법치율(法治率)
+    </h2>
+    <div class="card">
+     <p>
+      법치도 혹은 법치율은 한 국가의 사법 체계에서 사법 정의가 관철되는 수준을 의미하며, 개발자인 우리가 고안한 개념으로, 기존의 <strong>법치주의 지수</strong>에 AI가 분석 평가한 사법 정의 평가 지수를 추가한 것입니다. 일국의 법치도를 측정하는 방법은 페이지 하단 "법치도/법치율 평가 방법" 섹션에서 자세히 설명합니다.
+     </p>
+     <p>
+      아래 표는 2026년 3월 현재 대법원 상고장이 접수된 모 민사소송의 1심&middot;2심 판결과 K-OpenLaw의 판결문 분석 결과입니다.
+      <strong>데이터는 항상 스스로 말합니다.</strong>
+     </p>
+     <p>
+      물론, 1심(단독 - 판사 1명) 판결은 오류가 있을 수 있습니다. 판사 1인의 판단이 완전할 수는 없기 때문입니다. 2심(고등법원 - 합동 판사 3명) 판결도 오류가 있을 수 있습니다. 판사 3인의 판단도 완전할 수는 없습니다. 3심(대법원) 판결도 오류가 있을 수 있습니다. 대법관 5명의 판단이 완전할 수는 없습니다. 대법원 판결에 대한 재판소원으로 헌법재판소에서 내려진 판결도 오류가 있을 수 있습니다. 헌법재판소의 판단도 완전하지는 않습니다.
+     </p>
+     <p>
+      그러나, 1심 판결의 명확한 오류를 지적했음에도, 2심에서 바로 잡지 못하고, 오히려 2심에서 오류의 폭이 확장된다면, 나아가 2심 판결의 명확한 오류를 지적해도 3심이 이를 바로 잡지 못한다면, 이는 개별 재판부의 문제가 아니라, 사법 체제 자체의 <strong>자기 정립 능력의 부재</strong>입니다. 아래 세 예시(민사, 형사, 특허 분쟁)는 기존 사법부 체제의 이러한 문제를 지적하며, 기존 사법부를 <strong>보완하고 검증하는 도구</strong>로서, K-OpenLaw의 가치를 주장합니다.
+     </p>
+     <p>
+      AI 기술의 급속한 발전은 법률 서비스 분야에도 근본적인 변화를 예고합니다. 시뮬레이션 결과, K-OpenLaw는 민형사 분쟁의 90%를 사전에 예방하고, 이미 발생한 분쟁의 90%에 대해 당사자 간 합의를 도출할 수 있습니다. 이를 통해 법원은 AI가 해결하기 어려운 복잡하고 비정형적인 사건(1%)에 집중할 수 있게 됩니다.
+     </p>
+     <p>
+      법조계는 기술을 충분히 이해하기 어렵고, 개발자는 사법 체제를 충분히 이해하기 어렵습니다. 그렇기 때문에 더더욱 <strong>기술에 대한 법조인의 비판적 검토가 필수적</strong>이며, 우리는 그 검토와 비판을 환영합니다.
+     </p></div>
+<div>
+  <p>아래는 법원에서 실제로 진행한 민사 소송, 형사 소송, 특허 소송에 K-OpenLaw를 적용한 실시 예입니다. 사실, 개발자로서 우리는 기술 개발 그 자체보다, 개발된 기술의 성능을 입증할 실시 예를 구현하는 데 더 많은 시간과 노력을 경주하였습니다.
+     </p>
+
+    </div>
+    <div class="table-wrap">
+     <div class="table-caption">
+      <span class="material-icons">
+       bar_chart
+      </span>
+      실시 예: 법원 판결 vs. K-OpenLaw의 판결문 분석 및 자체 가상 판결 비교 요약
+     </div>
+     <div class="table-sub">
+      ※ 아래 점수 및 오류 수는 <strong>개발자 자체 분석 결과(외부 전문가들의 독립적인 검증 전)</strong>이며, 법치도 측정 방법론은 하단의 실시예 문서를 참조하십시오. 여러분의 비판적 검토와 독립적인 검증을 환영합니다.
+     </div>
+     <div style="overflow-x:auto;">
+      <table class="cmp-table">
+       <thead>
+        <tr>
+         <th>
+          비교 항목
+         </th>
+         <th>
+          1심 법원
+         </th>
+         <th>
+          2심 법원
+         </th>
+         <th>
+          K-OpenLaw (AI + Openhash)
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td>
+          종합 공정성 점수
+         </td>
+         <td>
+          <span class="bl">
+           40점 (D)
+          </span>
+         </td>
+         <td>
+          <span class="bl">
+           34점 (F)
+          </span>
+         </td>
+         <td>
+          <span class="bh">
+           90점 이상 (A)
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          법리&middot;절차 오류 수
+         </td>
+         <td>
+          11개
+         </td>
+         <td>
+          8개 (총 19개)
+         </td>
+         <td>
+          <strong>
+           0개
+          </strong>
+          (구조적으로 최소화 — 목표)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          총 재판 기간 (1+2+3심)
+         </td>
+         <td colspan="2" style="text-align:center;">
+          약 3년
+         </td>
+         <td>
+          <strong>
+           1시간
+          </strong>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          총 비용 (3심 누적)
+         </td>
+         <td colspan="2" style="text-align:center;">
+          수천만 원 ~ 수억 원
+         </td>
+         <td>
+          <strong>
+           약 10만 원
+          </strong>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          증거 검증 방식
+         </td>
+         <td colspan="2" style="text-align:center;">
+          서류&middot;감정&middot;증인신문 (수개월)
+         </td>
+         <td>
+          PDV + OpenHash (수초 내)
+         </td>
+        </tr>
+        <tr>
+         <td>
+          신뢰도
+         </td>
+         <td colspan="2" style="text-align:center;">
+          30~40%
+         </td>
+         <td>
+          <strong>
+           투명한 판단 과정 공개
+          </strong>
+          <br><span style="font-size:11px;font-weight:400;">(독립 검증을 통해 확인 가능)</span>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+     <div class="table-note">
+      ※ 1심&middot;2심 점수 및 오류 수는
+      <a href="fairness.html" target="_blank">
+       fairness.html
+      </a>
+      , 비용&middot;시간은
+      <a href="performance.html" target="_blank">
+       performance.html
+      </a>
+      참조. 위 비교는 개발자 자체 분석 결과이며, 독립적인 제3자 검증을 적극 요청합니다.
+     </div>
+    </div>
+    <div class="callout">
+     Openhash+AI 기반 판결 검증 시스템
+     <strong>
+      K-OpenLaw
+     </strong>의 실증 데이터를 직접 확인하고, 비판적으로 검토하십시오. 법조인 여러분의 전문적 평가를 환영합니다. 아래 모든 데이터는 개발자 자체 분석 결과이며, 독립 검증 전임을 밝힙니다.
+    </div>
+   </section>
+   <hr/>
+   <!-- IV -->
+   <section id="sec-examples">
+    <h2 class="sec-title">
+     IV. 세 가지 실시예: 민사 &middot; 형사 &middot; 특허
+    </h2>
+    <div class="ex-grid">
+     <div class="ex-card">
+      <div class="ex-head ex-head-1">
+       <div class="ex-num en-1">
+        1
+       </div>
+       <span class="ex-title">
+        민사 소송 &mdash; 1&middot;2심 기각 사례
+       </span>
+      </div>
+      <div class="ex-body">
+       1심과 2심에서 원고 청구 기각된 사례로써, 2026년 3월 현재 3심(대법원) 단계를 진행 중인 민사 소송입니다. K-OpenLaw가 1심&middot;2심 판결문을 분석한 뒤, 공정성&middot;합리성&middot;법적 정확성을 평가하고, 3심 승소 가능성을 정량 평가하며, 상고장과 상고이유서를 작성합니다.
+       <div>
+        <span class="ex-role">
+         🏛️ K-OpenLaw 역할: 변호사
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="ex-card">
+      <div class="ex-head ex-head-2">
+       <div class="ex-num en-2">
+        2
+       </div>
+       <span class="ex-title">
+        형사 고발 &mdash; 증거 위변조 입증
+       </span>
+      </div>
+      <div class="ex-body">
+       1심&middot;2심에서 원고 패소의 원인이 된 피고 제출 증거의 사후 위변조를 Openhash 기술로 입증하기 위한 형사 고발 및 재판 시뮬레이션입니다. K-OpenLaw는 검사를 보조하여 전 과정을 지원합니다.
+       <div>
+        <span class="ex-role">
+         🔍 K-OpenLaw 역할: 검사 보조
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="ex-card">
+      <div class="ex-head ex-head-3">
+       <div class="ex-num en-3">
+        3
+       </div>
+       <span class="ex-title">
+        특허 출원 &middot; 심사 자동화
+       </span>
+      </div>
+      <div class="ex-body">
+       K-OpenLaw가 출원인을 대리하여, 특허 명세서와 도면을 작성하며, 청구항을 구성하여 출원 및 심사 전 과정에 대응합니다. 또한, K-OpenLaw 스스로 특허 심사관의 역할을 대행하는 방법과 절차도 제시합니다.
+       <div>
+        <span class="ex-role">
+         📋 K-OpenLaw 역할: 특허 출원인, &middot; 특허 심사관
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="card">
+     <p>
+      위 세 가지 예시는 K-OpenLaw의 변호사, 검사, 판사, 및 특허 심판관 능력을 입증합니다. 1심 및 2심 법원의 실제 판결과 K-OpenLaw의 분쟁 분석 리포트을 대조하여, 법조인 여러분 스스로 그 우열을 판단하십시오.
+     </p>
+    </div>
+   </section>
+   <hr/>
+   <!-- V -->
+   <section id="sec-ai">
+    <h2 class="sec-title">
+     V. 개인 vs. A.I &mdash; 집단 지성과 PDV
+    </h2>
+    <div class="card">
+     <p>
+      수십만 권 분량의 법률 지식을 갖춘 복수의 AI 모델들(LLM)을 법률 부문에 특화한 뒤(Fine-tuning), 서로 다른 LLM을 선정하여 각기 원고와 피고, 중재 엔진 등을 대리하게 하고, LLM들 간의 논쟁을 거쳐 쟁점과 주장을 체계적으로 정리합니다. 법적 판단을 1+1=2와 같은 자연과학적 문장으로 완전히 치환할 수는 없지만, 각 쟁점과 주장을 단계별로 아리스토텔레스의 삼단논법 수준으로 <strong>Reducing</strong>하여, 분쟁의 원인과 대상을 명확히 드러내고 합의에 이를 수 있도록 합니다.
+ <strong>Reducing</strong>의 구체적 방법과 절차는 특허출원서 전문(링크)을 참조하십시오.     </p>
+     <p>
+      어떤 개인도 단독으로는 A.I의 법률 지식 총량을 넘어서기 어렵습니다. A.I는 기본적으로
+      <strong>
+       집단 지성</strong>이기 때문입니다. 공간적으로 세계 모든 국가의 법률 지식을 포섭하고, 시간적으로 축적된 방대한 경험을 내재한 실체가 곧 A.I이며, K-OpenLaw는 이를 사법 영역에 특화한 시스템입니다. 다만, AI에도 한계가 있으며(환각 Hallucination, 맥락 이해의 한계, 망각 등), 이를 보완하기 위해 이종(異種) 모델 간 대립 논증 구조와 OpenHash 기반 증거 검증을 결합하였습니다.
+     </p>
+    </div>
+    <div class="card">
+     <p>
+      고팡은 카카오톡처럼 보이는 간단한 채팅 앱이지만, 대화와 데이터를 위변조 불가능한 방법(Openhash)으로 저장하고, 오직 해당 데이터의 소유자만 접근할 수 있습니다. Openhash 기술을 활용하면, 행정자치부가 귀하의 주민등록번호를 몰라도 여러분 스스로 신분을 입증할 수 있으며, 외교부가 없어도 귀하가 소지한 여권의 진실성을 입증할 수 있고, 은행이 없어도 은행 잔고를 입증할 수 있습니다. Openhash 기반으로 모든 데이터(증거)의 무결성을 보장하면, 재판 소요 시간과 비용을 기존의
+      <strong>
+       1/1,000~1/10,000
+      </strong>로
+      줄일 수 있습니다.
+     </p>
+    </div>
+    <div class="card">
+     <p>
+      K-OpenLaw가 생성한 가상의 판결문은 판결에 이르는 논리적 경로를 삼단논법의 구조로 단계별로 투명하게 제시합니다. 비록 법적 판단 전체를 수학적 자명성으로 환원할 수는 없지만, 원고와 피고의 주장으로부터 각 쟁점을 명확히 분해하고, 적용 법리를 단계별로 구성하므로, 승소한 측뿐 아니라 패소한 측도 판단의 근거를 명확히 이해할 수 있게 됩니다. K-OpenLaw의 분석에 동의하지 않는 당사자는 법원에 정식 제소할 수 있으며, 이는 당연한 권리입니다. 다만, K-OpenLaw의 분석이 법원의 판단과 비교하여 어떤 수준인지는 아래 실시예의 데이터로 확인하실 수 있습니다. 시뮬레이션 결과, K-OpenLaw의 분석만으로는 해결하기 어려워 법원의 판단이 필요한 사건은 전체의
+      <strong>
+       약 1% 수준
+      </strong>으로 추정됩니다.
+     </p>
+    </div>
+   </section>
+   <hr/>
+   <!-- VI -->
+   <section id="sec-stats">
+    <h2 class="sec-title">
+     VI. 핵심 지표
+    </h2>
+    <div class="card">
+     <p>
+      사람이 잘하는 일은 사람이 하고, 기술이 잘하는 일은 기술에 맡기는 것이 타당합니다. Openhash+AI 기반의 K-OpenLaw는 시민들이 체감할 사법 서비스 품질을 향상할 수 있는 도구입니다. 우리 자신 K-OpenLaw의 개발자로서 편향성을 부정할 수 없으므로, 아래의 지표와 데이터를 공개하여 <strong>법조인 등의 독립적 검증</strong>을 요청드립니다.
+     </p>
+    </div>
+    <div class="card">
+     <p>
+      K-OpenLaw는 오픈소스(Open Source, GPL)이며, 전 세계 누구나 그 성능을 검증하고, 개선할 수 있습니다. Github(링크)에 업로드한 특허출원서와 테스트 방법에 따라 직접 검증해 보십시오. 일반인들도 쉽게 테스트해 볼 수 있도록, 그 절차와 방법을 자세히 설명하였습니다(Github).
+     </p>
+    </div>
+    <div class="stat-grid">
+     <div class="stat-card" onclick="toggleStat('st-trust',this)">
+      <span class="stat-num">
+       투명성
+      </span>
+      <span class="stat-lbl">
+       판단 과정 전면 공개
+      </span>
+      <div class="stat-hint">
+       &dtrif; 근거 보기
+      </div>
+     </div>
+     <div class="stat-card" onclick="toggleStat('st-time',this)">
+      <span class="stat-num">
+       &rarr; 1시간
+      </span>
+      <span class="stat-lbl">
+       재판 소요 시간 단축
+      </span>
+      <div class="stat-hint">
+       &dtrif; 근거 보기
+      </div>
+     </div>
+     <div class="stat-card" onclick="toggleStat('st-cost',this)">
+      <span class="stat-num">
+       ₩10만
+      </span>
+      <span class="stat-lbl">
+       사법 비용 절감
+      </span>
+      <div class="stat-hint">
+       &dtrif; 근거 보기
+      </div>
+     </div>
+     <div class="stat-card" onclick="toggleStat('st-work',this)">
+      <span class="stat-num">
+       ⬇ 93%
+      </span>
+      <span class="stat-lbl">
+       법원 업무 경감
+      </span>
+      <div class="stat-hint">
+       &dtrif; 근거 보기
+      </div>
+     </div>
+    </div>
+    <div class="slide-panel" id="st-trust">
+     <div>
+      <h3>
+       📊 법원 신뢰도 국내외 조사 결과
+      </h3>
+      <p>
+       <strong>
+        한국행정연구원(2025)
+       </strong>
+       : 국민의 46.5%만이 중앙정부의 문제해결 능력을 긍정 평가. 사법기관(경찰&middot;검찰)에 대한 신뢰도는 25~26% 수준.
+      </p>
+      <p>
+       <strong>
+        한겨레&middot;STI 유권자 패널조사(2025)
+       </strong>
+       : 법원 신뢰도는 10점 만점에
+       <strong>
+        3.8점
+       </strong>
+       으로, 검찰(3.2점) 다음으로 낮음.
+      </p>
+      <p>
+       <strong>
+        검찰개혁추진단(2026)
+       </strong>
+       : 형사사법기관 중 법원 신뢰도가
+       <strong>
+        46.0%
+       </strong>
+       로 가장 높았으나, 여전히 국민 절반 이상은 신뢰하지 않음.
+      </p>
+      <p>
+       OpenLaw는 투명하고 공정하며 객관적인 분석 도출 과정을 전면 공개함으로써 신뢰성을 확보합니다. 판결에 이르는 논리적 경로가 단계별로 제시되므로, 이용자가 스스로 결론의 타당성을 검증할 수 있습니다.
+      </p>
+     </div>
+    </div>
+    <div class="slide-panel" id="st-time">
+     <div>
+      <h3>
+       ⏱️ 평균 재판 기간
+      </h3>
+      <p>
+       <strong>
+        1심
+       </strong>
+       : 민사 합의부 평균
+       <strong>
+        473일
+       </strong>
+       , 형사
+       <strong>
+        223.7일
+       </strong>
+       (2023년 기준)
+      </p>
+      <p>
+       <strong>
+        2심
+       </strong>
+       : 항소심 평균 6개월~1년 추가 소요
+      </p>
+      <p>
+       <strong>
+        3심(대법원)
+       </strong>
+       : 상고심 적체로 평균
+       <strong>
+        1년 이상
+       </strong>
+       대기
+      </p>
+      <p>
+       <strong>
+        1~3심 합산
+       </strong>
+       : 평균
+       <strong>
+        36개월(3년)
+       </strong>
+       이상 소요
+      </p>
+      <p>
+       <strong>
+        OpenLaw 적용 시
+       </strong>
+       : AI 에이전트가 원고&middot;피고 측 주장을 실시간 분석하고, 논리적 결론을 도출하여
+       <strong>
+        1시간 이내
+       </strong>
+       에 쟁점 분석 리포트 생성 가능.
+      </p>
+     </div>
+    </div>
+    <div class="slide-panel" id="st-cost">
+     <div>
+      <h3>
+       💰 3심까지 소요되는 평균 법률 비용
+      </h3>
+      <p>
+       <strong>
+        변호사 선임료
+       </strong>
+       : 1심당 수백만 원~수천만 원 (사건 난이도에 따라 상이)
+      </p>
+      <p>
+       <strong>
+        인지대&middot;송달료
+       </strong>
+       : 소가(訴價)에 따라 수백만 원 추가
+      </p>
+      <p>
+       <strong>
+        감정비용&middot;증인여비
+       </strong>
+       등 부대비용 포함 시
+       <strong>
+        총 수천만 원~수억 원
+       </strong>
+       까지도 발생
+      </p>
+      <p>
+       <strong>
+        OpenLaw 적용 시
+       </strong>
+       : AI가 변호사 업무를 보조하고, PDV로 증거 제출 비용을 획기적으로 절감.
+       <strong>
+        기술 기반 비용 효율성 혁신
+       </strong>
+       인 약 10만 원대로 종결 가능.
+      </p>
+     </div>
+    </div>
+    <div class="slide-panel" id="st-work">
+     <div>
+      <h3>
+       ⚖️ 연간 법원 접수 건수 및 OpenLaw 경감 효과
+      </h3>
+      <p>
+       <strong>
+        2024년 총 소송 접수
+       </strong>
+       :
+       <strong>
+        691만 5,400건
+       </strong>
+       (2025 사법연감) &mdash; 민사 470만, 형사 182만, 가사 19만 건
+      </p>
+      <p>
+       <strong>
+        현행 화해&middot;조정 비율
+       </strong>
+       : 민사 1심 기준
+       <strong>
+        7%
+       </strong>
+       에 불과 (일본 33%, 미국 60~70% 대비 현저히 낮음)
+      </p>
+      <p>
+       <strong>
+        OpenLaw 도입 효과
+       </strong>
+       : 분쟁 당사자 간 합의에 의한 조기 해결 촉진으로, 전체 소송의 약 90%가 법원 분석 없이 종결 가능. 법원 업무량
+       <strong>
+        93% 이상 경감
+       </strong>
+       예상.
+      </p>
+     </div>
+    </div>
+   </section>
+   <hr/>
+   <!-- VII -->
+   <section id="sec-patent-eval">
+    <h2 class="sec-title">
+     VII. 특허성 평가 &middot; 기술가치 평가
+    </h2>
+    <div class="card">
+     <p>
+      특허를 취득하기 위해서는 신규성, 진보성, 산업상 이용 가능성을 입증해야 합니다. 또한, 여타 상품과 마찬가지로, 모든 기술은 시장 가치를 갖습니다. 아래 세 카드는 AI가 평가한 K-OpenLaw의 특허성과 시장성, 그리고, 기술 그 자체의 시장 가치(가격) 추정 보고서입니다(클릭).
+     </p>
+    </div>
+
+<div class="eval-grid">
+  <a class="eval-card" href="claude_patentability.html" target="_blank">
+    <span class="material-icons">verified</span>
+    <h3>특허성 평가 (Claude)</h3>
+    <p>신규성 · 진보성 · 산업상 이용가능성 모두 충족</p>
+    <br/>
+    <p>자세히 보기</p>
+  </a>
+  <a class="eval-card" href="claude_tech_value.html" target="_blank">
+    <span class="material-icons">trending_up</span>
+    <h3>기술가치 평가 (Claude)</h3>
+    <p>기술 가치 3,200억 원 (1주당 16,000원)</p>
+    <br/>
+    <p>자세히 보기</p>
+  </a>
+  <a class="eval-card" href="claude_marketability.html" target="_blank">
+    <span class="material-icons">business_center</span>
+    <h3>사업성 평가 (Claude)</h3>
+    <p>시장 규모 9조 원, 5년차 매출 9,500억 원</p>
+    <br/>
+    <p>자세히 보기</p>
+  </a>
+</div>
+
+   </section>
+   <!-- VIII -->
+   <section id="sec-guide">
+    <h2 class="sec-title">
+     VIII. 고팡 시스템 &mdash; 사회 전 분야 적용
+    </h2>
+    <div class="info-panel">
+     <h2>
+      K-OpenLaw: Openhash + AI 융합의 실시예
+     </h2>
+     <p>
+      Openhash와 AI를 융합한
+      <strong>
+       고팡 시스템
+     </strong>은 입법&middot;사법&middot;행정&middot;교육&middot;의료&middot;문화&middot;교통&middot;시장&middot;산업 등 우리 사회 모든 분야에 적용될 것입니다. 고팡은 오픈소스이고, 무료이며, 광고가 없고, 개인 정보를 수집하지 않습니다. 여러분의 모든 정보는 여러분 자신의 소유이며, 오직 여러분 자신만 접근할 수 있습니다. 
+     </p>
+     <p>
+      K-OpenLaw는 고팡을
+      <strong>
+       한국의 사법 인프라
+      </strong>에 적용한 실시 예입니다. 입법&middot;행정&middot;의료&middot;교육 등 여타 분야에 적용한 예시들은 상단의
+      <strong>
+       자동화
+      </strong>
+      메뉴를 이용하십시오.
+     </p>
+     <p>
+      K-OpenLaw 사법 자동화 예시는 원고와 피고가 제출한 준비서면과 증거를 기반으로,
+      <strong>
+       법원의 실제 판결과 K-OpenLaw의 가상 판결을 대조
+      </strong>하여, Openhash + AI 기반 사법 플랫폼과 인간 법원이 결론을 도출하는 과정을 비교해 보십시오.
+     </p>
+    </div>
+   </section>
+   <!-- IX -->
+   <section id="sec-philosophy">
+    <h2 class="sec-title">
+     IX. 법리 분석의 체계화
+    </h2>
+    <div class="phil-panel">
+     <h2>
+      K-OpenLaw: 법리 분석의 체계화
+     </h2>
+     <p>
+      기존의 사법 체제에서 판결은 개별 재판부의 법리 해석, 증거 판단, 가치 기준에 적지않게 의존합니다. 이는 사법의 본질적 특성이며 강점이기도 하지만, 동시에 재판부 간의 편차, 주관의 개입, 인지적 한계라는 구조적 제약도 수반합니다.
+      <strong>
+       K-OpenLaw
+      </strong>는 이 과정을 보완하기 위해, 분쟁의 쟁점을 단계적으로 분해하고, 각 단계에서 법리적 타당성을 체계적으로 검증하는 철저히 객관적이고 논리적인 시스템입니다.
+     </p>
+     <p>
+      복잡다단한 소송의 쟁점을 단계적으로 분해하여, 각 단계에서의 법리적 논증을 명확하고 투명하게 구성합니다. 법적 판단을 1+1=2와 같은 자연과학적 명제로 완전히 치환할 수는 없습지만, 아리스토텔레스의 삼단논법 구조를 활용하여 각 쟁점과 주장을 단계별로 Reducing함으로써, 분쟁의 원인과 대상을 명확히 드러내고, 법리 해석의 차이와 판결에 이르는 논리적 경로를 분쟁 당사자와 법관 모두가 검증할 수 있도록 합니다.
+     </p>
+     <p>
+      K-OpenLaw의 목표는 <strong>고팡의 AI 비서</strong> 기능으로 각종 분쟁의 90%를 사전에 예방하고(<strong>예방법학</strong>), 나머지 10% 중 9%는 분쟁 당사자 간의 공정한 합의점을 도출하며, 나머지 1%에 대해 법원의 판단을 구함으로써, 법원이 복잡하고 가치 판단이 필요한 사건에 집중할 수 있을 뿐 아니라, 모든 재판을 신속히 처리할 수 있는 환경을 조성하는 것입니다.
+      <strong>
+       법원의 판결문과 K-OpenLaw의 쟁점 분석 및 가상 판결문을 비교해 보십시오. 재판부 업무를 보조하는 측면에서, K-OpenLaw가 판결을 도출하는 과정과 절차를, 법원의 그것과 비교하고,  K-OpenLaw의 장단점을 여러분 스스로 판단하십시오.
+      </strong>
+     </p>
+    </div>
+   </section>
+   <hr/>
+   <!-- X -->
+   <section id="sec-core-tech">
+    <div class="sec-header">
+     <span class="material-icons">
+      hub
+     </span>
+     <div>
+      <h2>
+       X. 핵심 기술 문서 4종
+      </h2>
+      <p>
+       각 카드를 클릭하면 별도의 탭에서 상세 설명 페이지가 열립니다.
+      </p>
+     </div>
+    </div>
+    <div class="tech4-grid">
+     <a class="tech4-card" href="openlaw.html" target="_blank">
+      <span class="material-icons">
+       article
+      </span>
+      <div class="tech4-title">
+       OpenLaw 특허출원 명세서
+      </div>
+      <div class="tech4-desc">
+       원고와 피고의 복잡다단한 주장들로부터 각 쟁점을 삼단논법 구조로 분해하고, 법리적 타당성을 검증하여 가상의 판결문을 구성하는 일련의 과정과 이를 구현한 시스템.
+      </div>
+     </a>
+     <a class="tech4-card" href="pdv.html" target="_blank">
+      <span class="material-icons">
+       lock
+      </span>
+      <div class="tech4-title">
+       고팡 Private Data Vault
+      </div>
+      <div class="tech4-desc">
+       PDV는 모든 증거, 계약, 대화를 암호화하여 저장하고 OpenHash Network에 해시를 기록하므로 위변조가 불가능하며, 당사자만 접근 가능합니다.
+      </div>
+     </a>
+     <a class="tech4-card" href="multi_llm.html" target="_blank">
+      <span class="material-icons">
+       smart_toy
+      </span>
+      <div class="tech4-title">
+       다중 독립 AI LLM
+      </div>
+      <div class="tech4-desc">
+       분쟁 당사자 각각을 대변하는 서로 다른 두 LLM이 독립적으로 논증과 반박을 반복하여, 단일 LLM의 편향&middot;환각을 방지하고 공정무사한 합의에 이릅니다.
+      </div>
+     </a>
+     <a class="tech4-card" href="openhash_network.html" target="_blank">
+      <span class="material-icons">
+       account_tree
+      </span>
+      <div class="tech4-title">
+       OpenHash 네트워크
+      </div>
+      <div class="tech4-desc">
+       물리적 통신 계층(읍면동&rarr;국가)을 활용한 확률적 해시 저장. 블록체인 대비 에너지 소모 98.5% 절감, 오프라인 환경에서도 무결성 유지.
+      </div>
+     </a>
+    </div>
+   </section>
+   <!-- XI -->
+   <section id="sec-cases">
+    
+<div class="sec-header">
+  <h2>XI. 실제 소송에 K-OpenLaw를 적용한 실시예 — 민사 · 형사 · 특허</h2></div>
+    <div class="card">
+   <p style="font-weight: 400;">
+ <span class="material-icons">gavel</span><br>
+
+개발한 기술을 자랑하기는 쉽지만, 해당 기술의 효용을 입증하기는 어려우며, 대중의 접근이 쉽지 않은 사법 체제는 더욱 그러합니다. 우리는 개발자로서 매우 신중하게, 기존 법원의 부족한 부분을 보충할 수 있는 실시 예를 마련하였습니다. 사실, 기술 개발보다 실제 법원의 소송 사례에 K-OpenLaw를 적용하는 합리적이고 합법적인 방안을 찾는 데 많은 시간과 노력을 투입했습니다. 아래 예시는 K-OpenLaw를 원고의 실제 소송에 활용한 경우로써, 그 성능과 효용, 능력을 충분히 이해할 수 있을 것입니다. 다만, 법조인이 아니면, 이해할 수 없는 법적 상세가 적지 않습니다.</p>
+<ul style="margin-left: 1.5em;">
+  <li>원고: 개인(변호사 없음) + K-OpenLaw</li>
+  <li>피고: 공기업 + 법무팀 + 전담 변호사</li>
+</ul>
+  <br>
+     <p style="font-weight: 400;">
+K-OpenLaw는 원고를 대변할 LLM과 피고를 대변할 LLM을 설정하고, 두 LLM 간의 논쟁을 통해, 합리적인 중재안(및 판결문)을 도출합니다. K-OpenLaw가 도출한 가상의 판결문과 실제 법원 1심과 2심 판결문의 법리 구성을 비교해 보십시오.</p>
+     <p style="font-weight: 400;">
+법원과 법조계가 K-OpenLaw를 판결 검증 및 법리 분석을 보조하는 도구로 활용한다면, 소송에 소요되는 시간을 얼마나 줄이고, 대국민 사법 서비스의 품질을 얼마나 향상할 수 있을지 판단해 보십시오. 비판적 평가를 환영합니다.</p>
+  <p>탭을 선택하여 각 실시예 문서를 확인하십시오.</p>
+</div>
+
+
+
+    <div class="tab-bar">
+     <button class="tab-btn on" onclick="switchTab('civil',this)">
+      <span class="material-icons">
+       account_balance
+      </span>
+      민사 실시예
+      <span class="tab-badge ready">
+       진행 중
+      </span>
+     </button>
+     <button class="tab-btn" onclick="switchTab('criminal',this)">
+      <span class="material-icons">
+       policy
+      </span>
+      형사 실시예
+      <span class="tab-badge soon">
+       준비 중
+      </span>
+     </button>
+     <button class="tab-btn" onclick="switchTab('patent',this)">
+      <span class="material-icons">
+       workspace_premium
+      </span>
+      특허 실시예
+      <span class="tab-badge soon">
+       준비 중
+      </span>
+     </button>
+    </div>
+    <div class="tab-panel on" id="tab-civil">
+     <iframe class="tab-iframe" id="ifr-civil" scrolling="no" src="case_civil.html" title="민사 실시예">
+     </iframe>
+    </div>
+    <div class="tab-panel" id="tab-criminal">
+     <iframe class="tab-iframe" id="ifr-criminal" scrolling="no" src="case_criminal.html" title="형사 실시예">
+     </iframe>
+    </div>
+    <div class="tab-panel" id="tab-patent">
+     <iframe class="tab-iframe" id="ifr-patent" scrolling="no" src="case_patent.html" title="특허 실시예">
+     </iframe>
+    </div>
+   </section>
+   <hr/>
+   <!-- XII. 법치도 평가 방법론 (신규) -->
+   <section id="sec-methodology">
+    <div class="sec-header">
+     <span class="material-icons">
+      rule
+     </span>
+     <div>
+      <h2>
+       XII. 법치도/법치율 평가 방법론
+      </h2>
+      <p>
+       법치도 측정의 이론적 근거 및 세부 평가 기준
+      </p>
+     </div>
+    </div>
+    <div class="card">
+   <p style="font-weight: 400;">법치도(法治度) 또는 법치율은 개발자인 우리가 K-OpenLaw를 개발하면서 고안한 개념으로, 어느 한 국가에 사법 정의가 실현되는 정도를 정량적으로 측정함에 있어, 종래의 법치주의 지수에 AI에 의한 판결문 분석과 Openhash에 의한 소송 시간 단축 정도를 추가한 것입니다. 가령, 국민 다수가 <strong>"전관 예우"</strong>가 현실적으로 존재하는 현상이라 믿는 것은 사법부에 대한 국민 신뢰를 잠식하는 요인 중 하나입니다. <br>
+법치도를 측정하는 방법은 크게 넷입니다. 첫째, 원고와 피고 각각의 증언과 증거가 판결문에 반영된 정도와 판결문의 법리적 완전성을 평가합니다. 둘째, 1심, 2심, 3심 각각의 소요 시간과 전체 소요 시간을 평가합니다. 셋째, 소송 비용과 사회적 약자에 대한 배려 수준을 평가합니다. 마지막으로, 넷째는 국민의 사법부에 대한 신뢰 수준을 평가합니다. 아래 네 카드 각각은 이 주제를 심도 있게 다룹니다.</p>
+<hr style="margin: 20px 0; border-top: 1px dashed var(--border-lt);" />
+
+<h3 style="font-family: 'Noto Serif KR', serif; font-size: 15px; font-weight: 700; color: var(--blue-dark); margin: 20px 0 10px;">WJP 법치주의 지수 주요 내용</h3>
+
+<ul style="margin: 0 0 15px 20px; padding: 0; color: var(--text-sub); font-weight: 400;">
+  <li><strong>평가 기관:</strong> 세계사법정의프로젝트(WJP) (World Justice Project)</li>
+  <li><strong>평가 요소 (8개 부문):</strong>
+    <ul style="margin: 5px 0 5px 20px;">
+      <li>정부 권력 제한 (Constraints on Government Powers)</li>
+      <li>부패 부재 (Absence of Corruption)</li>
+      <li>투명한 정부 (Open Government)</li>
+      <li>기본권 (Fundamental Rights)</li>
+      <li>질서와 안전 (Order and Security)</li>
+      <li>법 집행 (Regulatory Enforcement)</li>
+      <li>민사 사법 (Civil Justice)</li>
+      <li>형사 사법 (Criminal Justice)</li>
+    </ul>
+  </li>
+  <li><strong>특징:</strong> 설문조사와 전문가 데이터를 기반으로 '법의 지배'라는 통치 원리가 얼마나 실현되는지 측정합니다. <a href="https://worldjusticeproject.org" target="_blank" style="color: var(--blue);">World Justice Project</a></li>
+</ul>
+
+<h3 style="font-family: 'Noto Serif KR', serif; font-size: 15px; font-weight: 700; color: var(--blue-dark); margin: 20px 0 10px;">한국의 법치주의 지수 순위</h3>
+
+<ul style="margin: 0 0 15px 20px; padding: 0; color: var(--text-sub);font-weight: 400;">
+  <li><strong>2023년:</strong> 142개국 중 19위</li>
+  <li><strong>2021년:</strong> 139개국 중 20위</li>
+  <li><strong>2024년:</strong> 덴마크, 노르웨이, 핀란드 등 북유럽 국가가 최상위권을 유지 (<a href="https://worldjusticeproject.org" target="_blank" style="color: var(--blue);">World Justice Project</a>)</li>
+</ul>
+
+<p style="color: var(--text-sub); margin-bottom: 0; font-weight: 400;">
+  이 지수는 국제투명성기구의 부패인식지수(CPI) 및 국가경쟁력 지수(WEF, IMD)의 기초 자료로 활용됩니다. 
+  (<a href="https://www.kci.go.kr" target="_blank" style="color: var(--blue);">한국학술지인용색인</a>)
+</p>
+    </div>
+    <div class="docs3-grid" style="grid-template-columns: repeat(4, 1fr);">
+     <a class="doc3-card" href="methodology.html" target="_blank">
+      <span class="material-icons">
+       gavel
+      </span>
+      <h3>
+       분석 평가 방법론 및 채점 기준
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        공정성&middot;객관성&middot;합리성&middot;정확성&middot;법적 정당성 5개 영역
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        25개 세부 지표, 100점 만점 채점 기준
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        국내외 9개국 사법 평가 방법론 비교 수록
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="rule_of_law_index.html" target="_blank">
+      <span class="material-icons">
+       leaderboard
+      </span>
+      <h3>
+       법치도 측정 &mdash; 분석 반영도
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        원고&middot;피고 주장의 판결문 반영 비율 정량 분석
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        증거 채택&middot;배척 이유의 명시성 평가
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        변론주의&middot;처분권주의 준수 여부 검증
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="rule_of_law_time_cost.html" target="_blank">
+      <span class="material-icons">
+       schedule
+      </span>
+      <h3>
+       법치도 측정 &mdash; 시간&middot;비용&middot;사회적 약자
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        1심&middot;2심&middot;3심 소요 시간 국내외 비교
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        사법 비용의 계층별 접근성 분석
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        사회적 약자 보호 법리 적용 실태 평가
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="rule_of_law_trust.html" target="_blank">
+      <span class="material-icons">
+       how_to_vote
+      </span>
+      <h3>
+       법치도 측정 &mdash; 국민 신뢰도
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        한국 사법부 신뢰도 조사 결과 종합
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        OECD 국가 사법 신뢰도 비교 분석
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        K-OpenLaw 도입 후 신뢰도 개선 시뮬레이션
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+    </div>
+   </section>
+   <hr/>
+   <!-- XIII. 특허 기술 문서 (기존 XII → XIII) -->
+   <section id="sec-patent-docs">
+    <div class="sec-header">
+     <span class="material-icons">
+      library_books
+     </span>
+     <h2>
+      XIII. 특허 기술 평가 문서
+     </h2>
+    </div>
+    <div class="docs3-grid">
+     <a class="doc3-card" href="gemini_valuation.html" target="_blank">
+      <span class="material-icons">
+       trending_up
+      </span>
+      <h3>
+       기술가치평가 (Gemini)
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        한국 시장 가치 610~750억 원
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        글로벌 가치 5,400~7,200억 원
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        PDV&middot;OpenHash로 데이터 주권 트렌드 부합
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="deepseek_valuation.html" target="_blank">
+      <span class="material-icons">
+       gavel
+      </span>
+      <h3>
+       기술가치평가 (DeepSeek)
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        글로벌 기업가치 1조 원 내외 (유니콘)
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        소송 시간 3년&rarr;1시간, 비용 99% 절감
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        DCF 기준 1.1조 원 (기본 시나리오)
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="deepseek_patentability.html" target="_blank">
+      <span class="material-icons">
+       verified
+      </span>
+      <h3>
+       특허성평가 (DeepSeek)
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        v8 대비 신규성&middot;진보성 대폭 상승
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        등록 가능성 99% 이상
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        PDV&middot;OpenHash&middot;PAA/IAA 세계 최초 결합
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="gemini_patentability.html" target="_blank">
+      <span class="material-icons">
+       fact_check
+      </span>
+      <h3>
+       특허성평가 (Gemini)
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        등록 가능성 95% 이상
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        '증거 진실성'과 '개인정보 보호' 방어막
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        Full-Stack 법률 분석 자동화로 독보적
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="patent_application_v8.html" target="_blank">
+      <span class="material-icons">
+       description
+      </span>
+      <h3>
+       특허출원서 v8_final
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        5모듈 + PDV + AI 비서 구성
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        OpenHash 증거 무결성 보장
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        청구항 14개, 도면 8개, 상세 실시예
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="claude_valuation.html" target="_blank">
+      <span class="material-icons">
+       assessment
+      </span>
+      <h3>
+       기술가치평가 (Claude)
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        기술 혁신성 최상급
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        시장 파괴력: 분쟁 해결 인프라 전반 혁신
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        상세 내용은 클릭하여 확인
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+     <a class="doc3-card" href="claude_patentability.html" target="_blank">
+      <span class="material-icons">
+       star
+      </span>
+      <h3>
+       특허성평가 (Claude)
+      </h3>
+      <ul>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        신규성 탁월
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        진보성: 비자명성 입증
+       </li>
+       <li>
+        <span class="material-icons">
+         check_circle
+        </span>
+        산업상 이용가능성 매우 높음
+       </li>
+      </ul>
+      <span class="doc3-badge">
+       새 탭에서 열기
+      </span>
+     </a>
+    </div>
+   </section>
+   <div id="footer-placeholder">
+   </div>
+  </div>
+  <script>
+   function toggleStat(id, btn) {
+    const p = document.getElementById(id);
+    const isOn = p.classList.contains('on');
+    document.querySelectorAll('.slide-panel').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.stat-card').forEach(x => x.classList.remove('on'));
+    if (!isOn) {
+      p.classList.add('on');
+      btn.classList.add('on');
+      setTimeout(() => p.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+  }
+
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('tab-' + name).classList.add('on');
+  }
+
+  window.addEventListener('message', function(e) {
+    if (!e.data || !e.data.iframeHeight) return;
+    const map = { civil: 'ifr-civil', criminal: 'ifr-criminal', patent: 'ifr-patent' };
+    const el = document.getElementById(map[e.data.tab]);
+    if (el) el.style.height = (e.data.iframeHeight + 4) + 'px';
+  });
+
+  ['civil','criminal','patent'].forEach(function(n) {
+    const ifr = document.getElementById('ifr-' + n);
+    if (!ifr) return;
+    ifr.addEventListener('load', function() {
+      try {
+        const h = ifr.contentDocument.body.offsetHeight;
+        if (h > 40) ifr.style.height = (h + 4) + 'px';
+      } catch(e) {}
+    });
+  });
+  </script>
+  <script src="/js/nav.js">
+  </script>
+  <script>
+   fetch('footer.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('footer-placeholder').innerHTML = data;
+    });
+  </script>
+  <script>
+   fetch('footer.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('footer-placeholder').innerHTML = data;
+    });
+  </script>
+ </body>
+</html>

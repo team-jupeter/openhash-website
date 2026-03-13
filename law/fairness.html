@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>법원 판정 객관성 평가 — 익명화본</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root {
+      --primary:       #003087;
+      --primary-dark:  #001f5b;
+      --primary-light: #e8edf7;
+      --accent:        #c0392b;
+      --accent-light:  #fdf0ee;
+      --green:         #1a7a3c;
+      --green-light:   #e8f7ed;
+      --yellow:        #b7791f;
+      --yellow-light:  #fef9e7;
+      --red:           #9b1c1c;
+      --red-light:     #fde8e8;
+      --surface:       #ffffff;
+      --bg:            #f4f6fb;
+      --border:        #d0d7e8;
+      --text-primary:  #1a1a2e;
+      --text-secondary:#4a5568;
+      --text-muted:    #8898aa;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.09);
+      --shadow-md: 0 4px 14px rgba(0,0,0,.10);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.75; font-size: 14px; }
+
+    header { background: linear-gradient(135deg, #0d1f4a 0%, var(--primary) 55%, #1a4a8a 100%); color: #fff; }
+    .header-top { display: flex; align-items: center; gap: 14px; padding: 18px 40px 14px; border-bottom: 1px solid rgba(255,255,255,.13); }
+    .gov-emblem { width: 46px; height: 46px; border-radius: 4px; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; border: 2px solid rgba(255,255,255,.28); flex-shrink: 0; }
+    .header-top-text .agency { font-size: 11px; letter-spacing: .08em; color: rgba(255,255,255,.62); text-transform: uppercase; }
+    .header-top-text .doc-id { font-size: 12px; color: rgba(255,255,255,.48); }
+    .header-body { padding: 20px 40px 22px; }
+    .header-body h1 { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 7px; }
+    .header-body .subtitle { font-size: 13px; color: rgba(255,255,255,.7); }
+    .header-meta { display: flex; flex-wrap: wrap; gap: 18px; padding: 11px 40px; background: rgba(0,0,0,.2); font-size: 12px; color: rgba(255,255,255,.72); }
+    .header-meta span { display: flex; align-items: center; gap: 5px; }
+    .material-icons.sm { font-size: 15px; }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* 기준 바 */
+    .criteria-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 30px; }
+    .crit-item { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 12px 13px; box-shadow: var(--shadow-sm); text-align: center; }
+    .crit-icon { font-size: 20px; margin-bottom: 5px; }
+    .crit-name { font-size: 12.5px; font-weight: 700; color: var(--primary-dark); margin-bottom: 2px; }
+    .crit-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+    /* 심급 섹션 */
+    .instance-section { margin-bottom: 36px; }
+    .instance-label { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .inst-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; }
+    .inst-1 { background: var(--primary-light); color: var(--primary-dark); border: 1.5px solid var(--primary); }
+    .inst-2 { background: #e8eef8; color: #1a2d5a; border: 1.5px solid #3a5fa0; }
+    .inst-label-text { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .inst-verdict { margin-left: auto; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .verd-reject { background: var(--red-light); color: var(--red); }
+
+    /* 점수 그리드 */
+    .score-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 14px; }
+    .score-card { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 16px 14px 14px; box-shadow: var(--shadow-sm); text-align: center; transition: box-shadow .2s; }
+    .score-card:hover { box-shadow: var(--shadow-md); }
+    .sc-label { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px; }
+    .sc-score { font-family: 'Noto Serif KR', serif; font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .sc-max { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+    .score-a  .sc-score { color: var(--green); }
+    .score-b  .sc-score { color: #2980b9; }
+    .score-c  .sc-score { color: var(--yellow); }
+    .score-d  .sc-score { color: #d35400; }
+    .score-f  .sc-score { color: var(--red); }
+    .sc-bar-wrap { height: 6px; background: #edf0f7; border-radius: 3px; overflow: hidden; }
+    .sc-bar { height: 100%; border-radius: 3px; }
+    .bar-a { background: var(--green); }
+    .bar-b { background: #2980b9; }
+    .bar-c { background: var(--yellow); }
+    .bar-d { background: #d35400; }
+    .bar-f { background: var(--red); }
+
+    /* 종합 점수 행 */
+    .total-row { display: flex; align-items: center; gap: 16px; background: var(--surface); border-radius: var(--radius-lg); border: 1.5px solid var(--border); padding: 16px 22px; box-shadow: var(--shadow-sm); margin-bottom: 14px; }
+    .total-score-block { text-align: center; flex-shrink: 0; }
+    .total-score-num { font-family: 'Noto Serif KR', serif; font-size: 42px; font-weight: 700; line-height: 1; color: var(--red); }
+    .total-score-sub { font-size: 12px; color: var(--text-muted); }
+    .total-divider { width: 1px; height: 60px; background: var(--border); }
+    .total-grade-block { flex-shrink: 0; text-align: center; }
+    .grade-circle { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; margin: 0 auto 3px; }
+    .grade-f { background: var(--red-light); color: var(--red); border: 2px solid var(--red); }
+    .grade-label { font-size: 11px; color: var(--text-muted); }
+    .total-summary { flex: 1; font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+    .total-summary strong { color: var(--text-primary); }
+
+    /* 평가 테이블 */
+    .eval-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 14px; }
+    .eval-table th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; }
+    .eval-table td { padding: 10px 14px; vertical-align: top; border-bottom: 1px solid var(--border); line-height: 1.65; }
+    .eval-table tr:last-child td { border-bottom: none; }
+    .eval-table tr:nth-child(even) td { background: #f8fafd; }
+    .eval-table .cat { font-weight: 700; color: var(--primary-dark); font-size: 12.5px; white-space: nowrap; }
+    .eval-table tr.row-critical td { background: #fff0f0 !important; }
+    .eval-table tr.row-critical .cat { color: var(--red); }
+
+    .chip { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .chip-pass     { background: var(--green-light);  color: var(--green); }
+    .chip-warn     { background: var(--yellow-light);  color: var(--yellow); }
+    .chip-fail     { background: var(--red-light);     color: var(--red); }
+    .chip-partial  { background: #e8f0fe; color: #2c5fad; }
+    .chip-critical { background: #6b1c1c; color: #fff; }
+
+    /* 비교 테이블 */
+    .compare-section { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 28px; }
+    .compare-header { display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: var(--primary-light); border-bottom: 2px solid var(--primary); font-size: 15px; font-weight: 700; color: var(--primary-dark); }
+    .compare-body { padding: 18px 22px; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .compare-table th { background: #f0f4fb; padding: 9px 13px; text-align: center; font-weight: 700; font-size: 12px; color: var(--primary-dark); border-bottom: 2px solid var(--border); }
+    .compare-table th:first-child { text-align: left; }
+    .compare-table td { padding: 9px 13px; border-bottom: 1px solid var(--border); text-align: center; vertical-align: middle; font-size: 12.5px; }
+    .compare-table td:first-child { text-align: left; font-weight: 600; color: var(--text-primary); }
+    .compare-table tr:last-child td { border-bottom: none; font-weight: 700; }
+    .score-cell-d { color: #d35400; font-weight: 700; font-size: 14px; }
+    .score-cell-f { color: var(--red); font-weight: 700; font-size: 14px; }
+    .score-cell-c { color: var(--yellow); font-weight: 700; font-size: 14px; }
+
+    /* 결론 박스 */
+    .final-box { background: var(--surface); border-radius: var(--radius-lg); border: 1.5px solid #c9a0a0; overflow: hidden; box-shadow: var(--shadow-sm); }
+    .final-header { background: var(--accent); color: #fff; padding: 13px 22px; display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 700; }
+    .final-body { padding: 18px 22px; }
+    .final-body p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 12px; }
+    .final-body p:last-child { margin-bottom: 0; }
+    .final-note { margin-top: 14px; padding: 12px 16px; background: var(--yellow-light); border-left: 3px solid var(--yellow); border-radius: 0 6px 6px 0; font-size: 13px; color: var(--text-secondary); }
+
+    footer { margin-top: 40px; padding: 16px 22px; background: var(--surface); border-top: 1px solid var(--border); border-radius: var(--radius); font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+    @media (max-width: 680px) {
+      .header-top, .header-body, .header-meta { padding-left: 16px; padding-right: 16px; }
+      .container { padding: 16px 10px 40px; }
+      .criteria-bar, .score-grid { grid-template-columns: repeat(2, 1fr); }
+      .total-row { flex-wrap: wrap; }
+      .critical-banner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="gov-emblem">평가</div>
+    <div class="header-top-text">
+      <div class="agency">사법 판정 객관성 분석 · Judicial Fairness Assessment</div>
+      <div class="doc-id">문서번호 익명화본 · Part 3</div>
+    </div>
+  </div>
+  <div class="header-body">
+    <h1>1심·2심 판정 객관성 객관적 평가</h1>
+    <div class="subtitle">공정성 · 객관성 · 합리성 · 정확성 · 법적 정당성 5개 지표 분석 — 익명화 처리본</div>
+  </div>
+  <div class="header-meta">
+    <span><span class="material-icons sm">balance</span>평가 지표: 5개 범주</span>
+    <span><span class="material-icons sm">looks_one</span>제1심: F등급 (40/100)</span>
+    <span><span class="material-icons sm">looks_two</span>제2심: F등급 (35/100)</span>
+    <span><span class="material-icons sm">info_outline</span>평가 기준: 헌법·파산법·민사소송법 원칙</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- 평가 기준 5개 -->
+  <div class="criteria-bar">
+    <div class="crit-item">
+      <div class="crit-icon">⚖️</div>
+      <div class="crit-name">공정성</div>
+      <div class="crit-desc">양 당사자의 주장을 균형 있게 검토했는가</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">🔍</div>
+      <div class="crit-name">객관성</div>
+      <div class="crit-desc">증거를 편견 없이 평가했는가</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">🧩</div>
+      <div class="crit-name">합리성</div>
+      <div class="crit-desc">논리·경험 법칙에 부합한 판단인가</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">📐</div>
+      <div class="crit-name">정확성</div>
+      <div class="crit-desc">관련 법령과 판례를 정확히 적용했는가</div>
+    </div>
+    <div class="crit-item">
+      <div class="crit-icon">🏛️</div>
+      <div class="crit-name">법적 정당성</div>
+      <div class="crit-desc">헌법·특별법·소송법 원칙을 준수했는가</div>
+    </div>
+  </div>
+
+  <!-- ════════ 제1심 ════════ -->
+  <div class="instance-section">
+    <div class="instance-label">
+      <span class="inst-badge inst-1"><span class="material-icons sm">looks_one</span>제1심</span>
+      <span class="inst-label-text">하급법원 (익명화) · 2025. 7. 15. 선고</span>
+      <span class="inst-verdict verd-reject">청구 전부 기각</span>
+    </div>
+
+    <div class="score-grid">
+      <div class="score-card score-f">
+        <div class="sc-label">⚖️ 공정성</div>
+        <div class="sc-score">40</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-f" style="width:40%"></div></div>
+      </div>
+      <div class="score-card score-d">
+        <div class="sc-label">🔍 객관성</div>
+        <div class="sc-score">45</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-d" style="width:45%"></div></div>
+      </div>
+      <div class="score-card score-d">
+        <div class="sc-label">🧩 합리성</div>
+        <div class="sc-score">45</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-d" style="width:45%"></div></div>
+      </div>
+      <div class="score-card score-d">
+        <div class="sc-label">📐 정확성</div>
+        <div class="sc-score">48</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-d" style="width:48%"></div></div>
+      </div>
+      <div class="score-card score-f">
+        <div class="sc-label">🏛️ 법적 정당성</div>
+        <div class="sc-score">28</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-f" style="width:28%"></div></div>
+      </div>
+    </div>
+
+    <div class="total-row">
+      <div class="total-score-block">
+        <div class="total-score-num">41</div>
+        <div class="total-score-sub">종합 평균 / 100</div>
+      </div>
+      <div class="total-divider"></div>
+      <div class="total-grade-block">
+        <div class="grade-circle grade-f">F</div>
+        <div class="grade-label">불량</div>
+      </div>
+      <div class="total-divider"></div>
+      <div class="total-summary">
+        민법 일반론을 형식적으로 적용하는 외양을 갖추었으나, <strong>피고가 1심 전 과정에서 단 한 번도 주장하지 않은 채무자회생법 법리를 중재 엔진가 독자 발굴하여 피고 승소 근거로 삼은 것</strong>은 변론주의의 정면 위반이다(대법원 1966. 10. 11. 선고 66다409). 원고에 대한 반박 기회 박탈(헌법 제27조 침해)·석명의무 불이행(민사소송법 제136조)·무기 대등 원칙 파괴가 중첩되어 법적 정당성이 가장 낮은 점수를 기록하였다. 여기에 면책 소급효 무시·강제퇴거 사실오인·증거조사 의무 불이행이 더해져 종합 F등급을 확정한다.
+      </div>
+    </div>
+
+    <table class="eval-table">
+      <thead>
+        <tr>
+          <th style="width:14%">평가 지표</th>
+          <th style="width:14%">세부 항목</th>
+          <th style="width:10%">평가</th>
+          <th>근거</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="3" class="cat">⚖️ 공정성</td>
+          <td>양측 주장 균형</td>
+          <td><span class="chip chip-warn">부분적</span></td>
+          <td>피고의 주장은 상세히 검토하였으나, 원고의 강박 주장·문서 위변조 의혹에 대한 검토는 원론적 수준에 그쳤다.</td>
+        </tr>
+        <tr>
+          <td>취약계층 배려</td>
+          <td><span class="chip chip-fail">불충분</span></td>
+          <td>기초생활수급자인 원고의 특수성(최후 생존 수단인 보증금)에 대한 고려가 전무하다.</td>
+        </tr>
+        <tr>
+          <td>공기업 책임 고려</td>
+          <td><span class="chip chip-fail">부재</span></td>
+          <td>공기업과 일반 사인을 동일하게 취급하여, 피고의 높은 사회적 의무를 전혀 반영하지 않았다.</td>
+        </tr>
+        <tr>
+          <td rowspan="3" class="cat">🔍 객관성</td>
+          <td>증거 중립 평가</td>
+          <td><span class="chip chip-fail">불충분</span></td>
+          <td>피고 제출 해지신청서의 진정 성립을 감정 없이 인정하고, 원고 측 증거의 모순 지적을 무시하였다.</td>
+        </tr>
+        <tr>
+          <td>증인 신청 처리</td>
+          <td><span class="chip chip-fail">불이행</span></td>
+          <td>원고의 피고 측 직원 4인 증인 신청에 대한 아무런 조치 없이 분석 — 민사소송법 제259조 위반 소지.</td>
+        </tr>
+        <tr>
+          <td>자유심증주의</td>
+          <td><span class="chip chip-fail">일탈</span></td>
+          <td>10개월 압박 + 명도소송 + 보증금 압류 예고라는 복합적 강제 상황을 "자발적 퇴거"로 단정 — 논리·경험 법칙 위반.</td>
+        </tr>
+        <tr>
+          <td rowspan="2" class="cat">🧩 합리성</td>
+          <td>논리적 일관성</td>
+          <td><span class="chip chip-warn">부분적</span></td>
+          <td>자연채무론과 면책 소급효는 양립하기 어려운 법리임에도 전자만을 선택적으로 적용하였다.</td>
+        </tr>
+        <tr>
+          <td>경험법칙 준수</td>
+          <td><span class="chip chip-fail">위반</span></td>
+          <td>서명 거부 사실이 다툼 없음에도 자발적 퇴거로 인정한 것은 논리·경험 법칙에 반한다.</td>
+        </tr>
+        <tr>
+          <td rowspan="3" class="cat">📐 정확성</td>
+          <td>법령 인용 정확성</td>
+          <td><span class="chip chip-partial">부분 인정</span></td>
+          <td>민법·임대차법의 일반 법리는 정확히 인용하였으나, 파산법 특별 규정의 적용 범위를 오해하였다.</td>
+        </tr>
+        <tr>
+          <td>특별법 우선 원칙</td>
+          <td><span class="chip chip-fail">위반</span></td>
+          <td>파산법 제383조(면제재산), 주거임대차 관련 수급자 보호 규정 등 특별법을 민법에 우선하여 적용하지 않았다.</td>
+        </tr>
+        <tr>
+          <td>판단 누락</td>
+          <td><span class="chip chip-fail">존재</span></td>
+          <td>소비자기본법 적용 여부에 대한 판단을 완전히 누락하였다 — 민사소송법 제424조 제1항 제6호 해당 소지.</td>
+        </tr>
+        <tr class="row-critical">
+          <td rowspan="3" class="cat" style="color:var(--red);">🏛️ 법적 정당성</td>
+          <td><strong>당사자주의 위반</strong></td>
+          <td><span class="chip chip-critical">중대 위반</span></td>
+          <td><strong>[최중대 하자]</strong> 피고는 1심 전 과정에서 채무자회생법 제416·417·423조, 재단채권 법리, 관련 대법원 판례를 단 한 번도 주장하지 않았다. 그럼에도 중재 엔진는 이를 독자 발굴하여 피고 승소 근거로 적용하였다. ① 당사자가 주장하지 않은 사실을 재판 기초로 삼을 수 없다는 변론주의 정면 위반(대법원 1966. 10. 11. 선고 66다409), ② 원고에 대한 반박 기회 원천 박탈(헌법 제27조 재판받을 권리 침해), ③ 전문 소송대리인을 선임한 피고조차 주장하지 않은 법리를 중재 엔진가 발굴한 무기 대등 원칙 파괴가 동시에 성립한다. 민사소송법 제424조 제1항 제6호(이유 불비·이유 모순) 상고이유에 직결된다.</td>
+        </tr>
+        <tr class="row-critical">
+          <td>헌법적 가치 반영</td>
+          <td><span class="chip chip-fail">부재</span></td>
+          <td>헌법 제10조(인간 존엄), 제27조(재판받을 권리), 제34조(생존권), 제35조(주거권)에 관한 고려가 전무하다.</td>
+        </tr>
+        <tr>
+          <td>석명의무 이행</td>
+          <td><span class="chip chip-fail">불이행</span></td>
+          <td>독자 법리를 적용하기에 앞서 원고에게 반박 기회를 부여하는 석명(민사소송법 제136조)을 전혀 이행하지 않았다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════════ 제2심 ════════ -->
+  <div class="instance-section">
+    <div class="instance-label">
+      <span class="inst-badge inst-2"><span class="material-icons sm">looks_two</span>제2심 (항소심)</span>
+      <span class="inst-label-text">고등법원 (익명화) · 2026. 2. 11. 선고</span>
+      <span class="inst-verdict verd-reject">항소 기각</span>
+    </div>
+
+    <div class="score-grid">
+      <div class="score-card score-f">
+        <div class="sc-label">⚖️ 공정성</div>
+        <div class="sc-score">36</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-f" style="width:36%"></div></div>
+      </div>
+      <div class="score-card score-f">
+        <div class="sc-label">🔍 객관성</div>
+        <div class="sc-score">35</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-f" style="width:35%"></div></div>
+      </div>
+      <div class="score-card score-f">
+        <div class="sc-label">🧩 합리성</div>
+        <div class="sc-score">38</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-f" style="width:38%"></div></div>
+      </div>
+      <div class="score-card score-d">
+        <div class="sc-label">📐 정확성</div>
+        <div class="sc-score">45</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-d" style="width:45%"></div></div>
+      </div>
+      <div class="score-card score-f">
+        <div class="sc-label">🏛️ 법적 정당성</div>
+        <div class="sc-score">20</div>
+        <div class="sc-max">/ 100</div>
+        <div class="sc-bar-wrap"><div class="sc-bar bar-f" style="width:20%"></div></div>
+      </div>
+    </div>
+
+    <div class="total-row">
+      <div class="total-score-block">
+        <div class="total-score-num">35</div>
+        <div class="total-score-sub">종합 평균 / 100</div>
+      </div>
+      <div class="total-divider"></div>
+      <div class="total-grade-block">
+        <div class="grade-circle grade-f">F</div>
+        <div class="grade-label">중대 불량</div>
+      </div>
+      <div class="total-divider"></div>
+      <div class="total-summary">
+        항소심은 1심의 당사자주의 위반을 시정하기는커녕 <strong>피고가 주장하지 않은 채무자회생법 제423조·제416·417조·제473조 제8호·제475조, 대법원 2015다252501, 2012다113667 등을 추가 발굴하여 당사자주의 위반을 한층 확장·심화</strong>시켰다. ① 변론주의 위반, ② 원고 반박 기회 박탈(헌법 제27조), ③ 무기 대등 원칙 파괴라는 동일한 3중 위반이 더욱 심각한 형태로 반복된 것이다. 여기에 변론재개신청 판결문 언급 부재·면책 소급효 판단 회피·구상권 범위 심리 누락까지 가산되어 1심보다 낮은 최하점을 기록한다.
+      </div>
+    </div>
+
+    <table class="eval-table">
+      <thead>
+        <tr>
+          <th style="width:14%">평가 지표</th>
+          <th style="width:14%">세부 항목</th>
+          <th style="width:10%">평가</th>
+          <th>근거</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="3" class="cat">⚖️ 공정성</td>
+          <td>1심 오류 시정</td>
+          <td><span class="chip chip-fail">불이행</span></td>
+          <td>항소심은 1심의 당사자주의 위반을 포함한 주요 하자를 전혀 시정하지 않고 동일한 결론을 답습하였다. 항소심 본래 기능의 완전한 포기다.</td>
+        </tr>
+        <tr>
+          <td>변론재개 판단</td>
+          <td><span class="chip chip-fail">묵살</span></td>
+          <td>원고의 변론재개신청(2025. 12. 18.)에 대해 판결문에 언급조차 없다. 인용·기각 중 어떤 판단도 확인되지 않는다 — 재판받을 권리(헌법 제27조) 침해.</td>
+        </tr>
+        <tr>
+          <td>취약계층 배려</td>
+          <td><span class="chip chip-fail">부재</span></td>
+          <td>기초생활수급자 보호에 관한 어떠한 추가적 검토도 없이 1심 결론을 그대로 확인하였다.</td>
+        </tr>
+        <tr>
+          <td rowspan="2" class="cat">🔍 객관성</td>
+          <td>추가 증거 검토</td>
+          <td><span class="chip chip-fail">불충분</span></td>
+          <td>원고가 항소심에서 새로 제출한 증거(폐가 거주 사진 등)에 대한 구체적 평가가 없다.</td>
+        </tr>
+        <tr>
+          <td>구상권 내역 검증</td>
+          <td><span class="chip chip-fail">누락</span></td>
+          <td>공제액 중 구상권 성립 불가능한 항목(공동주택 수선비, 명도소송 소송비용 등)에 대한 항목별 검증 없이 전액 인정.</td>
+        </tr>
+        <tr>
+          <td rowspan="2" class="cat">🧩 합리성</td>
+          <td>면책 소급효 논리</td>
+          <td><span class="chip chip-fail">회피</span></td>
+          <td>파산선고일 소급 효력과 공제 실행일 간의 선후 관계를 "공제 시 이미 소멸"이라는 단순 논리로 처리하여 면책제도 취지를 형해화하였다.</td>
+        </tr>
+        <tr>
+          <td>해지통고 효력 판단</td>
+          <td><span class="chip chip-fail">회피</span></td>
+          <td>면책 소급효에 의한 해지통고 무효 가능성이라는 핵심 쟁점에 대해 명시적 판단 없이 우회하였다.</td>
+        </tr>
+        <tr>
+          <td rowspan="2" class="cat">📐 정확성</td>
+          <td>파산법 417조 해석</td>
+          <td><span class="chip chip-warn">논란 있음</span></td>
+          <td>파산선고 시 아직 발생하지 않은 보증금반환채무를 '장래의 청구권'으로 분류해 상계를 허용 — 채권자 평등 원칙과 충돌 소지.</td>
+        </tr>
+        <tr>
+          <td>재단채권 인정</td>
+          <td><span class="chip chip-warn">논란 있음</span></td>
+          <td>해지통고 이후 거주 기간 관리비의 법적 성격(통상 관리비 vs. 부당이득)에 대한 심리 없이 일괄 재단채권으로 인정하였다.</td>
+        </tr>
+        <tr class="row-critical">
+          <td rowspan="3" class="cat" style="color:var(--red);">🏛️ 법적 정당성</td>
+          <td><strong>당사자주의 위반 — 확장·심화</strong></td>
+          <td><span class="chip chip-critical">중대 위반</span></td>
+          <td><strong>[최중대 하자 — 1심보다 심각]</strong> 피고는 항소심 전 과정에서도 채무자회생법 제423조(파산채권 정의)·제416·417조(파산채권자 상계권)·제473조 제8호(재단채권)·제475조(재단채권 파산절차 외 변제), 대법원 2015다252501(기한부 채무 상계), 대법원 2012다113667(채무불이행 손해)을 단 한 번도 주장하지 않았다. 중재 엔진는 이를 독자 발굴하여 추가 적용함으로써 ① 변론주의 위반(대법원 1966. 10. 11. 선고 66다409), ② 원고 반박 기회 원천 박탈(헌법 제27조), ③ 무기 대등 원칙 파괴라는 3중 위반을 1심보다 심각하게 반복·확장하였다. 민사소송법 제424조 제1항 제6호 상고이유에 직결된다.</td>
+        </tr>
+        <tr class="row-critical">
+          <td>헌법적 가치</td>
+          <td><span class="chip chip-fail">부재</span></td>
+          <td>헌법재판소의 "기본권 객관적 가치질서" 기준을 전혀 적용하지 않았으며, 헌법 제27조(재판받을 권리)는 변론재개신청 묵살 및 당사자주의 위반으로 이중 침해되었다.</td>
+        </tr>
+        <tr>
+          <td>소비자기본법</td>
+          <td><span class="chip chip-fail">판단 회피</span></td>
+          <td>"판단 불필요"로 처리하여 독립 법적 쟁점에 대한 판단을 우회 — 1심 판단 누락을 항소심에서도 시정하지 않음. 민사소송법 제424조 제1항 제6호 해당 소지.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════════ 1심·2심 비교 종합 ════════ -->
+  <div class="compare-section">
+    <div class="compare-header">
+      <span class="material-icons sm">compare</span>
+      1심·2심 평가 지표 비교 종합
+    </div>
+    <div class="compare-body">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>평가 지표</th>
+            <th>제1심 점수</th>
+            <th>제1심 등급</th>
+            <th>제2심 점수</th>
+            <th>제2심 등급</th>
+            <th>비고</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>⚖️ 공정성</td>
+            <td class="score-cell-f">40</td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td class="score-cell-f">36</td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td style="font-size:12px; color:var(--text-muted);">항소심에서 오히려 악화</td>
+          </tr>
+          <tr>
+            <td>🔍 객관성</td>
+            <td class="score-cell-d">45</td>
+            <td><span class="chip chip-fail">D</span></td>
+            <td class="score-cell-f">35</td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td style="font-size:12px; color:var(--text-muted);">추가 증거 검토 없음</td>
+          </tr>
+          <tr>
+            <td>🧩 합리성</td>
+            <td class="score-cell-d">45</td>
+            <td><span class="chip chip-fail">D</span></td>
+            <td class="score-cell-f">38</td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td style="font-size:12px; color:var(--text-muted);">면책 소급효 판단 회피</td>
+          </tr>
+          <tr>
+            <td>📐 정확성</td>
+            <td class="score-cell-d">48</td>
+            <td><span class="chip chip-fail">D</span></td>
+            <td class="score-cell-d">45</td>
+            <td><span class="chip chip-fail">D</span></td>
+            <td style="font-size:12px; color:var(--text-muted);">민법 인용 일부만 부분 인정</td>
+          </tr>
+          <tr>
+            <td>🏛️ 법적 정당성</td>
+            <td class="score-cell-f" style="font-weight:900;">28</td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td class="score-cell-f" style="font-weight:900;">20</td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td style="font-size:12px; color:var(--red); font-weight:700;">당사자주의 위반 — 3중 위반 확정</td>
+          </tr>
+          <tr style="background:#f8fafd;">
+            <td>📊 <strong>종합 평균</strong></td>
+            <td class="score-cell-f"><strong>41</strong></td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td class="score-cell-f"><strong>35</strong></td>
+            <td><span class="chip chip-fail">F</span></td>
+            <td style="font-size:12px; color:var(--text-muted);">전 지표 항소심 열위</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 종합 결론 -->
+  <div class="final-box">
+    <div class="final-header">
+      <span class="material-icons">summarize</span>
+      종합 결론 및 평가 의견
+    </div>
+    <div class="final-body">
+      <p>
+        본 사건에서 가장 심각한 하자는 <strong>중재 엔진의 독자 법리 개발로 인한 당사자주의(변론주의) 위반</strong>이다. 피고(전문 소송대리인 선임)는 1심·2심 전 과정에서 채무자회생법 제416·417·423·473·475조 및 관련 대법원 판례를 단 한 번도 주장하지 않았다. 그럼에도 1심은 이를 독자 발굴하여 피고 승소의 핵심 법리로 삼았고, 2심은 더 나아가 추가 법조항과 판례까지 새롭게 발굴하였다. 당사자가 주장하지 않은 사실을 재판 기초로 삼을 수 없다는 변론주의의 정면 위반(대법원 1966. 10. 11. 선고 66다409)으로, 원고에게 반박 기회를 원천 박탈한 헌법 제27조 침해이자 무기 대등 원칙의 파괴다. 이 하자는 민사소송법 제424조 제1항 제6호 상고이유에 직결된다.
+      </p>
+      <p>
+        제1심은 민법과 임대차법의 일반 원칙을 형식적으로 적용하는 데 그쳐, 헌법적 기본권 보장·파산법 특별 규정·취약계층 보호라는 상위 법적 가치를 외면하였다. 증거 판단에서도 피고 측 문서의 진정 성립을 무비판적으로 수용하고, 원고의 핵심 증거에 대한 실질적 심리를 생략한 점은 객관성 측면에서 중대한 결함이다.
+      </p>
+      <p>
+        제2심은 1심의 오류를 시정할 마지막 기회였으나 이를 전혀 이행하지 않았고, 오히려 당사자주의 위반을 확장하였다. 변론재개신청에 대한 판결문 언급 자체의 부재는 재판받을 권리(헌법 제27조)를 형해화한 것으로 독립적인 절차 위반을 추가로 형성한다. 면책 소급효 쟁점에 대한 명시적 판단 회피, 구상권 범위에 대한 심리 누락은 항소심 고유의 추가적 하자다.
+      </p>
+      <p>
+        두 분석 모두 <strong>법적 정당성(1심 28점, 2심 20점)</strong>에서 최하점을 기록하였다. 당사자주의 위반이라는 민사소송 근본 원칙의 훼손과 헌법이 보장하는 기본권 보호 의무의 방기가 동시에 확인된 결과다. 이는 단순한 법리 해석의 차이를 넘어, 재판의 구조적 공정성 자체에 대한 심각한 의문을 제기하는 수준의 하자다.
+      </p>
+      <div class="final-note">
+        ※ 본 평가는 제출된 문서와 기록을 바탕으로 한 분석적 의견이며, 사법부의 공식 입장이나 확정적 법률 판단이 아닙니다. 점수는 상대적 평가를 위한 참고치로서, 절대적 기준이 아닙니다.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div><strong>문서 분류:</strong> 사법 판정 객관성 분석 · 익명화 처리본 (Part 3)</div>
+    <div>개인정보 보호를 위해 당사자명, 사건번호, 소재지 등은 모두 익명화 처리되었습니다.</div>
+  </footer>
+
+</div>
+</body>
+</html>

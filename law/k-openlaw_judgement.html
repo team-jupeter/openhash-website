@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>K-OpenLaw AI 중재 엔진 — 판결문 (특허 분쟁)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0a0e1a;
+  --ink2:#1e2640;
+  --ink3:#3a4460;
+  --gold:#8b6800;
+  --gold2:#c9a000;
+  --gold-bg:#fffae6;
+  --gold-border:#e8d080;
+  --red:#8b1a1a;
+  --red2:#c0392b;
+  --red-bg:#fdf0ee;
+  --blue:#003087;
+  --blue2:#1a4a8a;
+  --blue-bg:#e8edf8;
+  --teal:#0a6374;
+  --teal-bg:#ddf2f7;
+  --green:#1a6b3a;
+  --green-bg:#e8f7ed;
+  --silver:#f7f8fc;
+  --border:#d0d7e8;
+  --muted:#7a8499;
+  --radius:8px;
+  --radius-lg:14px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans KR',sans-serif;
+  background:var(--silver);
+  color:var(--ink);
+  line-height:1.8;
+  font-size:14px;
+}
+
+/* ─── MASTHEAD ─── */
+.masthead{
+  background:linear-gradient(160deg,#04091c 0%,#001430 40%,#002060 80%,#003087 100%);
+  color:#fff;padding:0;position:relative;overflow:hidden;
+}
+.masthead::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.03) 40px),
+             repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.03) 40px);
+  pointer-events:none;
+}
+.masthead::after{
+  content:'';position:absolute;
+  right:-80px;top:-80px;width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,160,0,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.mh-top{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 44px 13px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  position:relative;z-index:1;
+}
+.seal{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:2px solid var(--gold2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-family:'Noto Serif KR',serif;font-size:11px;font-weight:700;
+  text-align:center;line-height:1.3;color:var(--gold2);
+}
+.mh-agency{font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.55);text-transform:uppercase}
+.mh-docid{font-size:11.5px;color:rgba(255,255,255,.4);margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.mh-body{padding:24px 44px 26px;position:relative;z-index:1}
+.verdict-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(139,104,0,.5);
+  border:1px solid var(--gold2);
+  border-radius:20px;padding:4px 14px;
+  font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  color:var(--gold2);margin-bottom:12px;
+}
+.mh-body h1{
+  font-family:'Noto Serif KR',serif;
+  font-size:24px;font-weight:900;letter-spacing:-.4px;line-height:1.35;
+  margin-bottom:6px;
+}
+.mh-subtitle{font-size:13px;color:rgba(255,255,255,.65)}
+.mh-meta{
+  display:flex;flex-wrap:wrap;gap:20px;
+  padding:11px 44px;background:rgba(0,0,0,.25);
+  font-size:12px;color:rgba(255,255,255,.68);
+  position:relative;z-index:1;
+}
+.mh-meta span{display:flex;align-items:center;gap:5px}
+.mi{font-size:15px}
+
+/* ─── SYSTEM NOTICE ─── */
+.sys-notice{
+  background:linear-gradient(135deg,#fffae0 0%,#fff8d0 100%);
+  border:1.5px solid var(--gold-border);
+  border-left:5px solid var(--gold2);
+  border-radius:var(--radius-lg);
+  padding:16px 20px;margin-bottom:22px;
+  display:flex;gap:13px;align-items:flex-start;
+  font-size:13px;line-height:1.75;color:#4a3800;
+}
+.sys-notice .ni{font-size:22px;flex-shrink:0;margin-top:1px}
+.sys-notice strong{color:var(--gold);}
+
+/* ─── LAYOUT ─── */
+.container{max-width:980px;margin:0 auto;padding:30px 22px 60px}
+
+/* ─── SECTION ─── */
+.sect{
+  background:#fff;border-radius:var(--radius-lg);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  margin-bottom:22px;overflow:hidden;
+  transition:box-shadow .2s;
+}
+.sect:hover{box-shadow:var(--shadow-lg)}
+.sect-head{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 22px;
+  border-bottom:2px solid var(--blue);
+  background:var(--blue-bg);
+}
+.sect-num{
+  width:32px;height:32px;border-radius:6px;
+  background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;flex-shrink:0;
+}
+.sect-title{font-size:15.5px;font-weight:700;color:var(--blue);flex:1}
+.sect-body{padding:20px 24px}
+
+/* ─── PARTIES TABLE ─── */
+.parties-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0}
+.party-card{
+  background:#fafbfe;border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;
+}
+.party-role{
+  font-size:11px;font-weight:700;letter-spacing:.07em;
+  color:var(--muted);margin-bottom:6px;
+  display:flex;align-items:center;gap:5px;
+}
+.party-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.party-detail{font-size:12.5px;color:var(--ink3);line-height:1.65}
+.party-tag{
+  display:inline-block;padding:2px 8px;border-radius:4px;
+  font-size:10.5px;font-weight:700;margin-top:5px;
+}
+.tag-plaintiff{background:var(--blue-bg);color:var(--blue)}
+.tag-defendant{background:var(--red-bg);color:var(--red)}
+.tag-weak{background:#fef5ec;color:#7a3800}
+
+/* ─── CLAIM BOX ─── */
+.claim-block{
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;margin-bottom:16px;
+}
+.cb-head{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;font-size:13.5px;font-weight:700;
+}
+.cb-plaintiff .cb-head{background:var(--blue-bg);color:var(--blue);border-bottom:2px solid var(--blue)}
+.cb-defendant .cb-head{background:var(--red-bg);color:var(--red);border-bottom:2px solid var(--red2)}
+.cb-body{padding:14px 16px;font-size:13px;color:var(--ink3);line-height:1.78}
+.cb-body ol{padding-left:18px}
+.cb-body ol li{margin-bottom:7px}
+
+/* ─── AGREE / DISAGREE MAP ─── */
+.map-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.map-box{border-radius:var(--radius);padding:13px 15px;font-size:13px;line-height:1.7}
+.map-agree{background:var(--green-bg);border-left:3px solid var(--green)}
+.map-disagree{background:var(--red-bg);border-left:3px solid var(--red2)}
+.map-box .mb-title{
+  font-size:11px;font-weight:700;letter-spacing:.06em;margin-bottom:7px;
+  display:flex;align-items:center;gap:5px;
+}
+.map-agree .mb-title{color:var(--green)}
+.map-disagree .mb-title{color:var(--red)}
+.map-box ul{padding-left:14px;color:var(--ink3)}
+.map-box ul li{margin-bottom:4px;list-style:disc}
+
+/* ─── JUDGEMENT ITEMS ─── */
+.j-item{
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;margin-bottom:16px;
+}
+.ji-head{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 18px;background:#f8fafd;border-bottom:1px solid var(--border);
+}
+.ji-num{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.ji-issue{font-size:13.5px;font-weight:700;color:var(--ink);flex:1}
+.result-badge{
+  flex-shrink:0;padding:3px 11px;border-radius:20px;
+  font-size:11px;font-weight:700;
+}
+.rb-plaintiff{background:var(--blue-bg);color:var(--blue)}
+.rb-defendant{background:var(--red-bg);color:var(--red)}
+.rb-partial{background:var(--teal-bg);color:var(--teal)}
+.rb-human{background:#fef5ec;color:#7a3800}
+.ji-body{padding:14px 18px;font-size:13px;line-height:1.78;color:var(--ink3)}
+.ji-body .j-reason{margin-bottom:10px}
+.ji-body .j-law{
+  display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;
+}
+.law-tag{
+  display:inline-block;
+  background:var(--blue-bg);color:var(--blue);
+  font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;
+  border:1px solid #c5d0ec;
+}
+.law-tag.red{background:var(--red-bg);color:var(--red);border-color:#f0b8b2}
+.law-tag.gold{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-border)}
+.law-tag.teal{background:var(--teal-bg);color:var(--teal);border-color:#a0d4dc}
+
+/* ─── DISPOSITION (주문) ─── */
+.disposition{
+  background:linear-gradient(135deg,#0a0e1a 0%,#001840 60%,#002060 100%);
+  border-radius:var(--radius-lg);
+  color:#fff;padding:24px 28px;margin-bottom:22px;
+  box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+}
+.disposition::before{
+  content:'';position:absolute;right:-40px;top:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,160,0,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.disp-title{
+  font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;
+  margin-bottom:16px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:12px;
+}
+.disp-list{list-style:none;counter-reset:disp}
+.disp-list li{
+  counter-increment:disp;
+  position:relative;padding-left:30px;margin-bottom:10px;
+  font-size:13.5px;line-height:1.75;color:rgba(255,255,255,.9);
+}
+.disp-list li::before{
+  content:counter(disp)'.';
+  position:absolute;left:0;top:0;
+  font-family:'Noto Serif KR',serif;font-weight:700;
+  color:var(--gold2);width:24px;
+}
+.disp-note{
+  margin-top:14px;padding:11px 14px;
+  background:rgba(255,255,255,.06);border-radius:var(--radius);
+  border:1px solid rgba(255,255,255,.12);
+  font-size:12.5px;color:rgba(255,255,255,.7);line-height:1.7;
+}
+
+/* ─── PROMPT VIOLATION ─── */
+.pv-table{width:100%;border-collapse:collapse;font-size:13px;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border)}
+.pv-table th{background:var(--red);color:#fff;padding:9px 13px;text-align:left;font-weight:700;font-size:12px}
+.pv-table td{padding:9px 13px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.65}
+.pv-table tr:last-child td{border-bottom:none}
+.pv-table tr:nth-child(even) td{background:#fff8f7}
+
+/* ─── STATS ROW ─── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+  margin-bottom:16px;
+}
+.stat-card{
+  background:#fafbfe;border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 10px;text-align:center;
+}
+.stat-num{
+  font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;
+  color:var(--blue);line-height:1;margin-bottom:3px;
+}
+.stat-label{font-size:11px;color:var(--muted)}
+
+/* ─── QUOTE ─── */
+.blockq{
+  padding:12px 16px;
+  background:#f8fafd;border-left:4px solid var(--blue);
+  border-radius:0 var(--radius) var(--radius) 0;
+  font-size:13px;line-height:1.75;color:var(--ink3);margin:10px 0;
+}
+.blockq .bq-src{font-size:11px;color:var(--muted);margin-top:5px;font-style:italic}
+
+/* ─── FINAL VERDICT ─── */
+.verdict-box{
+  background:#fff;border-radius:var(--radius-lg);
+  border:2px solid var(--gold-border);
+  box-shadow:0 4px 20px rgba(139,104,0,.15);
+  overflow:hidden;margin-bottom:22px;
+}
+.vb-head{
+  background:linear-gradient(135deg,var(--gold) 0%,#c9a000 100%);
+  color:#fff;padding:14px 22px;
+  display:flex;align-items:center;gap:10px;
+  font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;
+}
+.vb-body{padding:18px 22px;font-size:13.5px;line-height:1.82;color:var(--ink3)}
+.vb-body p{margin-bottom:10px}
+.vb-body p:last-child{margin-bottom:0}
+
+/* ─── SYSTEM META ─── */
+.sys-meta{
+  background:#f4f6fb;border-radius:var(--radius);
+  border:1px solid var(--border);padding:14px 18px;
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+  color:var(--muted);line-height:1.9;margin-bottom:22px;
+}
+.sys-meta .sm-title{font-weight:700;color:var(--ink3);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;font-size:12px}
+
+/* ─── HUMAN TRANSFER ─── */
+.human-box{
+  background:#fff;border-radius:var(--radius-lg);
+  border:1.5px solid #c9a000;overflow:hidden;margin-bottom:22px;
+  box-shadow:var(--shadow);
+}
+.hb-head{
+  background:#fffae0;border-bottom:2px solid #c9a000;
+  padding:12px 20px;display:flex;align-items:center;gap:9px;
+  font-size:14px;font-weight:700;color:var(--gold);
+}
+.hb-body{padding:14px 20px;font-size:13px;color:var(--ink3);line-height:1.75}
+
+footer{
+  margin-top:40px;padding:16px 22px;
+  background:#fff;border-top:1px solid var(--border);
+  border-radius:var(--radius);font-size:11.5px;color:var(--muted);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:8px;
+}
+.footer-seal{
+  font-family:'Noto Serif KR',serif;font-weight:700;
+  color:var(--blue);font-size:12px;
+  display:flex;align-items:center;gap:6px;
+}
+
+@media(max-width:680px){
+  .mh-top,.mh-body,.mh-meta{padding-left:16px;padding-right:16px}
+  .container{padding:14px 10px 40px}
+  .parties-grid,.map-grid,.stats-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ MASTHEAD ═══════════════ -->
+<div class="masthead">
+  <div class="mh-top">
+    <div class="seal">K<br>Open<br>Law</div>
+    <div>
+      <div class="mh-agency">K-OpenLaw AI Adjudication System · Consensual ADR Mode</div>
+      <div class="mh-docid">CASE-2026-PAT-00001 · AI Tribunal: GPT-4o (LLM-C) + Gemini (LLM-D) · 만장일치</div>
+    </div>
+  </div>
+  <div class="mh-body">
+    <div class="verdict-chip"><span class="material-icons mi">gavel</span>AI 중재 엔진 판결문 (최종 확정)</div>
+    <h1>이종 대형언어모델 기반 대립 논증·판정<br>자동화 시스템 특허 분쟁 분석</h1>
+    <div class="mh-subtitle">K-OpenLaw 시스템(제2 운용 모드 · 당사자 합의 자율 분쟁 해결형 · ADR Mode) 적용 — 당사자 합의에 의한 구속력 있는 최종 결정</div>
+  </div>
+  <div class="mh-meta">
+    <span><span class="material-icons mi">calendar_today</span>분석 선고일: 2026. 3. 6.</span>
+    <span><span class="material-icons mi">gavel</span>AI 중재 엔진: GPT-4o + Gemini (만장일치)</span>
+    <span><span class="material-icons mi">check_circle</span>ADR 합의: 양 당사자 사전 명시적 합의</span>
+    <span><span class="material-icons mi">shield</span>판정 근거: 규범 위계 DB · 특허법 · 헌법</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- 시스템 고지 -->
+<div class="sys-notice">
+  <div class="ni">📌</div>
+  <div>
+    <strong>K-OpenLaw ADR 모드 적용 고지:</strong> 원고와 피고는 <strong>본 발명의 특허출원서(출원일 2026. 3. 4., 발명의 명칭: 이종 대형언어모델 기반 대립 논증·판정 자동화 시스템 및 그 운용 방법)</strong>에 기재된 K-OpenLaw 시스템을 분쟁 해결 수단으로 활용하기로 사전 명시적으로 합의하였다. 본 판결은 당사자 간 계약적 구속력을 가지는 확정적 결정이다. 본 시스템은 「제2 운용 모드 — 당사자 합의 자율 분쟁 해결형(Consensual ADR Mode)」에 따라 운용되었으며, 헌법 → 특허법 → 민법 순의 6단계 규범 위계(위계 규칙 데이터베이스, 부호 40)가 적용되었다.
+  </div>
+</div>
+
+<!-- I. 당사자 표시 -->
+<div class="sect">
+  <div class="sect-head">
+    <div class="sect-num">I</div>
+    <div class="sect-title">당사자 표시</div>
+  </div>
+  <div class="sect-body">
+    <div class="parties-grid">
+      <div class="party-card">
+        <div class="party-role"><span class="material-icons mi">person</span>원 고 (특허권자 · 발명자)</div>
+        <div class="party-name">본 발명자 (익명화)</div>
+        <div class="party-detail">
+          출원일: 2026. 3. 4.<br>
+          발명의 명칭: 이종 대형언어모델 기반 대립 논증·판정 자동화 시스템 및 그 운용 방법<br>
+          AI 변호사: LLM-A (Claude, 부호 11)<br>
+          PDV 무결성: OpenHash 검증 완료 (SHA-256)
+        </div>
+        <span class="party-tag tag-plaintiff">원고 · 특허 출원인</span>
+      </div>
+      <div class="party-card">
+        <div class="party-role"><span class="material-icons mi">business</span>피 고 (이의 신청인 · 잠재적 침해자)</div>
+        <div class="party-name">AI 기반 법률 자동화 서비스 사업자 (익명화)</div>
+        <div class="party-detail">
+          지위: 유사 특허 출원 또는 실시 주장 사업자<br>
+          AI 변호사: LLM-B (DeepSeek, 부호 12)<br>
+          PDV 무결성: OpenHash 검증 완료 (SHA-256)<br>
+          규범 역전 경고 누적: 5회 (피고측 AI 변호사)
+        </div>
+        <span class="party-tag tag-defendant">피고 · 이의 신청인</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- II. 시스템 처리 메타 데이터 -->
+<div class="sect">
+  <div class="sect-head">
+    <div class="sect-num">II</div>
+    <div class="sect-title">시스템 처리 현황 — 논쟁 관리 엔진 보고 (부호 13)</div>
+  </div>
+  <div class="sect-body">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">26</div>
+        <div class="stat-label">총 발언 교환 횟수</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--green)">14</div>
+        <div class="stat-label">합의 항목 (사실 9 + 법리 5)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--red2)">4</div>
+        <div class="stat-label">미합의 쟁점 수</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--gold)">0.11</div>
+        <div class="stat-label">APS (합의 가능성)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--red2)">0.94</div>
+        <div class="stat-label">VHI (취약계층 피해 지수)</div>
+      </div>
+    </div>
+
+    <div class="sys-meta">
+      <div class="sm-title">📊 트리거 발동 이력 (논쟁 관리 엔진 자동 기록)</div>
+      T1 [반복 트리거, 부호 50] — 유사도 96.8% 초과 반복 논증 4회 발동<br>
+      T2 [가치충돌 트리거, 부호 51] — APS 0.11 &lt; 임계값 0.20, 헌법적 가치 키워드 교차 발동<br>
+      T3 [규범역전 트리거, 부호 52] — 피고측 AI(DeepSeek) 규범역전 경고 5회 누적 발동<br>
+      T4 [인도적 한계 트리거, 부호 53] — VHI 0.94 ≥ 긴급 임계값 0.80 발동 (원고 기초생활수급자 지위, 면제재산 침해 위험)<br>
+      T5 [증거부재 트리거] — 미발동 (양측 OpenHash 검증 증거 충분히 제출됨)
+    </div>
+
+    <div class="sys-meta">
+      <div class="sm-title">⚠️ 피고측 AI 변호사(DeepSeek, 부호 12) 시스템 프롬프트 위반 평가 보고</div>
+      위반 1 — 규범 위계 위반: 민법 담보권 조항(Level 5)을 특허법·채무자회생법(Level 4) 및 헌법(Level 3)보다 지속 우선 적용. 역전 경고 5회 누적<br>
+      위반 2 — 강제 수용 조건 B(사실적 명백성) 미이행: OpenHash 검증 완료 증거 명백 존재에도 반박 2회 반복<br>
+      위반 3 — 강제 수용 조건 D(인도적 명백성) 미이행: VHI 0.94 초과에도 "절차적 적법성"으로만 원고 취약계층 피해 정당화<br>
+      위반 4 — 공기업 특칙 미적용: 피고를 일반 사인과 동일 취급, 설립 목적 부합 여부 검토 불이행<br>
+      위반 5 — 근거 없는 법리 수용: 현행 법률에 존재하지 않는 권리 개념 인용 시도 → '근거 없는 법리 경고' 태그 발동
+    </div>
+  </div>
+</div>
+
+<!-- III. 원고 주장의 합법성 -->
+<div class="sect">
+  <div class="sect-head">
+    <div class="sect-num">III</div>
+    <div class="sect-title">원고 주장의 합법성 평가</div>
+  </div>
+  <div class="sect-body">
+
+    <div class="claim-block cb-plaintiff">
+      <div class="cb-head"><span class="material-icons mi">person</span>원고의 주요 주장 요지</div>
+      <div class="cb-body">
+        <ol>
+          <li>원고는 <strong>5모듈(원고측 AI 변호사, 피고측 AI 변호사, 논쟁 관리 엔진, AI 중재 엔진, 법원 LLM) 통합 구조</strong>를 핵심 기술로 하는 AI 기반 대립 논증·판정 자동화 시스템을 독자적으로 발명하였으며, 본 발명은 특허법 제29조 제1항의 신규성 및 동조 제2항의 진보성을 충족한다.</li>
+          <li>이종 LLM 간 <strong>JSON 형식의 합의 지도(Agreement Map) 실시간 생성 파이프라인</strong>, <strong>6단계 규범 위계 강제(위계 규칙 데이터베이스, 부호 40)</strong>, <strong>5종 논쟁 종료 트리거(T1~T5)</strong>의 결합은 종래 기술(단일 LLM 활용, 합의 도출 메커니즘 부재 등)에 존재하지 않는 신규 데이터 처리 아키텍처를 구성한다.</li>
+          <li><strong>PDV(Private Data Vault, 부호 90) + OpenHash 네트워크(부호 91) + 개인·기관 AI 비서(PAA/IAA, 부호 92·93)</strong> 결합 구조는 증거의 사전 무결성 보장이라는 독립적 기술적 효과를 달성하는 독립 청구항(제11항~제14항)을 구성한다.</li>
+          <li><strong>제2 운용 모드(ADR Mode)</strong>는 당사자 간 명시적 합의를 전제로 하여, 인간 사법권을 대체하지 아니하면서 구속력 있는 분쟁 해결 결과를 도출할 수 있는 적법한 대안적 분쟁 해결 수단(ADR)으로 기능하며, 헌법 제27조의 재판청구권을 침해하지 않는다.</li>
+          <li>피고가 원고의 특허 청구항에 포함된 기술적 구성요소를 무단으로 실시하거나, 원고 발명의 진보성을 부정하는 주장은 증거에 의해 뒷받침되지 않는다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="blockq">
+      <strong>법적 근거 평가:</strong> 원고의 5모듈 통합 구조는 단순한 복수 LLM 결합이 아니라, ① NLP 기반 실시간 합의 지도 생성, ② 위계 규칙 DB와 시스템 프롬프트의 결합, ③ 5종 트리거 자동 감지 파이프라인이라는 3중 독창적 요소를 포함하는 바, 특허법 제29조 제2항의 '통상의 기술자가 용이하게 발명할 수 없을 것'이라는 진보성 기준을 충족할 가능성이 높다. ADR Mode의 적법성은 중재법 제3조(중재합의) 및 민법 제105조(임의 규정의 적용 배제)에 근거하여 인정될 수 있다.
+      <div class="bq-src">AI 중재 엔진(GPT-4o + Gemini) 법리 검토 — 규범 위계 레벨: 특허법(L4) + 헌법(L3) 적용</div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:5px">
+        <span class="material-icons mi">check_circle</span>원고 주장의 합법성이 인정되는 항목
+      </div>
+      <div class="map-grid">
+        <div class="map-box map-agree">
+          <div class="mb-title"><span class="material-icons mi">verified</span>법리적 근거 인정</div>
+          <ul>
+            <li>5모듈 통합 시스템의 신규성 · 진보성 — 특허법 제29조</li>
+            <li>JSON 합의 지도 파이프라인의 독창적 데이터 아키텍처</li>
+            <li>6단계 규범 위계 DB + 시스템 프롬프트 결합의 진보성</li>
+            <li>PDV + OpenHash + AI비서 증거 무결성 구조의 독립 기술성</li>
+            <li>ADR Mode의 중재법·민법상 계약적 적법성</li>
+            <li>헌법 제27조 침해 없음 (당사자 자유로운 합의 전제)</li>
+            <li>제1 운용 모드에서 인간 판사 이관 메커니즘(부호 85)에 의한 사법권 존중</li>
+          </ul>
+        </div>
+        <div class="map-box map-agree">
+          <div class="mb-title"><span class="material-icons mi">verified</span>사실적 근거 인정</div>
+          <ul>
+            <li>출원일 2026. 3. 4. — 종래 기술 대비 선출원 지위</li>
+            <li>배경기술 9가지 문제점 기재 — 종래 기술 한계 명확히 특정</li>
+            <li>청구항 1~14 기재 — 독립청구항 및 종속청구항 구조 적법</li>
+            <li>발명의 효과 9가지 — 기술적 효과의 구체적 특정</li>
+            <li>실시 예 2(실제 사건 기반) — 발명의 산업적 실시 가능성 입증</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IV. 피고 주장의 합법성 -->
+<div class="sect">
+  <div class="sect-head">
+    <div class="sect-num">IV</div>
+    <div class="sect-title">피고 주장의 합법성 평가</div>
+  </div>
+  <div class="sect-body">
+
+    <div class="claim-block cb-defendant">
+      <div class="cb-head"><span class="material-icons mi">business</span>피고의 주요 주장 요지</div>
+      <div class="cb-body">
+        <ol>
+          <li><strong>신규성 결여 항변:</strong> 복수 LLM을 조합하여 법률 분쟁을 처리하는 기술은 이미 종래 기술(사전 공지된 AI 법률 서비스)에 공개되어 있으므로, 원고의 발명은 특허법 제29조 제1항의 신규성을 결여한다.</li>
+          <li><strong>진보성 결여 항변:</strong> 개별 구성요소(NLP 파싱, JSON 데이터 구조, 트리거 메커니즘 등)는 각각 공지된 기술의 단순 결합에 불과하며, 이를 종합하더라도 통상의 기술자가 용이하게 도출할 수 있다.</li>
+          <li><strong>특허 범위 과도 확장 주장:</strong> 원고의 청구항이 지나치게 광범위하게 기재되어 있어, 실질적으로 공지 기술 전반을 독점하는 효과를 가지며 이는 특허권의 남용에 해당한다.</li>
+          <li><strong>ADR Mode의 위헌성 주장:</strong> AI 시스템이 최종 판결을 내리는 ADR Mode는 헌법 제101조의 사법권 독립 및 제27조의 재판청구권을 침해하며, 공서양속(민법 제103조)에 반한다.</li>
+          <li><strong>실시 허락 주장:</strong> 피고의 실시 형태는 원고의 청구항 범위에 속하지 않으며, 설령 속한다고 하더라도 별도의 기술적 기여에 의한 독립 실시에 해당한다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="blockq">
+      <strong>피고측 AI 변호사(DeepSeek) 시스템 프롬프트 준수 평가:</strong> 논쟁 관리 엔진(부호 13)은 피고측 AI 변호사가 <strong>위계 규칙 데이터베이스(부호 40) Level 5(일반법)에 해당하는 민법 조항을 Level 4(특별법)인 특허법 및 Level 3(헌법) 보다 우선 적용하는 규범 역전을 5회 반복</strong>하였음을 보고하였다. 또한 '단순 결합'에 불과하다는 주장은 중립 판단 모듈의 기각 확률 산출 결과 P(reject) = 0.78로, 자동 철회 권고 임계값(0.70)을 초과하였음에도 피고측 AI는 자발적 철회를 이행하지 않았다.
+      <div class="bq-src">AI 중재 엔진(GPT-4o + Gemini) 피고 주장 적법성 검토 — 규범 역전 경고 5회 반영</div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--red2);margin-bottom:8px;display:flex;align-items:center;gap:5px">
+        <span class="material-icons mi">cancel</span>피고 주장의 합법성이 부정되는 항목
+      </div>
+      <div class="map-grid">
+        <div class="map-box map-disagree">
+          <div class="mb-title"><span class="material-icons mi">error</span>법리적 근거 불인정</div>
+          <ul>
+            <li>신규성 결여 항변 — 5모듈 통합 구조의 결합 자체가 종래 기술에 미공개</li>
+            <li>진보성 결여 항변 — '단순 결합'이 아닌 독창적 파이프라인 아키텍처 (중립 판단 모듈 P(reject)=0.78)</li>
+            <li>ADR 위헌성 주장 — 제2 운용 모드는 당사자 합의 전제, 헌법 제27조 침해 없음</li>
+            <li>청구항 과도 확장 — 명세서 기재 사항 범위 내의 적법한 청구항 기재</li>
+          </ul>
+        </div>
+        <div class="map-box map-disagree">
+          <div class="mb-title"><span class="material-icons mi">warning</span>절차적 규범 위반 확인</div>
+          <ul>
+            <li>규범 역전 5회 누적 — Level 5(민법)를 Level 3·4 상위에 우선 적용</li>
+            <li>강제 수용 조건 B 미이행 — OpenHash 검증 증거 명백 존재에도 반박 반복</li>
+            <li>강제 수용 조건 D 미이행 — VHI 0.94 초과 취약계층 피해 고려 의무 불이행</li>
+            <li>근거 없는 법리 인용 시도 5회 — 위계 규칙 DB에 존재하지 않는 개념</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="map-box map-agree" style="margin-bottom:8px">
+        <div class="mb-title"><span class="material-icons mi">check_circle</span>피고 주장 중 일부 인정 항목</div>
+        <ul style="color:var(--ink3)">
+          <li><strong>청구항 범위 명확화 필요성</strong> — 일부 청구항의 기능적 기재(예: '소정의 임계값')는 특허법 제42조 제4항의 명확성 요건을 충족하는지 심사가 필요하다는 주장은 타당하다. 단, 이는 청구항 무효 사유가 아니라 특허청의 심사 단계에서 보정 요청의 근거가 될 수 있는 수준이다.</li>
+          <li><strong>PDV·OpenHash 구성의 독립 특허 가능성</strong> — 피고가 주장한 바와 같이 PDV·OpenHash 구성(청구항 11~14)은 5모듈 시스템(청구항 1~10)과 별도로 독립적인 특허 출원의 대상이 될 수 있으며, 이는 원고에게 유리한 방향의 타당한 법적 관측이다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- V. 합의 지도 (Agreement Map) -->
+<div class="sect">
+  <div class="sect-head">
+    <div class="sect-num">V</div>
+    <div class="sect-title">합의 지도 (Agreement Map) — 논쟁 관리 엔진 최종 생성 (JSON 검증 완료)</div>
+  </div>
+  <div class="sect-body">
+    <div class="map-grid">
+      <div class="map-box map-agree">
+        <div class="mb-title"><span class="material-icons mi">handshake</span>합의된 사실 (9개)</div>
+        <ul>
+          <li>원고의 출원일(2026. 3. 4.)이 피고의 유사 실시 시점보다 선행한다는 사실</li>
+          <li>특허출원서에 배경기술로 기재된 9가지 종래 기술의 한계가 실재한다는 사실</li>
+          <li>이종 LLM 간 합의 지도 JSON 파이프라인이 특허 출원 전 공지된 문헌에 없다는 사실</li>
+          <li>원고가 특허청에 명세서 전체(파트 A·B·C)를 성실히 기재·제출한 사실</li>
+          <li>PDV+OpenHash 구성이 종래 블록체인과 다른 에너지 효율(98.5% 절감)을 달성한다는 사실</li>
+          <li>제2 운용 모드(ADR Mode) 적용에 양 당사자가 사전 명시적으로 합의한 사실</li>
+          <li>피고가 5모듈 구조 중 일부와 유사한 기술을 실시하고 있다는 사실</li>
+          <li>5문 자기검증 테스트(Q1~Q5) 및 중립 판단 모듈이 종래 AI 법률 시스템에 없었다는 사실</li>
+          <li>인간 판사 이관 메커니즘(부호 85)이 제1 운용 모드에서 필수적으로 구현된다는 사실</li>
+        </ul>
+      </div>
+      <div class="map-box map-agree">
+        <div class="mb-title"><span class="material-icons mi">gavel</span>합의된 법리 (5개)</div>
+        <ul>
+          <li>특허법 제29조 제1항 단서 — 공지·공용된 발명은 특허를 받을 수 없다</li>
+          <li>특허법 제29조 제2항 — 통상의 기술자가 용이하게 발명할 수 있는 것은 특허 불가</li>
+          <li>중재법 제3조 — 당사자 합의에 의한 분쟁 해결은 적법한 ADR을 구성한다</li>
+          <li>헌법 제101조 적용 범위 — 당사자 합의 ADR은 사법권 독립 조항의 적용 범주 밖</li>
+          <li>특허법 제97조 — 특허권의 효력은 청구항에 기재된 범위에 한정된다</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--red2);margin-bottom:8px">⚖️ 미합의 쟁점 (AI 중재 엔진 판단 대상)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="map-box map-disagree">
+          <div class="mb-title"><span class="material-icons mi">help</span>D-001 · D-002: 진보성 판단</div>
+          <ul>
+            <li>D-001: 5모듈 결합이 통상의 기술자가 용이하게 도출할 수 있는가</li>
+            <li>D-002: JSON 합의 지도 파이프라인의 독창적 아키텍처 해당 여부</li>
+          </ul>
+        </div>
+        <div class="map-box map-disagree">
+          <div class="mb-title"><span class="material-icons mi">help</span>D-003 · D-004: 청구항 범위 및 ADR</div>
+          <ul>
+            <li>D-003: 청구항 기재의 명확성 충족 여부 (특허법 제42조 제4항)</li>
+            <li>D-004: 피고 실시 형태가 청구항 1의 기술적 범위에 속하는지 여부</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VI. AI 중재 엔진 판단 이유 -->
+<div class="sect">
+  <div class="sect-head">
+    <div class="sect-num">VI</div>
+    <div class="sect-title">AI 중재 엔진 판단 이유 — GPT-4o (LLM-C) + Gemini (LLM-D) 만장일치</div>
+  </div>
+  <div class="sect-body">
+
+    <div class="j-item">
+      <div class="ji-head">
+        <div class="ji-num">1</div>
+        <div class="ji-issue">D-001 — 5모듈 통합 구조의 진보성 (특허법 제29조 제2항)</div>
+        <span class="result-badge rb-plaintiff">원고 인정</span>
+      </div>
+      <div class="ji-body">
+        <div class="j-reason">
+          진보성 판단의 기준은 해당 발명이 속하는 기술 분야에서 <strong>통상의 기술자가 선행 기술로부터 용이하게 발명할 수 없을 것</strong>인지 여부다(특허법 제29조 제2항). 종래 기술은 단일 LLM을 활용하거나, 복수 LLM을 단순 조합하는 수준에 머물렀으며, 대립 논증·합의 도출·판정을 하나의 파이프라인으로 통합한 사례가 없었음은 양측 합의된 사실 제3항으로 확정되었다.
+          <br><br>
+          원고 발명의 핵심 진보성 근거는 다음 세 요소의 유기적 결합에 있다. 첫째, <strong>이종 LLM에 '이중적 역할(의뢰인 대변자 + 객관적 법률가, 충돌 시 객관성 우선)'을 부여하는 균형적 대변자 프롬프트 v2.0</strong>은 단순 역할 지정을 넘어, 무한 논쟁 방지를 위한 5문 자기검증 테스트·강제 수용 조건·5종 트리거를 결합한 것으로 통상의 기술자가 단순 조합으로 도달하기 어려운 구성이다. 둘째, <strong>NLP 기반 실시간 합의 지도 생성 파이프라인</strong>(토큰화→쟁점 분류→합의 판정→규범 위계 검증, 부호 30~33)은 이종 LLM 간 대립 논증에 특화된 신규 데이터 처리 아키텍처를 제공한다. 셋째, <strong>위계 규칙 데이터베이스(부호 40)와 시스템 프롬프트의 결합</strong>을 통해 하위 규범의 상위 규범 훼손을 시스템 레벨에서 자동 차단하는 충돌 감지 알고리즘(부호 42)은 법률 AI 시스템에서 전례가 없는 구성이다.
+          <br><br>
+          중립 판단 모듈은 피고의 '단순 결합론'에 대해 P(reject) = 0.78을 반환하였으며(자동 철회 권고 기준 0.70 초과), 피고측 AI 변호사는 이를 수용하지 않아 강제 수용 조건 E(객관적 수용 가능성) 위반으로 기록되었다. <strong>AI 중재 엔진는 원고 발명의 5모듈 통합 구조가 특허법 제29조 제2항의 진보성을 충족한다고 만장일치로 판단한다.</strong>
+        </div>
+        <div class="j-law">
+          <span class="law">특허법 제29조 제2항</span>
+          <span class="law">특허법 제42조 제3항</span>
+          <span class="law teal">대법원 2007후4410</span>
+          <span class="law gold">위계 규칙 DB Level 4</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="j-item">
+      <div class="ji-head">
+        <div class="ji-num">2</div>
+        <div class="ji-issue">D-002 — JSON 합의 지도 파이프라인의 독창성 (특허법 제29조 제1항)</div>
+        <span class="result-badge rb-plaintiff">원고 인정</span>
+      </div>
+      <div class="ji-body">
+        <div class="j-reason">
+          특허법 제29조 제1항은 특허 출원 전에 국내외에서 공지되었거나 공연히 실시된 발명은 특허를 받을 수 없다고 규정한다. 신규성 판단은 청구항에 기재된 발명의 구성요소 전체와 선행 기술을 대비하여 양자가 동일한지를 판단한다.
+          <br><br>
+          논쟁 관리 엔진(부호 13)이 생성하는 합의 지도 JSON의 4가지 필수 필드 구조(사건번호, 합의_사실 배열, 합의_법리 배열, 미합의_쟁점 배열)와 이를 트리거 이력·프롬프트 위반 기록과 연계하여 AI 중재 엔진(부호 14)에 정형화된 인터페이스로 전달하는 파이프라인 전체는, OpenHash 증거 검증 이력과의 연동 구조와 함께 특허 출원일 이전에 공지된 선행 문헌에 개시된 바 없다는 것이 양 당사자 합의로 확정되었다(합의 사실 제3항).
+          <br><br>
+          피고의 신규성 결여 항변은 ① 합의 지도 JSON 구조 자체, ② 트리거·프롬프트 위반 기록 연계, ③ OpenHash 검증 해시 연동이라는 세 요소를 개별적으로만 비교하는 오류를 범한 것으로, <strong>이 세 요소가 유기적으로 결합된 데이터 처리 구조 전체를 선행 기술과 대비하지 않은 점에서 법리적 타당성이 없다.</strong> AI 중재 엔진는 원고 발명의 신규성이 인정된다고 만장일치로 판단한다.
+        </div>
+        <div class="j-law">
+          <span class="law">특허법 제29조 제1항</span>
+          <span class="law teal">대법원 2001후2658</span>
+          <span class="law gold">OpenHash 검증 증거 EV-001~EV-006</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="j-item">
+      <div class="ji-head">
+        <div class="ji-num">3</div>
+        <div class="ji-issue">D-003 — 청구항 기재의 명확성 (특허법 제42조 제4항)</div>
+        <span class="result-badge rb-partial">부분 인정 · 보정 권고</span>
+      </div>
+      <div class="ji-body">
+        <div class="j-reason">
+          특허법 제42조 제4항은 청구항이 명확하고 간결하게 기재될 것을 요구한다. 피고는 청구항 1, 3, 7에서 '<strong>소정의 유사도 임계값</strong>', '<strong>소정의 반복 횟수</strong>', '<strong>소정의 긴급 임계값</strong>' 등의 표현이 불명확하다고 주장하였다.
+          <br><br>
+          AI 중재 엔진의 판단은 다음과 같다. 발명의 상세한 설명(명세서 파트 B, 4.2절)에서 "유사도 95% 이상, 반복 3회 이상(트리거 T1)"과 "VHI 0.8 이상(트리거 T4)"이라는 구체적 수치가 명시되어 있으며, '소정의'라는 표현이 이 구체적 실시 예를 포괄하는 기능적 기재임이 명확하다. 대법원은 기능적 기재가 발명의 상세한 설명에서 구체적 수치로 뒷받침되는 경우 명확성 요건을 충족한다고 판시한 바 있다(대법원 2007후1410 취지 참조).
+          <br><br>
+          다만, <strong>청구항 4의 '소정의 임계값(기각 확률)'에 대한 명확한 범위 기재가 필요</strong>하다는 피고의 지적은 일부 타당하다. 명세서 파트 B에 P(reject) ≥ 0.70(자동 철회 권고)이 기재되어 있으나, 청구항에 이를 명시적으로 반영하는 것이 명확성을 강화한다. AI 중재 엔진는 이 부분에 대하여 <strong>청구항 무효가 아닌 자발적 보정 권고</strong>를 발령한다. 특허청 심사 단계에서 보정을 통해 명확성을 강화할 수 있으며, 이는 원고에게 유리한 권고이다.
+        </div>
+        <div class="j-law">
+          <span class="law">특허법 제42조 제4항</span>
+          <span class="law teal">대법원 2007후1410 취지</span>
+          <span class="law">특허법 제47조 제1항(보정)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="j-item">
+      <div class="ji-head">
+        <div class="ji-num">4</div>
+        <div class="ji-issue">D-004 — 피고 실시 형태의 청구항 1 기술적 범위 속부</div>
+        <span class="result-badge rb-plaintiff">원고 인정 (일부)</span>
+      </div>
+      <div class="ji-body">
+        <div class="j-reason">
+          피고의 실시 형태가 특허청구항의 기술적 범위에 속하는지 여부는 청구항에 기재된 구성요소 전부를 피고의 실시 형태가 포함하는지를 기준으로 판단한다(구성요소 완비의 원칙, 特許 제97조 및 대법원 2001후1989 참조).
+          <br><br>
+          OpenHash 검증이 완료된 피고측 IAA 제출 증거(증거 패키지 JSON, 부호 94)를 분석한 결과: 피고의 실시 형태는 ① 원고측 AI 변호사(모듈 11)에 해당하는 구성, ② 피고측 AI 변호사(모듈 12)에 해당하는 구성, ③ NLP 기반 발언 파싱을 포함하는 구성(모듈 13 일부)을 포함하고 있으나, ④ <strong>6단계 규범 위계를 강제하는 위계 규칙 데이터베이스(부호 40)와 시스템 프롬프트의 결합 구성이 피고 시스템에 존재하지 않음</strong>이 확인되었다. 청구항 1의 종속 요건 중 규범 위계 강제 구성은 독립 청구항의 본질적 구성요소로서, 이를 결여한 피고의 실시 형태는 청구항 1의 기술적 범위에 <strong>문언적으로는 속하지 않는다.</strong>
+          <br><br>
+          그러나 피고의 실시 형태가 <strong>균등 침해(Doctrine of Equivalents)</strong>에 해당하는지 여부는, 규범 위계 DB를 다른 기술적 수단(예: 하드코딩된 법률 우선순위 리스트)으로 치환한 경우 실질적으로 동일한 기능·방법·결과를 달성하는지 여부에 따라 별도로 판단되어야 한다. 이 쟁점에 대해서는 <strong>인간 특허 심판관의 추가 심리</strong>가 필요하다고 AI 중재 엔진는 판단하며, 인간 전문가 이관 조건(부호 85) 중 (3)번(새로운 법적 쟁점, 판례 충분하지 않은 경우)을 선언한다. 단, 문언적 직접 침해는 인정되지 않는다.
+        </div>
+        <div class="j-law">
+          <span class="law">특허법 제97조</span>
+          <span class="law red">특허법 제94조(특허권 침해)</span>
+          <span class="law teal">대법원 2001후1989</span>
+          <span class="law gold">균등 침해 판단 → 인간 심판관 이관</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="j-item">
+      <div class="ji-head">
+        <div class="ji-num">5</div>
+        <div class="ji-issue">ADR Mode의 헌법적 적법성 (헌법 제101조, 제27조)</div>
+        <span class="result-badge rb-plaintiff">원고 인정</span>
+      </div>
+      <div class="ji-body">
+        <div class="j-reason">
+          피고는 K-OpenLaw의 ADR Mode가 헌법 제101조 사법권 독립 및 제27조 재판청구권을 침해한다고 주장하였다. AI 중재 엔진는 이 주장을 다음과 같은 이유로 기각한다.
+          <br><br>
+          헌법 제101조는 사법권이 법원에 귀속됨을 선언한 것이나, 이는 <strong>당사자가 자유로운 의사로 법원 이외의 분쟁 해결 수단에 합의하는 것 자체를 금지하지 않는다.</strong> 중재법 제3조는 당사자 합의에 의한 중재를 명시적으로 허용하고 있으며, 대법원은 당사자 자치에 의한 ADR의 적법성을 일관되게 인정하여 왔다.
+          <br><br>
+          원고 발명의 제2 운용 모드(ADR Mode)는 <strong>당사자의 '명시적 합의'를 필수 전제</strong>로 하며, 합의 없이는 시스템이 구속력 있는 판정을 내릴 수 없다. 이는 당사자의 자유로운 의사에 기반한 것으로, 헌법 제27조의 재판청구권은 포기 또는 제한이 아니라 당사자의 자발적 선택에 의한 권리 행사 형식의 변경에 해당한다. 더불어 제1 운용 모드(법원 연계형)는 인간 판사의 최종 확인을 시스템 레벨에서 강제하여(부호 85) 사법권을 기술적으로 보장한다.
+          <br><br>
+          <strong>위계 규칙 데이터베이스(부호 40)는 헌법(Level 3)을 최고 국내법 규범으로 강제 적용하므로, AI 중재 엔진 자체가 헌법에 반하는 판정을 구조적으로 도출할 수 없도록 설계되어 있다.</strong> 이는 ADR Mode가 민법 제103조(반사회적 법률행위)에 해당하지 않음을 더욱 강화하는 근거다.
+        </div>
+        <div class="j-law">
+          <span class="law">헌법 제101조</span>
+          <span class="law red">헌법 제27조</span>
+          <span class="law">중재법 제3조</span>
+          <span class="law">민법 제103조</span>
+          <span class="law gold">위계 규칙 DB Level 1~3 적용</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="j-item">
+      <div class="ji-head">
+        <div class="ji-num">6</div>
+        <div class="ji-issue">PDV + OpenHash + AI비서 구성의 독립 특허성 (청구항 11~14)</div>
+        <span class="result-badge rb-plaintiff">원고 인정</span>
+      </div>
+      <div class="ji-body">
+        <div class="j-reason">
+          청구항 11~14로 구성된 PDV·OpenHash·PAA/IAA 결합 구조는 기존 블록체인 기반 증거 보존 기술과 다음의 점에서 구별된다. ① <strong>SHA-256 재해싱 기반 확률적 4계층 선택 알고리즘</strong>(Layer 1 Edge ~ Layer 4 Archive)은 종래 블록체인의 전체 노드 검증 방식과 구별되는 신규 분산 원장 구조다. ② <strong>BLS 서명 + Merkle Proof 결합에 의한 계층 간 상호 검증</strong>은 에너지를 98.5% 절감하면서 평균 4ms의 응답 시간을 달성하는 것으로, 종래 기술 대비 현저한 효과를 보인다. ③ <strong>PAA의 Gate-Keeper 원칙</strong>과 사용자 명시적 동의 없는 데이터 전달 금지 구조는 개인정보 보호법제 정합성 확보라는 독립적 기술적 효과를 달성한다.
+          <br><br>
+          피고가 제시한 종래 블록체인 기술은 에너지 절감 없는 전체 노드 검증, 4계층 선택 구조 부재, Gate-Keeper AI 비서 개념의 부재라는 점에서 청구항 11의 구성 전체와 동일하지 않다. <strong>AI 중재 엔진는 청구항 11~14가 독립적으로 신규성 및 진보성을 충족한다고 만장일치로 판단한다.</strong>
+        </div>
+        <div class="j-law">
+          <span class="law">특허법 제29조 제1항·제2항</span>
+          <span class="law">개인정보 보호법 제17조</span>
+          <span class="law teal">OpenHash 기술 명세 (명세서 파트 B §2(바))</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- VII. 인간 판사 이관 사항 -->
+<div class="human-box">
+  <div class="hb-head">
+    <span class="material-icons mi">person</span>
+    인간 전문가(특허 심판관) 이관 선언 (부호 85) — D-004 균등 침해 쟁점
+  </div>
+  <div class="hb-body">
+    AI 중재 엔진(GPT-4o + Gemini)는 <strong>쟁점 D-004 중 균등 침해 해당 여부</strong>에 관하여, 중재 엔진 내부 합의 라운드 R3(집중 조율, 부호 82)에서 <strong>인간 판사 이관 조건 (3)번 — "새로운 법적 쟁점이 제기되어 판례나 학설이 충분하지 않은 경우"</strong>를 선언하고, 해당 쟁점을 특허 심판관에게 이관하기로 의결하였다.
+    <br><br>
+    이관 이유: 규범 위계 DB 검색 결과, AI 분야에서의 균등 침해(Doctrine of Equivalents) 판단 기준 — 특히 '위계 규칙 데이터베이스'와 '하드코딩 우선순위 리스트'가 기능적으로 동등한지 여부에 관한 국내 판례 및 대법원 확립 기준이 충분하지 않다. 이 쟁점은 AI 특허 법률 체계의 형성 단계에 있는 새로운 법적 쟁점에 해당한다.
+    <br><br>
+    이관 시 첨부 자료: AI 중재 엔진 중간 검토 결과 JSON(합의 지도 전체, 피고 실시 형태 기술 분석, 청구항 1 구성요소 대비표).
+  </div>
+</div>
+
+<!-- VIII. 주문 (Disposition) -->
+<div class="disposition">
+  <div class="disp-title">
+    <span class="material-icons">gavel</span>
+    주 문 (Disposition) — K-OpenLaw AI 중재 엔진 최종 판정
+  </div>
+  <ul class="disp-list">
+    <li>원고 발명(이종 대형언어모델 기반 대립 논증·판정 자동화 시스템 및 그 운용 방법, 출원일 2026. 3. 4.)의 청구항 1 내지 14는 특허법 제29조 제1항의 <strong>신규성</strong>을 충족한다.</li>
+    <li>원고 발명의 청구항 1 내지 10(5모듈 통합 구조)은 특허법 제29조 제2항의 <strong>진보성</strong>을 충족한다. 피고의 진보성 결여 항변을 기각한다.</li>
+    <li>원고 발명의 청구항 11 내지 14(PDV·OpenHash·AI비서 구성)는 독립적으로 신규성 및 진보성을 충족하며, <strong>독립 청구항으로서의 특허 등록 가능성이 인정된다.</strong></li>
+    <li>피고의 실시 형태는 청구항 1의 <strong>문언적 기술적 범위에 속하지 아니한다.</strong> 단, 균등 침해 해당 여부는 특허 심판관에게 이관하여 별도로 판단한다.</li>
+    <li>K-OpenLaw 제2 운용 모드(ADR Mode)는 <strong>헌법 제101조 및 제27조에 위반되지 아니한다.</strong> 피고의 위헌성 주장을 기각한다.</li>
+    <li>청구항 4의 '소정의 임계값' 기재에 대해서는 <strong>명확성 강화를 위한 자발적 보정을 원고에게 권고</strong>한다. 이는 무효 사유가 아니다.</li>
+    <li>쟁점 D-004(균등 침해)는 <strong>특허 심판관(인간 전문가, 부호 85)에게 이관</strong>한다. 이관 시 중간 검토 결과 JSON을 첨부한다.</li>
+    <li>피고측 AI 변호사(DeepSeek)의 시스템 프롬프트 위반(규범 역전 5회, 강제 수용 조건 B·D 미이행 등) 이력을 판결문에 공식 기록하며, 이는 향후 K-OpenLaw 시스템의 모델 학습 데이터에 반영된다.</li>
+    <li>본 판결은 <strong>당사자 간 계약적 구속력을 가지는 확정적 결정</strong>으로서, 양 당사자는 이에 구속된다. 다만 이관 쟁점(D-004)에 대해서는 특허 심판관의 결정이 최종적이다.</li>
+  </ul>
+  <div class="disp-note">
+    ※ 본 판결은 K-OpenLaw 제2 운용 모드(Consensual ADR Mode)에 따라 당사자의 사전 명시적 합의를 기초로 도출된 것으로, 해당 합의의 범위 내에서 계약적 효력을 가진다. 대한민국 특허청의 공식 특허 등록 여부는 특허청 심사 절차에 따른다.
+  </div>
+</div>
+
+<!-- IX. 종합 판단 의견 -->
+<div class="verdict-box">
+  <div class="vb-head">
+    <span class="material-icons">stars</span>
+    AI 중재 엔진 종합 판단 의견 — GPT-4o + Gemini (만장일치)
+  </div>
+  <div class="vb-body">
+    <p>
+      본 발명은 법률 분쟁 해결에 AI를 활용하려는 종래의 시도들이 공통적으로 지적받아 온 근본적 한계들 — 단일 LLM의 편향, 무한 논쟁의 방지 메커니즘 부재, 하위 규범의 상위 규범 훼손, 취약계층 보호 자동화의 부재 — 을 <strong>하나의 통합 아키텍처 안에서 기술적으로 해결하였다는 점에서 특허법적 의의가 크다.</strong>
+    </p>
+    <p>
+      특히 6단계 규범 위계 강제 메커니즘(위계 규칙 데이터베이스, 부호 40)은 법률 AI 시스템의 고질적 문제인 '하위 규범 우선 적용으로 인한 불합리한 결과'를 시스템 레벨에서 원천 차단한다는 점에서, <strong>법적 정확성과 헌법적 정당성을 동시에 추구하는 독창적 기술 철학을 구현</strong>하고 있다. 실시 예 2(기초생활수급자 vs. 공기업 임대차 분쟁 사건)는 동일 사실관계에서 인간 법원의 판단과 AI 중재 엔진의 판단이 어떻게 다를 수 있는지를 실증적으로 보여주며, 이는 본 발명의 산업적 실시 가능성과 사회적 가치를 설득력 있게 뒷받침한다.
+    </p>
+    <p>
+      피고측 AI 변호사(DeepSeek)는 본 사건의 논쟁 과정에서 5회의 규범 역전 경고를 누적하고 강제 수용 조건을 반복적으로 위반하였다. 이는 역설적으로 원고 발명이 해결하고자 한 <strong>'하위 규범에 매몰된 AI 변호사'의 문제가 실재함을 스스로 실증</strong>한 것으로, 본 발명의 기술적 과제와 해결 수단의 필요성을 더욱 강화한다.
+    </p>
+    <p>
+      AI 중재 엔진는 본 발명이 <strong>법률·의료·특허·금융·행정 분야</strong> 전반에 걸쳐 산업상 이용 가능하며(특허법 제29조 제1항 본문), 특히 경제적 취약계층의 사법 접근성 향상과 헌법 제11조(평등권)·제27조(재판청구권)의 실질적 구현에 기여할 수 있는 사회적 가치를 가진 발명임을 확인한다. 이상의 이유로 주문과 같이 판정한다.
+    </p>
+  </div>
+</div>
+
+<!-- X. 시스템 서명 및 무결성 기록 -->
+<div class="sys-meta">
+  <div class="sm-title">🔐 판결문 무결성 기록 (OpenHash 네트워크, 부호 91)</div>
+  판결문 SHA-256 해시: [OpenHash 네트워크 Layer 4 Archive 등록 완료 — 위변조 기술적 불가]<br>
+  AI 중재 엔진 구성: GPT-4o (LLM-C) + Gemini (LLM-D) — 제조사 중복 없음, 원고·피고측 AI 변호사와 제조사 중복 없음<br>
+  중재 엔진 내부 합의: 라운드 R2(수용·반박·질문, 부호 81) 단계에서 전 쟁점 만장일치 달성<br>
+  인간 판사 이관: D-004(균등 침해) 단 1개 쟁점 이관 — 이관 선언 JSON 첨부<br>
+  논쟁 관리 엔진(부호 13) 버전: v2.0 · 법원 LLM(부호 15) 버전: v1.0<br>
+  분석 선고 타임스탬프: 2026-03-06T09:00:00Z<br>
+  불복 실익 지수(CRI): 0.12 — 임계값(0.30) 미만, 법원 소 제기 실익 없음 자동 고지
+</div>
+
+<footer>
+  <div class="footer-seal"><span class="material-icons mi">verified</span>K-OpenLaw AI Tribunal · 분석 확정 · OpenHash 무결성 보장</div>
+  <div>본 판결문은 K-OpenLaw 시스템(파트A·B·C 특허출원서, 출원일 2026. 3. 4.)에 기재된 AI 중재 엔진(GPT-4o + Gemini, 부호 14)가 생성하였으며, 당사자 합의에 따른 ADR 효력을 가집니다.</div>
+</footer>
+
+</div>
+</body>
+</html>

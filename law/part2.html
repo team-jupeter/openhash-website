@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>원고 주장 및 손해배상 산정 (2/13)</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Noto Sans KR','Roboto',sans-serif; background:#f5f7fa; color:#1e2a3e; line-height:1.7; padding:2rem 1rem; display:flex; justify-content:center; }
+        .case-part { max-width:1200px; width:100%; background:white; border-radius:24px; box-shadow:0 8px 30px rgba(0,20,40,0.06); overflow:hidden; border:1px solid #e5e9f0; }
+        .case-header { background:#f0f4fa; padding:2rem 2.5rem; border-bottom:1px solid #dce5f0; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+        .case-badge { background:#1e3a5f; color:white; font-size:0.8rem; font-weight:600; padding:0.3rem 1rem; border-radius:30px; }
+        .case-title { font-size:1.8rem; font-weight:500; color:#0b1e33; margin:0; }
+        .case-content { padding:2.5rem; }
+        .info-row { display:flex; margin-bottom:0.5rem; }
+        .info-label { font-weight:600; width:100px; color:#1e3a5f; }
+        .info-value { flex:1; }
+        h3 { margin:2rem 0 1rem; color:#1e3a5f; font-size:1.3rem; border-bottom:2px solid #e5e9f0; padding-bottom:0.5rem; }
+        h4 { margin:1.5rem 0 0.5rem; color:#1e3a5f; font-size:1.1rem; }
+        .damage-table { width:100%; border-collapse:collapse; margin:1.5rem 0; }
+        .damage-table th { background:#eef2f9; padding:0.8rem; border:1px solid #d0dbea; }
+        .damage-table td { padding:0.8rem; border:1px solid #d0dbea; text-align:right; }
+        .damage-table td:first-child { text-align:left; }
+        .quote { background:#edf2f7; padding:1rem; border-radius:8px; font-style:italic; margin:1rem 0; }
+        .highlight { background:#f0f7ff; border-left:4px solid #d4a017; padding:1rem; margin:1.5rem 0; }
+        .citation { font-size:0.9rem; color:#4e6a88; font-style:italic; margin-top:0.3rem; border-top:1px dashed #cbd5e3; padding-top:0.3rem; }
+        ul { margin-left:1.5rem; margin-bottom:1rem; }
+        li { margin-bottom:0.3rem; }
+        hr { border:none; border-top:1px solid #e5e9f0; margin:1.5rem 0; }
+        .twelve-points { background:#f8fafd; border-left:5px solid #1e3a5f; padding:1.2rem; margin:1.2rem 0; }
+    </style>
+</head>
+<body>
+    <div class="case-part">
+        <div class="case-header">
+            <span class="case-badge">Part 2/13</span>
+            <h1 class="case-title">⚖️ 원고의 주장 및 손해배상 산정</h1>
+        </div>
+        <div class="case-content">
+            <!-- 원본 part2 내용 모두 유지 -->
+            <h3>📌 원고 주장의 요지</h3>
+            <p>원고(전직 정밀기계 설계 엔지니어, 중대 질환자)는 피고(모 공기업)의 다음과 같은 불법행위로 인해 막대한 정신적·물질적 피해를 입었다고 주장한다.</p>
+            
+            <!-- 12대 상고이유와 연결하여 보강 -->
+            <div class="twelve-points">
+                <p><strong>상고이유 12개 쟁점 반영:</strong></p>
+                <ul>
+                    <li><strong>제1점 (면제재산 보호 위반):</strong> 파산선고 후 면제재산으로 결정된 임차보증금을 파산관재인 동의 없이 피고가 임의 공제·처분한 것은 채무자회생법 제335조, 제383조 위반.</li>
+                    <li><strong>제2점 (면책 소급효 부정):</strong> 면책결정(2023.8.25.)은 파산선고 시(2022.6.30.)로 소급됨에도, 원심은 면책 전 공제를 이유로 면책 대상에서 제외하는 오류.</li>
+                    <li><strong>제3점 (확정적 고의 불법행위):</strong> 피고는 원고의 면제재산 고지, 불법성 경고, 파산관재인 확인에도 불구하고 보증금을 처분한 확정적 고의 불법행위자.</li>
+                    <li><strong>제4점 (장래청구권 오용):</strong> 채무자회생법 제417조(상계 규정)를 당연공제에 유추적용한 것은 법리 오해.</li>
+                    <li><strong>제5점 (공제권 개념 창출):</strong> 원심이 '상계권보다 강한 담보적 효력의 공제권'이라는 법률에 없는 개념을 창출한 위법.</li>
+                    <li><strong>제6점 (파산선고 이전 퇴거):</strong> 피고의 퇴거 요구는 파산선고(2022.6.30.) 이전인 2022.5.부터 시작되어, 민법 제637조의 적용 자체가 부적합.</li>
+                    <li><strong>제7점 (강박 퇴거·문서 위변조):</strong> 10개월간 퇴거 압박, 명도소송, 보증금 압류 예고는 강박(민법 제110조)에 해당하며, 피고 제출 문서는 위변조 의혹.</li>
+                    <li><strong>제8점 (관리비 실체 오인):</strong> 피고가 공제한 5,521,250원 중 약 98%는 통상적 관리비(월 4,500원)와 무관한 제3자 채무·임대인 부담 비용.</li>
+                    <li><strong>제9점 (구상권 성립 요건 누락):</strong> 민법 제481조 '변제할 정당한 이익'이 없는 피고의 대위변제에 구상권 불성립.</li>
+                    <li><strong>제10점 (변론주의 위반):</strong> 피고가 주장하지 않은 법리(장래청구권, 재단채권)를 원심이 독자 개발.</li>
+                    <li><strong>제11점 (공기업의 사회적 약자 보호 누락):</strong> 주택임대차보호법 제6조의2, 헌법 제34조 위반.</li>
+                    <li><strong>제12점 (소비자기본법 적용 누락):</strong> 피고의 확정적 고의 위법행위에 징벌적 손해배상(3배) 적용되어야 함.</li>
+                </ul>
+            </div>
+
+            <ul>
+                <li><strong>면제재산 불법 처분</strong> – 원고에 대한 파산선고(2022. 6. 30.) 후 법원이 면제재산으로 결정한 임차보증금 890만 원을 피고가 파산관재인과의 협의 없이 임의로 공제·처분하였다.
+                    <ul>
+                        <li>피고가 공제한 항목(제3자와의 소송비용, 임대주택 수선비용, 관리사무소 설치 및 운영 비용)은 모두 원고의 파산절차에서 이미 파산채권으로 신고된 채무에 해당한다.</li>
+                        <li>따라서 피고가 이를 대위변제할 법적 의무나 정당한 이익이 없으며, 구상권을 행사할 수 없다.</li>
+                        <li>특히 원고와 무관한 제3자 간의 소송비용까지 공제한 것은 부당하다.</li>
+                    </ul>
+                </li>
+                <li><strong>강제 퇴거 및 28개월간 극한 생활 강요</strong> – 피고는 2022년 중순부터 2023년 초까지 10여 차례 퇴거 요구, 임차보증금 압류 예고, 명도소송 제기(2023. 1. 19.) 등 사실상 강제력을 행사하여 원고를 퇴거시켰으며, 보증금을 반환하지 않아 원고는 2022년 중순부터 2024년까지 약 28개월간 폐농가 등에서 비인간적 생활을 강요당했다.</li>
+                <li><strong>정신적 고통</strong> – 위와 같은 과정에서 원고는 심각한 정신적 충격을 받아 정신과 치료가 필요하게 되었다. (정신과 진단서 제출)</li>
+                <li><strong>허위 주장 및 문서위조</strong> – 피고는 원고의 퇴거가 ‘협의에 의한 자발적 퇴거’라고 허위 주장하고, 원고의 서명이 날인된 빈 문서에 사후에 내용을 기재하여 법원에 증거로 제출하는 등 법원을 기만하였다.</li>
+            </ul>
+
+            <h3>💰 손해배상 산정 내역</h3>
+            <p>원고는 아래와 같이 재산적 손해와 정신적 손해를 산정하여 피고에게 배상을 청구하고 있다. (단위: 원)</p>
+
+            <table class="damage-table">
+                <thead>
+                    <tr><th>손해 항목</th><th>세부 내역</th><th>금액</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>부당 공제된 임차보증금</td><td>미반환 보증금 원금</td></tr>
+                    <tr><td>면제재산 침해로 인한 손해</td><td>법정 이자 및 지연손해금 (2023. 3. 31.부터)</td></tr>
+                    <tr><td>기술 개발 중단 손실</td><td>정밀기계 설계 프로젝트 중단으로 인한 기대 수익 상실 (특허 9건 출원, 투자 유치 지연)</td></tr>
+                    <tr><td>가재도구 폐기 비용</td><td>강제 퇴거 과정에서 폐기한 물품</td></tr>
+                    <tr><td>정신적 손해 (위자료)</td><td>28개월간 극한 생활, 정신과 치료비</td></tr>
+                    <tr><td>소송비용 및 증거수집 비용</td><td>문서위조 대응, 정보공개청구 등</td></tr>
+                    <tr style="background:#f0f4fa; font-weight:700;"><td>합계</td><td></td></tr>
+                </tbody>
+            </table>
+
+            <div class="highlight">
+                <p style="font-weight:500;">※ 원고는 소비자기본법 제55조에 따라 피고의 고의적 불법행위에 대해 손해액의 3배까지 배상을 청구할 수 있다고 주장하며, 예비적으로 274,491,624원(91,497,208 × 3)의 배상을 구하고 있다.</p>
+            </div>
+
+            <h4>📘 손해배상 법적 근거</h4>
+            <ul>
+                <li><strong>민법 제750조</strong> (불법행위로 인한 손해배상) – 피고의 고의·과실로 원고에게 손해가 발생함.</li>
+                <li><strong>민법 제751조</strong> (재산 이외의 손해배상) – 정신적 고통에 대한 위자료.</li>
+                <li><strong>채무자회생법 제383조, 제406조</strong> – 면제재산 보호 의무 위반.</li>
+                <li><strong>소비자기본법 제55조</strong> (징벌적 손해배상) – 사업자의 고의적 불법행위에 대해 손해액의 3배까지 배상 가능.</li>
+            </ul>
+
+            <h4>📌 피고의 공제 주장에 대한 반박 (part12 대비)</h4>
+            <p>피고는 관리비·수선비 등을 대위변제하였다며 임차보증금에서 공제해야 한다고 주장한다. 그러나:</p>
+            <ul>
+                <li>공동주택 수선비는 임대인(피고) 부담이므로 ‘변제할 정당한 이익’이 없음(민법 제481조).</li>
+                <li>원고와 제3자 간의 소송비용은 피고의 사적 채무가 아니라 원고의 파산채권에 포함되어 있으므로, 피고가 이를 대위변제할 권한이 없음.</li>
+                <li>면제재산에 대해서는 파산관재인만이 관리처분권을 가지므로, 피고의 임의 공제는 무효.</li>
+                <li>면책결정(2023. 8. 25.) 이후에는 자연채무가 된 채권을 상계·공제할 수 없음(대법원 판례).</li>
+                <li>피고는 "원고의 퇴거가 자발적"이라고 주장하나, 원고는 퇴거 당일 자발적 퇴거 문서 서명을 거절하였고, 이는 다툼 없는 사실임.</li>
+            </ul>
+
+        </div>
+    </div>
+</body>
+</html>

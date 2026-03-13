@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI City Inc. — K-OpenLaw 사업 소개서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #111111; --g1: #333333; --g2: #555555; --g3: #888888;
+  --g4: #bbbbbb; --g5: #e0e0e0; --g6: #f5f5f3; --white: #fafaf8;
+  --navy: #1b3a6b;
+  --serif: 'Noto Serif KR','Georgia',serif;
+  --sans: 'Noto Sans KR','Apple SD Gothic Neo',sans-serif;
+  --max-w: 820px; --ph: 2.8rem;
+}
+html { font-size: 15px; scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--white); color: var(--black); line-height: 1.85; -webkit-font-smoothing: antialiased; }
+a { color: var(--navy); text-underline-offset: 2px; }
+a:hover { color: var(--black); }
+.wrap { max-width: var(--max-w); margin: 0 auto; padding: 3.5rem var(--ph) 6rem; }
+
+/* COVER */
+.cover { padding-bottom: 2.8rem; margin-bottom: 3rem; border-bottom: 3px double var(--black); }
+.cover-eye { font-size: .7rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--g3); margin-bottom: 1.6rem; }
+.cover-h1 { font-family: var(--serif); font-size: 2.2rem; font-weight: 700; line-height: 1.25; letter-spacing: -.025em; margin-bottom: .4rem; }
+.cover-sub { font-size: .95rem; font-weight: 300; color: var(--g2); margin-bottom: 2.2rem; }
+.cover-grid { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--g5); border-left: 1px solid var(--g5); }
+.cv { border-right: 1px solid var(--g5); border-bottom: 1px solid var(--g5); padding: .75rem 1rem; }
+.cv dt { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--g3); margin-bottom: .2rem; }
+.cv dd { font-size: .88rem; font-weight: 500; color: var(--g1); line-height: 1.4; }
+
+/* TOC */
+.toc-box { border: 1px solid var(--g5); background: var(--g6); padding: 1.6rem 2rem; margin-bottom: 3.8rem; }
+.toc-lbl { font-size: .68rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--g3); margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--g5); }
+.toc-ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; column-gap: 2.5rem; }
+.toc-ul li { display: flex; align-items: baseline; gap: .5rem; padding: .2rem 0; border-bottom: 1px dotted var(--g5); font-size: .83rem; break-inside: avoid; }
+.toc-ul li:last-child { border-bottom: none; }
+.toc-n { font-family: var(--serif); font-size: .7rem; color: var(--g3); min-width: 1.4rem; flex-shrink: 0; }
+.toc-ul a { color: var(--g1); text-decoration: none; }
+.toc-ul a:hover { color: var(--navy); text-decoration: underline; }
+
+/* SECTION */
+.sec { margin-bottom: 3.8rem; padding-bottom: 3rem; border-bottom: 1px solid var(--g5); }
+.sec:last-of-type { border-bottom: none; }
+.sec-eye { font-size: .68rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--g3); display: block; margin-bottom: .45rem; }
+.sec-h2 { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; line-height: 1.35; color: var(--black); border-bottom: 2px solid var(--black); padding-bottom: .55rem; margin-bottom: 1.8rem; letter-spacing: -.01em; }
+.sec--pre .sec-h2 { border-bottom-color: var(--navy); }
+
+/* TEXT */
+.body { font-size: .92rem; color: var(--g1); line-height: 1.9; margin-bottom: 1rem; word-break: keep-all; }
+.body:last-child { margin-bottom: 0; }
+.subh { font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--g3); border-bottom: 1px solid var(--g5); padding-bottom: .3rem; margin: 2.2rem 0 .9rem; }
+.subh:first-child { margin-top: 0; }
+.itm { font-size: .92rem; font-weight: 700; color: var(--black); margin: 1.8rem 0 .5rem; }
+.itm:first-child { margin-top: 0; }
+
+/* LISTS */
+ul.dl { list-style: none; padding: 0; margin: .3rem 0 1rem; }
+ul.dl li { position: relative; padding-left: 1.2rem; font-size: .9rem; color: var(--g1); line-height: 1.85; word-break: keep-all; }
+ul.dl li::before { content: "—"; position: absolute; left: 0; color: var(--g4); font-size: .8rem; top: .05em; }
+ul.dot { list-style: none; padding: 0 0 0 1.5rem; margin: .2rem 0 .8rem; }
+ul.dot li { position: relative; padding-left: .9rem; font-size: .87rem; color: var(--g2); line-height: 1.8; word-break: keep-all; }
+ul.dot li::before { content: "·"; position: absolute; left: 0; color: var(--g4); font-weight: 700; }
+
+/* CALLOUT */
+.callout { border-left: 3px solid var(--navy); background: var(--g6); padding: 1.1rem 1.4rem; margin: 1.4rem 0; }
+.callout p { font-size: .9rem; color: var(--g1); line-height: 1.85; margin: 0; word-break: keep-all; }
+.callout p + p { margin-top: .5rem; }
+.callout strong { color: var(--black); }
+
+/* PREFACE */
+.pre-body { font-family: var(--serif); font-size: .96rem; line-height: 2.05; color: var(--g1); border-left: 3px solid var(--navy); padding-left: 1.5rem; }
+.pre-body p { margin-bottom: .9rem; }
+.pre-body p:last-child { margin-bottom: 0; }
+
+/* NOTE */
+.note { font-size: .76rem; color: var(--g3); border-top: 1px solid var(--g5); padding-top: .5rem; margin-top: 1rem; line-height: 1.65; word-break: keep-all; }
+
+/* TABLES */
+.tw { overflow-x: auto; margin: 1rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: .84rem; color: var(--g1); }
+thead tr { background: var(--black); color: #fff; }
+thead th { padding: .6rem .9rem; text-align: left; font-weight: 600; font-size: .78rem; letter-spacing: .04em; white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--g5); }
+tbody tr:nth-child(even) { background: var(--g6); }
+tbody tr:last-child { border-bottom: 2px solid var(--g4); }
+td { padding: .58rem .9rem; vertical-align: top; line-height: 1.7; word-break: keep-all; }
+td.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.b { font-weight: 600; color: var(--black); }
+tfoot tr { background: var(--g6); border-top: 2px solid var(--g4); }
+tfoot td { font-weight: 700; color: var(--black); padding: .6rem .9rem; }
+table.kv tbody tr:nth-child(even) { background: transparent; }
+table.kv td:first-child { font-weight: 600; color: var(--g1); width: 32%; white-space: nowrap; }
+
+/* PERF GRID */
+.pgrid { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid var(--g4); margin: 1.4rem 0; }
+.pc { padding: 1.2rem 1.3rem; border-right: 1px solid var(--g5); border-bottom: 1px solid var(--g5); }
+.pc:nth-child(3n) { border-right: none; }
+.pc:nth-last-child(-n+3) { border-bottom: none; }
+.pc-lbl { font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--g3); margin-bottom: .35rem; }
+.pc-old { font-size: .8rem; color: var(--g3); text-decoration: line-through; margin-bottom: .12rem; }
+.pc-new { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; color: var(--black); line-height: 1.2; margin-bottom: .15rem; }
+.pc-note { font-size: .74rem; color: var(--g3); line-height: 1.45; }
+
+/* FUND */
+.fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin: 1.2rem 0; }
+.fbox { border: 1px solid var(--g5); background: var(--g6); padding: 1.2rem 1.4rem; }
+.fbox-t { font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--g3); border-bottom: 1px solid var(--g4); padding-bottom: .45rem; margin-bottom: .85rem; }
+.fr { display: flex; justify-content: space-between; align-items: baseline; font-size: .84rem; padding: .22rem 0; border-bottom: 1px dotted var(--g5); gap: .5rem; }
+.fr:last-child { border-bottom: none; }
+.fk { color: var(--g2); flex-shrink: 0; }
+.fv { font-weight: 600; color: var(--black); text-align: right; }
+
+/* TIMELINE */
+.tl { margin: .8rem 0; }
+.tl-y { font-family: var(--serif); font-size: .98rem; font-weight: 700; color: var(--black); border-bottom: 1px solid var(--g4); padding-bottom: .3rem; margin: 1.8rem 0 .8rem; }
+.tl-y:first-child { margin-top: 0; }
+.tl-r { display: flex; gap: 1rem; font-size: .88rem; line-height: 1.75; padding: .28rem 0; border-bottom: 1px dotted var(--g5); word-break: keep-all; }
+.tl-r:last-child { border-bottom: none; }
+.tl-q { font-size: .72rem; font-weight: 700; color: var(--g3); min-width: 2.8rem; flex-shrink: 0; padding-top: .08em; }
+.tl-d { color: var(--g1); }
+
+/* CONCLUSION */
+.concl { border: 2px solid var(--black); padding: 2rem 2.2rem; margin-top: 1.4rem; }
+.concl-t { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--black); padding-bottom: .5rem; margin-bottom: 1.2rem; border-bottom: 1px solid var(--g5); }
+.kpi { list-style: none; margin: 0 0 1.4rem; }
+.kpi li { display: flex; align-items: baseline; gap: .8rem; font-size: .9rem; padding: .28rem 0; border-bottom: 1px dotted var(--g5); line-height: 1.75; word-break: keep-all; }
+.kpi li:last-child { border-bottom: none; }
+.kpi-k { font-size: .76rem; font-weight: 700; color: var(--g3); min-width: 8rem; flex-shrink: 0; }
+.kpi-v { font-weight: 600; color: var(--black); }
+.kpi-s { font-size: .78rem; color: var(--g3); }
+.cta-bl { border-top: 1px solid var(--g5); padding-top: 1.2rem; margin-top: 1.2rem; }
+.cta-r { display: flex; align-items: baseline; gap: 1rem; font-size: .88rem; padding: .25rem 0; border-bottom: 1px dotted var(--g5); word-break: keep-all; }
+.cta-r:last-child { border-bottom: none; }
+.cta-k { font-size: .72rem; font-weight: 700; letter-spacing: .08em; color: var(--g3); min-width: 7.5rem; flex-shrink: 0; }
+.cta-v { color: var(--g1); font-weight: 500; }
+.closing { margin-top: 1.6rem; font-family: var(--serif); font-size: .94rem; font-style: italic; line-height: 2; color: var(--g1); word-break: keep-all; }
+
+/* FOOTER */
+.footer { margin-top: 3.5rem; padding-top: 1.4rem; border-top: 2px solid var(--black); display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; font-size: .82rem; }
+.contact dt { font-weight: 700; font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; color: var(--g3); margin-top: .6rem; }
+.contact dt:first-child { margin-top: 0; }
+.contact dd { margin: 0; color: var(--g1); line-height: 1.55; }
+.disc { border-left: 1px solid var(--g5); padding-left: 1.5rem; font-size: .75rem; color: var(--g3); line-height: 1.75; word-break: keep-all; }
+.disc p + p { margin-top: .5rem; }
+
+/* PRINT */
+@media print {
+  body { background: #fff; font-size: 11pt; }
+  .wrap { padding: 0; max-width: 100%; }
+  .toc-box { display: none; }
+  a { color: inherit; text-decoration: none; }
+  .sec { page-break-inside: avoid; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  :root { --ph: 1.2rem; }
+  .cover-grid { grid-template-columns: 1fr 1fr; }
+  .toc-ul { grid-template-columns: 1fr; }
+  .pgrid { grid-template-columns: 1fr 1fr; }
+  .pc:nth-child(2n) { border-right: none; }
+  .fgrid { grid-template-columns: 1fr; }
+  .footer { grid-template-columns: 1fr; }
+  .disc { border-left: none; padding-left: 0; border-top: 1px solid var(--g5); padding-top: 1rem; }
+  .cover-h1 { font-size: 1.65rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 표지 -->
+<header class="cover">
+  <p class="cover-eye">AI City Inc. &nbsp;·&nbsp; 투자 유치용 사업 소개서 &nbsp;·&nbsp; 기밀 문서</p>
+  <h1 class="cover-h1">K-OpenLaw<br>사법 보조 시스템 사업 소개서</h1>
+  <p class="cover-sub">Automated Judicial System Based on OpenHash + Heterogeneous LLM Architecture</p>
+  <dl class="cover-grid">
+    <div class="cv"><dt>회사명</dt><dd>AI City Inc.</dd></div>
+    <div class="cv"><dt>소재지</dt><dd>제주 한림읍 금능남로 3</dd></div>
+    <div class="cv"><dt>문서 버전</dt><dd>v1.2 &nbsp;|&nbsp; 2026년 3월</dd></div>
+    <div class="cv"><dt>설립 자본금</dt><dd>₩1,000,000</dd></div>
+    <div class="cv"><dt>목표 모집 총액</dt><dd>₩200,000,000,000</dd></div>
+    <div class="cv"><dt>제품 URL</dt><dd><a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a></dd></div>
+  </dl>
+</header>
+
+<!-- 목차 -->
+<nav class="toc-box">
+  <p class="toc-lbl">목차 (Table of Contents)</p>
+  <ul class="toc-ul">
+    <li><span class="toc-n">서</span><a href="#pre">서문 — 문명의 전환</a></li>
+    <li><span class="toc-n">1</span><a href="#s1">회사 개요</a></li>
+    <li><span class="toc-n">2</span><a href="#s2">미션과 비전</a></li>
+    <li><span class="toc-n">3</span><a href="#s3">기존 사법 시스템의 구조적 한계</a></li>
+    <li><span class="toc-n">4</span><a href="#s4">핵심 기술 스택</a></li>
+    <li><span class="toc-n">5</span><a href="#s5">검증된 성능 — 3대 혁신</a></li>
+    <li><span class="toc-n">6</span><a href="#s6">시장 분석</a></li>
+    <li><span class="toc-n">7</span><a href="#s7">K-OpenLaw가 바꾸는 일상</a></li>
+    <li><span class="toc-n">8</span><a href="#s8">법조계와의 상생</a></li>
+    <li><span class="toc-n">9</span><a href="#s9">사업화 전략</a></li>
+    <li><span class="toc-n">10</span><a href="#s10">재무 계획 및 가치 전망</a></li>
+    <li><span class="toc-n">11</span><a href="#s11">자금 조달 계획</a></li>
+    <li><span class="toc-n">12</span><a href="#s12">투자 포인트</a></li>
+    <li><span class="toc-n">13</span><a href="#s13">로드맵</a></li>
+    <li><span class="toc-n">14</span><a href="#s14">리스크 및 대응 방안</a></li>
+    <li><span class="toc-n">15</span><a href="#s15">결론 — 투자 제안</a></li>
+  </ul>
+</nav>
+
+<!-- 서문 -->
+<section class="sec sec--pre" id="pre">
+  <span class="sec-eye">서문</span>
+  <h2 class="sec-h2">문명의 전환 — 법의 장벽을 넘어 국민 주권의 시대로</h2>
+  <div class="pre-body">
+    <p>우리는 지금까지 '법'이라는 이름의 거대한 성벽 앞에 서 있었습니다. 복잡한 법률 용어, 수년이 걸리는 재판 과정, 그리고 감당하기 어려운 소송 비용까지. 일반 국민에게 법은 보호막이기보다 통과하기 힘든 관문에 가까웠습니다.</p>
+    <p>하지만 이제 기술이 그 성벽을 허뭅니다. <strong>K-OpenLaw</strong>는 인공지능(AI)과 분산 원장(OpenHash) 기술의 결합을 통해, 헌법과 법률 분석의 능력과 권한을 모든 국민 개개인의 손에 안겨 드립니다. 이것은 단순한 기술의 진보가 아닙니다.</p>
+    <p>헌법 제27조가 보장하는 <strong>'신속하고 공정한 재판을 받을 권리'</strong>를 실질적으로 구현하는 사법 지원 인프라의 혁명입니다.</p>
+    <p>기술이 정의의 토대가 되는 시대, K-OpenLaw가 그 문을 열었습니다.</p>
+  </div>
+</section>
+
+<!-- 1. 회사 개요 -->
+<section class="sec" id="s1">
+  <span class="sec-eye">제 1 조</span>
+  <h2 class="sec-h2">회사 개요 (Company Overview)</h2>
+  <div class="tw">
+    <table class="kv">
+      <tbody>
+        <tr><td>회사명</td><td>AI City Inc.</td></tr>
+        <tr><td>소재지</td><td>제주특별자치도 제주시 한림읍 금능남로 3</td></tr>
+        <tr><td>설립 목적</td><td>OpenHash(분산 원장 기술)과 AI의 융합을 통한 사회 전 부문의 자동화</td></tr>
+        <tr><td>첫 번째 상품</td><td>K-OpenLaw (사법 AI 자동화 시스템) &nbsp;·&nbsp; <a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a></td></tr>
+        <tr><td>설립 자본금</td><td>금 일백만 원정 (₩1,000,000)</td></tr>
+        <tr><td>총발행 예정 주식</td><td>보통주 20,000,000주 (2천만 주)</td></tr>
+        <tr><td>주당 공모가</td><td>금 일만 원정 (₩10,000)</td></tr>
+        <tr><td>목표 모집 총액</td><td>금 이천억 원정 (₩200,000,000,000)</td></tr>
+        <tr><td>사업 분야</td><td>AI 인프라, 분산 원장 기술</td></tr>
+        <tr><td>특허 출원</td><td>20건 이상 국내 출원 완료 &nbsp;|&nbsp; PCT 출원 준비 중 &nbsp;·&nbsp; <a href="http://openhash.kr/patents" target="_blank">openhash.kr/patents</a></td></tr>
+        <tr><td>오픈소스</td><td>GPL 라이선스 — Github 공개, 전 세계 누구나 성능 검증 가능</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 2. 미션과 비전 -->
+<section class="sec" id="s2">
+  <span class="sec-eye">제 2 조</span>
+  <h2 class="sec-h2">미션과 비전 (Mission &amp; Vision)</h2>
+  <p class="itm">[미션]</p>
+  <div class="callout">
+    <p><strong>전자동 사회 (Fully Automated Society)</strong> — AI와 OpenHash 데이터 무결성 기술의 융합으로, 모든 반복적·전문적 의사결정을 자동화하고, 모든 시민이 모든 종류의 전문 서비스를 균등하게 누리는 사회.</p>
+  </div>
+  <p class="itm">[비전]</p>
+  <p class="body">세계 최초의 완전한 법치 국가를 시작으로, 2030년까지 한국의 제반 영역을 전자동 국가의 표준 모델로 재구성(Restructuring).</p>
+
+  <p class="subh">첫 번째 Beta 상품 — K-OpenLaw 개요</p>
+  <p class="body">K-OpenLaw는 OpenHash와 이종 LLM을 기반으로 하는 완전한 사법 자동화 시스템으로, 고팡(GoPang) 플랫폼의 사법 모듈입니다. 민사·형사·특허·행정 분야에 걸쳐, 기존 1심~3심과 헌법재판소(사실상 4심제)의 전 과정을 하나의 통합심으로 1시간 이내에 처리합니다. 2026년 3월 현재 대법원 상고 중인 민사소송에 적용하여 특허출원 기술의 성능을 실증하였습니다 (<a href="http://openhash.kr/law" target="_blank">openhash.kr/law</a>).</p>
+
+  <p class="subh">K-OpenLaw vs. 기존 사법부 — 핵심 성능 비교</p>
+  <p class="note" style="border:none;padding:0;margin-bottom:.8rem;">출처: <a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a> 실증 데이터 및 2025 사법연감</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th style="width:30%;">비교 항목</th><th style="width:35%;">기존 사법부 (한국 현행)</th><th>K-OpenLaw (AI + OpenHash)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>종합 공정성 점수</td><td>1심 40점 (D등급), 2심 30점 (F등급)</td><td class="b">90점 이상 (A등급)</td></tr>
+        <tr><td>재판 소요 시간 (1~3심)</td><td>평균 36개월 (3년)<br><small style="color:var(--g3);">1심 473일 / 2심 6~12개월 / 3심 1년 이상</small></td><td><span class="b">1시간 이내 (통합심)</span><br><small style="color:var(--g3);">약 1/26,000 단축</small></td></tr>
+        <tr><td>재판 비용 (3심 누적)</td><td>수백만 원~수억 원<br><small style="color:var(--g3);">변호사 선임료 + 인지대·감정비 등</small></td><td><span class="b">약 10만 원</span><br><small style="color:var(--g3);">약 1/1,000 절감</small></td></tr>
+        <tr><td>법리·절차 오류 수</td><td>1심 11개, 2심 8개 (합계 19개)</td><td><span class="b">0개</span> (구조적 방지)</td></tr>
+        <tr><td>증거 검증 방식</td><td>서류·감정·증인신문 (수개월 소요)</td><td>PDV + OpenHash (수초 이내)</td></tr>
+        <tr><td>국민 신뢰도</td><td>30~46%<br><small style="color:var(--g3);">한겨레·STI 조사: 3.8/10 (2025)</small></td><td>100% 목표<br><small style="color:var(--g3);">추론 과정 단계별 공개</small></td></tr>
+        <tr><td>법원 업무 경감</td><td>(기준)</td><td>93% 이상 경감 예상</td></tr>
+        <tr><td>인간 판사 필요 사건 비율</td><td>100%</td><td>1% 미만 (시뮬레이션 기준)</td></tr>
+        <tr><td>연간 총 소송 건수 (한국)</td><td>691만 5,400건 (2024년)</td><td>99% 이상 법원 外 자동 종결</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">※ 실증 근거: 2026년 3월 현재 대법원 상고 계류 중인 실제 민사소송 사건에 K-OpenLaw를 적용하여 1심·2심 판결과 가상 판결을 비교 검증 완료. 상세 데이터: <a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a> (섹션 III, VI 참조)</p>
+</section>
+
+<!-- 3. 구조적 한계 -->
+<section class="sec" id="s3">
+  <span class="sec-eye">제 3 조</span>
+  <h2 class="sec-h2">왜 지금 K-OpenLaw인가 — 기존 사법 시스템의 구조적 한계</h2>
+  <p class="body">현재의 사법 시스템은 인간의 한계에 부딪혀 있습니다. K-OpenLaw는 이러한 '인적 변수'와 '구조적 결함'을 제거하고, 오직 객관적 데이터와 철저한 법리 분석만으로 작동하는 투명한 시스템을 제안합니다.</p>
+
+  <p class="itm">[한계 1] 물리적 시간의 한계</p>
+  <ul class="dl"><li>한 명의 판사가 검토해야 할 기록은 수천 페이지에 달합니다.</li><li>판결문 하나를 받기 위해 국민은 평균 1년을 기다려야 합니다.</li><li>1심 민사 합의부 평균 473일, 항소심 6~12개월, 대법원 1년 이상.</li></ul>
+
+  <p class="itm">[한계 2] 심리적 불신과 일관성 부재</p>
+  <ul class="dl"><li>같은 사건임에도 재판부마다 판단이 엇갈리는 사례가 빈번합니다.</li><li>당사자가 주장하지 않은 법리가 갑자기 적용되는 '변론주의 위반' 사례가 반복됩니다.</li><li>한겨레·STI 조사(2025): 법원 신뢰도 10점 만점에 3.8점. 국민 절반 이상이 사법부를 신뢰하지 않는 상황입니다.</li></ul>
+
+  <p class="itm">[한계 3] 경제적 불평등 — 유전무죄 무전유죄</p>
+  <ul class="dl"><li>유능한 변호사를 선임할 수 있느냐 없느냐에 따라 재판 결과가 달라지는 구조적 불평등이 여전합니다.</li><li>1심~3심 소송 비용: 수백만 원~수억 원 (대다수 국민에게 감당 불가).</li><li>법률 서비스는 사실상 기득권과 고소득층의 전유물로 전락해 있습니다.</li></ul>
+
+  <p class="itm">[한계 4] 증거 위변조와 사실 확인의 비효율</p>
+  <ul class="dl"><li>서류·감정·증인신문에 수개월이 소요되는 증거 검증 절차.</li><li>기술적 위변조 여부를 판단할 수단이 없어 전체 재판의 상당 부분을 사실 확인에 소진합니다.</li></ul>
+
+  <p class="itm">[한계 5] 단일 LLM 편향과 AI 도입 실패의 선례</p>
+  <ul class="dl"><li>기존 법률 AI는 단일 LLM만을 활용하여 편향된 해석이 발생합니다.</li><li>AI 대변자가 승리만을 목표로 무한히 논쟁하여 합의점을 도출하지 못하는 구조적 결함이 있습니다.</li><li>하위 규범을 상위 규범보다 우선시하는 오류가 발생합니다.</li></ul>
+</section>
+
+<!-- 4. 핵심 기술 -->
+<section class="sec" id="s4">
+  <span class="sec-eye">제 4 조</span>
+  <h2 class="sec-h2">핵심 기술 스택 (Core Technology)</h2>
+  <div class="callout">
+    <p>K-OpenLaw의 기술 구조는 50인승 버스에 비유할 수 있습니다.<br>AI/LLM = 엔진 (집단 지성·추론) &nbsp;/&nbsp; OpenHash = 바퀴 (증거 무결성) &nbsp;/&nbsp; 고팡(PDV) = 차체 (국가 자동화 플랫폼) &nbsp;/&nbsp; K-OpenLaw = 시트 (사법 자동화 모듈)</p>
+  </div>
+
+  <p class="itm">[기술 1] OpenHash 분산 원장 네트워크 — 입력 데이터 진실성 보장 엔진</p>
+  <ul class="dl"><li>기존 블록체인(비트코인 등) 대비 에너지 98.5% 절감</li><li>4ms 이내 증거 무결성 검증 (블록체인은 수십 분 소요)</li><li>새로운 원자력발전소·슈퍼컴퓨터·위성 불필요 — 세계 유일의 현실 적용 가능한 분산 원장 기술</li><li>15건 이상 특허 출원 완료 (<a href="http://openhash.kr/patents" target="_blank">openhash.kr/patents</a>)</li></ul>
+
+  <p class="itm">[기술 2] Private Data Vault (PDV) — 개인/기관 데이터 금고</p>
+  <ul class="dl"><li>사람·사물·기관이 6하 원칙으로 기록한 OpenHash 기반 LOG 파일</li><li>AES-256-GCM 암호화 + 역할 기반 접근 제어(RBAC)</li><li>개인정보보호법, GDPR, HIPAA 실시간 자동 준수</li><li>모든 기록의 위변조 불가 — 생성 시점부터 해시 체인으로 보호</li></ul>
+
+  <p class="itm">[기술 3] 이종 LLM 대립 논증·판정 자동화 시스템 (핵심 특허)</p>
+  <ul class="dl"><li>서로 다른 제조사의 복수 LLM에 역할을 분리 부여:</li></ul>
+  <ul class="dot"><li>제1 대변자 모듈 — 원고/신청인 AI 변호사</li><li>제2 대변자 모듈 — 피고/피신청인 AI 변호사</li><li>논쟁 관리 모듈 — 합의·미합의 쟁점 분리</li><li>판정 모듈 — AI 재판부, 판결문 초안 생성</li><li>절차 관리 모듈 — 접수~집행 전 과정 자동화</li></ul>
+  <ul class="dl"><li>규범 위계 DB: 헌법 &gt; 법률 &gt; 시행령 순위 자동 적용</li><li>취약계층 보호 지수(VHI) 자동 산출</li><li>적용 분야: 민사·형사·행정·의료·특허·금융·보험 등 전 분야</li></ul>
+
+  <p class="itm">[기술 4] PAA/IAA — 개인용/기관용 AI 비서</p>
+  <ul class="dl"><li>PAA (Personal AI Assistant): 개인의 PDV에 1:1 전용 배정</li><li>IAA (Institutional AI Assistant): 법무법인·공공기관용</li><li>Gate-Keeper 원칙: PDV 데이터에 대한 유일한 접근 주체</li><li>증거 패키지 JSON 생성 및 법원 시스템 자동 제출</li></ul>
+</section>
+
+<!-- 5. 검증된 성능 -->
+<section class="sec" id="s5">
+  <span class="sec-eye">제 5 조</span>
+  <h2 class="sec-h2">검증된 압도적 성능 — 수치로 증명하는 3대 혁신</h2>
+  <p class="body">기술 개발은 쉽지만, 검증은 어렵습니다. K-OpenLaw는 이미 실제 진행 중인 민사·형사·특허 사건들을 통해 그 성능을 입증했습니다. (출처: <a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a> — 2026년 3월 대법원 상고 사건 적용)</p>
+  <div class="pgrid">
+    <div class="pc"><p class="pc-lbl">① 시간의 혁신</p><p class="pc-old">평균 36개월 (3년)</p><p class="pc-new">1시간 이내</p><p class="pc-note">재판 소요 시간 1/10,000 이상 단축<br>1~3심 + 헌재 통합심</p></div>
+    <div class="pc"><p class="pc-lbl">② 비용의 혁신</p><p class="pc-old">수백만 원~수억 원</p><p class="pc-new">약 10만 원</p><p class="pc-note">재판 비용 1/1,000 절감 (99.9%)<br>AI가 변호사 역할 대체</p></div>
+    <div class="pc"><p class="pc-lbl">③ 공정성의 혁신</p><p class="pc-old">1심 40점(D) · 2심 30점(F)</p><p class="pc-new">99점 이상 (A)</p><p class="pc-note">공정성 30% → 100% 목표<br>법리·절차 오류 0개</p></div>
+  </div>
+
+  <p class="itm">[① 시간의 혁신]</p>
+  <p class="body">기존 1심 473일, 항소심 6~12개월, 대법원 1년 이상의 누적 기간이 K-OpenLaw에서는 1시간 이내로 단축됩니다. 이는 단순한 속도 문제가 아닙니다. 분쟁으로 인한 기회비용·정신적 손해·경제 활동 중단을 비약적으로 줄이는 경제적 혁신입니다.</p>
+
+  <p class="itm">[② 비용의 혁신]</p>
+  <p class="body">AI가 변호사 역할을 대체하고, PDV로 증거 제출·감정 비용을 원천 제거합니다. 수천만 원에 달하는 소송 비용 대신, 약 10만 원의 시스템 이용료 수준으로 어떤 인간 전문가도 작성할 수 없는 분석 리포트와 가상 판결문 초안을 제공받을 수 있습니다.</p>
+
+  <p class="itm">[③ 증거 증언 무결성의 혁신]</p>
+  <p class="body">OpenHash 네트워크를 통해 증거의 위변조를 원천 차단합니다. "상대방이 서류를 조작했다"는 의심은 이제 기술적으로 불가능해집니다. 모든 증거는 해시값을 통해 생성 시점부터 무결성이 입증됩니다. 판결에 이르는 추론 과정을 단계별로 투명하게 공개하므로, 패소한 측도 기꺼이 결과를 수용할 수 있게 됩니다.</p>
+</section>
+  <p class="itm">[③ 공정성·정확성의 혁신]</p>
+  <p class="body">AI는 오직 헌법과 법률에 기초하여 판결문 초안을 생성하므로, 700만 년 인류 역사상 최초로 완전한 법치 국가를 구현할 수 있습니다.</p>
+</section>
+
+<!-- 6. 시장 분석 -->
+<section class="sec" id="s6">
+  <span class="sec-eye">제 6 조</span>
+  <h2 class="sec-h2">시장 분석 (Market Analysis)</h2>
+  <p class="subh">글로벌 시장</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>시장 구분</th><th class="r">2025~2026년 규모</th><th class="r">전망</th><th class="r">CAGR</th></tr></thead>
+      <tbody>
+        <tr><td>글로벌 법률 서비스 시장</td><td class="r">USD 7,523억</td><td class="r">USD 9,510억 (2033)</td><td class="r">2.3%</td></tr>
+        <tr><td>글로벌 리걸테크 시장</td><td class="r">USD 331.8억 (2026)</td><td class="r">USD 732.6억 (2035)</td><td class="r">9.2%</td></tr>
+        <tr><td>AI 법률 어시스턴트 시장</td><td class="r">USD 7.88억 (2026)</td><td class="r">USD 17.0억 (2032)</td><td class="r">13.74%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">AI 법률 시장이 전통 법률 시장보다 4~6배 빠른 성장세.</p>
+
+  <p class="subh">한국 시장</p>
+  <ul class="dl"><li>한국 법률 서비스 시장: 약 25조 원</li><li>리걸테크 침투율 10% 기준: 약 2.5조 원 (2026년 추정)</li><li>연간 법률 분쟁 경험 인구: 약 200만 명</li><li>한국, 아태 지역 내 법률 디지털화 선도국 — 진입에 최적</li></ul>
+
+  <p class="subh">경쟁 환경</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>경쟁사</th><th>제공 기능</th><th>AI City 대비 한계</th></tr></thead>
+      <tbody>
+        <tr><td>Harvey AI</td><td>법률 리서치, 문서 검토</td><td>증거 검증 불가, 판결 불가</td></tr>
+        <tr><td>Lexis+ AI</td><td>판례 검색, 계약 분석</td><td>사실 확인 절차 자동화 없음</td></tr>
+        <tr><td>DoNotPay</td><td>단순 민원 처리</td><td>복잡한 분쟁 해결 불가</td></tr>
+        <tr><td>Clio / MyCase</td><td>사건 관리, 청구</td><td>AI 판정 기능 없음</td></tr>
+        <tr><td class="b">AI City Inc.</td><td class="b">전 과정 자동화 + 증거검증</td><td class="b">유일무이한 통합 플랫폼</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 7. 일상 적용 -->
+<section class="sec" id="s7">
+  <span class="sec-eye">제 7 조</span>
+  <h2 class="sec-h2">K-OpenLaw가 바꾸는 일상 — 모든 삶 속에 스며든 법</h2>
+  <p class="body">K-OpenLaw의 적용 범위는 법정에 머물지 않습니다. 일반 국민의 일상 모든 곳이 서비스 대상입니다.</p>
+
+  <p class="itm">[적용 1] 부동산 거래</p>
+  <ul class="dl"><li>임대차 계약 시 발생할 수 있는 독소 조항을 AI가 즉시 감지합니다.</li><li>보증금 반환 리스크를 사전 분석하여 분쟁을 예방합니다.</li><li>계약 체결 전 OpenHash로 모든 계약 내용을 무결성 기록합니다.</li></ul>
+
+  <p class="itm">[적용 2] 근로 계약 및 노동 분쟁</p>
+  <ul class="dl"><li>직장에서의 부당 대우나 임금 체불 발생 시 즉각적으로 증거를 수집하고 법적 대응 논리를 자동 구성합니다.</li><li>근로계약서의 불공정 조항을 AI가 실시간 감지합니다.</li></ul>
+
+  <p class="itm">[적용 3] 특허 및 창업</p>
+  <ul class="dl"><li>아이디어 구상 단계에서 신규성과 진보성을 AI가 분석합니다.</li><li>명세서 작성부터 출원까지 전 과정을 자동 지원합니다.</li><li>K-OpenLaw 스스로 특허 심사관 역할을 대행합니다.</li></ul>
+
+  <p class="itm">[적용 4] 예방 법학 (Preventive Legal Medicine)</p>
+  <ul class="dl"><li>의료의 예방 의학처럼, 각종 분쟁을 기술적으로 사전 예방합니다.</li><li>PDV에 일상과 업무를 기록함으로써, 매 시간마다 분쟁 가능성을 조기에 발견하고 사전에 조치합니다.</li></ul>
+
+  <p class="itm">[적용 5] 금융·보험</p>
+  <ul class="dl"><li>보험 사기 증거의 실시간 검증.</li><li>금융 분쟁의 신속한 자동 처리.</li></ul>
+
+  <p class="itm">[확장성 — 글로벌 즉시 적용 가능]</p>
+  <p class="body">글로벌 사법 체계는 보편적 논리를 공유합니다. 국가별 언어 및 법령 데이터만 탑재하면 즉시 글로벌 확장이 가능한 구조입니다.</p>
+</section>
+
+<!-- 8. 법조계와의 상생 -->
+<section class="sec" id="s8">
+  <span class="sec-eye">제 8 조</span>
+  <h2 class="sec-h2">법조계와의 상생 — 대체가 아닌 인프라의 고도화</h2>
+  <p class="body">K-OpenLaw는 법조계를 배척하지 않습니다. 오히려 유능한 법률 전문가들에게 '최고의 무기'를 제공합니다.</p>
+
+  <p class="itm">[변호사에게]</p>
+  <ul class="dl"><li>단순 서면 작성과 판례 검색 시간을 대폭 줄여드립니다.</li><li>의뢰인과의 상담 및 고도의 전략 구성에 집중할 수 있게 합니다.</li><li>한국 3만 변호사/로펌이 K-OpenLaw의 핵심 B2B 고객입니다.</li></ul>
+
+  <p class="itm">[판사에게]</p>
+  <ul class="dl"><li>기록 검토의 오류를 줄여주는 '디지털 보조 법관'으로서 역할합니다.</li><li>전체 사건의 1% 미만에서만 인간 판사의 개입이 필요합니다.</li><li>나머지 99%는 K-OpenLaw가 처리하여 법원 업무량을 93% 이상 경감합니다.</li></ul>
+
+  <p class="itm">[국민에게]</p>
+  <ul class="dl"><li>변호사 없이도 자신의 권리를 지킬 수 있는 최고 수준의 '법률 방어권'을 보장합니다.</li><li>헌법 제27조 '신속하고 공정한 재판을 받을 권리'를 실질 구현합니다.</li><li>대한민국 전체 인구 5,200만 명이 모두 잠재 고객입니다.</li></ul>
+</section>
+
+<!-- 9. 사업화 전략 -->
+<section class="sec" id="s9">
+  <span class="sec-eye">제 9 조</span>
+  <h2 class="sec-h2">사업화 전략 (Go-To-Market Strategy)</h2>
+
+  <p class="itm">[제1안] B2C 대중 직접 서비스 — 주력 모델</p>
+  <ul class="dl">
+    <li>대상: 법률 분쟁 경험 개인 (한국 연간 약 691만 건 소송, 경험 인구 약 200만 명)</li>
+    <li>가격: 건당 약 10만 원 (기존 수백~수천 만 원의 약 1/1,000 수준)</li>
+    <li>구독: 월 1만 원 → 연간 10만 원 (무제한 상담 + 연 2회 분쟁 해결)</li>
+    <li>핵심 메시지: "3년·수천만 원 없어도 K-OpenLaw로 1시간·10만 원에 해결"</li>
+    <li>재판 소요 시간 1/26,000 단축 · 비용 1/1,000 절감 · 공정성 30% → 100% · 법원 신뢰도 3.8점 → 100% 목표</li>
+  </ul>
+
+  <p class="itm">[제2안] B2B SaaS — 보조 모델</p>
+  <ul class="dl"><li>대상: 국내외 법무법인, 대기업 법무팀, 공공기관</li><li>IAA 구독료: 월 100~300만 원</li><li>증거 검증: 건당 1만 원 / 예상 판결문과 대응 방안 생성: 건당 10만 원</li><li>온프레미스 라이선스: 연 5~20억 원</li></ul>
+
+  <p class="itm">[제3안] B2G 정부·사법기관 협업 — 장기 전략</p>
+  <ul class="dl"><li>대상: 대법원, 법무부, 지방법원, 각국 사법 기관</li><li>제1 운용 모드 (법원 연계형): 인간 판사의 판결문 초안 생성 보조</li><li>제2 운용 모드 (완전 자동화형): 소액·경미 사건 자동 처리</li></ul>
+</section>
+
+<!-- 10. 재무 계획 -->
+<section class="sec" id="s10">
+  <span class="sec-eye">제 10 조</span>
+  <h2 class="sec-h2">재무 계획 및 시장 가치 전망 (Financial Plan &amp; Valuation)</h2>
+  <p class="subh">한국 시장 매출 추정 (2026~2030)</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>연도</th><th class="r">시장 점유율</th><th class="r">예상 매출 (억 원)</th><th class="r">누적 이용 건수</th></tr></thead>
+      <tbody>
+        <tr><td>2026</td><td class="r">0.3%</td><td class="r">52.5</td><td class="r">10,500</td></tr>
+        <tr><td>2027</td><td class="r">0.8%</td><td class="r">140.0</td><td class="r">28,000</td></tr>
+        <tr><td>2028</td><td class="r">1.5%</td><td class="r">262.5</td><td class="r">52,500</td></tr>
+        <tr><td>2029</td><td class="r">2.2%</td><td class="r">385.0</td><td class="r">77,000</td></tr>
+        <tr><td>2030</td><td class="r">3.0%</td><td class="r">525.0</td><td class="r">105,000</td></tr>
+      </tbody>
+      <tfoot><tr><td>누계</td><td></td><td class="r">1,365억 원</td><td class="r">273,000건</td></tr></tfoot>
+    </table>
+  </div>
+  <p class="subh">글로벌 기업가치 전망 (DCF 기반, 2030년 기준)</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>구분</th><th class="r">보수적 시나리오</th><th class="r">기본 시나리오</th><th class="r">낙관적 시나리오</th></tr></thead>
+      <tbody>
+        <tr><td>2030년 글로벌 매출</td><td class="r">USD 1.2억</td><td class="r">USD 2.5억</td><td class="r">USD 5.0억</td></tr>
+        <tr><td>2030년 기업가치</td><td class="r">약 4,500억 원</td><td class="r">약 1.1조 원</td><td class="r">약 2.4조 원</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><p><strong>핵심 결론:</strong> 2030년 기준 기업가치 1조 원 이상 유니콘 달성 목표. DeepSeek·Gemini 등 복수 AI 모델의 독립 평가 결과 공통 도출.</p></div>
+</section>
+
+<!-- 11. 자금 조달 -->
+<section class="sec" id="s11">
+  <span class="sec-eye">제 11 조</span>
+  <h2 class="sec-h2">자금 조달 계획 (Fundraising Plan)</h2>
+  <p class="subh">총 모집 구조</p>
+  <ul class="dl"><li>총발행 주식: 보통주 20,000,000주 (2천만 주)</li><li>주당 공모가: 금 일만 원정 (₩10,000)</li><li>목표 모집 총액: 금 이천억 원정 (₩200,000,000,000)</li></ul>
+  <div class="fgrid">
+    <div class="fbox">
+      <p class="fbox-t">제1차 모집 — 2026년 (한국)</p>
+      <div class="fr"><span class="fk">모집 규모</span><span class="fv">2,000,000주 (10%)</span></div>
+      <div class="fr"><span class="fk">모집 금액</span><span class="fv">200억 원</span></div>
+      <div class="fr"><span class="fk">모집 대상</span><span class="fv">국내 VC, 법무법인, 개인</span></div>
+      <div class="fr"><span class="fk">데이터 센터 구축</span><span class="fv">80억 (40%)</span></div>
+      <div class="fr"><span class="fk">운영 팀 구성</span><span class="fv">60억 (30%)</span></div>
+      <div class="fr"><span class="fk">마케팅·서비스</span><span class="fv">40억 (20%)</span></div>
+      <div class="fr"><span class="fk">운전자본·예비비</span><span class="fv">20억 (10%)</span></div>
+    </div>
+    <div class="fbox">
+      <p class="fbox-t">제2차 모집 — 2027년 (글로벌)</p>
+      <div class="fr"><span class="fk">모집 규모</span><span class="fv">18,000,000주 (90%)</span></div>
+      <div class="fr"><span class="fk">모집 금액</span><span class="fv">1,800억 원</span></div>
+      <div class="fr"><span class="fk">모집 대상</span><span class="fv">글로벌 VC, 기관, 개인</span></div>
+      <div class="fr"><span class="fk">글로벌 데이터 센터</span><span class="fv">720억 (40%)</span></div>
+      <div class="fr"><span class="fk">해외 법인 (미·유·일)</span><span class="fv">360억 (20%)</span></div>
+      <div class="fr"><span class="fk">글로벌 마케팅</span><span class="fv">540억 (30%)</span></div>
+      <div class="fr"><span class="fk">운전자본·예비비</span><span class="fv">180억 (10%)</span></div>
+    </div>
+  </div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>구분</th><th class="r">금액</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>Pre-money Valuation (1차 모집 전)</td><td class="r">1,800억 원</td><td></td></tr>
+        <tr><td>Post-money Valuation (1차 모집 후)</td><td class="r">2,000억 원</td><td>200억 원 신규 유입 기준</td></tr>
+        <tr><td>2030년 목표 기업가치</td><td class="r">1조 원 이상</td><td>유니콘 (Unicorn)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 12. 투자 포인트 -->
+<section class="sec" id="s12">
+  <span class="sec-eye">제 12 조</span>
+  <h2 class="sec-h2">투자 포인트 (Investment Highlights)</h2>
+
+  <p class="itm">[포인트 1] 세계 유일의 특허 기술 — 진입 장벽</p>
+  <ul class="dl"><li>OpenHash: 에너지 98.5% 절감, 4ms 검증, 현실 적용 가능한 유일한 분산 원장</li><li>K-OpenLaw: 이종 LLM 논쟁·판정 시스템, 20건 이상 특허 출원, 글로벌 등록 추진</li><li>경쟁사가 일부 모듈을 모방해도 전체 시스템 특허 침해 구조로 방어</li><li>GPL 오픈소스 공개 → 전 세계 개발자 생태계 형성 + 성능 공개 검증</li></ul>
+
+  <p class="itm">[포인트 2] 수치로 증명된 압도적 성능 우위</p>
+  <ul class="dl">
+    <li>재판 시간: 36개월(3년) → 1시간 = 기존 대비 약 1/26,000</li>
+    <li>재판 비용: 수천만~수억 원 → 약 10만 원 = 기존 대비 약 1/1,000</li>
+    <li>공정성·합리성·법적 엄밀성: 1심 48점(D)·2심 40점(F) → K-OpenLaw 90점 이상(A), 법리 오류 19개 → 0개</li>
+    <li>한겨레·STI 조사(2025): 법원 신뢰도 3.8/10 → K-OpenLaw 추론 과정 투명 공개로 100% 목표</li>
+    <li>검찰개혁추진단(2026): 형사사법기관 중 법원 신뢰도 46.0% (최고치)</li>
+  </ul>
+
+  <p class="itm">[포인트 3] 거대한 시장과 명확한 파괴력</p>
+  <ul class="dl"><li>글로벌 법률 서비스 시장 USD 7,523억 중 AI 기술로 공략 가능한 거대한 비효율 구조</li><li>한국 연간 소송 691만 건(2024) 중 90% 이상을 K-OpenLaw로 법원 外 처리 가능</li><li>법원 업무량 93% 이상 경감 → 국가 사법 비용 대폭 절감</li><li>사법 민주화: 변호사 접근이 어려운 계층 전부에 1:1 AI 변호사(PAA) 제공</li></ul>
+
+  <p class="itm">[포인트 4] 다중 수익 모델</p>
+  <ul class="dl"><li>B2C 건당 과금 + 구독 모델 — 규모의 경제, 폭발적 성장 가능</li><li>B2B SaaS — 법무법인·기업, 안정적 고수익</li><li>B2G 정부 라이선스 — 장기 계약, 예측 가능한 현금흐름</li></ul>
+
+  <p class="itm">[포인트 5] 사법 외 전 산업 확장 가능성</p>
+  <ul class="dl"><li>의료 진단: AI 주치의 + AI 건강보험 심사 대립 구조 즉시 적용</li><li>특허 심사: 출원인 AI vs. 심사관 AI 논증 자동화 (K-OpenLaw 직접 실증 중)</li><li>금융·보험: 사기 탐지, 보험금 심사 자동화</li><li>행정 심판: 민원인 vs. 행정기관 AI 대립 논증</li><li>예방 법학: 의료의 예방 의학처럼, 분쟁을 사전에 기술적으로 예방</li></ul>
+
+  <p class="itm">[포인트 6] 복수 AI 모델의 독립 평가 — 객관적 근거</p>
+  <ul class="dl"><li>DeepSeek 평가: 특허 등록 가능성 99% 이상, 2030년 기업가치 약 1.1조 원</li><li>Gemini 평가: 특허 등록 가능성 95% 이상, 기술 가치 6,000억 원 이상</li><li>Claude 기반 평가: 준비 중</li></ul>
+
+  <p class="subh">투자자를 위한 비즈니스 임팩트 요약 (Business Impact Summary)</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:18%;">구분</th><th>내용</th></tr></thead>
+      <tbody>
+        <tr><td class="b">Target Market</td><td>B2C: 국민 5,200만 명 / B2B: 변호사·로펌 3만 / B2G: 대법원·법무부·지방법원 / 글로벌: 언어·법령 데이터 탑재로 즉시 확장</td></tr>
+        <tr><td class="b">Scalability</td><td>글로벌 사법 체계는 보편적 논리를 공유. 국가별 언어 및 법령 데이터만 탑재하면 즉시 글로벌 확장 가능. GPL 오픈소스로 전 세계 개발자 생태계를 통한 자생적 확산.</td></tr>
+        <tr><td class="b">Verification</td><td>민사·형사·특허 등 실제 사건 데이터셋을 통한 성능 검증 완료. 기존 법원 판결의 논리적 허점 20개 이상 발견 및 교정 완료. 실증 데이터: <a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 13. 로드맵 -->
+<section class="sec" id="s13">
+  <span class="sec-eye">제 13 조</span>
+  <h2 class="sec-h2">로드맵 (Roadmap)</h2>
+  <div class="tl">
+    <p class="tl-y">2026년 — 국내 런칭</p>
+    <div class="tl-r"><span class="tl-q">Q1</span><span class="tl-d">1차 투자 유치 (200억 원), 핵심 팀 구성</span></div>
+    <div class="tl-r"><span class="tl-q">Q2</span><span class="tl-d">사법 AI 데이터 센터 구축, OpenHash 네트워크 베타 운영</span></div>
+    <div class="tl-r"><span class="tl-q">Q3</span><span class="tl-d">국내 B2C 서비스 출시 (소액 민사 분쟁 대상)</span></div>
+    <div class="tl-r"><span class="tl-q">Q4</span><span class="tl-d">B2B 법무법인 파일럿 계약 5건 이상, 제주도 실증 프로젝트 개시</span></div>
+    <p class="tl-y">2027년 — 글로벌 확장</p>
+    <div class="tl-r"><span class="tl-q">Q1</span><span class="tl-d">2차 글로벌 투자 유치 (1,800억 원), PCT 특허 출원</span></div>
+    <div class="tl-r"><span class="tl-q">Q2</span><span class="tl-d">미국·유럽·일본 현지 법인 설립</span></div>
+    <div class="tl-r"><span class="tl-q">Q3</span><span class="tl-d">영문 서비스 출시 (미국 소액심판 ADR 대상)</span></div>
+    <div class="tl-r"><span class="tl-q">Q4</span><span class="tl-d">글로벌 법무법인 파트너십 10건 이상</span></div>
+    <p class="tl-y">2028~2030년 — 시장 표준화</p>
+    <div class="tl-r"><span class="tl-q">2028</span><span class="tl-d">아태 지역(일본·동남아) 서비스 확대, 의료 AI 진단 모듈 출시</span></div>
+    <div class="tl-r"><span class="tl-q">2029</span><span class="tl-d">B2G 정부 계약 추진 (법무부·대법원 협업), ODR 표준 제안</span></div>
+    <div class="tl-r"><span class="tl-q">2030</span><span class="tl-d">글로벌 유니콘 달성 (기업가치 1조 원 이상), IPO 검토</span></div>
+  </div>
+</section>
+
+<!-- 14. 리스크 -->
+<section class="sec" id="s14">
+  <span class="sec-eye">제 14 조</span>
+  <h2 class="sec-h2">리스크 및 대응 방안 (Risk &amp; Mitigation)</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:16%;">구분</th><th style="width:38%;">내용</th><th>대응 방안</th></tr></thead>
+      <tbody>
+        <tr><td class="b">규제 리스크</td><td>AI 판결의 법적 효력에 대한 국가별 규제 불확실성</td><td>제1 운용 모드(법원 연계형) 우선 적용 — 인간 판사 최종 확인 구조 유지. 각국 법무부·사법기관과 사전 협의 채널 구축.</td></tr>
+        <tr><td class="b">기술 리스크</td><td>LLM 할루시네이션(환각), 적대적 입력에 의한 오판</td><td>OpenHash 기반 PDV로 입력 데이터 진실성 원천 보장. 다중 이종 LLM 교차 검증으로 단일 모델 오류 상쇄.</td></tr>
+        <tr><td class="b">경쟁 리스크</td><td>대형 빅테크(Google, Microsoft 등)의 리걸테크 진출</td><td>OpenHash + PDV + 이종 LLM 판정 시스템의 특허 그물망 방어. 선점 효과와 데이터 누적(PDV 생태계)으로 후발 진입 장벽 형성.</td></tr>
+        <tr><td class="b">수용성 리스크</td><td>법조계의 AI 판결에 대한 거부감</td><td>초기에 소액 분쟁·ADR 중심으로 시장 진입. VHI(취약계층 보호 지수) 강조로 사회적 공감대 형성.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 15. 결론 -->
+<section class="sec" id="s15">
+  <span class="sec-eye">제 15 조</span>
+  <h2 class="sec-h2">결론 — 대한민국 사법의 새로운 표준 (Call to Action)</h2>
+  <p class="body">이제 선택해야 합니다. 과거의 관행에 묶여 수년을 기다리는 재판을 계속할 것인가, 아니면 기술이 보장하는 투명하고 신속한 사법 지원 시스템으로 나아갈 것인가.</p>
+  <p class="body">K-OpenLaw는 준비되었습니다. 이미 실제 사례를 통해 인간 법원보다 정밀한 분석 능력을 보여주었습니다. AI City Inc.의 상품 K-OpenLaw는 수천 년간 인치(人治)에 머물렀던 사법 시스템을 기술로 완전한 법치(法治)로 전환하는 '디지털 사법 인프라 표준'입니다.</p>
+  <div class="concl">
+    <p class="concl-t">K-OpenLaw — 핵심 성능 요약</p>
+    <ul class="kpi">
+      <li><span class="kpi-k">재판 소요 시간</span><span class="kpi-v">36개월 → 1시간</span><span class="kpi-s">(약 1/10,000 이상 단축)</span></li>
+      <li><span class="kpi-k">재판 비용</span><span class="kpi-v">수천만 원 → 10만 원</span><span class="kpi-s">(99.9% / 1/1,000 절감)</span></li>
+      <li><span class="kpi-k">공정성·합리성</span><span class="kpi-v">30~50% → 100% 목표</span><span class="kpi-s">(법리 오류 구조적 제거)</span></li>
+      <li><span class="kpi-k">법적 엄밀성</span><span class="kpi-v">1심 48점·2심 40점 → 90점 이상</span><span class="kpi-s">(실증값)</span></li>
+      <li><span class="kpi-k">법원 신뢰도</span><span class="kpi-v">3.8/10 → 10/10 목표</span><span class="kpi-s">(추론 과정 완전 공개)</span></li>
+      <li><span class="kpi-k">법원 업무 경감</span><span class="kpi-v">93% 이상</span><span class="kpi-s">(연간 691만 건 중 90%+ 자동 처리)</span></li>
+    </ul>
+    <div class="cta-bl">
+      <div class="cta-r"><span class="cta-k">1차 모집</span><span class="cta-v">2026년 (한국) — 2,000,000주 × ₩10,000 = 200억 원</span></div>
+      <div class="cta-r"><span class="cta-k">모집 대상</span><span class="cta-v">벤처캐피탈, 법무법인, 개인 투자자</span></div>
+      <div class="cta-r"><span class="cta-k">Pre-money</span><span class="cta-v">1,800억 원</span></div>
+      <div class="cta-r"><span class="cta-k">2030년 목표</span><span class="cta-v">기업가치 1조 원 이상 (유니콘)</span></div>
+      <div class="cta-r"><span class="cta-k">실증 데이터</span><span class="cta-v"><a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a></span></div>
+    </div>
+  </div>
+  <p class="closing">더 이상 법률 서비스는 특권이 아닙니다. AI City Inc.와 K-OpenLaw가 함께, 인류 최초의 완전한 법치 국가를 만들어 갑니다. 이 역사적 전환점에 함께해 주십시오.<br><br>기술이 곧 정의가 되는 시대, K-OpenLaw가 그 문을 엽니다.</p>
+</section>
+
+<!-- 하단 -->
+<footer class="footer">
+  <dl class="contact">
+    <dt>회사</dt><dd>AI City Inc.</dd>
+    <dt>개발자</dt><dd>팀 주피터</dd>
+    <dt>소재지</dt><dd>제주특별자치도 제주시 한림읍 금능남로 3</dd>
+    <dt>이메일</dt><dd>ask@fiil.kr, tensor.city@gmail.com</dd>
+    <dt>웹사이트</dt><dd>http://www.openhash.kr</dd>
+    <dt>제품 페이지</dt><dd><a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a></dd>
+  </dl>
+  <div class="disc">
+    <p>본 문서는 투자 유치를 위한 사업 소개 초안이며, 법적 구속력이 없습니다. 투자 결정 전 관련 법령 및 전문가 자문을 받으시기 바랍니다.</p>
+    <p>실증 데이터 출처: <a href="http://www.openhash.kr/law" target="_blank">www.openhash.kr/law</a> (2026년 3월 기준)</p>
+    <p>v1.2 &nbsp;|&nbsp; 2026년 3월 작성 &nbsp;|&nbsp; 수정 시 버전 번호와 날짜를 갱신하십시오.</p>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
